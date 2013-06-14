@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="Project 1" xmlns="http://JadeData.org/Project.xsd">
+  <Folders />
+  <Files>
+    <File Name="file1.cc" Path="path1" />
+    <File Name="file1.h" Path="path2" />
+  </Files>
+</Project>

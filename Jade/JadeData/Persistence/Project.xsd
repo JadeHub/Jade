@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="Project"
+    targetNamespace="http://JadeData.org/Project.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://JadeData.org/Project.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+  <xs:complexType name="FileType">
+    <xs:attribute name="Name" type="xs:string" />
+    <xs:attribute name="Path" type="xs:string" />
+  </xs:complexType>
+
+  <xs:complexType name="FolderType">
+    <xs:sequence>
+      <xs:element name="Folders">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Folder" type="FolderType" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Files">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="File" type="FileType" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="Name" type="xs:string" />
+  </xs:complexType>
+
+  <xs:complexType name="ProjectType">
+    <xs:sequence>
+      <xs:element name="Folders">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Folder" type="FolderType" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Files">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="File" type="FileType" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="Name" type="xs:string" />
+  </xs:complexType>
+  
+  <xs:element name="Project" type="ProjectType" />
+</xs:schema>

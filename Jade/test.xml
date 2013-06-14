@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Workspace xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="Test" xmlns="http://JadeData.org/Workspace.xsd">
+  <Folders>
+    <Folder Name="Child1">
+      <Folders>
+        <Folder Name="Child2">
+          <Folders>
+            <Folder Name="Child3">
+              <Folders />
+              <Projects>
+                <Project Name="Project 2" Directory="Dir Project 2">
+                  <Folders />
+                  <Files />
+                </Project>
+                <Project Name="Project 3" Directory="Dir Project 3">
+                  <Folders />
+                  <Files>
+                    <File Name="sdfdf" Path="d:\code\c#\Jade\Jade\sdfdf" />
+                  </Files>
+                </Project>
+              </Projects>
+            </Folder>
+          </Folders>
+          <Projects />
+        </Folder>
+      </Folders>
+      <Projects>
+        <Project Name="Project 1" Directory="Dir Project 1">
+          <Folders />
+          <Files>
+            <File Name="file1.cc" Path="path1" />
+            <File Name="file1.h" Path="path2" />
+          </Files>
+        </Project>
+      </Projects>
+    </Folder>
+  </Folders>
+  <Projects>
+    <Project Name="Test Project 2" Directory="Dir Test Project 2">
+      <Folders>
+        <Folder Name="Pro2Folder">
+          <Folders />
+          <Files>
+            <File Name="some.cc" Path="path" />
+          </Files>
+        </Folder>
+      </Folders>
+      <Files />
+    </Project>
+  </Projects>
+</Workspace>
