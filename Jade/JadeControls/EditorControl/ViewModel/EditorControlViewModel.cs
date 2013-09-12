@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace JadeControls.EditorControl.ViewModel
 {
-    public class DocumentViewModel
+    public class DocumentViewModel : ViewModelBase
     {
         #region Data
 
@@ -24,7 +24,7 @@ namespace JadeControls.EditorControl.ViewModel
 
         #region Public Properties
 
-        public string DisplayName { get { return _name;}}
+        public override string DisplayName { get { return _name;}}
         public string Text { get { return _text; } set { _text = value; } }
 
         #endregion
@@ -66,11 +66,12 @@ namespace JadeControls.EditorControl.ViewModel
         #endregion
     }
 
-    public class EditorControlViewModel
+    public class EditorControlViewModel : JadeControls.NotifyPropertyChanged
     {
         #region Data
 
         private ObservableCollection<DocumentViewModel> _openDocuments;
+        private DocumentViewModel _selectedDocument;
 
         #endregion
 
@@ -80,6 +81,7 @@ namespace JadeControls.EditorControl.ViewModel
             _openDocuments.CollectionChanged += OnOpenDocumentsChanged;
             _openDocuments.Add(new DocumentViewModel("Test1", "111"));
             _openDocuments.Add(new DocumentViewModel("Test2", "222"));
+            _selectedDocument = _openDocuments.ElementAt(0);
         }
 
         void OnOpenDocumentsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -96,7 +98,7 @@ namespace JadeControls.EditorControl.ViewModel
         void OnDocumentRequestClose(object sender, EventArgs e)
         {
             DocumentViewModel doc = sender as DocumentViewModel;
-         //   doc.Dispose();
+            doc.Dispose();
             this.OpenDocuments.Remove(doc);
         }
 
@@ -105,6 +107,16 @@ namespace JadeControls.EditorControl.ViewModel
         public ObservableCollection<DocumentViewModel> OpenDocuments
         {
             get { return _openDocuments; }
+        }
+
+        public DocumentViewModel SelectedDocument
+        {
+            get { return _selectedDocument; }
+            set
+            {
+                _selectedDocument = value;
+                OnPropertyChanged("SelectedDocument");
+            }
         }
 
         #endregion

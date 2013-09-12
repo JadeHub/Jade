@@ -9,6 +9,8 @@
     <UserControl.Resources>
         <ResourceDictionary Source="EditorControlResources.xaml" />
     </UserControl.Resources>
+    
+    
     <Grid>
         <Border Grid.Row="0" Style="{StaticResource MainBorderStyle}" Margin="4">            
             <TabControl 

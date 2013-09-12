@@ -48,6 +48,9 @@
       <DependentUpon>EditorTabCtrl.xaml</DependentUpon>
     </Compile>
     <Compile Include="EditorControl\ViewModel\EditorControlViewModel.cs" />
+    <Compile Include="OpenDocumentsControl\Control.xaml.cs">
+      <DependentUpon>Control.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserInput.xaml.cs">
       <DependentUpon>UserInput.xaml</DependentUpon>
     </Compile>
@@ -84,6 +87,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
+    <Page Include="OpenDocumentsControl\Control.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserInput.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

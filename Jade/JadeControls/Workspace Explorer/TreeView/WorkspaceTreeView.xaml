@@ -9,7 +9,15 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="JadeTreeViewStyle.xaml" />
                 <ResourceDictionary Source="ScrollBarStyle.xaml" />
+                
             </ResourceDictionary.MergedDictionaries>
+
+            <BitmapImage x:Key="DeleteIconSource" UriSource="pack://application:,,,/Images/Delete.png" />
+            <BitmapImage x:Key="FileIconSource" UriSource="pack://application:,,,/Images/File.png" />
+            <BitmapImage x:Key="FolderIconSource" UriSource="pack://application:,,,/Images/Folder.png" />
+            <BitmapImage x:Key="ProjectIconSource" UriSource="pack://application:,,,/Images/Project.png" />
+            <BitmapImage x:Key="WorkspaceIconSource" UriSource="pack://application:,,,/Images/Workspace.png" />
+
 
             <ContextMenu x:Key="WorkspaceContextMenu" x:Shared ="true" >
                 <MenuItem Header="Add Folder..." Command="{Binding Path=AddFolderCommand}" >

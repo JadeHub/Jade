@@ -34,7 +34,7 @@ namespace JadeData
 
             Persistence.Workspace.Writer.Write(_workspace, _workspace.Path);*/
 
-            string path = @"D:\code\c#\Jade\TestData\Test\test.jws";
+            string path = @"e:\github\jade\TestData\Test\test.jws";
 
             _workspace = Persistence.Workspace.Reader.Read(path);
         }

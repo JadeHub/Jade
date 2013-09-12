@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace JadeControls
 {
-    public abstract class ViewModelBase : INotifyPropertyChanged, IDisposable
+    public abstract class NotifyPropertyChanged : INotifyPropertyChanged
     {
         #region INotifyPropertyChanged
 
@@ -16,7 +16,10 @@ namespace JadeControls
         }
 
         #endregion
+    }
 
+    public abstract class ViewModelBase : NotifyPropertyChanged, IDisposable
+    {
         #region IDisposable Members
 
         /// <summary>

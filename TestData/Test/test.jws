@@ -8,8 +8,8 @@
             <Folder Name="Child3">
               <Folders />
               <Projects>
-                <Project Path="D:\code\c#\Jade\TestData\Test\Project 2\Project 2.jpj" />
-                <Project Path="D:\code\c#\Jade\TestData\Test\Project 3\Project 3.jpj" />
+                <Project Path="e:\github\Jade\TestData\Test\Project 2\Project 2.jpj" />
+                <Project Path="e:\github\Jade\TestData\Test\Project 3\Project 3.jpj" />
               </Projects>
             </Folder>
           </Folders>
@@ -17,7 +17,7 @@
         </Folder>
       </Folders>
       <Projects>
-        <Project Path="D:\code\c#\Jade\TestData\Test\Project 1\Project 1.jpj" />
+        <Project Path="e:\github\Jade\TestData\Test\Project 1\Project 1.jpj" />
       </Projects>
     </Folder>
     <Folder Name="123">

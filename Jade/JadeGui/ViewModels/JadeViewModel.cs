@@ -58,6 +58,8 @@ namespace JadeGui.ViewModels
         {
             get { return _workspaceModel; }
         }
+
+        public string Test { get { return "test"; } }
        
         #endregion
 
