@@ -13,6 +13,7 @@ namespace JadeControls.EditorControl.ViewModel
 
         private string _name;
         private string _text;
+        private bool _selected;
 
         #endregion
 
@@ -20,12 +21,19 @@ namespace JadeControls.EditorControl.ViewModel
         {
             _name = name;
             _text = text;
+            _selected = false;
+        }
+
+        public override string ToString()
+        {
+            return DisplayName;
         }
 
         #region Public Properties
 
         public override string DisplayName { get { return _name;}}
-        public string Text { get { return _text; } set { _text = value; } }
+        public string Text { get { return _text; } set { _text = value; OnPropertyChanged("Text"); } }
+        public bool Selected { get { return _selected; } set { _selected = value; OnPropertyChanged("Selected"); } }
 
         #endregion
 
@@ -82,6 +90,7 @@ namespace JadeControls.EditorControl.ViewModel
             _openDocuments.Add(new DocumentViewModel("Test1", "111"));
             _openDocuments.Add(new DocumentViewModel("Test2", "222"));
             _selectedDocument = _openDocuments.ElementAt(0);
+            _selectedDocument.Selected = true;
         }
 
         void OnOpenDocumentsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -114,7 +123,11 @@ namespace JadeControls.EditorControl.ViewModel
             get { return _selectedDocument; }
             set
             {
+                if (_selectedDocument != null)
+                    _selectedDocument.Selected = false;
                 _selectedDocument = value;
+                if (_selectedDocument != null)
+                    _selectedDocument.Selected = true;
                 OnPropertyChanged("SelectedDocument");
             }
         }

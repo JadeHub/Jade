@@ -18,11 +18,25 @@ namespace JadeControls.OpenDocuments
     /// <summary>
     /// Interaction logic for Control.xaml
     /// </summary>
-    public partial class Control : UserControl
+    public partial class OpenDocList : UserControl
     {
-        public Control()
+        public OpenDocList()
         {
             InitializeComponent();
+        }
+
+        private void tb_Loaded_1(object sender, RoutedEventArgs e)
+        {
+            Border rootElement = sender as Border;
+            ContentPresenter cp = rootElement.TemplatedParent as ContentPresenter;
+            cp.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+        }
+
+        private void expander_Loaded_1(object sender, RoutedEventArgs e)
+        {
+            Border rootElement = sender as Border;
+            ContentPresenter cp = rootElement.TemplatedParent as ContentPresenter;
+            cp.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
         }
     }
 }
