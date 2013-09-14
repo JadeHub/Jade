@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JadeData", "JadeData\JadeDa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JadeControls", "JadeControls\JadeControls.csproj", "{FD26D2AA-3528-43E5-8401-71E52CFCA245}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JadeCore", "JadeCore\JadeCore.csproj", "{59CAD747-608C-447A-B2AF-F8FD7ACE39B2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{FD26D2AA-3528-43E5-8401-71E52CFCA245}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD26D2AA-3528-43E5-8401-71E52CFCA245}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD26D2AA-3528-43E5-8401-71E52CFCA245}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59CAD747-608C-447A-B2AF-F8FD7ACE39B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59CAD747-608C-447A-B2AF-F8FD7ACE39B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59CAD747-608C-447A-B2AF-F8FD7ACE39B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59CAD747-608C-447A-B2AF-F8FD7ACE39B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -5,7 +5,7 @@
       >
 
     <MenuItem Header="File">
-        <MenuItem Header="Open" />
+        <MenuItem Header="Open Workspace..." Command="{Binding Path=OpenWorkspaceCommand}"  />
         <MenuItem Header="Close" />
         <MenuItem Header="E_xit" Command="{Binding Path=CloseCommand}" />
     </MenuItem>

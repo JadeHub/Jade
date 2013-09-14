@@ -9,9 +9,14 @@ namespace JadeControls
 {
     static internal class GuiUtils
     {
-        public static bool ConfirmYNAction(string prompt)
+        public static bool ConfirmYNAction(string prompt, string caption = "Confirmation")
         {
-            return MessageBox.Show(prompt, "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;
+            return MessageBox.Show(prompt, caption, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;
+        }
+
+        public static MessageBoxResult PromptYesNoCancelQuestion(string prompt, string caption = "Confirmation")
+        {
+            return MessageBox.Show(prompt, caption, MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
         }
 
         public static void DisplayErrorAlert(string prompt)

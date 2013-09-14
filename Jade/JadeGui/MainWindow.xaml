@@ -27,10 +27,10 @@
             <!--
             <JadeCtrlsEditor:TabCtrl Grid.Column="1" DataContext="{Binding EditorModel}" />
             -->
-            <TextBlock Grid.Column="1" Text="{Binding EditorModel.SelectedDocument.Text}" />
+            <TextBlock Grid.Column="1" Text="{Binding Editor.SelectedDocument.Text}" />
             <GridSplitter Grid.Column="1" Width="4" />
 
-            <JadeCtrlsOpenDocuments:OpenDocList Grid.Column="2" DataContext="{Binding EditorModel}" />
+            <JadeCtrlsOpenDocuments:OpenDocList Grid.Column="2" DataContext="{Binding Editor}" />
             
         </Grid>
     </DockPanel>

@@ -1,10 +1,7 @@
-﻿    using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows;
 
 namespace JadeControls.Workspace.ViewModel
 {
@@ -219,7 +216,7 @@ namespace JadeControls.Workspace.ViewModel
         #endregion
     }
 
-    public class Workspace : WorkspaceFolder
+    public class Workspace : WorkspaceFolder, JadeCore.ViewModels.IWorkspaceViewModel
     {
         #region Data
 
@@ -291,6 +288,23 @@ namespace JadeControls.Workspace.ViewModel
             return false;
         }
 
+        public bool SaveOnExit()
+        {
+            if(Modified)
+            {
+                MessageBoxResult result = GuiUtils.PromptYesNoCancelQuestion("Do you wish to save Workspace " + DisplayName + " before exiting?", "Confirm Save");
+                if (result == System.Windows.MessageBoxResult.Cancel)
+                {
+                    return false;
+                }
+                else if (result == MessageBoxResult.Yes)
+                {
+                    Save(Path);                    
+                }                
+            }
+            return true;
+        }
+    
         #endregion
     }
 }

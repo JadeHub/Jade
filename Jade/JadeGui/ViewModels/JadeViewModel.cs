@@ -9,24 +9,25 @@ using System.Windows;
 
 namespace JadeGui.ViewModels
 {
+    using JadeData;
+
+   
     /// <summary>
     /// Main View Model class. Singleton instance that lives the life of the application
     /// </summary>
-    internal class JadeViewModel// : NotifyPropertyChangedImpl
+    internal class JadeViewModel : JadeControls.NotifyPropertyChanged, JadeCore.ViewModels.IJadeViewModel
     {
         public JadeViewModel()
         {
-            _workspace = JadeData.FakeData.Workspace;
-            _workspaceModel = new JadeControls.Workspace.ViewModel.Workspace(_workspace);
-
-            _editorModel = new JadeControls.EditorControl.ViewModel.EditorControlViewModel();            
+            _editorModel = new JadeControls.EditorControl.ViewModel.EditorControlViewModel();
+            _openWorkspaceCmd = new Commands.OpenWorkspace(this);
         }
 
         #region EditorControl
 
         private JadeControls.EditorControl.ViewModel.EditorControlViewModel _editorModel;
 
-        public JadeControls.EditorControl.ViewModel.EditorControlViewModel EditorModel
+        public JadeCore.ViewModels.IEditorViewModel Editor
         {
             get { return _editorModel; }
         }
@@ -51,16 +52,14 @@ namespace JadeGui.ViewModels
 
         #region Workspace Tree
 
-        private JadeData.Workspace.IWorkspace _workspace;
-        private JadeControls.Workspace.ViewModel.Workspace _workspaceModel;       
-
-        public JadeControls.Workspace.ViewModel.Workspace Workspace
+        private JadeCore.ViewModels.IWorkspaceViewModel _workspaceModel;
+    
+        public JadeCore.ViewModels.IWorkspaceViewModel Workspace
         {
             get { return _workspaceModel; }
+            set { _workspaceModel = value; OnPropertyChanged("Workspace"); }
         }
 
-        public string Test { get { return "test"; } }
-       
         #endregion
 
         #region Commands
@@ -75,18 +74,21 @@ namespace JadeGui.ViewModels
             {
                 if (_closeCommand == null)
                 {
-                    _closeCommand = new RelayCommand(param => this.OnCloseCommand(), param => this.CanCloseCommand);
+                    _closeCommand = new RelayCommand(param => OnRequestClose(), param => this.CanCloseCommand);
                 }
                 return _closeCommand;
             }
         }
 
-        private void OnCloseCommand()
-        {
-            OnRequestClose();
-        }
-
         private bool CanCloseCommand { get { return true; } }
+
+        #endregion
+
+        #region Open Workspace Command
+
+        private Commands.OpenWorkspace _openWorkspaceCmd;
+
+        public ICommand OpenWorkspaceCommand { get { return _openWorkspaceCmd.Command;}}
 
         #endregion
 
@@ -96,20 +98,8 @@ namespace JadeGui.ViewModels
 
         public bool OnExit()
         {
-            if (Workspace.Modified)
-            {
-                MessageBoxResult result = MessageBox.Show("Do you wish to save Workspace " + _workspace.Name + " before exiting?", "Confirm save",
-                                                MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
-
-                if (result == MessageBoxResult.Cancel)
-                {
-                    return false;
-                }
-                else if (result == MessageBoxResult.Yes)
-                {
-                    Workspace.Save(Workspace.Path);
-                }                
-            }
+            if (Workspace != null)
+                return Workspace.SaveOnExit();
             return true;
         }
 

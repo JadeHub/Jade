@@ -39,7 +39,7 @@ namespace JadeControls.Workspace.ViewModel
 
         public void OnOpenCommand()
         {
-            //_parent.RemoveFolder(this);
+            JadeCore.Services.Provider.JadeViewModel.Editor.OpenSourceFile(_data);
         }
 
         private bool CanDoOpenCommand

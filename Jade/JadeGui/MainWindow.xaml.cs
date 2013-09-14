@@ -23,8 +23,6 @@ namespace JadeGui
         public MainWindow()
         {
             InitializeComponent();
-            //this.DataContext = new ViewModels.WorkspaceTree.Workspace(JadeData.FakeData.Workspace);
-           // this.DataContext = ViewModels.JadeViewModel.Instance;
         }
 
         private ViewModels.JadeViewModel ViewModel

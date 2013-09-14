@@ -14,13 +14,6 @@ namespace JadeGui
     /// </summary>
     public partial class App : Application
     {
-        protected override void OnExit(ExitEventArgs e)
-        {
-            
-            //base.OnExit(e);
-        }
-
-
         protected override void OnStartup(StartupEventArgs e)
         {
             EventManager.RegisterClassHandler(typeof(TreeViewItem), TreeViewItem.PreviewMouseRightButtonDownEvent, new RoutedEventHandler(TreeViewItem_PreviewMouseRightButtonDownEvent));
@@ -31,9 +24,9 @@ namespace JadeGui
 
             // Create the ViewModel to which 
             // the main window binds.
-            
-            var viewModel = new ViewModels.JadeViewModel();
 
+            var viewModel = new ViewModels.JadeViewModel();
+            JadeCore.Services.Provider.JadeViewModel = viewModel;
             viewModel.RequestClose += delegate 
             { 
                 window.Close(); 
@@ -44,7 +37,6 @@ namespace JadeGui
             // DataContext, which propagates down 
             // the element tree.
             window.DataContext = viewModel;
-
             window.Show();
         }
 

@@ -7,93 +7,30 @@ using System.Windows.Input;
 
 namespace JadeControls.EditorControl.ViewModel
 {
-    public class DocumentViewModel : ViewModelBase
+    internal class DocumentCollection
     {
-        #region Data
+        private ObservableCollection<DocumentViewModel> _documents;
 
-        private string _name;
-        private string _text;
-        private bool _selected;
-
-        #endregion
-
-        public DocumentViewModel(string name, string text)
+        internal DocumentCollection()
         {
-            _name = name;
-            _text = text;
-            _selected = false;
+            _documents = new ObservableCollection<DocumentViewModel>();
+            _documents.CollectionChanged += OnOpenDocumentsChanged;
         }
 
-        public override string ToString()
+        internal void Add(DocumentViewModel doc)
         {
-            return DisplayName;
+            _documents.Add(doc);
         }
 
-        #region Public Properties
-
-        public override string DisplayName { get { return _name;}}
-        public string Text { get { return _text; } set { _text = value; OnPropertyChanged("Text"); } }
-        public bool Selected { get { return _selected; } set { _selected = value; OnPropertyChanged("Selected"); } }
-
-        #endregion
-
-        #region Close Command
-
-        private RelayCommand _closeCommand;
-
-        public ICommand CloseCommand
+        internal bool Contains(string displayName)
         {
-            get
-            {
-                if (_closeCommand == null)
-                {
-                    _closeCommand = new RelayCommand(param => this.OnCloseCommand(), param => this.CanDoCloseCommand);
-                }
-                return _closeCommand;
-            }
+            foreach (DocumentViewModel d in _documents)
+                if (d.DisplayName == displayName)
+                    return true;
+            return false;
         }
 
-        public void OnCloseCommand()
-        {
-            EventHandler h = RequestClose;
-            if (h != null)
-                h(this, EventArgs.Empty);            
-        }
-
-        private bool CanDoCloseCommand
-        {
-            get { return true; }
-        }
-
-        #endregion
-
-        #region Events
-
-        public event EventHandler RequestClose;
-
-        #endregion
-    }
-
-    public class EditorControlViewModel : JadeControls.NotifyPropertyChanged
-    {
-        #region Data
-
-        private ObservableCollection<DocumentViewModel> _openDocuments;
-        private DocumentViewModel _selectedDocument;
-
-        #endregion
-
-        public EditorControlViewModel()
-        {
-            _openDocuments = new ObservableCollection<DocumentViewModel>();
-            _openDocuments.CollectionChanged += OnOpenDocumentsChanged;
-            _openDocuments.Add(new DocumentViewModel("Test1", "111"));
-            _openDocuments.Add(new DocumentViewModel("Test2", "222"));
-            _selectedDocument = _openDocuments.ElementAt(0);
-            _selectedDocument.Selected = true;
-        }
-
-        void OnOpenDocumentsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void OnOpenDocumentsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (e.NewItems != null && e.NewItems.Count != 0)
                 foreach (DocumentViewModel doc in e.NewItems)
@@ -104,18 +41,52 @@ namespace JadeControls.EditorControl.ViewModel
                     doc.RequestClose -= this.OnDocumentRequestClose;
         }
 
-        void OnDocumentRequestClose(object sender, EventArgs e)
+        private void OnDocumentRequestClose(object sender, EventArgs e)
         {
             DocumentViewModel doc = sender as DocumentViewModel;
             doc.Dispose();
-            this.OpenDocuments.Remove(doc);
+            _documents.Remove(doc);
+        }
+
+        public ObservableCollection<DocumentViewModel> Documents
+        {
+            get
+            {
+                return _documents;
+            }
+        }
+    }
+
+    public class EditorControlViewModel : JadeControls.NotifyPropertyChanged, JadeCore.ViewModels.IEditorViewModel
+    {
+        #region Data
+
+        private DocumentCollection _openDocuments;
+        private DocumentViewModel _selectedDocument;
+
+        #endregion
+
+        public EditorControlViewModel()
+        {
+            _openDocuments = new DocumentCollection();
+            /*_openDocuments.Add(new DocumentViewModel("test1", "11111"));
+            _openDocuments.Add(new DocumentViewModel("test2", "22222"));*/
+         //   _selectedDocument = _openDocuments.Documents.ElementAt(0);
+          //  _selectedDocument.Selected = true;
+        }
+
+        public void OpenSourceFile(JadeData.Project.File file)
+        {
+            DocumentViewModel d = new DocumentViewModel(file.Name, "Test " + file.Name);
+            _openDocuments.Add(d);
+            SelectedDocument = d;
         }
 
         #region Public Properties
 
         public ObservableCollection<DocumentViewModel> OpenDocuments
         {
-            get { return _openDocuments; }
+            get { return _openDocuments.Documents; }
         }
 
         public DocumentViewModel SelectedDocument
@@ -131,7 +102,6 @@ namespace JadeControls.EditorControl.ViewModel
                 OnPropertyChanged("SelectedDocument");
             }
         }
-
         #endregion
     }
 }
