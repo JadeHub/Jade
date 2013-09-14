@@ -20,10 +20,8 @@
         <Project Path="e:\github\Jade\TestData\Test\Project 1\Project 1.jpj" />
       </Projects>
     </Folder>
-    <Folder Name="123">
-      <Folders />
-      <Projects />
-    </Folder>
   </Folders>
-  <Projects />
+  <Projects>
+    <Project Path="e:\github\jade\TestData\Test\SomeProj" />
+  </Projects>
 </Workspace>

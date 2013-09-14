@@ -36,7 +36,7 @@ namespace JadeGui.ViewModels
         #region RequestClose [event]
 
         /// <summary>
-        /// Raised when this workspace should be removed from the UI.
+        /// Raised to request ui to close
         /// </summary>
         public event EventHandler RequestClose;
 

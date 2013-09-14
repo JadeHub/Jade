@@ -51,6 +51,9 @@
     <Compile Include="OpenDocumentsControl\Control.xaml.cs">
       <DependentUpon>Control.xaml</DependentUpon>
     </Compile>
+    <Compile Include="OpenDocumentsControl\OpenDocDetail.xaml.cs">
+      <DependentUpon>OpenDocDetail.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserInput.xaml.cs">
       <DependentUpon>UserInput.xaml</DependentUpon>
     </Compile>
@@ -88,6 +91,10 @@
       <SubType>Designer</SubType>
     </Resource>
     <Page Include="OpenDocumentsControl\Control.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="OpenDocumentsControl\OpenDocDetail.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

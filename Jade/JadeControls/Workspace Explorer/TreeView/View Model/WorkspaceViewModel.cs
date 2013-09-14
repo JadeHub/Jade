@@ -84,11 +84,23 @@ namespace JadeControls.Workspace.ViewModel
 
         private void OnAddProject()
         {
-           /* if (GuiUtils.PromptUserInput("Enter new Project name") == false)
+            string name;
+            if (GuiUtils.PromptUserInput("Enter new Project name", out name) == false)
             {
                 return;
-            }*/
+            }
 
+            if (ContainsChild(name))
+            {
+                GuiUtils.DisplayErrorAlert("Project name '" + name + "'is not unique.");
+                return;
+            }
+            JadeData.Project.IProject project = new JadeData.Project.Project(name, _workspace.PathDirectory + "\\" + name);
+            _data.AddProject(project);
+            AddChildProject(project);
+            _workspace.Modified = true;
+            Expanded = true;
+            OnPropertyChanged("Children");
         }
 
         private bool CanDoAddProject { get { return true; } }

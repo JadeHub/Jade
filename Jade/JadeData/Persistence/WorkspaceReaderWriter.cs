@@ -12,15 +12,6 @@ namespace JadeData.Persistence.Workspace
     {
         private static JadeData.Project.IProject MakeProject(ProjectType xml)
         {
-            /*JadeData.Project.Project proj = new JadeData.Project.Project(xml.Name, xml.Path);
-
-            foreach (ProjectFileType f in xml.Files)
-                proj.AddItem(MakeProjectFile(f));
-
-            foreach (ProjectFolderType f in xml.Folders)
-                proj.AddFolder(MakeProjectFolder(f));
-
-            return proj;*/
             return Persistence.Project.Reader.Read(xml.Path);
         }
 

@@ -44,9 +44,7 @@
       <DependentUpon>Project.xsd</DependentUpon>
     </Compile>
     <Compile Include="Persistence\ProjectReaderWriter.cs" />
-    <Compile Include="Persistence\Reader.cs" />
     <Compile Include="Persistence\WorkspaceReaderWriter.cs" />
-    <Compile Include="Persistence\Writer.cs" />
     <Compile Include="Persistence\Workspace.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

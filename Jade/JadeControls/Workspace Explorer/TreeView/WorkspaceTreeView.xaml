@@ -4,21 +4,16 @@
             xmlns:WorkspaceTreeViewModels="clr-namespace:JadeControls.Workspace.ViewModel">
    
     <TreeView.Resources>
-        <ResourceDictionary>
-          
+        <ResourceDictionary>          
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="JadeTreeViewStyle.xaml" />
-                <ResourceDictionary Source="ScrollBarStyle.xaml" />
-                
+                <ResourceDictionary Source="ScrollBarStyle.xaml" />                
             </ResourceDictionary.MergedDictionaries>
-
             <BitmapImage x:Key="DeleteIconSource" UriSource="pack://application:,,,/Images/Delete.png" />
             <BitmapImage x:Key="FileIconSource" UriSource="pack://application:,,,/Images/File.png" />
             <BitmapImage x:Key="FolderIconSource" UriSource="pack://application:,,,/Images/Folder.png" />
             <BitmapImage x:Key="ProjectIconSource" UriSource="pack://application:,,,/Images/Project.png" />
             <BitmapImage x:Key="WorkspaceIconSource" UriSource="pack://application:,,,/Images/Workspace.png" />
-
-
             <ContextMenu x:Key="WorkspaceContextMenu" x:Shared ="true" >
                 <MenuItem Header="Add Folder..." Command="{Binding Path=AddFolderCommand}" >
                     <MenuItem.Icon>
@@ -86,15 +81,21 @@
                 </MenuItem>
             </ContextMenu>
             <ContextMenu x:Key="FileContextMenu" x:Shared ="true" >
+                <MenuItem Header="Open" Command="{Binding Path=OpenCommand}" >
+                    <MenuItem.Icon>
+                        <Image HorizontalAlignment="Left" Width="16" Height="16" Margin="3,0" Source="{StaticResource FileIconSource}" />
+                    </MenuItem.Icon>
+                </MenuItem>
                 <MenuItem Header="Remove File..." Command="{Binding Path=RemoveCommand}" >
                     <MenuItem.Icon>
                         <Image HorizontalAlignment="Left" Width="16" Height="16" Margin="3,0" Source="{StaticResource DeleteIconSource}" />
                     </MenuItem.Icon>
                 </MenuItem>
             </ContextMenu>
-
+           
             <HierarchicalDataTemplate DataType="{x:Type WorkspaceTreeViewModels:Workspace}" ItemsSource="{Binding Children}">
-                <StackPanel Orientation="Horizontal" ContextMenu="{DynamicResource WorkspaceContextMenu}">
+                <StackPanel Orientation="Horizontal" ContextMenu="{DynamicResource WorkspaceContextMenu}" >
+                    
                     <Image HorizontalAlignment="Left" Width="16" Height="16" Margin="3,0" Source="{StaticResource WorkspaceIconSource}" />
                     <TextBlock Text="{Binding DisplayName}" />                   
                 </StackPanel>
@@ -123,6 +124,7 @@
                     <Image HorizontalAlignment="Left" Width="16" Height="16" Margin="3,0" Source="{StaticResource FileIconSource}" />
                     <TextBlock Text="{Binding DisplayName}" />                    
                 </StackPanel>
+                
             </DataTemplate>        
         </ResourceDictionary>
     </TreeView.Resources>    

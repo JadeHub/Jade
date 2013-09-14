@@ -30,7 +30,7 @@
             <TextBlock Grid.Column="1" Text="{Binding EditorModel.SelectedDocument.Text}" />
             <GridSplitter Grid.Column="1" Width="4" />
 
-            <JadeCtrlsOpenDocuments:Control Grid.Column="2" DataContext="{Binding EditorModel}" />
+            <JadeCtrlsOpenDocuments:OpenDocList Grid.Column="2" DataContext="{Binding EditorModel}" />
             
         </Grid>
     </DockPanel>

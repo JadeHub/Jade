@@ -21,6 +21,34 @@ namespace JadeControls.Workspace.ViewModel
             _data = file;
         }
 
+        #region Open Command
+
+        private RelayCommand _openCommand;
+
+        public ICommand OpenCommand
+        {
+            get
+            {
+                if (_openCommand == null)
+                {
+                    _openCommand = new RelayCommand(param => this.OnOpenCommand(), param => this.CanDoOpenCommand);
+                }
+                return _openCommand;
+            }
+        }
+
+        public void OnOpenCommand()
+        {
+            //_parent.RemoveFolder(this);
+        }
+
+        private bool CanDoOpenCommand
+        {
+            get { return true; }
+        }
+
+        #endregion
+
         #region Remove Command
 
         private ObjectCommand<File> _removeCommand;

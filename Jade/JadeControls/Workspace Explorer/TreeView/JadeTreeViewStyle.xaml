@@ -121,7 +121,7 @@
                             <Setter TargetName="PART_Header" Property="MinHeight" Value="19"/>
                         </MultiTrigger>
                         <Trigger Property="IsSelected" Value="true">
-                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                            <Setter TargetName="Bd" Property="Background" Value="LightBlue"/>
                             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
                         </Trigger>
                         <MultiTrigger>
@@ -139,6 +139,7 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        
     </Style>
 
 </ResourceDictionary>
