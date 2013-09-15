@@ -115,7 +115,7 @@ namespace JadeControls.Workspace.ViewModel
 
         private void OnRemoveFile(File f)
         {
-            if (JadeControls.GuiUtils.ConfirmYNAction("Do you want remove File " + f.DisplayName + "?") == false)
+            if (JadeCore.GuiUtils.ConfirmYNAction("Do you want remove File " + f.DisplayName + "?") == false)
                 return;
 
             if (Children.Contains(f) && _data.RemoveItem(f.DisplayName))
@@ -138,7 +138,7 @@ namespace JadeControls.Workspace.ViewModel
 
         private void OnRemoveFolder(ProjectFolder f)
         {
-            if (JadeControls.GuiUtils.ConfirmYNAction("Do you want remove Project Folder " + f.DisplayName + "?") == false)
+            if (JadeCore.GuiUtils.ConfirmYNAction("Do you want remove Project Folder " + f.DisplayName + "?") == false)
                 return;
 
             if (Children.Contains(f) && _data.RemoveFolder(f.DisplayName))
@@ -224,8 +224,8 @@ namespace JadeControls.Workspace.ViewModel
         public void OnAddFileCommand()
         {
             AddProjectFileViewModel vm = new AddProjectFileViewModel();
-            vm.Location = _workspace.PathDirectory;
-            if (GuiUtils.DisplayModalWindow(new AddProjectFileWindow(), vm))
+            vm.Location = _workspace.Directory;
+            if (JadeCore.GuiUtils.DisplayModalWindow(new AddProjectFileWindow(), vm))
             {
                 if (vm.IsValid)
                 {

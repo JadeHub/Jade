@@ -1,0 +1,67 @@
+﻿<Window x:Class="JadeControls.Workspace.AddProjectFileWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Add New Item" Height="140" Width="400"
+        FocusManager.FocusedElement="{Binding ElementName=edtFileNames}">
+
+    <StackPanel>   
+
+    <Grid Margin="3" Height="Auto">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+       
+        <Label Grid.Column="0" Grid.Row="0" >Location:</Label>
+        <Label Grid.Column="0" Grid.Row="1" >File Names:</Label>
+
+        <Grid Grid.Column="1" Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <!--
+                Location Text Box
+            -->
+            <TextBox 
+                Grid.Column="0" Grid.Row="0" 
+                Margin="3" 
+                Text="{Binding Path=Location, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
+            <!--
+                Browse Folder Button
+            -->
+            <Button 
+                Grid.Column="1" Grid.Row="0" 
+                Margin="3" Width="20">
+                ...
+            </Button>
+        </Grid>
+        <!--
+            File Names Text Box
+        -->
+        <TextBox 
+            Name="edtFileNames"
+            Grid.Column="1" Grid.Row="1" 
+            Margin="3" 
+            Text="{Binding Path=FileNameText, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
+            KeyboardNavigation.TabIndex="0"/>
+
+        <!--
+            Ok Cancel Buttons
+        -->
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <Button Width="75" Margin="3" IsDefault="True" IsEnabled="{Binding Path=IsValid}" Click="Button_Click_OK">OK</Button>
+            <Button Width="75" Margin="3" IsCancel="True">Cancel</Button>
+        </StackPanel>
+        
+    </Grid>
+    </StackPanel>
+</Window>

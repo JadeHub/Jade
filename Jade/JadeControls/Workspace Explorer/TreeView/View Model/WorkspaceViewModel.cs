@@ -82,17 +82,17 @@ namespace JadeControls.Workspace.ViewModel
         private void OnAddProject()
         {
             string name;
-            if (GuiUtils.PromptUserInput("Enter new Project name", out name) == false)
+            if (JadeCore.GuiUtils.PromptUserInput("Enter new Project name", out name) == false)
             {
                 return;
             }
 
             if (ContainsChild(name))
             {
-                GuiUtils.DisplayErrorAlert("Project name '" + name + "'is not unique.");
+                JadeCore.GuiUtils.DisplayErrorAlert("Project name '" + name + "'is not unique.");
                 return;
             }
-            JadeData.Project.IProject project = new JadeData.Project.Project(name, _workspace.PathDirectory + "\\" + name);
+            JadeData.Project.IProject project = new JadeData.Project.Project(name, _workspace.Directory + "\\" + name);
             _data.AddProject(project);
             AddChildProject(project);
             _workspace.Modified = true;
@@ -123,14 +123,14 @@ namespace JadeControls.Workspace.ViewModel
         private void OnAddFolder()
         {
             string name;
-            if (GuiUtils.PromptUserInput("Enter new Folder name", out name) == false || name.Length == 0)
+            if (JadeCore.GuiUtils.PromptUserInput("Enter new Folder name", out name) == false || name.Length == 0)
             {
                 return;
             }
             
             if (ContainsChild(name))
             {
-                GuiUtils.DisplayErrorAlert("Folder name is not unique.");
+                JadeCore.GuiUtils.DisplayErrorAlert("Folder name is not unique.");
                 return;
             }
 
@@ -152,7 +152,7 @@ namespace JadeControls.Workspace.ViewModel
 
         private void OnRemoveFolder(WorkspaceFolder folder)
         {
-            if (JadeControls.GuiUtils.ConfirmYNAction("Do you want remove Folder " + folder.DisplayName + "?") == false)
+            if (JadeCore.GuiUtils.ConfirmYNAction("Do you want remove Folder " + folder.DisplayName + "?") == false)
                 return;
 
             if (Children.Contains(folder) && _data.RemoveFolder(folder.DisplayName))
@@ -175,7 +175,7 @@ namespace JadeControls.Workspace.ViewModel
 
         private void OnRemoveProject(Project project)
         {
-            if (JadeControls.GuiUtils.ConfirmYNAction("Do you want remove Project " + project.DisplayName + "?") == false)
+            if (JadeCore.GuiUtils.ConfirmYNAction("Do you want remove Project " + project.DisplayName + "?") == false)
                 return;
 
             if (Children.Contains(project) && _data.RemoveProject(project.DisplayName))
@@ -245,17 +245,26 @@ namespace JadeControls.Workspace.ViewModel
             }
         }
         
-        public string PathDirectory
+        public string Directory
         {
             get
             {
-                return System.IO.Path.GetDirectoryName(_data.Path);
+                return _data.Directory;
             }
         }
 
         public string Path
         {
-            get { return _data.Path; }
+            get 
+            { 
+                return _data.Path; 
+            }
+            set
+            {
+                _data.Path = value;
+                OnPropertyChanged("Path");
+                OnPropertyChanged("Directory");
+            }
         }
 
         public bool Modified
@@ -273,38 +282,7 @@ namespace JadeControls.Workspace.ViewModel
 
         #region Public methods
 
-        public bool Save(string path)
-        {
-            try
-            {
-                JadeData.Persistence.Workspace.Writer.Write(_data, path);
-                _modified = false;
-                return true;
-            }
-            catch (Exception e)
-            {
-                GuiUtils.DisplayErrorAlert("Error saving workspace. " + e.ToString());
-            }
-            return false;
-        }
-
-        public bool SaveOnExit()
-        {
-            if(Modified)
-            {
-                MessageBoxResult result = GuiUtils.PromptYesNoCancelQuestion("Do you wish to save Workspace " + DisplayName + " before exiting?", "Confirm Save");
-                if (result == System.Windows.MessageBoxResult.Cancel)
-                {
-                    return false;
-                }
-                else if (result == MessageBoxResult.Yes)
-                {
-                    Save(Path);                    
-                }                
-            }
-            return true;
-        }
-    
+        
         #endregion
     }
 }

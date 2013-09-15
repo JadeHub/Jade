@@ -25,7 +25,8 @@ namespace JadeData.Workspace
 
     public interface IWorkspace : IFolder
     {
-        string Path { get; }
+        string Path { get; set; }
+        string Directory { get; }
     }
 
     public class Folder : IFolder
@@ -121,6 +122,7 @@ namespace JadeData.Workspace
         public bool RemoveFolder(string name) { return _project.RemoveFolder(name); }
         public bool HasFolder(string name) { return _project.HasFolder(name); }
         public string Path { get { return _project.Path; } }
+        public string Directory { get { return _project.Directory; } }
 
         #endregion
     }
@@ -130,7 +132,8 @@ namespace JadeData.Workspace
         #region Data
         
         private string _name;
-        private string _path;
+        private string _path; //Full path to workspace file
+        private string _directory; //Dir containing workspace file
         private Folder _rootFolder;
 
         #endregion
@@ -139,12 +142,26 @@ namespace JadeData.Workspace
         {
             _name = name;
             _path = path;
+            if(_path.Length > 0)
+                _directory = System.IO.Path.GetDirectoryName(path);
             _rootFolder = new Folder(_name);
         }
 
         #region IWorkspace Implementation
 
-        public string Path { get { return _path; } }
+        public string Path 
+        { 
+            get 
+            { 
+                return _path; 
+            }
+            set
+            {
+                _path = value;
+            }
+        }
+
+        public string Directory { get { return _directory; } }
 
         #endregion
 

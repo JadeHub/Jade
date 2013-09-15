@@ -17,10 +17,21 @@ namespace JadeGui.ViewModels
     /// </summary>
     internal class JadeViewModel : JadeControls.NotifyPropertyChanged, JadeCore.ViewModels.IJadeViewModel
     {
+        #region Data
+
+        private JadeCore.IWorkspaceManager _workspaceManager;
+
+        #endregion
+
         public JadeViewModel()
         {
+            _workspaceManager = new WorkspaceManager();
+            _workspaceManager.WorkspaceOpened += delegate { OnPropertyChanged("Workspace"); };
+
             _editorModel = new JadeControls.EditorControl.ViewModel.EditorControlViewModel();
+            _newWorkspaceCmd = new Commands.NewWorkspace(this);
             _openWorkspaceCmd = new Commands.OpenWorkspace(this);
+            _saveAsWorkspaceCmd = new Commands.SaveAsWorkspace(this);            
         }
 
         #region EditorControl
@@ -52,12 +63,9 @@ namespace JadeGui.ViewModels
 
         #region Workspace Tree
 
-        private JadeCore.ViewModels.IWorkspaceViewModel _workspaceModel;
-    
         public JadeCore.ViewModels.IWorkspaceViewModel Workspace
         {
-            get { return _workspaceModel; }
-            set { _workspaceModel = value; OnPropertyChanged("Workspace"); }
+            get { return _workspaceManager.ViewModel; }
         }
 
         #endregion
@@ -84,11 +92,27 @@ namespace JadeGui.ViewModels
 
         #endregion
 
+        #region New Workspace Command
+
+        private Commands.NewWorkspace _newWorkspaceCmd;
+
+        public ICommand NewWorkspaceCommand { get { return _newWorkspaceCmd.Command; } }
+
+        #endregion
+
         #region Open Workspace Command
 
         private Commands.OpenWorkspace _openWorkspaceCmd;
 
         public ICommand OpenWorkspaceCommand { get { return _openWorkspaceCmd.Command;}}
+
+        #endregion
+
+        #region SaveAs Workspace Command
+
+        private Commands.SaveAsWorkspace _saveAsWorkspaceCmd;
+
+        public ICommand SaveAsWorkspaceCommand { get { return _saveAsWorkspaceCmd.Command; } }
 
         #endregion
 
@@ -98,11 +122,21 @@ namespace JadeGui.ViewModels
 
         public bool OnExit()
         {
-            if (Workspace != null)
-                return Workspace.SaveOnExit();
+            if (_workspaceManager.RequiresSave)
+            {
+                return _workspaceManager.SaveWorkspace();
+            }
             return true;
         }
-
+       
         #endregion
+
+        public JadeCore.IWorkspaceManager WorkspaceManager
+        {
+            get
+            {
+                return _workspaceManager;
+            }
+        }
     }
 }

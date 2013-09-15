@@ -21,11 +21,11 @@ namespace JadeCore.ViewModels
 
     public interface IWorkspaceViewModel
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns>True if ok to exit application</returns>
-        bool SaveOnExit();
+        string Path { get; set; }
+        string Directory { get; }
+        bool Modified { get; set; }
+
+
     }
 
     public interface IJadeViewModel
@@ -33,12 +33,17 @@ namespace JadeCore.ViewModels
         IWorkspaceViewModel Workspace
         {
             get;
-            set;
+      //      set;
         }
 
         IEditorViewModel Editor
         {
             get;
         }
+
+        IWorkspaceManager WorkspaceManager { get; }
+
+        /*bool SaveWorkspace(string path);
+        bool CloseWorkspace();*/
     }
 }

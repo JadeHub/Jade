@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="Workspace"
+    targetNamespace="http://JadeData.org/Workspace.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://JadeData.org/Workspace.xsd"
+    xmlns:mstns="http://JadeData.org/Workspace.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+  <xs:complexType name="ProjectFileType">
+    <xs:attribute name="Name" type="xs:string" />
+    <xs:attribute name="Path" type="xs:string" />
+  </xs:complexType>
+  
+  <xs:complexType name="ProjectFolderType">
+    <xs:sequence>
+      <xs:element name="Folders">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Folder" type="ProjectFolderType" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Files">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="File" type="ProjectFileType" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="Name" type="xs:string" />
+  </xs:complexType>
+  
+  <xs:complexType name="ProjectType">
+    <xs:sequence>
+      <xs:element name="Folders">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Folder" type="ProjectFolderType" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Files">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="File" type="ProjectFileType" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="Name" type="xs:string" />
+    <xs:attribute name="Path" type="xs:string"/>
+  </xs:complexType>                
+  
+  <xs:complexType name="FolderType">
+    <xs:sequence>
+      <xs:element name="Folders">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Folder" type="FolderType" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Projects">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Project" type="ProjectType" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="Name" type="xs:string" />
+  </xs:complexType>
+
+  <xs:complexType name="WorkspaceType">
+    <xs:sequence>
+      <xs:element name="Folders">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Folder" type="FolderType" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Projects">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Project" type="ProjectType" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="Name" type="xs:string" />
+  </xs:complexType>
+
+  <xs:element name="Workspace" type="WorkspaceType" />
+</xs:schema>

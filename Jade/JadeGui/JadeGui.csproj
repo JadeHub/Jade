@@ -55,7 +55,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="GuiUtils.cs" />
     <Compile Include="JadeTreeViewExtentions.cs" />
     <Compile Include="MainMenu.xaml.cs">
       <DependentUpon>MainMenu.xaml</DependentUpon>
@@ -63,10 +62,13 @@
     <Compile Include="MainToolbar.xaml.cs">
       <DependentUpon>MainToolbar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\Commands\NewWorkspace.cs" />
     <Compile Include="ViewModels\Commands\OpenWorkspace.cs" />
+    <Compile Include="ViewModels\Commands\SaveAsWorkspace.cs" />
     <Compile Include="ViewModels\JadeViewModel.cs" />
     <Compile Include="ViewModels\NotifyPropertyChangedImpl.cs" />
     <Compile Include="ViewModels\RelayCommand.cs" />
+    <Compile Include="WorkspaceManager.cs" />
     <Page Include="MainMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

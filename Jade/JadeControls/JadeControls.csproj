@@ -55,14 +55,10 @@
     <Compile Include="OpenDocumentsControl\OpenDocDetail.xaml.cs">
       <DependentUpon>OpenDocDetail.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserInput.xaml.cs">
-      <DependentUpon>UserInput.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Workspace Explorer\AddProjectFileWindow\AddProjectFileViewModel.cs" />
     <Compile Include="Workspace Explorer\AddProjectFileWindow\AddProjectFileWindow.xaml.cs">
       <DependentUpon>AddProjectFileWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GuiUtils.cs" />
     <Compile Include="ViewModelBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RelayCommand.cs" />
@@ -96,10 +92,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="OpenDocumentsControl\OpenDocDetail.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserInput.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

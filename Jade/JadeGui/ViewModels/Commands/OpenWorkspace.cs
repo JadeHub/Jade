@@ -29,33 +29,28 @@ namespace JadeGui.ViewModels.Commands
 
         private void OnCommand()
         {
-            // Configure open file dialog box
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-            //dlg.FileName = "Document"; // Default file name
-            dlg.DefaultExt = ".jws"; // Default file extension
-            dlg.Filter = "Jade Workspace files (.jws)|*.jws"; // Filter files by extension
-            dlg.CheckFileExists = true;
-            dlg.CheckPathExists = true;
-
-            // Show open file dialog box
-            Nullable<bool> result = dlg.ShowDialog();
-
-            // Process open file dialog box results
-            if (result == true)
+            JadeCore.IWorkspaceManager wrkmgr = _viewModel.WorkspaceManager;
+            if (wrkmgr.WorkspaceOpen && wrkmgr.RequiresSave)
             {
-                // Open document
-                string filename = dlg.FileName;
-
-                try
-                {
-                    JadeData.Workspace.IWorkspace workspace = JadeData.Persistence.Workspace.Reader.Read(filename);
-                    _viewModel.Workspace = new JadeControls.Workspace.ViewModel.Workspace(workspace);
-                }
-                catch (System.Exception )
-                {
-
-                }
+                if (wrkmgr.SaveWorkspace() == false)
+                    return;
+                wrkmgr.CloseWorkspace();
             }
+
+            string path;
+            if (JadeCore.GuiUtils.PromptOpenFile(".jws", "Jade Workspace files (.jws)|*.jws", true, out path) == false)
+            {
+                return;
+            }
+
+            try
+            {
+                wrkmgr.OpenWorkspace(path);
+            }
+            catch (Exception e)
+            {
+                JadeCore.GuiUtils.DisplayErrorAlert("Error opening workspace. " + e.ToString());
+            }            
         }
 
         private bool CanDoCommand { get { return true; } }
