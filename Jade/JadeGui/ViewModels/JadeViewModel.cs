@@ -6,69 +6,12 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using JadeControls;
 using System.Windows;
+using JadeCore.IO;
 
 namespace JadeGui.ViewModels
 {
     using JadeData;
-
-    internal class WorkspaceViewModel : JadeControls.NotifyPropertyChanged, JadeCore.ViewModels.IWorkspaceViewModel
-    {
-        private JadeData.Workspace.IWorkspace _data;
-        private JadeControls.Workspace.ViewModel.WorkspaceTree _tree;
-        private bool _modified;
-
-        public WorkspaceViewModel(JadeData.Workspace.IWorkspace data)
-        {
-            _data = data;
-            _modified = false;
-            _tree = new JadeControls.Workspace.ViewModel.WorkspaceTree(_data);
-        }
-
-        public JadeControls.Workspace.ViewModel.WorkspaceTree Tree
-        {
-            get
-            {
-                return _tree;
-            }
-        }
-
-        public string Name 
-        {
-            get
-            {
-                return _data.Name;
-            }
-        }
-
-        public string Directory
-        {
-            get
-            {
-                return _data.Directory;
-            }
-        }
-
-        public string Path
-        {
-            get
-            {
-                return _data.Path;
-            }
-            set
-            {
-                _data.Path = value;
-                OnPropertyChanged("Path");
-                OnPropertyChanged("Directory");
-            }
-        }
-
-        public bool Modified
-        {
-            get { return _modified || _tree.Modified; }
-            set { _modified = value; }
-        }
-    }
-   
+    
     /// <summary>
     /// Main View Model class. Singleton instance that lives the life of the application
     /// </summary>
@@ -76,29 +19,20 @@ namespace JadeGui.ViewModels
     {
         #region Data
 
-        private JadeCore.IWorkspaceManager _workspaceManager;
-        private Commands.NewWorkspace _newWorkspaceCmd;
-        private Commands.OpenWorkspace _openWorkspaceCmd;
-        private Commands.SaveWorkspace _saveWorkspaceCmd;
-        private Commands.SaveAsWorkspace _saveAsWorkspaceCmd;
-        private Commands.CloseWorkspace _closeWorkspaceCmd;
-
-        private ICommand _exitCommand;
-
+        private JadeCommandAdaptor _commands;
+        private IWorkspaceManager _workspaceManager;
+       
         #endregion
 
         public JadeViewModel()
         {
             _workspaceManager = new WorkspaceManager();
             _workspaceManager.WorkspaceOpened += delegate { OnPropertyChanged("Workspace"); };
-
             _editorModel = new JadeControls.EditorControl.ViewModel.EditorControlViewModel();
-            _newWorkspaceCmd = new Commands.NewWorkspace(this);
-            _openWorkspaceCmd = new Commands.OpenWorkspace(this);
-            _saveWorkspaceCmd = new Commands.SaveWorkspace(this);
-            _saveAsWorkspaceCmd = new Commands.SaveAsWorkspace(this);
-            _closeWorkspaceCmd = new Commands.CloseWorkspace(this);
+            _commands = new JadeCommandAdaptor(this);
         }
+
+        public JadeCommandAdaptor Commands { get { return _commands; } }
 
         #region EditorControl
 
@@ -107,6 +41,18 @@ namespace JadeGui.ViewModels
         public JadeCore.ViewModels.IEditorViewModel Editor
         {
             get { return _editorModel; }
+        }
+
+        #endregion
+
+        #region Workspace
+
+        public IWorkspaceManager WorkspaceManager
+        {
+            get
+            {
+                return _workspaceManager;
+            }
         }
 
         #endregion
@@ -127,8 +73,8 @@ namespace JadeGui.ViewModels
 
         #endregion // RequestClose [event]
 
-        #region Workspace Tree
-
+        #region Workspace
+                
         public JadeCore.ViewModels.IWorkspaceViewModel Workspace
         {
             get { return _workspaceManager.ViewModel; }
@@ -138,29 +84,99 @@ namespace JadeGui.ViewModels
 
         #region Commands
 
-        public ICommand CloseWorkspaceCommand { get { return _closeWorkspaceCmd.Command; } }
-        public ICommand NewWorkspaceCommand { get { return _newWorkspaceCmd.Command; } }
-        public ICommand OpenWorkspaceCommand { get { return _openWorkspaceCmd.Command;}}
-        public ICommand SaveWorkspaceCommand { get { return _saveWorkspaceCmd.Command; } }
-        public ICommand SaveAsWorkspaceCommand { get { return _saveAsWorkspaceCmd.Command; } }
+        #region Exit
 
-        public ICommand ExitCommand
+        public void OnExit()
         {
-            get
+            OnRequestClose();
+        }
+
+        #endregion
+        
+        public void OnNewWorkspace()
+        {
+            string name;
+            if (JadeCore.GuiUtils.PromptUserInput("Workspace name", out name))
             {
-                if (_exitCommand == null)
+                try
                 {
-                    _exitCommand = new RelayCommand(delegate { OnRequestClose(); });
+                    WorkspaceManager.NewWorkspace(name, "");
                 }
-                return _exitCommand;
+                catch (Exception e)
+                {
+                    JadeCore.GuiUtils.DisplayErrorAlert("Error creating new workspace. " + e.ToString());
+                }
             }
+        }
+
+        public void OnCloseWorkspace()
+        {
+            WorkspaceManager.CloseWorkspace();
+        }
+
+        public bool CanCloseWorkspace()
+        {
+            return WorkspaceManager.WorkspaceOpen;
+        }
+
+        public void OnOpenWorkspace()
+        {
+            IFileHandle handle = JadeCore.GuiUtils.PromptOpenFile(".jws", "Jade Workspace files (.jws)|*.jws", true);
+            if (handle == null)
+            {
+                return;
+            }
+
+            try
+            {
+                WorkspaceManager.OpenWorkspace(handle);
+            }
+            catch (Exception e)
+            {
+                JadeCore.GuiUtils.DisplayErrorAlert("Error opening workspace. " + e.ToString());
+            }
+        }
+
+        public bool CanOpenWorkspace()
+        {
+            return true;
+        }
+
+        public void OnSaveWorkspace()
+        {
+            string path = Workspace.Path;
+            if (path == null || path.Length == 0)
+            {
+                if (JadeCore.GuiUtils.PromptSaveFile(".jws", "Jade Workspace files (.jws)|*.jws", "", out path) == false)
+                    return;
+            }
+            WorkspaceManager.SaveWorkspaceAs(path);
+        }
+
+        public bool CanSaveWorkspace()
+        {
+            return WorkspaceManager.RequiresSave;
+        }
+
+        public void OnSaveAsWorkspace()
+        {
+            string path;
+            if (JadeCore.GuiUtils.PromptSaveFile(".jws", "Jade Workspace files (.jws)|*.jws", "", out path))
+            {
+                WorkspaceManager.SaveWorkspaceAs(path);
+            }
+        }
+
+        public bool CanSaveAsWorkspace()
+        {
+            return WorkspaceManager.WorkspaceOpen;
         }
 
         #endregion
 
         #region public Methods
 
-        public bool OnExit()
+        public bool RequestExit()
         {
             if (_workspaceManager.RequiresSave)
             {
@@ -171,12 +187,6 @@ namespace JadeGui.ViewModels
        
         #endregion
 
-        public JadeCore.IWorkspaceManager WorkspaceManager
-        {
-            get
-            {
-                return _workspaceManager;
-            }
-        }
+        
     }
 }

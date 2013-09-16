@@ -23,6 +23,8 @@ namespace JadeControls.Workspace.ViewModel
 
         #endregion
 
+        #region Constructor
+
         protected TreeNodeBase(string displayName, TreeNodeBase parent)
         {
             _displayName = displayName;
@@ -31,7 +33,9 @@ namespace JadeControls.Workspace.ViewModel
             _parent = parent;
             _children = new ObservableCollection<TreeNodeBase>();
         }
-       
+
+        #endregion
+
         #region Public Properties
 
         public TreeNodeBase Parent { get { return _parent; } }
@@ -87,22 +91,20 @@ namespace JadeControls.Workspace.ViewModel
 
         #region Public Methods
 
-        protected virtual void RemoveChildData(TreeNodeBase child) 
+        protected virtual bool RemoveChildData(TreeNodeBase child) 
         {
+            return true;
         }
 
         public bool RemoveChild(TreeNodeBase child)
         {
-            bool ret = Children.Contains(child);
-                
-            
-            if (ret)
+            if (Children.Contains(child) && RemoveChildData(child))
             {
-                RemoveChildData(child);
-                Children.Remove(child);            
+                Children.Remove(child);
                 OnPropertyChanged("Children");
+                return true;
             }
-            return ret;
+            return false;
         }
 
         public bool ContainsChild(string displayName)

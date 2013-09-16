@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace JadeCore
 {
+    /*
     public interface IWorkspaceManager
     {
         event EventHandler WorkspaceOpened;
@@ -58,4 +59,5 @@ namespace JadeCore
 
         ViewModels.IWorkspaceViewModel ViewModel { get; }
     }
+     */
 }

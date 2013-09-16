@@ -23,6 +23,7 @@ namespace JadeGui
         public MainWindow()
         {
             InitializeComponent();
+            //CommandBindings.AddRange(JadeGui.ViewModels.JadeViewModelCommandAdaptor.CommandBindings);
         }
 
         private ViewModels.JadeViewModel ViewModel
@@ -32,7 +33,9 @@ namespace JadeGui
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = !ViewModel.OnExit();
+            e.Cancel = !ViewModel.RequestExit();
         }
+
+        
     }
 }

@@ -1,16 +1,17 @@
 ﻿<Menu x:Class="JadeGui.MainMenu"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      Height="25"
+        xmlns:JadeGuiViewModels="clr-namespace:JadeGui.ViewModels"
+        Height="25"
       >
 
     <MenuItem Header="File">
-        <MenuItem Header="New Workspace..." Command="{Binding Path=NewWorkspaceCommand}"  />
-        <MenuItem Header="Open Workspace..." Command="{Binding Path=OpenWorkspaceCommand}"  />
-        <MenuItem Header="Save Workspace" Command="{Binding Path=SaveWorkspaceCommand}"  />
-        <MenuItem Header="Save Workspace As..." Command="{Binding Path=SaveAsWorkspaceCommand}"  />
-        <MenuItem Header="Close Workspace" Command="{Binding Path=CloseWorkspaceCommand}"  />
-        <MenuItem Header="E_xit" Command="{Binding Path=ExitCommand}" />
+        <MenuItem Header="New Workspace..." Command="JadeGuiViewModels:JadeCommands.NewWorkspace" />
+        <MenuItem Header="Open Workspace..." Command="JadeGuiViewModels:JadeCommands.OpenWorkspace"  />
+        <MenuItem Header="Save Workspace" Command="JadeGuiViewModels:JadeCommands.SaveWorkspace" />
+        <MenuItem Header="Save Workspace As..." Command="JadeGuiViewModels:JadeCommands.SaveAsWorkspace" />
+        <MenuItem Header="Close Workspace" Command="JadeGuiViewModels:JadeCommands.CloseWorkspace"  />
+        <MenuItem Header="E_xit" Command="JadeGuiViewModels:JadeCommands.Exit" />
     </MenuItem>
     <MenuItem Header="Edit">
         <MenuItem Header="Undo" Command="Undo"/>

@@ -2,6 +2,6 @@
 <Workspace xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="JadeTest" xmlns="http://JadeData.org/Workspace.xsd">
   <Folders />
   <Projects>
-    <Project Path=".\JadeData\JadeData.jpj" />
+    <Project Path="C:\Code\GitHub\Jade\TestData\.\JadeData\JadeData.jpj" />
   </Projects>
 </Workspace>

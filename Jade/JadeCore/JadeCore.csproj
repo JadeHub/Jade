@@ -45,6 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GuiUtils.cs" />
+    <Compile Include="IO\FileHandle.cs" />
+    <Compile Include="IO\Path.cs" />
     <Compile Include="IServiceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserInput.xaml.cs">
@@ -52,12 +54,6 @@
     </Compile>
     <Compile Include="ViewModels\IJadeViewModel.cs" />
     <Compile Include="IWorkspaceManager.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\JadeData\JadeData.csproj">
-      <Project>{54f7c814-eb99-47d9-87e3-b57c3d9fb511}</Project>
-      <Name>JadeData</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="UserInput.xaml">

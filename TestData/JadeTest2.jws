@@ -14,11 +14,12 @@
         </Folder>
       </Folders>
       <Projects>
-        <Project Path="C:\Code\GitHub\Jade\TestData\.\Proj3.jpj" />
+        <Project Path="Proj3.jpj" />
       </Projects>
     </Folder>
   </Folders>
   <Projects>
-    <Project Path="C:\Code\GitHub\Jade\TestData\.\JadeData\JadeData.jpj" />
+    <Project Path="JadeData\JadeData.jpj" />
+    <Project Path="asd.jpj" />
   </Projects>
 </Workspace>

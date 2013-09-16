@@ -16,6 +16,8 @@ namespace JadeGui
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+            JadeCore.IO.Path.Test();
+
             EventManager.RegisterClassHandler(typeof(TreeViewItem), TreeViewItem.PreviewMouseRightButtonDownEvent, new RoutedEventHandler(TreeViewItem_PreviewMouseRightButtonDownEvent));
 
             base.OnStartup(e);
@@ -37,6 +39,7 @@ namespace JadeGui
             // DataContext, which propagates down 
             // the element tree.
             window.DataContext = viewModel;
+            viewModel.Commands.Bind(window.CommandBindings);
             window.Show();
         }
 

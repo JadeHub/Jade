@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace JadeData.Project
 {
     public enum ItemType
@@ -22,20 +23,18 @@ namespace JadeData.Project
     {
         #region Data 
 
-        private string _name;
-        private string _path;
-
+        private JadeCore.IO.IFileHandle _file;
+        
         #endregion
 
-        public File(string name, string path)
+        public File(JadeCore.IO.IFileHandle file)
         {
-            _name = name;
-            _path = path;
+            _file = file;
         }
 
-        public string Name { get { return _name; } }
+        public string Name { get { return _file.Name; } }
         public ItemType Type { get { return ItemType.File; } }
-        public string Path { get { return _path; } }
+        public string Path { get { return _file.Path; } }
     }
 
     public interface IFolder
@@ -146,18 +145,16 @@ namespace JadeData.Project
         #region Data
 
         private string _name;
-        private string _path; //Full path to workspace file
-        private string _directory; //Dir containing workspace file
+        private JadeCore.IO.IFileHandle _file;
         private Dictionary<string, IItem> _items;
         private List<IFolder> _folders;
 
         #endregion
 
-        public Project(string name, string path)
+        public Project(string name, JadeCore.IO.IFileHandle file)
         {
-            _name = name;
-            _path = path;
-            _directory = System.IO.Path.GetDirectoryName(path);
+            _file = file;
+            _name = name;            
             _items = new Dictionary<string, IItem>();
             _folders = new List<IFolder>();
         }
@@ -168,8 +165,8 @@ namespace JadeData.Project
         public IList<IItem> Items { get { return _items.Values.ToList(); } }
         public IList<IFolder> Folders { get { return _folders; } }
 
-        public string Path { get { return _path; } }
-        public string Directory { get { return _directory; } }
+        public string Path { get { return _file.Path; } }
+        public string Directory { get { return _file.Directory; } }
 
         public void AddItem(IItem item)
         {

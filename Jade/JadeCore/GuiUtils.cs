@@ -65,22 +65,20 @@ namespace JadeCore
             return false;
         }
 
-        public static bool PromptOpenFile(string ext, string filter, bool mustExist, out string result)
+        public static IO.IFileHandle PromptOpenFile(string ext, string filter, bool mustExist)
         {
             // Configure open file dialog box
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-            dlg.DefaultExt = ".jws"; // Default file extension
-            dlg.Filter = "Jade Workspace files (.jws)|*.jws"; // Filter files by extension
+            dlg.DefaultExt = ext; // Default file extension
+            dlg.Filter = filter;
             dlg.CheckFileExists = mustExist;
             dlg.CheckPathExists = mustExist;
 
             if(dlg.ShowDialog() == true)
             {
-                result = dlg.FileName;
-                return true;
+                return new IO.FileHandle(dlg.FileName);
             }
-            result = "";
-            return false;
+            return null;
         }
     }
 }

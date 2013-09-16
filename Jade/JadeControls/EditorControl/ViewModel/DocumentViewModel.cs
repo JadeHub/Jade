@@ -21,7 +21,7 @@ namespace JadeControls.EditorControl.ViewModel
             _name = name;
             _path = path;
             _selected = false;
-            
+          //  _avDoc = new ICSharpCode.AvalonEdit.Document.TextDocument();
         }
 
         public override string ToString()

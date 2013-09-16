@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Xml;
 using System.Linq;
+using JadeCore.IO;
 
 namespace JadeData.Persistence.Project
 {
@@ -17,7 +18,7 @@ namespace JadeData.Persistence.Project
             {
                 path = System.IO.Path.Combine(projectDir, path);
             }
-            return new JadeData.Project.File(xml.Name, path);
+            return new JadeData.Project.File(JadeCore.IO.FileHandleFactory.Create(path));
         }
 
         private static JadeData.Project.IFolder MakeFolder(string projectDir, FolderType xml)
@@ -47,7 +48,8 @@ namespace JadeData.Persistence.Project
                 tr.Close();
                 tr.Dispose();
             }
-            JadeData.Project.IProject result = new JadeData.Project.Project(xml.Name, path);
+
+            JadeData.Project.IProject result = new JadeData.Project.Project(xml.Name, FileHandleFactory.Create(path));
 
             foreach (FolderType f in xml.Folders)
             {
