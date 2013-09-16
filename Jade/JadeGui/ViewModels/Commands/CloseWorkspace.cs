@@ -5,7 +5,7 @@ namespace JadeGui.ViewModels.Commands
 {
     using JadeControls;
 
-    internal class SaveAsWorkspace
+    internal class CloseWorkspace
     {
         private JadeCore.ViewModels.IJadeViewModel _viewModel;
         private RelayCommand _cmd;
@@ -22,21 +22,22 @@ namespace JadeGui.ViewModels.Commands
             }
         }
 
-        public SaveAsWorkspace(JadeCore.ViewModels.IJadeViewModel vm)
+        public CloseWorkspace(JadeCore.ViewModels.IJadeViewModel vm)
         {
             _viewModel = vm;
         }
 
         private void OnCommand()
         {
-            string path;
-
-            if (JadeCore.GuiUtils.PromptSaveFile(".jws", "Jade Workspace files (.jws)|*.jws", "", out path))
-            {
-                _viewModel.WorkspaceManager.SaveWorkspaceAs(path);
-            }
+            _viewModel.WorkspaceManager.CloseWorkspace();            
         }
 
-        private bool CanDoCommand { get { return _viewModel.Workspace != null; } }
+        private bool CanDoCommand
+        {
+            get
+            {
+                return _viewModel.WorkspaceManager.WorkspaceOpen;
+            }
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace JadeData.Persistence.Project
             {
                 path = System.IO.Path.Combine(projectDir, path);
             }
-            return new JadeData.Project.File(xml.Name, xml.Path);
+            return new JadeData.Project.File(xml.Name, path);
         }
 
         private static JadeData.Project.IFolder MakeFolder(string projectDir, FolderType xml)
@@ -63,15 +63,22 @@ namespace JadeData.Persistence.Project
 
     public static class Writer
     {
-        static private FileType MakeFile(JadeData.Project.File file)
+        static private FileType MakeFile(JadeData.Project.File file, string projectDir)
         {
+            /*string absPath = file.Path;
+
+            if (System.IO.Path.IsPathRooted(absPath) == false)
+            {
+                absPath = System.IO.Path.Combine(projectDir, absPath);
+            }*/
+
             FileType result = new FileType();
             result.Name = file.Name;
             result.Path = file.Path;
             return result;
         }
 
-        static private FolderType MakeFolder(JadeData.Project.IFolder folder)
+        static private FolderType MakeFolder(JadeData.Project.IFolder folder, string projectDir)
         {
             FolderType result = new FolderType();
 
@@ -82,35 +89,36 @@ namespace JadeData.Persistence.Project
             int idx = 0;
             foreach (JadeData.Project.File f in folder.Items.OfType<JadeData.Project.File>())
             {
-                result.Files[idx] = MakeFile(f);
+                result.Files[idx] = MakeFile(f, projectDir);
                 idx++;
             }
             idx = 0;
             foreach (JadeData.Project.IFolder f in folder.Folders)
             {
-                result.Folders[idx] = MakeFolder(f);
+                result.Folders[idx] = MakeFolder(f, projectDir);
             }
             return result;
         }
         static public void Write(JadeData.Project.IProject project, string path)
         {
+            string projectDir = System.IO.Path.GetDirectoryName(path);
+
             ProjectType result = new ProjectType();
 
             result.Name = project.Name;
-
             result.Files = new FileType[project.Items.OfType<JadeData.Project.File>().Count()];
             result.Folders = new FolderType[project.Folders.Count];
 
             int idx = 0;
             foreach (JadeData.Project.File f in project.Items.OfType<JadeData.Project.File>())
             {
-                result.Files[idx] = MakeFile(f);
+                result.Files[idx] = MakeFile(f, projectDir);
                 idx++;
             }
             idx = 0;
             foreach (JadeData.Project.IFolder f in project.Folders)
             {
-                result.Folders[idx] = MakeFolder(f);
+                result.Folders[idx] = MakeFolder(f, projectDir);
             }
             
             System.Xml.XmlDocument doc = new XmlDocument();

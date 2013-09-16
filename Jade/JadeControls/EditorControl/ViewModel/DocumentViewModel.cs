@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Input;
+using System.IO;
 
 namespace JadeControls.EditorControl.ViewModel
 {
@@ -9,16 +10,18 @@ namespace JadeControls.EditorControl.ViewModel
         #region Data
 
         private string _name;
-        private string _text;
+        private string _path;
         private bool _selected;
+        private ICSharpCode.AvalonEdit.Document.TextDocument _avDoc;
 
         #endregion
 
-        public DocumentViewModel(string name, string text)
+        public DocumentViewModel(string name, string path)
         {
             _name = name;
-            _text = text;
+            _path = path;
             _selected = false;
+            
         }
 
         public override string ToString()
@@ -29,8 +32,36 @@ namespace JadeControls.EditorControl.ViewModel
         #region Public Properties
 
         public override string DisplayName { get { return _name; } }
-        public string Text { get { return _text; } set { _text = value; OnPropertyChanged("Text"); } }
-        public bool Selected { get { return _selected; } set { _selected = value; OnPropertyChanged("Selected"); } }
+
+        //public string Text { get { return _text; } set { _text = value; OnPropertyChanged("Text"); } }
+
+        public bool Selected 
+        { 
+            get 
+            { 
+                return _selected; 
+            } 
+            set 
+            { 
+                _selected = value; 
+                OnPropertyChanged("Selected");
+                if (_selected && _avDoc == null)
+                {
+                    using (FileStream fs = new FileStream(_path, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    {
+                        using (StreamReader reader = ICSharpCode.AvalonEdit.Utils.FileReader.OpenStream(fs, System.Text.Encoding.UTF8))
+                        {
+                            _avDoc = new ICSharpCode.AvalonEdit.Document.TextDocument(reader.ReadToEnd());
+                        }
+                    }
+                }
+            } 
+        }
+
+        public ICSharpCode.AvalonEdit.Document.TextDocument Document
+        {
+            get { return _avDoc; }
+        }
 
         #endregion
 

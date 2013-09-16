@@ -47,7 +47,6 @@ namespace JadeGui
             {
                 item.IsSelected = true;
                 e.Handled = true;
-              //  System.Diagnostics.Debug.WriteLine(((ViewModels.WorkspaceTree.TreeNodeBase)item.Header).Name);
             }
         }
 

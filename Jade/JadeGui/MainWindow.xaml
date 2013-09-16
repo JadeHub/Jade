@@ -20,14 +20,17 @@
             </Grid.ColumnDefinitions>
             <DockPanel Grid.Column="0" Margin="4 0 0 0">
                 
-                <JadeCtrlsWorkspace:WorkspaceCtrl DataContext="{Binding Workspace}"/>
+                <JadeCtrlsWorkspace:WorkspaceCtrl DataContext="{Binding Workspace.Tree}"/>
                 
             </DockPanel>
             <GridSplitter Grid.Column="0" Width="4" />
             <!--
             <JadeCtrlsEditor:TabCtrl Grid.Column="1" DataContext="{Binding EditorModel}" />
-            -->
+            
             <TextBlock Grid.Column="1" Text="{Binding Editor.SelectedDocument.Text}" />
+-->
+            <JadeCtrlsEditor:EditorControl Grid.Column="1" DataContext="{Binding Editor}" />
+            
             <GridSplitter Grid.Column="1" Width="4" />
 
             <JadeCtrlsOpenDocuments:OpenDocList Grid.Column="2" DataContext="{Binding Editor}" />

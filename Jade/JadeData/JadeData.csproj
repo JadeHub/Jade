@@ -48,7 +48,7 @@
     <Compile Include="Persistence\Workspace.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Workpace.cs" />
+    <Compile Include="Workspace.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Persistence\Project.xsd">

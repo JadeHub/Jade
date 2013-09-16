@@ -41,14 +41,57 @@ namespace JadeGui
             }
         }
 
-        public void CloseWorkspace()
+        public bool CloseWorkspace()
         {
-            if (RequiresSave)
+            if (WorkspaceOpen == false)
+                return true;
+
+            if (RequiresSave && SaveOrDiscardWorkspace() == false)
             {
-                throw new Exception("Attempt to close modified Workspace.");
+                return false;
             }
             _workspace = null;
             _viewModel = null;
+            OnWorkspaceOpened();
+            return true;
+        }
+
+        /// <summary>
+        /// Prompt the use user to either Save, discard or cancel.
+        /// </summary>
+        /// <returns>true if saved or discarded</returns>
+        public bool SaveOrDiscardWorkspace()
+        {
+            if (WorkspaceOpen == false)
+            {
+                throw new Exception("Attempt to save null workspace.");
+            }
+
+            if (_viewModel.Modified)
+            {
+                MessageBoxResult result = JadeCore.GuiUtils.PromptYesNoCancelQuestion("Workspace has been modified, do you wish to save?");
+                if (result == MessageBoxResult.No)
+                {
+                    //abandon changes
+                    _viewModel.Modified = false;
+                    return true;
+                }
+                if (result == MessageBoxResult.Cancel)
+                {
+                    return false;
+                }
+
+                string path = _workspace.Path;
+                if (path == null || path.Length == 0)
+                {
+                    if (JadeCore.GuiUtils.PromptSaveFile(".jws", "Jade Workspace files (.jws)|*.jws", "", out path) == false)
+                    {
+                        return false;
+                    }
+                }
+                return WriteWorkspace(path);
+            }
+            return true;
         }
 
         /// <summary>
@@ -64,18 +107,6 @@ namespace JadeGui
 
             if (_viewModel.Modified)
             {
-                MessageBoxResult result = JadeCore.GuiUtils.PromptYesNoCancelQuestion("Workspace has been modified, do you wish to save?");
-                if(result == MessageBoxResult.No)
-                {
-                    //abandon changes
-                    _viewModel.Modified = false;
-                    return true;                    
-                }
-                if(result == MessageBoxResult.Cancel)
-                {
-                    return false;
-                }
-
                 string path = _workspace.Path;
                 if (path == null || path.Length == 0)
                 {
@@ -84,7 +115,7 @@ namespace JadeGui
                         return false;
                     }                    
                 }
-                return SaveWorkspace(path);
+                return WriteWorkspace(path);
             }
             return true;
         }
@@ -99,10 +130,10 @@ namespace JadeGui
             {
                 throw new Exception("Attempt to save null workspace.");
             }
-            return SaveWorkspace(path);           
+            return WriteWorkspace(path);           
         }
 
-        private bool SaveWorkspace(string path)
+        private bool WriteWorkspace(string path)
         {
             try
             {
@@ -120,16 +151,15 @@ namespace JadeGui
 
         public void NewWorkspace(string name, string path)
         {
-            if (RequiresSave && SaveWorkspace() == false)
+            if (CloseWorkspace() == false)
             {
                 return;
             }
 
             try
             {
-                CloseWorkspace();
                 _workspace = new JadeData.Workspace.Workspace(name, path);
-                _viewModel = new JadeControls.Workspace.ViewModel.Workspace(_workspace);
+                _viewModel = new ViewModels.WorkspaceViewModel(_workspace);
                 _viewModel.Modified = true;
                 OnWorkspaceOpened();
             }
@@ -143,19 +173,18 @@ namespace JadeGui
 
         public void OpenWorkspace(string path)
         {
-            if (RequiresSave && SaveWorkspace() == false)
+            if (CloseWorkspace() == false)
             {
                 return;
             }
-            
+
             try
             {
-                CloseWorkspace();
                 _workspace = JadeData.Persistence.Workspace.Reader.Read(path);
-                _viewModel = new JadeControls.Workspace.ViewModel.Workspace(_workspace);
+                _viewModel = new ViewModels.WorkspaceViewModel(_workspace);
                 OnWorkspaceOpened();
             }
-            catch(Exception)
+            catch(Exception e)
             {
                 _workspace = null;
                 _viewModel = null;

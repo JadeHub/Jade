@@ -21,11 +21,10 @@ namespace JadeCore.ViewModels
 
     public interface IWorkspaceViewModel
     {
+        string Name { get; }
         string Path { get; set; }
         string Directory { get; }
         bool Modified { get; set; }
-
-
     }
 
     public interface IJadeViewModel
@@ -42,8 +41,5 @@ namespace JadeCore.ViewModels
         }
 
         IWorkspaceManager WorkspaceManager { get; }
-
-        /*bool SaveWorkspace(string path);
-        bool CloseWorkspace();*/
     }
 }

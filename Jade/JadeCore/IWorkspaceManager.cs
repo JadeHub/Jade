@@ -23,7 +23,7 @@ namespace JadeCore
         /// <summary>
         /// Close the open workspace. throws if RequiresSave is true
         /// </summary>
-        void CloseWorkspace();
+        bool CloseWorkspace();
 
         /// <summary>
         /// Create a new workspace. Throws if WorkspaceOpen is true
@@ -43,6 +43,12 @@ namespace JadeCore
         /// </summary>
         /// <returns>true if saved</returns>
         bool SaveWorkspace();
+
+        /// <summary>
+        /// Prompt the use user to either Save, discard or cancel.
+        /// </summary>
+        /// <returns>true if saved or discarded</returns>
+        bool SaveOrDiscardWorkspace();
 
         /// <summary>
         /// Save the current workspace to the specified path.

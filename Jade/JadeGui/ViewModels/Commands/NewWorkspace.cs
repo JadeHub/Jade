@@ -29,46 +29,24 @@ namespace JadeGui.ViewModels.Commands
 
         private void OnCommand()
         {
-            JadeCore.IWorkspaceManager wrkmgr = _viewModel.WorkspaceManager;
-            if (wrkmgr.WorkspaceOpen && wrkmgr.RequiresSave)
-            {
-                if (wrkmgr.SaveWorkspace() == false)
-                    return;
-            }
-
             string name;
 
             if (JadeCore.GuiUtils.PromptUserInput("Workspace name", out name))
             {
                 try
                 {
-                    wrkmgr.NewWorkspace(name, "");
+                    _viewModel.WorkspaceManager.NewWorkspace(name, "");
                 }
                 catch (Exception e)
                 {
                     JadeCore.GuiUtils.DisplayErrorAlert("Error creating new workspace. " + e.ToString());
                 }
             }
-/*
-            if (_viewModel.CloseWorkspace() == false)
-            {
-                return;
-            }
-
-            if (JadeCore.GuiUtils.PromptUserInput("Workspace name", out name))
-            {
-                JadeData.Workspace.IWorkspace workspace = new JadeData.Workspace.Workspace(name, "");
-                _viewModel.Workspace = new JadeControls.Workspace.ViewModel.Workspace(workspace);
-            }*/
         }
 
         private bool CanDoCommand 
         { 
-            get 
-            { 
-                
-                return true; 
-            } 
+            get { return true; } 
         }
     }
 }

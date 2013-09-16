@@ -69,15 +69,15 @@ namespace JadeControls.EditorControl.ViewModel
         public EditorControlViewModel()
         {
             _openDocuments = new DocumentCollection();
-            /*_openDocuments.Add(new DocumentViewModel("test1", "11111"));
-            _openDocuments.Add(new DocumentViewModel("test2", "22222"));*/
-         //   _selectedDocument = _openDocuments.Documents.ElementAt(0);
-          //  _selectedDocument.Selected = true;
+          /*  _openDocuments.Add(new DocumentViewModel("test1", "11111"));
+            _openDocuments.Add(new DocumentViewModel("test2", "22222"));
+            _selectedDocument = _openDocuments.Documents.ElementAt(0);
+            _selectedDocument.Selected = true;*/
         }
 
         public void OpenSourceFile(JadeData.Project.File file)
         {
-            DocumentViewModel d = new DocumentViewModel(file.Name, "Test " + file.Name);
+            DocumentViewModel d = new DocumentViewModel(file.Name, file.Path);
             _openDocuments.Add(d);
             SelectedDocument = d;
         }

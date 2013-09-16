@@ -9,27 +9,19 @@ namespace JadeControls.Workspace.ViewModel
     {
         #region Data
 
-        private Workspace _workspace;
         private JadeData.Workspace.IFolder _data;
-   
+
         #endregion
 
         #region Constructor
 
-        public WorkspaceFolder(TreeNodeBase parent, JadeData.Workspace.IFolder folder)
-            :   base(folder.Name, parent)
+        public WorkspaceFolder(TreeNodeBase parent, JadeData.Workspace.IFolder data)
+            :   base(data.Name, parent)
         {
-            _data = folder;
-        }
-
-        protected void Initialise(Workspace workspace)
-        {
-            _workspace = workspace;
-
+            _data = data;        
             foreach (JadeData.Workspace.IFolder f in _data.Folders)
             {
                 WorkspaceFolder folder = new WorkspaceFolder(this, f);
-                folder.Initialise(_workspace);
                 AddChildFolder(f);
             }
 
@@ -38,185 +30,56 @@ namespace JadeControls.Workspace.ViewModel
                 if (item is JadeData.Project.IProject)
                 {
                     AddChildProject(item as JadeData.Project.IProject);
-                    //AddChildProject(new Project(_workspace, this, item as JadeData.Project.IProject));
                 }
             }
         }
-
-        #endregion
-
-        #region Remove Command
-
-        private ObjectCommand<WorkspaceFolder> _removeCommand;
-
-        public ObjectCommand<WorkspaceFolder> RemoveCommand
-        {
-            get
-            {
-                if (_removeCommand == null)
-                {
-                    _removeCommand = new ObjectCommand<WorkspaceFolder>(this);
-                }
-                return _removeCommand;
-            }
-        }
-
-        #endregion
-
-        #region Add Project Command
-
-        private RelayCommand _addProjectCommand;
-
-        public RelayCommand AddProjectCommand
-        {
-            get
-            {
-                if (_addProjectCommand == null)
-                {
-                    _addProjectCommand = new RelayCommand(param => OnAddProject(), param => CanDoAddProject);
-                }
-                return _addProjectCommand;
-            }
-        }
-
-        private void OnAddProject()
-        {
-            string name;
-            if (JadeCore.GuiUtils.PromptUserInput("Enter new Project name", out name) == false)
-            {
-                return;
-            }
-
-            if (ContainsChild(name))
-            {
-                JadeCore.GuiUtils.DisplayErrorAlert("Project name '" + name + "'is not unique.");
-                return;
-            }
-            JadeData.Project.IProject project = new JadeData.Project.Project(name, _workspace.Directory + "\\" + name);
-            _data.AddProject(project);
-            AddChildProject(project);
-            _workspace.Modified = true;
-            Expanded = true;
-            OnPropertyChanged("Children");
-        }
-
-        private bool CanDoAddProject { get { return true; } }
-
-        #endregion
-
-        #region Add Folder Command
-
-        private RelayCommand _addFolderCommand;
-
-        public RelayCommand AddFolderCommand
-        {
-            get
-            {
-                if (_addFolderCommand == null)
-                {
-                    _addFolderCommand = new RelayCommand(param => OnAddFolder(), param => CanDoAddFolder);
-                }
-                return _addFolderCommand;
-            }
-        }
-
-        private void OnAddFolder()
-        {
-            string name;
-            if (JadeCore.GuiUtils.PromptUserInput("Enter new Folder name", out name) == false || name.Length == 0)
-            {
-                return;
-            }
-            
-            if (ContainsChild(name))
-            {
-                JadeCore.GuiUtils.DisplayErrorAlert("Folder name is not unique.");
-                return;
-            }
-
-            JadeData.Workspace.IFolder data = new JadeData.Workspace.Folder(name);            
-            _data.AddFolder(data);
-            AddChildFolder(data);
-            _workspace.Modified = true;
-            Expanded = true;
-            OnPropertyChanged("Children");
-        }
-
-        private bool CanDoAddFolder { get { return true; } }
-
-        #endregion
-
-        #region Child Commands
-
-        #region Remove Folder
-
-        private void OnRemoveFolder(WorkspaceFolder folder)
-        {
-            if (JadeCore.GuiUtils.ConfirmYNAction("Do you want remove Folder " + folder.DisplayName + "?") == false)
-                return;
-
-            if (Children.Contains(folder) && _data.RemoveFolder(folder.DisplayName))
-            {
-                Children.Remove(folder);
-                _workspace.Modified = true;
-                OnPropertyChanged("Children");
-                return;
-            }
-        }
-
-        private bool CanDoRemoveFolder(WorkspaceFolder folder)
-        {
-            return true;
-        }
-
-        #endregion
-
-        #region Remove Project
-
-        private void OnRemoveProject(Project project)
-        {
-            if (JadeCore.GuiUtils.ConfirmYNAction("Do you want remove Project " + project.DisplayName + "?") == false)
-                return;
-
-            if (Children.Contains(project) && _data.RemoveProject(project.DisplayName))
-            {
-                Children.Remove(project);
-                _workspace.Modified = true;
-                OnPropertyChanged("Children");
-                return;
-            }
-        }
-
-        private bool CanDoRemoveProject(Project project)
-        {
-            return true;
-        }
-
-        #endregion
-
+        
         #endregion
 
         #region Private Methods
 
+        protected override void RemoveChildData(TreeNodeBase child)
+        {
+            if (child is WorkspaceFolder)
+            {
+                _data.RemoveFolder(child.DisplayName);
+            }
+            else if (child is ProjectFolder)
+            {
+                _data.RemoveProject(child.DisplayName);
+            }
+        }
+
+        public void AddNewChildFolder(JadeData.Workspace.IFolder f)
+        {
+            _data.AddFolder(f);
+            AddChildFolder(f);
+            OnPropertyChanged("Children");
+        }
+
+        public void AddNewProject(JadeData.Project.IProject p)
+        {
+            _data.AddProject(p);
+            AddChildProject(p);
+            OnPropertyChanged("Children");
+        }
+
         private void AddChildFolder(JadeData.Workspace.IFolder f)
         {
             WorkspaceFolder folder = new WorkspaceFolder(this, f);
-            folder.Initialise(_workspace);
-            folder.RemoveCommand.Attach(param => OnRemoveFolder(param), param => CanDoRemoveFolder(param));
-            Children.Add(folder);
+            Children.Add(folder);            
         }
 
         private void AddChildProject(JadeData.Project.IProject p)
         {
-            Project project = new Project(_workspace, this, p);
-            project.RemoveCommand.Attach(param => OnRemoveProject(param), param => CanDoRemoveProject(param));
+            Project project = new Project(this, p);
             Children.Add(project);
         }
 
         #endregion
     }
-
-    public class Workspace : WorkspaceFolder, JadeCore.ViewModels.IWorkspaceViewModel
+    
+    public class WorkspaceTree : WorkspaceFolder
     {
         #region Data
 
@@ -225,45 +88,21 @@ namespace JadeControls.Workspace.ViewModel
 
         #endregion
 
-        public Workspace(JadeData.Workspace.IWorkspace workspace)
+        public WorkspaceTree(JadeData.Workspace.IWorkspace workspace)
             : base(null, workspace)
         {
-            this.Initialise(this);
-
             _data = workspace;
             _modified = false;
             this.Expanded = true;
         }
-
+        
         #region Public Properties
         
-        public IEnumerable<JadeControls.Workspace.ViewModel.Workspace> WorkspaceTree
+        public IEnumerable<JadeControls.Workspace.ViewModel.WorkspaceTree> TreeRoot
         {
             get
             {
                 yield return this;
-            }
-        }
-        
-        public string Directory
-        {
-            get
-            {
-                return _data.Directory;
-            }
-        }
-
-        public string Path
-        {
-            get 
-            { 
-                return _data.Path; 
-            }
-            set
-            {
-                _data.Path = value;
-                OnPropertyChanged("Path");
-                OnPropertyChanged("Directory");
             }
         }
 
@@ -273,16 +112,209 @@ namespace JadeControls.Workspace.ViewModel
             set { _modified = value; }
         }
 
-        public string LongName
+        #endregion
+        
+        #region Private Methods
+
+        private TreeNodeBase GetSelectedAs(System.Type type)
         {
-            get { return _data.Name + " Workspace"; }
+            TreeNodeBase ret = null;
+            ret = base.FindSelected();
+            if (ret.GetType() == type)
+                return ret;
+            return ret;            
         }
 
         #endregion
 
-        #region Public methods
+        #region Command Handlers
 
-        
+        #region Open Document
+
+        public void OnOpenDocument()
+        {
+            File f = GetSelectedAs(typeof(File)) as File;
+            if (f != null)
+            {
+                JadeCore.Services.Provider.JadeViewModel.Editor.OpenSourceFile(f.Data);
+            }
+        }
+
+        public bool CanOpenDocument()
+        {
+            return GetSelectedAs(typeof(File)) != null;
+        }
+
+        #endregion
+
+        #region Add Folder
+
+        public void OnAddFolder()
+        {
+            TreeNodeBase sel = FindSelected();
+            if (sel == null)
+                return;
+
+            string name;
+            if (JadeCore.GuiUtils.PromptUserInput("Enter new Folder name", out name) == false || name.Length == 0)
+            {
+                return;
+            }
+
+            if (sel.ContainsChild(name))
+            {
+                JadeCore.GuiUtils.DisplayErrorAlert("Folder name is not unique.");
+                return;
+            }
+
+            if (sel is WorkspaceFolder)
+            {
+                WorkspaceFolder parentVm = sel as WorkspaceFolder;
+                JadeData.Workspace.IFolder newFolderData = new JadeData.Workspace.Folder(name);                
+                parentVm.AddNewChildFolder(newFolderData);
+                
+            }
+            else if (sel is ProjectFolder)
+            {
+                   ProjectFolder paremtVm = sel as ProjectFolder;
+                   JadeData.Project.IFolder newFolderData = new JadeData.Project.Folder(name);
+                   paremtVm.AddNewChildFolder(newFolderData);
+            }
+            else
+            {
+                return;
+            }
+            sel.Expanded = true;
+            _modified = true;
+        }        
+
+        public bool CanAddFolder()
+        {
+            return GetSelectedAs(typeof(ProjectFolder)) != null && GetSelectedAs(typeof(WorkspaceFolder)) != null;
+        }
+
+        #endregion
+
+        #region Add Project
+
+        public void OnAddProject()
+        {
+            WorkspaceFolder vm = GetSelectedAs(typeof(WorkspaceFolder)) as WorkspaceFolder;
+            if (vm == null)
+                return;
+
+            string name;
+            if (JadeCore.GuiUtils.PromptUserInput("Enter new Project name", out name) == false)
+            {
+                return;
+            }
+
+            if (vm.ContainsChild(name))
+            {
+                JadeCore.GuiUtils.DisplayErrorAlert("Project name '" + name + "'is not unique.");
+                return;
+            }
+            JadeData.Project.IProject project = new JadeData.Project.Project(name, ".\\" + name + ".jpj");
+            vm.AddNewProject(project);
+            vm.Expanded = true;
+            _modified = true;            
+        }
+
+        public bool CanAddProject()
+        {
+            return GetSelectedAs(typeof(WorkspaceFolder)) != null;
+        }
+
+        #endregion
+
+        #region Add File
+
+        public void OnAddFile()
+        {
+            ProjectFolder vm = GetSelectedAs(typeof(ProjectFolder)) as ProjectFolder;
+            if (vm == null)
+                return;
+        }
+
+        public bool CanAddFile()
+        {
+            return GetSelectedAs(typeof(ProjectFolder)) != null;
+        }
+
+        #endregion
+
+        #region Remove Folder
+
+        public void OnRemoveFolder()
+        {
+            TreeNodeBase sel = FindSelected();
+            if (sel == null)
+                return;
+
+            if (JadeCore.GuiUtils.ConfirmYNAction("Do you want remove Folder " + sel.DisplayName + "?") == false)
+                return;
+
+            if (sel.Parent.RemoveChild(sel))
+            {
+                _modified = true;
+            }
+        }
+
+        public bool CanRemoveFolder()
+        {
+            return GetSelectedAs(typeof(ProjectFolder)) != null && GetSelectedAs(typeof(WorkspaceFolder)) != null;
+        }
+
+        #endregion
+
+        #region Remove Project
+
+        public void OnRemoveProject()
+        {
+            TreeNodeBase sel = FindSelected();
+            if (sel == null)
+                return;
+
+            if (JadeCore.GuiUtils.ConfirmYNAction("Do you want remove Project " + sel.DisplayName + "?") == false)
+                return;
+
+            if (sel.Parent.RemoveChild(sel))
+            {
+                _modified = true;
+            }
+        }
+
+        public bool CanRemoveProject()
+        {
+            return GetSelectedAs(typeof(Project)) != null;
+        }
+
+        #endregion
+
+        #region Remove File
+
+        public void OnRemoveFile()
+        {
+            TreeNodeBase sel = FindSelected();
+            if (sel == null)
+                return;
+
+            if (JadeCore.GuiUtils.ConfirmYNAction("Do you want remove File " + sel.DisplayName + "?") == false)
+                return;
+
+            if (sel.Parent.RemoveChild(sel))
+            {
+                _modified = true;
+            }
+        }
+
+        public bool CanRemoveFile()
+        {
+            return GetSelectedAs(typeof(Project)) != null;
+        }
+
+        #endregion
+
         #endregion
     }
 }

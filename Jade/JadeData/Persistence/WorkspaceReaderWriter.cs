@@ -67,16 +67,23 @@ namespace JadeData.Persistence.Workspace
 
     public static class Writer
     {
-        static private ProjectType MakeProject(JadeData.Workspace.ProjectItem proj)
+        static private ProjectType MakeProject(JadeData.Workspace.ProjectItem proj, string workspaceDir)
         {
             ProjectType result = new ProjectType();
 
+            string absPath = proj.Path;
+
+            if (System.IO.Path.IsPathRooted(absPath) == false)
+            {
+                absPath = System.IO.Path.Combine(workspaceDir, absPath);
+            }
+
             result.Path = proj.Path;
-            Persistence.Project.Writer.Write(proj, proj.Path);
+            Persistence.Project.Writer.Write(proj, absPath);
             return result;
         }
 
-        static private FolderType MakeFolder(JadeData.Workspace.IFolder folder)
+        static private FolderType MakeFolder(JadeData.Workspace.IFolder folder, string workspaceDir)
         {
             FolderType result = new FolderType();
             result.Name = folder.Name;
@@ -84,7 +91,7 @@ namespace JadeData.Persistence.Workspace
             FolderType[] subs = new FolderType[folder.Folders.Count];
             for (int i = 0; i < folder.Folders.Count; i++)
             {
-                subs[i] = MakeFolder(folder.Folders[i]);
+                subs[i] = MakeFolder(folder.Folders[i], workspaceDir);
             }
             result.Folders = subs;
 
@@ -96,15 +103,22 @@ namespace JadeData.Persistence.Workspace
             ProjectType[] projs = new ProjectType[projTemps.Count];
             for(int i=0;i<projTemps.Count;i++)
             {
-                projs[i] = MakeProject(projTemps[i]);
+                projs[i] = MakeProject(projTemps[i], workspaceDir);
             }
             result.Projects = projs;
 
             return result;
         }
 
+        static private string GetProjectPath(JadeData.Workspace.IWorkspace workspace, JadeData.Project.IProject proj)
+        {
+            return "";
+        }
+
         static public string Write(JadeData.Workspace.IWorkspace workspace, string path)
         {
+            string workspaceDir = System.IO.Path.GetDirectoryName(path);
+
             JadeData.Workspace.IFolder folder = workspace;
             WorkspaceType result = new WorkspaceType();
 
@@ -113,7 +127,7 @@ namespace JadeData.Persistence.Workspace
             FolderType[] subs = new FolderType[folder.Folders.Count];
             for (int i = 0; i < folder.Folders.Count; i++)
             {
-                subs[i] = MakeFolder(folder.Folders[i]);
+                subs[i] = MakeFolder(folder.Folders[i], workspaceDir);
             }
             result.Folders = subs;
 
@@ -125,7 +139,7 @@ namespace JadeData.Persistence.Workspace
             ProjectType[] projs = new ProjectType[projTemps.Count];
             for (int i = 0; i < projTemps.Count; i++)
             {
-                projs[i] = MakeProject(projTemps[i]);
+                projs[i] = MakeProject(projTemps[i], workspaceDir);
             }
             result.Projects = projs;
 

@@ -24,7 +24,8 @@ namespace JadeControls.Workspace
         {
             InitializeComponent();
 
-            CommandBindings.Add(new CommandBinding(ApplicationCommands.Undo, ExecuteUndo, CanExecuteUndo));
+            //CommandBindings.Add(new CommandBinding(ApplicationCommands.Undo, ExecuteUndo, CanExecuteUndo));
+            CommandBindings.AddRange(ViewModel.TreeViewCommandAdaptor.CommandBindings);         
         }
 
         void ExecuteUndo(object sender, ExecutedRoutedEventArgs e)
@@ -33,10 +34,15 @@ namespace JadeControls.Workspace
         }
 
         void CanExecuteUndo(object sender, CanExecuteRoutedEventArgs e)
+        {           
+            e.Handled = true;
+            e.CanExecute = true;
+        }
+
+        private void TreeView_MouseDoubleClick_1(object sender, MouseButtonEventArgs e)
         {
-           
-                e.Handled = true;
-                e.CanExecute = true;
+            ViewModel.WorkspaceTree w = DataContext as ViewModel.WorkspaceTree;
+            //WorkspaceTreeViewCommands.OpenDocument.Execute(null, this);
         }
 		
     }

@@ -29,14 +29,6 @@ namespace JadeGui.ViewModels.Commands
 
         private void OnCommand()
         {
-            JadeCore.IWorkspaceManager wrkmgr = _viewModel.WorkspaceManager;
-            if (wrkmgr.WorkspaceOpen && wrkmgr.RequiresSave)
-            {
-                if (wrkmgr.SaveWorkspace() == false)
-                    return;
-                wrkmgr.CloseWorkspace();
-            }
-
             string path;
             if (JadeCore.GuiUtils.PromptOpenFile(".jws", "Jade Workspace files (.jws)|*.jws", true, out path) == false)
             {
@@ -45,7 +37,7 @@ namespace JadeGui.ViewModels.Commands
 
             try
             {
-                wrkmgr.OpenWorkspace(path);
+                _viewModel.WorkspaceManager.OpenWorkspace(path);
             }
             catch (Exception e)
             {

@@ -44,13 +44,16 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EditorControl\EditorControl.xaml.cs">
+      <DependentUpon>EditorControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="EditorControl\EditorTabCtrl.xaml.cs">
       <DependentUpon>EditorTabCtrl.xaml</DependentUpon>
     </Compile>
     <Compile Include="EditorControl\ViewModel\DocumentViewModel.cs" />
     <Compile Include="EditorControl\ViewModel\EditorControlViewModel.cs" />
-    <Compile Include="OpenDocumentsControl\Control.xaml.cs">
-      <DependentUpon>Control.xaml</DependentUpon>
+    <Compile Include="OpenDocumentsControl\OpenDocListControl.xaml.cs">
+      <DependentUpon>OpenDocListControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="OpenDocumentsControl\OpenDocDetail.xaml.cs">
       <DependentUpon>OpenDocDetail.xaml</DependentUpon>
@@ -66,6 +69,7 @@
     <Compile Include="Workspace Explorer\TreeView\View Model\ProjectViewModel.cs" />
     <Compile Include="Workspace Explorer\TreeView\View Model\TreeNodeBase.cs" />
     <Compile Include="Workspace Explorer\TreeView\View Model\WorkspaceViewModel.cs" />
+    <Compile Include="Workspace Explorer\TreeView\View Model\WorkspaceTreeViewCommands.cs" />
     <Compile Include="Workspace Explorer\WorkspaceCtrl.xaml.cs">
       <DependentUpon>WorkspaceCtrl.xaml</DependentUpon>
     </Compile>
@@ -75,6 +79,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="EditorControl\EditorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="EditorControl\EditorTabCtrl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -87,7 +95,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
-    <Page Include="OpenDocumentsControl\Control.xaml">
+    <Page Include="OpenDocumentsControl\OpenDocListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -124,6 +132,10 @@
     <ProjectReference Include="..\JadeData\JadeData.csproj">
       <Project>{54f7c814-eb99-47d9-87e3-b57c3d9fb511}</Project>
       <Name>JadeData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\libraries\AvalonEdit\ICSharpCode.AvalonEdit\ICSharpCode.AvalonEdit.csproj">
+      <Project>{6c55b776-26d4-4db3-a6ab-87e783b2f3d1}</Project>
+      <Name>ICSharpCode.AvalonEdit</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -34,6 +34,8 @@ namespace JadeControls.Workspace.ViewModel
        
         #region Public Properties
 
+        public TreeNodeBase Parent { get { return _parent; } }
+
         public bool Selected
         {
             get { return _selected; }
@@ -85,10 +87,42 @@ namespace JadeControls.Workspace.ViewModel
 
         #region Public Methods
 
+        protected virtual void RemoveChildData(TreeNodeBase child) 
+        {
+        }
+
+        public bool RemoveChild(TreeNodeBase child)
+        {
+            bool ret = Children.Contains(child);
+                
+            
+            if (ret)
+            {
+                RemoveChildData(child);
+                Children.Remove(child);            
+                OnPropertyChanged("Children");
+            }
+            return ret;
+        }
+
         public bool ContainsChild(string displayName)
         {
             TreeNodeBase child = Children.Where(a => a.DisplayName == displayName).FirstOrDefault();
             return child != null;
+        }
+
+        public TreeNodeBase FindSelected()
+        {
+            if (Selected)
+                return this;
+
+            foreach (TreeNodeBase child in Children)
+            {
+                TreeNodeBase sel = child.FindSelected();
+                if (sel != null)
+                    return sel;
+            }
+            return null;
         }
 
         #endregion
