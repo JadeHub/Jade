@@ -8,7 +8,7 @@ namespace JadeData
 {
     public static class FakeData
     {
-        private static Workspace.IWorkspace _workspace;
+      //  private static Workspace.IWorkspace _workspace;
 
         static FakeData()
         {
@@ -34,11 +34,11 @@ namespace JadeData
 
             Persistence.Workspace.Writer.Write(_workspace, _workspace.Path);*/
 
-            string path = @"e:\github\jade\TestData\Test\test.jws";
+         //   string path = @"e:\github\jade\TestData\Test\test.jws";
 
-            _workspace = Persistence.Workspace.Reader.Read(path);
+         //  _workspace = Persistence.Workspace.Reader.Read(path);
         }
 
-        public static Workspace.IWorkspace Workspace { get { return _workspace; } }
+//        public static Workspace.IWorkspace Workspace { get { return _workspace; } }
     }
 }

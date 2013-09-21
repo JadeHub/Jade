@@ -4,12 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Threading.Tasks;
+using JadeCore.IO;
 
 namespace JadeGui
 {
     public interface IWorkspaceManager
     {
-        event EventHandler WorkspaceOpened;
+        /// <summary>
+        /// Raised when a workspace is created, opened, closed or saved.
+        /// </summary>
+        event EventHandler WorkspaceChanged;
 
         /// <summary>
         /// Returns true if there is an open workspace
@@ -31,13 +35,13 @@ namespace JadeGui
         /// </summary>
         /// <param name="name"></param>
         /// <param name="path"></param>
-        void NewWorkspace(string name, string path);
+        void NewWorkspace(string name);
 
         /// <summary>
         /// Open a workspace file. Throws if WorkspaceOpen is true
         /// </summary>
         /// <param name="path">full path to .jws file</param>
-        void OpenWorkspace(JadeCore.IO.IFileHandle file);
+        void OpenWorkspace(IFileHandle file);
 
         /// <summary>
         /// Save the current workspace. Will use the current path or prompt the user if unknown.
@@ -57,24 +61,24 @@ namespace JadeGui
         /// <returns>true if saved</returns>
         bool SaveWorkspaceAs(string path);
 
-        JadeCore.ViewModels.IWorkspaceViewModel ViewModel { get; }
+        JadeGui.ViewModels.WorkspaceViewModel ViewModel { get; }
     }
 
     internal class WorkspaceManager : IWorkspaceManager
     {
         private JadeData.Workspace.IWorkspace _workspace;
-        private JadeCore.ViewModels.IWorkspaceViewModel _viewModel;
+        private JadeGui.ViewModels.WorkspaceViewModel _viewModel;
 
-        public event EventHandler WorkspaceOpened;
+        public event EventHandler WorkspaceChanged;
 
-        private void OnWorkspaceOpened()
+        private void OnWorkspaceChanged()
         {
-            EventHandler handler = WorkspaceOpened;
+            EventHandler handler = WorkspaceChanged;
             if (handler != null)
                 handler(this, EventArgs.Empty);
         }
 
-        public JadeCore.ViewModels.IWorkspaceViewModel ViewModel 
+        public JadeGui.ViewModels.WorkspaceViewModel ViewModel 
         {
             get { return _viewModel; }
         }
@@ -94,6 +98,10 @@ namespace JadeGui
             }
         }
 
+        /// <summary>
+        /// Close the current workspace, if open.
+        /// </summary>
+        /// <returns></returns>
         public bool CloseWorkspace()
         {
             if (WorkspaceOpen == false)
@@ -105,7 +113,7 @@ namespace JadeGui
             }
             _workspace = null;
             _viewModel = null;
-            OnWorkspaceOpened();
+            OnWorkspaceChanged();
             return true;
         }
 
@@ -127,6 +135,7 @@ namespace JadeGui
                 {
                     //abandon changes
                     _viewModel.Modified = false;
+                    OnWorkspaceChanged();
                     return true;
                 }
                 if (result == MessageBoxResult.Cancel)
@@ -193,6 +202,7 @@ namespace JadeGui
                 JadeData.Persistence.Workspace.Writer.Write(_workspace, path);
                 _viewModel.Modified = false;
                 _viewModel.Path = path;
+                OnWorkspaceChanged();
                 return true;
             }
             catch (Exception e)
@@ -202,7 +212,7 @@ namespace JadeGui
             return false;
         }
 
-        public void NewWorkspace(string name, string path)
+        public void NewWorkspace(string name)
         {
             if (CloseWorkspace() == false)
             {
@@ -211,10 +221,10 @@ namespace JadeGui
 
             try
             {
-                _workspace = new JadeData.Workspace.Workspace(name, path);
+                _workspace = new JadeData.Workspace.Workspace(name, FilePath.MakeTemporaryFilePath());
                 _viewModel = new ViewModels.WorkspaceViewModel(_workspace);
                 _viewModel.Modified = true;
-                OnWorkspaceOpened();
+                OnWorkspaceChanged();
             }
             catch(Exception)
             {
@@ -224,7 +234,7 @@ namespace JadeGui
             }
         }
 
-        public void OpenWorkspace(JadeCore.IO.IFileHandle file)
+        public void OpenWorkspace(IFileHandle file)
         {
             if (CloseWorkspace() == false)
             {
@@ -233,9 +243,9 @@ namespace JadeGui
 
             try
             {
-                _workspace = JadeData.Persistence.Workspace.Reader.Read(file.Path);
+                _workspace = JadeData.Persistence.Workspace.Reader.Read(file);
                 _viewModel = new ViewModels.WorkspaceViewModel(_workspace);
-                OnWorkspaceOpened();
+                OnWorkspaceChanged();
             }
             catch(Exception e)
             {

@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICSharpCode.AvalonEdit", "libraries\AvalonEdit\ICSharpCode.AvalonEdit\ICSharpCode.AvalonEdit.csproj", "{6C55B776-26D4-4DB3-A6AB-87E783B2F3D1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JadeCore.Test", "JadeCode.Test\JadeCore.Test.csproj", "{F922E1CF-0B9A-4827-96CC-BF8531CFF116}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{6C55B776-26D4-4DB3-A6AB-87E783B2F3D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C55B776-26D4-4DB3-A6AB-87E783B2F3D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C55B776-26D4-4DB3-A6AB-87E783B2F3D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F922E1CF-0B9A-4827-96CC-BF8531CFF116}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F922E1CF-0B9A-4827-96CC-BF8531CFF116}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F922E1CF-0B9A-4827-96CC-BF8531CFF116}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F922E1CF-0B9A-4827-96CC-BF8531CFF116}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

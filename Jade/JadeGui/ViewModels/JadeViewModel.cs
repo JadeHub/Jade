@@ -27,12 +27,38 @@ namespace JadeGui.ViewModels
         public JadeViewModel()
         {
             _workspaceManager = new WorkspaceManager();
-            _workspaceManager.WorkspaceOpened += delegate { OnPropertyChanged("Workspace"); };
+            _workspaceManager.WorkspaceChanged += delegate { OnPropertyChanged("WorkspaceTree"); UpdateWindowTitle(); };
             _editorModel = new JadeControls.EditorControl.ViewModel.EditorControlViewModel();
             _commands = new JadeCommandAdaptor(this);
+            UpdateWindowTitle();
         }
 
+        #region Public Properties
+
         public JadeCommandAdaptor Commands { get { return _commands; } }
+
+        public string MainWindowTitle
+        {
+            get
+            {
+                if (_workspaceManager.WorkspaceOpen)
+                {
+                    return _workspaceManager.ViewModel.Name + " - Jade IDE";
+                }
+                return "Jade IDE";
+            }            
+        }
+
+        public bool DisplayingLineNumbers
+        {
+            get 
+            { 
+                return true;
+            }
+        }
+
+        
+        #endregion
 
         #region EditorControl
 
@@ -46,15 +72,15 @@ namespace JadeGui.ViewModels
         #endregion
 
         #region Workspace
-
-        public IWorkspaceManager WorkspaceManager
+        
+        private IWorkspaceManager WorkspaceManager
         {
             get
             {
                 return _workspaceManager;
             }
         }
-
+        
         #endregion
 
         #region RequestClose [event]
@@ -74,10 +100,10 @@ namespace JadeGui.ViewModels
         #endregion // RequestClose [event]
 
         #region Workspace
-                
-        public JadeCore.ViewModels.IWorkspaceViewModel Workspace
+
+        public JadeControls.Workspace.ViewModel.WorkspaceTree WorkspaceTree
         {
-            get { return _workspaceManager.ViewModel; }
+            get { return _workspaceManager.ViewModel.Tree; }
         }
 
         #endregion
@@ -100,7 +126,7 @@ namespace JadeGui.ViewModels
             {
                 try
                 {
-                    WorkspaceManager.NewWorkspace(name, "");
+                    WorkspaceManager.NewWorkspace(name);
                 }
                 catch (Exception e)
                 {
@@ -144,7 +170,7 @@ namespace JadeGui.ViewModels
 
         public void OnSaveWorkspace()
         {
-            string path = Workspace.Path;
+            string path = _workspaceManager.ViewModel.Path;
             if (path == null || path.Length == 0)
             {
                 if (JadeCore.GuiUtils.PromptSaveFile(".jws", "Jade Workspace files (.jws)|*.jws", "", out path) == false)
@@ -172,6 +198,25 @@ namespace JadeGui.ViewModels
             return WorkspaceManager.WorkspaceOpen;
         }
 
+        public void OnViewLineNumbers()
+        {
+        }
+
+        public bool CanViewLineNumbers()
+        {
+            return true;
+        }
+
+        public void OnCloseAllDocuments()
+        {
+            Editor.CloseAllDocuments();
+        }
+
+        public bool CanCloseAllDocuments()
+        {
+            return Editor.OpenDocuments.Count > 0;
+        }
+
         #endregion
 
         #region public Methods
@@ -187,6 +232,13 @@ namespace JadeGui.ViewModels
        
         #endregion
 
-        
+        #region private Methods
+
+        private void UpdateWindowTitle()
+        {
+            OnPropertyChanged("MainWindowTitle");
+        }
+
+        #endregion
     }
 }

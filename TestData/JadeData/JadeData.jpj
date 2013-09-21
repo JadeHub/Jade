@@ -7,10 +7,10 @@
     </Folder>
   </Folders>
   <Files>
-    <File Name="Project.cs" Path="C:\Code\GitHub\Jade\TestData\.\JadeData\.\Project.cs" />
-    <File Name="Workspace.cs" Path="C:\Code\GitHub\Jade\TestData\.\JadeData\.\Workspace.cs" />
-    <File Name="test.cs" Path="C:\Code\GitHub\Jade\TestData\JadeData\test.cs" />
-    <File Name="FakeData.cs" Path="C:\Code\GitHub\Jade\TestData\JadeData\FakeData.cs" />
-    <File Name="Reader.cs" Path="C:\Code\GitHub\Jade\TestData\JadeData\Persistence\Reader.cs" />
+    <File Path="Project.cs" />
+    <File Path="Workspace.cs" />
+    <File Path="test.cs" />
+    <File Path="FakeData.cs" />
+    <File Path="Persistence\Reader.cs" />
   </Files>
 </Project>

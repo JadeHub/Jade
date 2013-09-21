@@ -34,7 +34,8 @@ namespace JadeData.Project
 
         public string Name { get { return _file.Name; } }
         public ItemType Type { get { return ItemType.File; } }
-        public string Path { get { return _file.Path; } }
+        public string Path { get { return _file.Path.Str; } }
+        public JadeCore.IO.IFileHandle Handle { get { return _file; } }
     }
 
     public interface IFolder
@@ -165,8 +166,8 @@ namespace JadeData.Project
         public IList<IItem> Items { get { return _items.Values.ToList(); } }
         public IList<IFolder> Folders { get { return _folders; } }
 
-        public string Path { get { return _file.Path; } }
-        public string Directory { get { return _file.Directory; } }
+        public string Path { get { return _file.Path.Str; } }
+        public string Directory { get { return _file.Path.Directory; } }
 
         public void AddItem(IItem item)
         {

@@ -76,7 +76,7 @@ namespace JadeCore
 
             if(dlg.ShowDialog() == true)
             {
-                return new IO.FileHandle(dlg.FileName);
+                return Services.Provider.FileService.MakeFileHandle(dlg.FileName);
             }
             return null;
         }

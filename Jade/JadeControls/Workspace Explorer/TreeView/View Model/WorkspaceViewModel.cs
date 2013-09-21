@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Input;
 using System.Windows;
+using JadeCore;
 using JadeCore.IO;
 
 namespace JadeControls.Workspace.ViewModel
@@ -61,7 +62,8 @@ namespace JadeControls.Workspace.ViewModel
             File f = GetSelectedAs(typeof(File)) as File;
             if (f != null)
             {
-                //JadeCore.Services.Provider.JadeViewModel.Editor.OpenSourceFile(f.Data);
+                
+                JadeCore.Services.Provider.JadeViewModel.Editor.OpenSourceFile(f.Handle);
             }
         }
 
@@ -140,7 +142,8 @@ namespace JadeControls.Workspace.ViewModel
                 return;
             }
 
-            JadeData.Project.IProject project = new JadeData.Project.Project(name, FileHandleFactory.Create(".\\" + name + ".jpj"));
+            JadeData.Project.IProject project = new JadeData.Project.Project(name, 
+                                                    Services.Provider.FileService.MakeFileHandle(".\\" + name + ".jpj"));
             vm.AddNewProject(project);
             vm.Expanded = true;
             _workspace.Modified = true;

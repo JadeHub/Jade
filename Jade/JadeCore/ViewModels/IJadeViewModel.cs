@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Collections.ObjectModel;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace JadeCore.ViewModels
 {
@@ -16,7 +15,9 @@ namespace JadeCore.ViewModels
 
     public interface IEditorViewModel
     {
-        //void OpenSourceFile(JadeData.Project.File file);
+        void OpenSourceFile(IO.IFileHandle file);
+        void CloseAllDocuments();
+        ObservableCollection<IEditorDocument> OpenDocuments { get; }
     }
 
     public interface IWorkspaceViewModel
@@ -29,11 +30,11 @@ namespace JadeCore.ViewModels
 
     public interface IJadeViewModel
     {
-        IWorkspaceViewModel Workspace
+   /*     IWorkspaceViewModel Workspace
         {
             get;
       //      set;
-        }
+        }*/
 
         IEditorViewModel Editor
         {
@@ -75,6 +76,15 @@ namespace JadeCore.ViewModels
         /// </summary>
         void OnSaveAsWorkspace();
         bool CanSaveAsWorkspace();
+
+        /// <summary>
+        /// Toggle Line number display.
+        /// </summary>
+        void OnViewLineNumbers();
+        bool CanViewLineNumbers();
+
+        void OnCloseAllDocuments();
+        bool CanCloseAllDocuments();
         
         #endregion
 

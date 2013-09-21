@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Xml;
 using System.Linq;
+using JadeCore;
 using JadeCore.IO;
 
 namespace JadeData.Persistence.Project
@@ -16,9 +17,10 @@ namespace JadeData.Persistence.Project
             string path = xml.Path;
             if (System.IO.Path.IsPathRooted(path) == false)
             {
+                //Convert from relative path stored in project xml file
                 path = System.IO.Path.Combine(projectDir, path);
             }
-            return new JadeData.Project.File(JadeCore.IO.FileHandleFactory.Create(path));
+            return new JadeData.Project.File(Services.Provider.FileService.MakeFileHandle(path));
         }
 
         private static JadeData.Project.IFolder MakeFolder(string projectDir, FolderType xml)
@@ -49,7 +51,7 @@ namespace JadeData.Persistence.Project
                 tr.Dispose();
             }
 
-            JadeData.Project.IProject result = new JadeData.Project.Project(xml.Name, FileHandleFactory.Create(path));
+            JadeData.Project.IProject result = new JadeData.Project.Project(xml.Name, Services.Provider.FileService.MakeFileHandle(path));
 
             foreach (FolderType f in xml.Folders)
             {
@@ -67,16 +69,9 @@ namespace JadeData.Persistence.Project
     {
         static private FileType MakeFile(JadeData.Project.File file, string projectDir)
         {
-            /*string absPath = file.Path;
-
-            if (System.IO.Path.IsPathRooted(absPath) == false)
-            {
-                absPath = System.IO.Path.Combine(projectDir, absPath);
-            }*/
-
             FileType result = new FileType();
-            result.Name = file.Name;
-            result.Path = file.Path;
+            //Convert to relative path for storage in workspace
+            result.Path = JadeCore.IO.Path.CalculateRelativePath(projectDir + @"\", file.Path);
             return result;
         }
 

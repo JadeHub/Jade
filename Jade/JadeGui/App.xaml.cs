@@ -29,6 +29,7 @@ namespace JadeGui
 
             var viewModel = new ViewModels.JadeViewModel();
             JadeCore.Services.Provider.JadeViewModel = viewModel;
+            JadeCore.Services.Provider.FileService = new JadeCore.IO.FileService();
             viewModel.RequestClose += delegate 
             { 
                 window.Close(); 

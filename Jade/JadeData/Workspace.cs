@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JadeCore.IO;
 
 namespace JadeData.Workspace
 {
@@ -132,18 +133,15 @@ namespace JadeData.Workspace
         #region Data
         
         private string _name;
-        private string _path; //Full path to workspace file
-        private string _directory; //Dir containing workspace file
+        private IFileHandle _file;
         private Folder _rootFolder;
 
         #endregion
 
-        public Workspace(string name, string path)
+        public Workspace(string name, FilePath path)
         {
             _name = name;
-            _path = path;
-            if(_path.Length > 0)
-                _directory = System.IO.Path.GetDirectoryName(path);
+            _file = JadeCore.Services.Provider.FileService.MakeFileHandle(path);
             _rootFolder = new Folder(_name);
         }
 
@@ -152,16 +150,16 @@ namespace JadeData.Workspace
         public string Path 
         { 
             get 
-            { 
-                return _path; 
+            {
+                return _file.Path.Str; 
             }
             set
             {
-                _path = value;
+                //_path = value;
             }
         }
 
-        public string Directory { get { return _directory; } }
+        public string Directory { get { return _file.Path.Directory; } }
 
         #endregion
 
@@ -175,6 +173,7 @@ namespace JadeData.Workspace
         public IFolder AddFolder(IFolder f) { return _rootFolder.AddFolder(f); }
         public bool RemoveFolder(string name) { return _rootFolder.RemoveFolder(name); }
         public bool HasFolder(string name) { return _rootFolder.HasFolder(name); }
+
         #endregion
     }
 }

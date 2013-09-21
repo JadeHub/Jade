@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
+using JadeCore.IO;
 
 namespace JadeData.Persistence.Workspace
 {
@@ -36,11 +37,11 @@ namespace JadeData.Persistence.Workspace
             return result;
         }
 
-        static public JadeData.Workspace.IWorkspace Read(string path)
+        static public JadeData.Workspace.IWorkspace Read(IFileHandle file)
         {
             WorkspaceType xml;
             XmlSerializer serializer = new XmlSerializer(typeof(WorkspaceType));
-            TextReader tr = new StreamReader(path);
+            TextReader tr = new StreamReader(file.Path.Str);
             try
             {                
                 xml = (WorkspaceType)serializer.Deserialize(tr);                
@@ -51,8 +52,7 @@ namespace JadeData.Persistence.Workspace
                 tr.Dispose();
             }
 
-            JadeData.Workspace.IWorkspace result = new JadeData.Workspace.Workspace(xml.Name, path);
-
+            JadeData.Workspace.IWorkspace result = new JadeData.Workspace.Workspace(xml.Name, file.Path);
             foreach (FolderType f in xml.Folders)
             {
                 result.AddFolder(MakeFolder(result.Directory, f));
@@ -73,7 +73,7 @@ namespace JadeData.Persistence.Workspace
             ProjectType result = new ProjectType();
 
             //Convert to relative path for storage in workspace
-            result.Path = JadeCore.IO.Path.CalculateRelativePath(workspaceDir, proj.Path);
+            result.Path = JadeCore.IO.Path.CalculateRelativePath(workspaceDir + @"\", proj.Path);
             Persistence.Project.Writer.Write(proj, proj.Path);
             return result;
         }

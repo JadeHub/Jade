@@ -11,7 +11,7 @@ namespace JadeGui.ViewModels
 {
     using JadeData;
 
-    internal class WorkspaceViewModel : JadeControls.NotifyPropertyChanged, JadeCore.ViewModels.IWorkspaceViewModel
+    public class WorkspaceViewModel : JadeControls.NotifyPropertyChanged, JadeCore.ViewModels.IWorkspaceViewModel
     {
         #region Data
 

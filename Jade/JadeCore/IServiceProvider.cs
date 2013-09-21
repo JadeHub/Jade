@@ -9,6 +9,8 @@ namespace JadeCore
     public interface IServiceProvider
     {
         JadeCore.ViewModels.IJadeViewModel JadeViewModel { get; set; }
+
+        IO.IFileService FileService { get; set; }
     }
 
     public class Services
@@ -32,5 +34,7 @@ namespace JadeCore
             get { return _jadeViewModel; }
             set { _jadeViewModel = value; }
         }
+
+        public IO.IFileService FileService { get; set; }
     }
 }

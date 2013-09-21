@@ -11,6 +11,9 @@ namespace JadeGui.ViewModels
         public static readonly RoutedCommand OpenWorkspace = new RoutedCommand("OpenWorkspace", typeof(MainWindow));
         public static readonly RoutedCommand SaveWorkspace = new RoutedCommand("SaveWorkspace", typeof(MainWindow));
         public static readonly RoutedCommand SaveAsWorkspace = new RoutedCommand("SaveAsWorkspace", typeof(MainWindow));
+
+        public static readonly RoutedCommand ViewLineNumbers = new RoutedCommand("ViewLineNumbers", typeof(MainWindow));
+        public static readonly RoutedCommand CloseAllDocuments = new RoutedCommand("CloseAllDocuments", typeof(MainWindow));
     }
 
     public class JadeCommandAdaptor
@@ -33,6 +36,9 @@ namespace JadeGui.ViewModels
             Register(bindings, JadeCommands.OpenWorkspace, delegate { _vm.OnOpenWorkspace(); }, delegate { return _vm.CanOpenWorkspace(); });
             Register(bindings, JadeCommands.SaveWorkspace, delegate { _vm.OnSaveWorkspace(); }, delegate { return _vm.CanSaveWorkspace(); });
             Register(bindings, JadeCommands.SaveAsWorkspace, delegate { _vm.OnSaveAsWorkspace(); }, delegate { return _vm.CanSaveAsWorkspace(); });
+
+            Register(bindings, JadeCommands.ViewLineNumbers, delegate { _vm.OnViewLineNumbers(); }, delegate { return _vm.CanViewLineNumbers(); });
+            Register(bindings, JadeCommands.CloseAllDocuments, delegate { _vm.OnCloseAllDocuments(); }, delegate { return _vm.CanCloseAllDocuments(); });
         }
 
         private void Register(CommandBindingCollection bindings, ICommand command, OnCommandDel onCmd, CanDoCommandDel canDoCmd)

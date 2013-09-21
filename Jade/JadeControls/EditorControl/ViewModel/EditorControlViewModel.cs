@@ -9,15 +9,15 @@ namespace JadeControls.EditorControl.ViewModel
 {
     internal class DocumentCollection
     {
-        private ObservableCollection<DocumentViewModel> _documents;
+        private ObservableCollection<JadeCore.ViewModels.IEditorDocument> _documents;
 
         internal DocumentCollection()
         {
-            _documents = new ObservableCollection<DocumentViewModel>();
+            _documents = new ObservableCollection<JadeCore.ViewModels.IEditorDocument>();
             _documents.CollectionChanged += OnOpenDocumentsChanged;
         }
 
-        internal void Add(DocumentViewModel doc)
+        internal void Add(JadeCore.ViewModels.IEditorDocument doc)
         {
             _documents.Add(doc);
         }
@@ -44,15 +44,26 @@ namespace JadeControls.EditorControl.ViewModel
         private void OnDocumentRequestClose(object sender, EventArgs e)
         {
             DocumentViewModel doc = sender as DocumentViewModel;
-            doc.Dispose();
             _documents.Remove(doc);
+            doc.Dispose();
         }
 
-        public ObservableCollection<DocumentViewModel> Documents
+        public ObservableCollection<JadeCore.ViewModels.IEditorDocument> Documents
         {
             get
             {
                 return _documents;
+            }
+        }
+
+        public void CloseAll()
+        {
+            JadeCore.ViewModels.IEditorDocument[] tmp = _documents.ToArray();
+
+            foreach (DocumentViewModel doc in tmp)
+            {
+                _documents.Remove(doc);
+                doc.Dispose();
             }
         }
     }
@@ -75,16 +86,21 @@ namespace JadeControls.EditorControl.ViewModel
             _selectedDocument.Selected = true;*/
         }
 
-        public void OpenSourceFile(JadeData.Project.File file)
+        public void OpenSourceFile(JadeCore.IO.IFileHandle handle)
         {
-            DocumentViewModel d = new DocumentViewModel(file.Name, file.Path);
+            DocumentViewModel d = new DocumentViewModel(handle.Name, handle.Path.Str);
             _openDocuments.Add(d);
             SelectedDocument = d;
         }
 
+        public void CloseAllDocuments()
+        {
+            _openDocuments.CloseAll();
+        }
+
         #region Public Properties
 
-        public ObservableCollection<DocumentViewModel> OpenDocuments
+        public ObservableCollection<JadeCore.ViewModels.IEditorDocument> OpenDocuments
         {
             get { return _openDocuments.Documents; }
         }
@@ -102,6 +118,7 @@ namespace JadeControls.EditorControl.ViewModel
                 OnPropertyChanged("SelectedDocument");
             }
         }
+
         #endregion
     }
 }

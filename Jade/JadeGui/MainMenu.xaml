@@ -5,7 +5,7 @@
         Height="25"
       >
 
-    <MenuItem Header="File">
+    <MenuItem Header="_File">
         <MenuItem Header="New Workspace..." Command="JadeGuiViewModels:JadeCommands.NewWorkspace" />
         <MenuItem Header="Open Workspace..." Command="JadeGuiViewModels:JadeCommands.OpenWorkspace"  />
         <MenuItem Header="Save Workspace" Command="JadeGuiViewModels:JadeCommands.SaveWorkspace" />
@@ -13,7 +13,7 @@
         <MenuItem Header="Close Workspace" Command="JadeGuiViewModels:JadeCommands.CloseWorkspace"  />
         <MenuItem Header="E_xit" Command="JadeGuiViewModels:JadeCommands.Exit" />
     </MenuItem>
-    <MenuItem Header="Edit">
+    <MenuItem Header="_Edit">
         <MenuItem Header="Undo" Command="Undo"/>
         <MenuItem Header="Redo" Command="Redo"/>
         <Separator/>
@@ -21,5 +21,10 @@
         <MenuItem Header="Copy" Command="Copy" />
         <MenuItem Header="Paste" Command="Paste" />
     </MenuItem>
-   
+    <MenuItem Header="_View">
+        <MenuItem Header="Line Numbers" Command="JadeGuiViewModels:JadeCommands.ViewLineNumbers" IsCheckable="True"/>
+    </MenuItem>
+    <MenuItem Header="_Window">
+        <MenuItem Header="Close All Documents" Command="JadeGuiViewModels:JadeCommands.CloseAllDocuments"/>
+    </MenuItem>
 </Menu>

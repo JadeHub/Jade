@@ -120,20 +120,7 @@ namespace JadeData.Persistence.Project {
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://JadeData.org/Project.xsd")]
     public partial class FileType {
         
-        private string nameField;
-        
         private string pathField;
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string Name {
-            get {
-                return this.nameField;
-            }
-            set {
-                this.nameField = value;
-            }
-        }
         
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]

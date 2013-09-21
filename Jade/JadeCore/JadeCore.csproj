@@ -46,6 +46,10 @@
   <ItemGroup>
     <Compile Include="GuiUtils.cs" />
     <Compile Include="IO\FileHandle.cs" />
+    <Compile Include="IO\FilePath.cs" />
+    <Compile Include="IO\FileService.cs" />
+    <Compile Include="IO\IFileHandle.cs" />
+    <Compile Include="IO\IFileService.cs" />
     <Compile Include="IO\Path.cs" />
     <Compile Include="IServiceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -53,7 +57,6 @@
       <DependentUpon>UserInput.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\IJadeViewModel.cs" />
-    <Compile Include="IWorkspaceManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="UserInput.xaml">

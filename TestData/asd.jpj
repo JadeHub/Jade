@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="asd" xmlns="http://JadeData.org/Project.xsd">
   <Folders />
-  <Files />
+  <Files>
+    <File Name="Form1.cs" Path="F:\GitHub\WindowsFormsApplication1\WindowsFormsApplication1\Form1.cs" />
+  </Files>
 </Project>
