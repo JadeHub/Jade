@@ -7,28 +7,28 @@ using System.Windows.Input;
 using JadeControls;
 using System.Windows;
 
-namespace JadeGui.ViewModels
+namespace JadeControls.Workspace.ViewModel
 {
     using JadeData;
 
-    public class WorkspaceViewModel : JadeControls.NotifyPropertyChanged, JadeCore.ViewModels.IWorkspaceViewModel
+    public class WorkspaceViewModel : JadeControls.NotifyPropertyChanged
     {
         #region Data
 
         private JadeData.Workspace.IWorkspace _data;
-        private JadeControls.Workspace.ViewModel.WorkspaceTree _tree;
-        private bool _modified;
+        private WorkspaceTree _tree;
 
         #endregion
 
         public WorkspaceViewModel(JadeData.Workspace.IWorkspace data)
         {
             _data = data;
-            _modified = false;
-            _tree = new JadeControls.Workspace.ViewModel.WorkspaceTree(_data, this);
+            _tree = new JadeControls.Workspace.ViewModel.WorkspaceTree(_data);
         }
 
-        public JadeControls.Workspace.ViewModel.WorkspaceTree Tree
+        #region Public Properties
+
+        public WorkspaceTree Tree
         {
             get
             {
@@ -58,18 +58,14 @@ namespace JadeGui.ViewModels
             {
                 return _data.Path;
             }
-            set
+          /*  set
             {
                 _data.Path = value;
                 OnPropertyChanged("Path");
                 OnPropertyChanged("Directory");
-            }
+            }*/
         }
 
-        public bool Modified
-        {
-            get { return _modified; }
-            set { _modified = value; }
-        }
+        #endregion
     }
 }

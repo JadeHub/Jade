@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace JadeControls.Workspace.ViewModel
 {
-    internal class ProjectFolder : TreeNodeBase
+    public class ProjectFolder : TreeNodeBase
     {
         #region Data
 
@@ -50,7 +50,7 @@ namespace JadeControls.Workspace.ViewModel
             AddChildFolder(new ProjectFolder(this, f));
         }
 
-        public void AddNewFile(JadeCore.IO.IFileHandle fileHandle)
+        public void AddNewFile(JadeUtils.IO.IFileHandle fileHandle)
         {
             if (_data.HasItem(fileHandle.Name))
             {

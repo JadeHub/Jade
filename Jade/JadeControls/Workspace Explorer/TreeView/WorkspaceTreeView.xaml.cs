@@ -24,7 +24,6 @@ namespace JadeControls.Workspace
         {
             InitializeComponent();
 
-            //CommandBindings.Add(new CommandBinding(ApplicationCommands.Undo, ExecuteUndo, CanExecuteUndo));
             CommandBindings.AddRange(ViewModel.TreeViewCommandAdaptor.CommandBindings);
         }
 
@@ -41,8 +40,10 @@ namespace JadeControls.Workspace
 
         private void TreeView_MouseDoubleClick_1(object sender, MouseButtonEventArgs e)
         {
-            ViewModel.WorkspaceTree w = DataContext as ViewModel.WorkspaceTree;
-            w.OnOpenDocument();
+            ViewModel.WorkspaceViewModel wvm = DataContext as ViewModel.WorkspaceViewModel;
+
+            ViewModel.WorkspaceTree w = wvm.Tree as ViewModel.WorkspaceTree;
+            w.OnDoubleClick();
         }
 		
     }

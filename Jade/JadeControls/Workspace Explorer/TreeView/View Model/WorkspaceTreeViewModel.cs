@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Input;
 using System.Windows;
 using JadeCore;
-using JadeCore.IO;
+using JadeUtils.IO;
 
 namespace JadeControls.Workspace.ViewModel
 {
@@ -11,17 +11,15 @@ namespace JadeControls.Workspace.ViewModel
     {
         #region Data
 
-        private JadeCore.ViewModels.IWorkspaceViewModel _workspace;
         private JadeData.Workspace.IWorkspace _data;
 
         #endregion
 
         #region Constructor
 
-        public WorkspaceTree(JadeData.Workspace.IWorkspace workspace, JadeCore.ViewModels.IWorkspaceViewModel vm)
+        public WorkspaceTree(JadeData.Workspace.IWorkspace workspace)
             : base(null, workspace)
         {
-            _workspace = vm;
             _data = workspace;
             this.Expanded = true;
         }
@@ -30,7 +28,7 @@ namespace JadeControls.Workspace.ViewModel
 
         #region Public Properties
 
-        public IEnumerable<JadeControls.Workspace.ViewModel.WorkspaceTree> TreeRoot
+        public IEnumerable<object> TreeRoot
         {
             get
             {
@@ -39,7 +37,20 @@ namespace JadeControls.Workspace.ViewModel
         }
 
         #endregion
-        
+
+        #region Private Properties
+
+        JadeCore.IWorkspaceController WorkspaceController
+        {
+            get
+            {
+                System.Diagnostics.Debug.Assert(JadeCore.Services.Provider.WorkspaceController.WorkspaceOpen);
+                return JadeCore.Services.Provider.WorkspaceController;
+            }
+        }
+
+        #endregion
+
         #region Private Methods
 
         private TreeNodeBase GetSelectedAs(System.Type type)
@@ -54,25 +65,6 @@ namespace JadeControls.Workspace.ViewModel
         #endregion
 
         #region Command Handlers
-
-        #region Open Document
-
-        public void OnOpenDocument()
-        {
-            File f = GetSelectedAs(typeof(File)) as File;
-            if (f != null)
-            {
-                
-                JadeCore.Services.Provider.JadeViewModel.Editor.OpenSourceFile(f.Handle);
-            }
-        }
-
-        public bool CanOpenDocument()
-        {
-            return GetSelectedAs(typeof(File)) != null;
-        }
-
-        #endregion
 
         #region Add Folder
 
@@ -111,8 +103,8 @@ namespace JadeControls.Workspace.ViewModel
             {
                 return;
             }
-            sel.Expanded = true;
-            _workspace.Modified = true;
+            sel.Expanded = true;            
+            WorkspaceController.CurrentWorkspaceModified = true;
         }        
 
         public bool CanAddFolder()
@@ -146,7 +138,7 @@ namespace JadeControls.Workspace.ViewModel
                                                     Services.Provider.FileService.MakeFileHandle(".\\" + name + ".jpj"));
             vm.AddNewProject(project);
             vm.Expanded = true;
-            _workspace.Modified = true;
+            WorkspaceController.CurrentWorkspaceModified = true;
         }
 
         public bool CanAddProject()
@@ -158,11 +150,10 @@ namespace JadeControls.Workspace.ViewModel
 
         #region Add File
 
-        public void OnAddFile()
+        public void OnAddFile(ProjectFolder vm)
         {
-            ProjectFolder vm = GetSelectedAs(typeof(ProjectFolder)) as ProjectFolder;
             if (vm == null)
-                return;
+                throw new ArgumentException("Command param is null.");
 
             IFileHandle handle = JadeCore.GuiUtils.PromptOpenFile(".cs", "C# Source files (.cs)|*.cs", true);
             if (handle == null)
@@ -171,7 +162,7 @@ namespace JadeControls.Workspace.ViewModel
             }           
             vm.AddNewFile(handle);
             vm.Expanded = true;
-            _workspace.Modified = true;
+            WorkspaceController.CurrentWorkspaceModified = true;
         }
 
         public bool CanAddFile()
@@ -183,22 +174,22 @@ namespace JadeControls.Workspace.ViewModel
 
         #region Remove Item
 
-        public void OnRemoveItem()
+        public void OnRemoveItem(object param)
         {
-            TreeNodeBase sel = FindSelected();
+            TreeNodeBase sel = param as TreeNodeBase;
             if (sel == null)
-                return;
+                throw new ArgumentException("Command param is null.");
 
             if (JadeCore.GuiUtils.ConfirmYNAction("Do you want remove " + sel.DisplayName + "?") == false)
                 return;
 
             if (sel.Parent.RemoveChild(sel))
             {
-                _workspace.Modified = true;
+                WorkspaceController.CurrentWorkspaceModified = true;
             }
         }
 
-        public bool CanRemoveItem()
+        public bool CanRemoveItem(object param)
         {
             return FindSelected() != null;
         }
@@ -206,6 +197,16 @@ namespace JadeControls.Workspace.ViewModel
         #endregion
 
         #endregion
+
+        public void OnDoubleClick()
+        {
+            TreeNodeBase node = FindSelected();
+            if (node != null && node is File)
+            {
+                File f = node as File;
+                JadeCore.Commands.OpenDocument.Execute(f.Handle, null);
+            }
+        }
     }
 }
 

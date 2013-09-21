@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using JadeControls;
 using System.Windows;
-using JadeCore.IO;
+using JadeUtils.IO;
 
 namespace JadeGui.ViewModels
 {
     using JadeData;
+    using JadeControls.Workspace.ViewModel;
     
     /// <summary>
     /// Main View Model class. Singleton instance that lives the life of the application
@@ -20,18 +21,37 @@ namespace JadeGui.ViewModels
         #region Data
 
         private JadeCommandAdaptor _commands;
-        private IWorkspaceManager _workspaceManager;
+        private JadeCore.IWorkspaceController _workspaceController;
+        private WorkspaceViewModel _currentWorkspace;
        
         #endregion
 
+        #region Contsructor
+
         public JadeViewModel()
         {
-            _workspaceManager = new WorkspaceManager();
-            _workspaceManager.WorkspaceChanged += delegate { OnPropertyChanged("WorkspaceTree"); UpdateWindowTitle(); };
+            _workspaceController = JadeCore.Services.Provider.WorkspaceController;
+            _workspaceController.WorkspaceChanged += delegate { OnWorkspaceChanged(); };
             _editorModel = new JadeControls.EditorControl.ViewModel.EditorControlViewModel();
             _commands = new JadeCommandAdaptor(this);
             UpdateWindowTitle();
         }
+
+        private void OnWorkspaceChanged()
+        {
+            if(_workspaceController.CurrentWorkspace != null)
+            {
+                _currentWorkspace = new WorkspaceViewModel(_workspaceController.CurrentWorkspace);
+            }
+            else
+            {
+                _currentWorkspace = null;
+            }
+            OnPropertyChanged("Workspace"); 
+            UpdateWindowTitle();
+        }
+
+        #endregion
 
         #region Public Properties
 
@@ -41,9 +61,10 @@ namespace JadeGui.ViewModels
         {
             get
             {
-                if (_workspaceManager.WorkspaceOpen)
+                if (_workspaceController.WorkspaceOpen)
                 {
-                    return _workspaceManager.ViewModel.Name + " - Jade IDE";
+                    return _workspaceController.CurrentWorkspace.Name + " - Jade IDE";
+                    //return _workspaceManager.ViewModel.Name + " - Jade IDE";
                 }
                 return "Jade IDE";
             }            
@@ -73,11 +94,11 @@ namespace JadeGui.ViewModels
 
         #region Workspace
         
-        private IWorkspaceManager WorkspaceManager
+        private JadeCore.IWorkspaceController WorkspaceManager
         {
             get
             {
-                return _workspaceManager;
+                return _workspaceController;
             }
         }
         
@@ -101,14 +122,19 @@ namespace JadeGui.ViewModels
 
         #region Workspace
 
-        public JadeControls.Workspace.ViewModel.WorkspaceTree WorkspaceTree
+        public WorkspaceViewModel Workspace
         {
-            get { return _workspaceManager.ViewModel.Tree; }
+            get { return _currentWorkspace; }
         }
-
+        
         #endregion
 
         #region Commands
+
+        public void OnOpenDocument(JadeUtils.IO.IFileHandle file)
+        {
+            _editorModel.OpenSourceFile(file);
+        }
 
         #region Exit
 
@@ -170,7 +196,7 @@ namespace JadeGui.ViewModels
 
         public void OnSaveWorkspace()
         {
-            string path = _workspaceManager.ViewModel.Path;
+            string path = _workspaceController.CurrentWorkspace.Path;
             if (path == null || path.Length == 0)
             {
                 if (JadeCore.GuiUtils.PromptSaveFile(".jws", "Jade Workspace files (.jws)|*.jws", "", out path) == false)
@@ -223,9 +249,9 @@ namespace JadeGui.ViewModels
 
         public bool RequestExit()
         {
-            if (_workspaceManager.RequiresSave)
+            if (_workspaceController.RequiresSave)
             {
-                return _workspaceManager.SaveOrDiscardWorkspace();
+                return _workspaceController.SaveOrDiscardWorkspace();
             }
             return true;
         }

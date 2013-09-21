@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JadeCore.IO
+namespace JadeUtils.IO
 {
     public interface IFileService
     {

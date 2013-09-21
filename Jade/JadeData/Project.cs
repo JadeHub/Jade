@@ -23,11 +23,11 @@ namespace JadeData.Project
     {
         #region Data 
 
-        private JadeCore.IO.IFileHandle _file;
+        private JadeUtils.IO.IFileHandle _file;
         
         #endregion
 
-        public File(JadeCore.IO.IFileHandle file)
+        public File(JadeUtils.IO.IFileHandle file)
         {
             _file = file;
         }
@@ -35,7 +35,7 @@ namespace JadeData.Project
         public string Name { get { return _file.Name; } }
         public ItemType Type { get { return ItemType.File; } }
         public string Path { get { return _file.Path.Str; } }
-        public JadeCore.IO.IFileHandle Handle { get { return _file; } }
+        public JadeUtils.IO.IFileHandle Handle { get { return _file; } }
     }
 
     public interface IFolder
@@ -146,13 +146,13 @@ namespace JadeData.Project
         #region Data
 
         private string _name;
-        private JadeCore.IO.IFileHandle _file;
+        private JadeUtils.IO.IFileHandle _file;
         private Dictionary<string, IItem> _items;
         private List<IFolder> _folders;
 
         #endregion
 
-        public Project(string name, JadeCore.IO.IFileHandle file)
+        public Project(string name, JadeUtils.IO.IFileHandle file)
         {
             _file = file;
             _name = name;            

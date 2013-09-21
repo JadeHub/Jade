@@ -15,33 +15,21 @@ namespace JadeCore.ViewModels
 
     public interface IEditorViewModel
     {
-        void OpenSourceFile(IO.IFileHandle file);
+        void OpenSourceFile(JadeUtils.IO.IFileHandle file);
         void CloseAllDocuments();
         ObservableCollection<IEditorDocument> OpenDocuments { get; }
     }
 
-    public interface IWorkspaceViewModel
-    {
-        string Name { get; }
-        string Path { get; set; }
-        string Directory { get; }
-        bool Modified { get; set; }
-    }
-
     public interface IJadeViewModel
     {
-   /*     IWorkspaceViewModel Workspace
-        {
-            get;
-      //      set;
-        }*/
-
         IEditorViewModel Editor
         {
             get;
         }
         
         #region Commands
+
+        void OnOpenDocument(JadeUtils.IO.IFileHandle file);
 
         /// <summary>
         /// Close the application.
@@ -87,6 +75,5 @@ namespace JadeCore.ViewModels
         bool CanCloseAllDocuments();
         
         #endregion
-
     }
 }

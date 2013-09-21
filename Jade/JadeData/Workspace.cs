@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using JadeCore.IO;
+using JadeUtils.IO;
 
 namespace JadeData.Workspace
 {
@@ -138,10 +138,10 @@ namespace JadeData.Workspace
 
         #endregion
 
-        public Workspace(string name, FilePath path)
+        public Workspace(string name, IFileHandle file)
         {
             _name = name;
-            _file = JadeCore.Services.Provider.FileService.MakeFileHandle(path);
+            _file = file;
             _rootFolder = new Folder(_name);
         }
 

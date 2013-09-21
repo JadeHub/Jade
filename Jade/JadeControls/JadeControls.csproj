@@ -71,7 +71,7 @@
     <Compile Include="Workspace Explorer\TreeView\View Model\ProjectNode.cs" />
     <Compile Include="Workspace Explorer\TreeView\View Model\TreeNodeBase.cs" />
     <Compile Include="Workspace Explorer\TreeView\View Model\WorkspaceFolderNode.cs" />
-    <Compile Include="Workspace Explorer\TreeView\View Model\WorkspaceViewModel.cs" />
+    <Compile Include="Workspace Explorer\TreeView\View Model\WorkspaceTreeViewModel.cs" />
     <Compile Include="Workspace Explorer\TreeView\View Model\WorkspaceTreeViewCommands.cs" />
     <Compile Include="Workspace Explorer\WorkspaceCtrl.xaml.cs">
       <DependentUpon>WorkspaceCtrl.xaml</DependentUpon>
@@ -80,6 +80,7 @@
       <SubType>Code</SubType>
       <DependentUpon>WorkspaceTreeView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Workspace Explorer\WorkspaceViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="EditorControl\EditorControl.xaml">
@@ -128,6 +129,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\JadeUtils\JadeUtils\JadeUtils.csproj">
+      <Project>{52652847-ed88-486a-a51d-ce4a15f16c1f}</Project>
+      <Name>JadeUtils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\JadeCore\JadeCore.csproj">
       <Project>{59cad747-608c-447a-b2af-f8fd7ace39b2}</Project>
       <Name>JadeCore</Name>

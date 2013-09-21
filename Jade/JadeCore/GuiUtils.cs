@@ -65,7 +65,7 @@ namespace JadeCore
             return false;
         }
 
-        public static IO.IFileHandle PromptOpenFile(string ext, string filter, bool mustExist)
+        public static JadeUtils.IO.IFileHandle PromptOpenFile(string ext, string filter, bool mustExist)
         {
             // Configure open file dialog box
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();

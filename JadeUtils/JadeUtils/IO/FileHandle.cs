@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace JadeCore.IO
+namespace JadeUtils.IO
 {
     public class FileHandle : IFileHandle
     {

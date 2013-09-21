@@ -3,25 +3,12 @@ using System.Windows.Input;
 
 namespace JadeGui.ViewModels
 {
-    public static class JadeCommands
-    {
-        public static readonly RoutedCommand Exit = new RoutedCommand("Exit", typeof(MainWindow));
-        public static readonly RoutedCommand NewWorkspace = new RoutedCommand("NewWorkspace", typeof(MainWindow));
-        public static readonly RoutedCommand CloseWorkspace = new RoutedCommand("CloseWorkspace", typeof(MainWindow));
-        public static readonly RoutedCommand OpenWorkspace = new RoutedCommand("OpenWorkspace", typeof(MainWindow));
-        public static readonly RoutedCommand SaveWorkspace = new RoutedCommand("SaveWorkspace", typeof(MainWindow));
-        public static readonly RoutedCommand SaveAsWorkspace = new RoutedCommand("SaveAsWorkspace", typeof(MainWindow));
-
-        public static readonly RoutedCommand ViewLineNumbers = new RoutedCommand("ViewLineNumbers", typeof(MainWindow));
-        public static readonly RoutedCommand CloseAllDocuments = new RoutedCommand("CloseAllDocuments", typeof(MainWindow));
-    }
-
     public class JadeCommandAdaptor
     {
-        private delegate void OnCommandDel();
+        private delegate void OnCommandDel(object parameter);
         private delegate bool CanDoCommandDel();
         
-        private JadeCore.ViewModels.IJadeViewModel _vm;       
+        private JadeCore.ViewModels.IJadeViewModel _vm;
 
         public JadeCommandAdaptor(JadeCore.ViewModels.IJadeViewModel vm)
         {
@@ -30,15 +17,17 @@ namespace JadeGui.ViewModels
 
         public void Bind(CommandBindingCollection bindings)
         {
-            Register(bindings, JadeCommands.Exit, delegate { _vm.OnExit(); });            
-            Register(bindings, JadeCommands.NewWorkspace, delegate { _vm.OnNewWorkspace(); });
-            Register(bindings, JadeCommands.CloseWorkspace, delegate { _vm.OnCloseWorkspace(); }, delegate { return _vm.CanCloseWorkspace(); });
-            Register(bindings, JadeCommands.OpenWorkspace, delegate { _vm.OnOpenWorkspace(); }, delegate { return _vm.CanOpenWorkspace(); });
-            Register(bindings, JadeCommands.SaveWorkspace, delegate { _vm.OnSaveWorkspace(); }, delegate { return _vm.CanSaveWorkspace(); });
-            Register(bindings, JadeCommands.SaveAsWorkspace, delegate { _vm.OnSaveAsWorkspace(); }, delegate { return _vm.CanSaveAsWorkspace(); });
+            Register(bindings, JadeCore.Commands.OpenDocument, delegate(object param) { _vm.OnOpenDocument(param as JadeUtils.IO.IFileHandle); });
 
-            Register(bindings, JadeCommands.ViewLineNumbers, delegate { _vm.OnViewLineNumbers(); }, delegate { return _vm.CanViewLineNumbers(); });
-            Register(bindings, JadeCommands.CloseAllDocuments, delegate { _vm.OnCloseAllDocuments(); }, delegate { return _vm.CanCloseAllDocuments(); });
+            Register(bindings, JadeCore.Commands.Exit, delegate { _vm.OnExit(); });
+            Register(bindings, JadeCore.Commands.NewWorkspace, delegate { _vm.OnNewWorkspace(); });
+            Register(bindings, JadeCore.Commands.CloseWorkspace, delegate { _vm.OnCloseWorkspace(); }, delegate { return _vm.CanCloseWorkspace(); });
+            Register(bindings, JadeCore.Commands.OpenWorkspace, delegate { _vm.OnOpenWorkspace(); }, delegate { return _vm.CanOpenWorkspace(); });
+            Register(bindings, JadeCore.Commands.SaveWorkspace, delegate { _vm.OnSaveWorkspace(); }, delegate { return _vm.CanSaveWorkspace(); });
+            Register(bindings, JadeCore.Commands.SaveAsWorkspace, delegate { _vm.OnSaveAsWorkspace(); }, delegate { return _vm.CanSaveAsWorkspace(); });
+
+            Register(bindings, JadeCore.Commands.ViewLineNumbers, delegate { _vm.OnViewLineNumbers(); }, delegate { return _vm.CanViewLineNumbers(); });
+            Register(bindings, JadeCore.Commands.CloseAllDocuments, delegate { _vm.OnCloseAllDocuments(); }, delegate { return _vm.CanCloseAllDocuments(); });
         }
 
         private void Register(CommandBindingCollection bindings, ICommand command, OnCommandDel onCmd, CanDoCommandDel canDoCmd)
@@ -46,7 +35,7 @@ namespace JadeGui.ViewModels
             bindings.Add(new CommandBinding(command,
                                         delegate(object target, ExecutedRoutedEventArgs args)
                                         {
-                                            onCmd();
+                                            onCmd(args.Parameter);
                                             args.Handled = true;
                                         },
                                         delegate(object target, CanExecuteRoutedEventArgs args)
@@ -61,7 +50,7 @@ namespace JadeGui.ViewModels
             bindings.Add(new CommandBinding(command,
                                         delegate(object target, ExecutedRoutedEventArgs args)
                                         {
-                                            onCmd();
+                                            onCmd(args.Parameter);
                                             args.Handled = true;
                                         }));
         }

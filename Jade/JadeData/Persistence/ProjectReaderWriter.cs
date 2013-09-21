@@ -5,14 +5,13 @@ using System.Text;
 using System.IO;
 using System.Xml;
 using System.Linq;
-using JadeCore;
-using JadeCore.IO;
+using JadeUtils.IO;
 
 namespace JadeData.Persistence.Project
 {
     public static class Reader
     {
-        private static JadeData.Project.IItem MakeFile(string projectDir, FileType xml)
+        private static JadeData.Project.IItem MakeFile(string projectDir, FileType xml, IFileService fileService)
         {
             string path = xml.Path;
             if (System.IO.Path.IsPathRooted(path) == false)
@@ -20,23 +19,23 @@ namespace JadeData.Persistence.Project
                 //Convert from relative path stored in project xml file
                 path = System.IO.Path.Combine(projectDir, path);
             }
-            return new JadeData.Project.File(Services.Provider.FileService.MakeFileHandle(path));
+            return new JadeData.Project.File(fileService.MakeFileHandle(path));
         }
 
-        private static JadeData.Project.IFolder MakeFolder(string projectDir, FolderType xml)
+        private static JadeData.Project.IFolder MakeFolder(string projectDir, FolderType xml, IFileService fileService)
         {
             JadeData.Project.Folder folder = new JadeData.Project.Folder(xml.Name);
 
             foreach (FileType f in xml.Files)
-                folder.AddItem(MakeFile(projectDir, f));
+                folder.AddItem(MakeFile(projectDir, f, fileService));
 
             foreach (FolderType f in xml.Folders)
-                folder.AddFolder(MakeFolder(projectDir, f));
+                folder.AddFolder(MakeFolder(projectDir, f, fileService));
 
             return folder;
         }
 
-        public static JadeData.Project.IProject Read(string path)
+        public static JadeData.Project.IProject Read(string path, IFileService fileService)
         {
             ProjectType xml;
             XmlSerializer serializer = new XmlSerializer(typeof(ProjectType));
@@ -51,15 +50,15 @@ namespace JadeData.Persistence.Project
                 tr.Dispose();
             }
 
-            JadeData.Project.IProject result = new JadeData.Project.Project(xml.Name, Services.Provider.FileService.MakeFileHandle(path));
+            JadeData.Project.IProject result = new JadeData.Project.Project(xml.Name, fileService.MakeFileHandle(path));
 
             foreach (FolderType f in xml.Folders)
             {
-                result.AddFolder(MakeFolder(result.Directory, f));
+                result.AddFolder(MakeFolder(result.Directory, f, fileService));
             }
             foreach (FileType f in xml.Files)
             {
-                result.AddItem(MakeFile(result.Directory, f));
+                result.AddItem(MakeFile(result.Directory, f, fileService));
             }
             return result;
         }
@@ -71,7 +70,7 @@ namespace JadeData.Persistence.Project
         {
             FileType result = new FileType();
             //Convert to relative path for storage in workspace
-            result.Path = JadeCore.IO.Path.CalculateRelativePath(projectDir + @"\", file.Path);
+            result.Path = JadeUtils.IO.Path.CalculateRelativePath(projectDir + @"\", file.Path);
             return result;
         }
 

@@ -54,6 +54,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\JadeUtils\JadeUtils\JadeUtils.csproj">
+      <Project>{52652847-ed88-486a-a51d-ce4a15f16c1f}</Project>
+      <Name>JadeUtils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\JadeCore\JadeCore.csproj">
       <Project>{59cad747-608c-447a-b2af-f8fd7ace39b2}</Project>
       <Name>JadeCore</Name>

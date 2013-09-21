@@ -16,7 +16,7 @@
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
             <DockPanel Grid.Column="0" Margin="4 0 0 0">                
-                <JadeCtrlsWorkspace:WorkspaceCtrl DataContext="{Binding WorkspaceTree}"/>                
+                <JadeCtrlsWorkspace:WorkspaceCtrl DataContext="{Binding Workspace}"/>                
             </DockPanel>
             <GridSplitter Grid.Column="0" Width="4" />
             <JadeCtrlsEditor:EditorControl Grid.Column="1" DataContext="{Binding Editor}" />            

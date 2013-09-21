@@ -5,39 +5,39 @@ using System.Text;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
-using JadeCore.IO;
+using JadeUtils.IO;
 
 namespace JadeData.Persistence.Workspace
 {
     public static class Reader
     {
-        private static JadeData.Project.IProject MakeProject(string workspaceDir, ProjectType xml)
+        private static JadeData.Project.IProject MakeProject(string workspaceDir, ProjectType xml, IFileService fileService)
         {
             string path = xml.Path;
             if (System.IO.Path.IsPathRooted(path) == false)
             {
                 //Convert from relative path stored in workspace xml file
-                path = JadeCore.IO.Path.CombinePaths(workspaceDir, path);
+                path = JadeUtils.IO.Path.CombinePaths(workspaceDir, path);
             }
-            return Persistence.Project.Reader.Read(path);
+            return Persistence.Project.Reader.Read(path, fileService);
         }
 
-        private static JadeData.Workspace.IFolder MakeFolder(string workspaceDir, FolderType xml)
+        private static JadeData.Workspace.IFolder MakeFolder(string workspaceDir, FolderType xml, IFileService fileService)
         {
             JadeData.Workspace.IFolder result = new JadeData.Workspace.Folder(xml.Name);
 
             foreach (FolderType f in xml.Folders)
             {
-                result.AddFolder(MakeFolder(workspaceDir, f));
+                result.AddFolder(MakeFolder(workspaceDir, f, fileService));
             }
             foreach (ProjectType p in xml.Projects)
             {
-                result.AddProject(MakeProject(workspaceDir, p));
+                result.AddProject(MakeProject(workspaceDir, p, fileService));
             }
             return result;
         }
 
-        static public JadeData.Workspace.IWorkspace Read(IFileHandle file)
+        static public JadeData.Workspace.IWorkspace Read(IFileHandle file, IFileService fileService)
         {
             WorkspaceType xml;
             XmlSerializer serializer = new XmlSerializer(typeof(WorkspaceType));
@@ -52,14 +52,14 @@ namespace JadeData.Persistence.Workspace
                 tr.Dispose();
             }
 
-            JadeData.Workspace.IWorkspace result = new JadeData.Workspace.Workspace(xml.Name, file.Path);
+            JadeData.Workspace.IWorkspace result = new JadeData.Workspace.Workspace(xml.Name, file);
             foreach (FolderType f in xml.Folders)
             {
-                result.AddFolder(MakeFolder(result.Directory, f));
+                result.AddFolder(MakeFolder(result.Directory, f, fileService));
             }
             foreach (ProjectType p in xml.Projects)
             {
-                result.AddProject(MakeProject(result.Directory, p));
+                result.AddProject(MakeProject(result.Directory, p, fileService));
             }
 
             return result;
@@ -73,7 +73,7 @@ namespace JadeData.Persistence.Workspace
             ProjectType result = new ProjectType();
 
             //Convert to relative path for storage in workspace
-            result.Path = JadeCore.IO.Path.CalculateRelativePath(workspaceDir + @"\", proj.Path);
+            result.Path = JadeUtils.IO.Path.CalculateRelativePath(workspaceDir + @"\", proj.Path);
             Persistence.Project.Writer.Write(proj, proj.Path);
             return result;
         }

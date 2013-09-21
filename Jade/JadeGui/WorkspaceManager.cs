@@ -4,72 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Threading.Tasks;
-using JadeCore.IO;
+using JadeUtils.IO;
 
 namespace JadeGui
 {
-    public interface IWorkspaceManager
-    {
-        /// <summary>
-        /// Raised when a workspace is created, opened, closed or saved.
-        /// </summary>
-        event EventHandler WorkspaceChanged;
-
-        /// <summary>
-        /// Returns true if there is an open workspace
-        /// </summary>
-        bool WorkspaceOpen { get; }
-
-        /// <summary>
-        /// Returns true if the open workspace has been modified
-        /// </summary>
-        bool RequiresSave { get; }
-
-        /// <summary>
-        /// Close the open workspace. throws if RequiresSave is true
-        /// </summary>
-        bool CloseWorkspace();
-
-        /// <summary>
-        /// Create a new workspace. Throws if WorkspaceOpen is true
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="path"></param>
-        void NewWorkspace(string name);
-
-        /// <summary>
-        /// Open a workspace file. Throws if WorkspaceOpen is true
-        /// </summary>
-        /// <param name="path">full path to .jws file</param>
-        void OpenWorkspace(IFileHandle file);
-
-        /// <summary>
-        /// Save the current workspace. Will use the current path or prompt the user if unknown.
-        /// </summary>
-        /// <returns>true if saved</returns>
-        bool SaveWorkspace();
-
-        /// <summary>
-        /// Prompt the use user to either Save, discard or cancel.
-        /// </summary>
-        /// <returns>true if saved or discarded</returns>
-        bool SaveOrDiscardWorkspace();
-
-        /// <summary>
-        /// Save the current workspace to the specified path.
-        /// </summary>
-        /// <returns>true if saved</returns>
-        bool SaveWorkspaceAs(string path);
-
-        JadeGui.ViewModels.WorkspaceViewModel ViewModel { get; }
-    }
-
-    internal class WorkspaceManager : IWorkspaceManager
+    public class WorkspaceController : JadeCore.IWorkspaceController
     {
         private JadeData.Workspace.IWorkspace _workspace;
-        private JadeGui.ViewModels.WorkspaceViewModel _viewModel;
+        private bool _modified;
 
         public event EventHandler WorkspaceChanged;
+
+        public WorkspaceController()
+        {
+            _modified = false;
+        }
 
         private void OnWorkspaceChanged()
         {
@@ -77,10 +26,16 @@ namespace JadeGui
             if (handler != null)
                 handler(this, EventArgs.Empty);
         }
-
-        public JadeGui.ViewModels.WorkspaceViewModel ViewModel 
+               
+        public JadeData.Workspace.IWorkspace CurrentWorkspace 
         {
-            get { return _viewModel; }
+            get { return _workspace; }
+        }
+
+        public bool CurrentWorkspaceModified 
+        {
+            get { return _modified; }
+            set { _modified = value; }
         }
 
         public bool WorkspaceOpen 
@@ -92,7 +47,7 @@ namespace JadeGui
         {
             get
             {
-                if (WorkspaceOpen && _viewModel.Modified)
+                if (WorkspaceOpen && CurrentWorkspaceModified)
                     return true;
                 return false;
             }
@@ -112,7 +67,7 @@ namespace JadeGui
                 return false;
             }
             _workspace = null;
-            _viewModel = null;
+            CurrentWorkspaceModified = false;
             OnWorkspaceChanged();
             return true;
         }
@@ -128,13 +83,13 @@ namespace JadeGui
                 throw new Exception("Attempt to save null workspace.");
             }
 
-            if (_viewModel.Modified)
+            if (CurrentWorkspaceModified)
             {
                 MessageBoxResult result = JadeCore.GuiUtils.PromptYesNoCancelQuestion("Workspace has been modified, do you wish to save?");
                 if (result == MessageBoxResult.No)
                 {
                     //abandon changes
-                    _viewModel.Modified = false;
+                    CurrentWorkspaceModified = false;
                     OnWorkspaceChanged();
                     return true;
                 }
@@ -167,7 +122,7 @@ namespace JadeGui
                 throw new Exception("Attempt to save null workspace.");
             }
 
-            if (_viewModel.Modified)
+            if (CurrentWorkspaceModified)
             {
                 string path = _workspace.Path;
                 if (path == null || path.Length == 0)
@@ -200,8 +155,8 @@ namespace JadeGui
             try
             {
                 JadeData.Persistence.Workspace.Writer.Write(_workspace, path);
-                _viewModel.Modified = false;
-                _viewModel.Path = path;
+                CurrentWorkspaceModified = false;
+                _workspace.Path = path;
                 OnWorkspaceChanged();
                 return true;
             }
@@ -221,15 +176,15 @@ namespace JadeGui
 
             try
             {
-                _workspace = new JadeData.Workspace.Workspace(name, FilePath.MakeTemporaryFilePath());
-                _viewModel = new ViewModels.WorkspaceViewModel(_workspace);
-                _viewModel.Modified = true;
+                IFileHandle file = JadeCore.Services.Provider.FileService.MakeFileHandle(FilePath.MakeTemporaryFilePath());
+
+                _workspace = new JadeData.Workspace.Workspace(name, file);
+                CurrentWorkspaceModified = true;
                 OnWorkspaceChanged();
             }
             catch(Exception)
             {
                 _workspace = null;
-                _viewModel = null;
                 throw;
             }
         }
@@ -243,14 +198,12 @@ namespace JadeGui
 
             try
             {
-                _workspace = JadeData.Persistence.Workspace.Reader.Read(file);
-                _viewModel = new ViewModels.WorkspaceViewModel(_workspace);
+                _workspace = JadeData.Persistence.Workspace.Reader.Read(file, JadeCore.Services.Provider.FileService);
                 OnWorkspaceChanged();
             }
             catch(Exception e)
             {
                 _workspace = null;
-                _viewModel = null;
                 throw;
             }
         }

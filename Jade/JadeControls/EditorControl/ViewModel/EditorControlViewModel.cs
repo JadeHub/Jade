@@ -86,7 +86,7 @@ namespace JadeControls.EditorControl.ViewModel
             _selectedDocument.Selected = true;*/
         }
 
-        public void OpenSourceFile(JadeCore.IO.IFileHandle handle)
+        public void OpenSourceFile(JadeUtils.IO.IFileHandle handle)
         {
             DocumentViewModel d = new DocumentViewModel(handle.Name, handle.Path.Str);
             _openDocuments.Add(d);

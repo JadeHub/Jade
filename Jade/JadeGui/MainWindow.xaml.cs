@@ -22,8 +22,8 @@ namespace JadeGui
     {
         public MainWindow()
         {
+            
             InitializeComponent();
-            //CommandBindings.AddRange(JadeGui.ViewModels.JadeViewModelCommandAdaptor.CommandBindings);
         }
 
         private ViewModels.JadeViewModel ViewModel

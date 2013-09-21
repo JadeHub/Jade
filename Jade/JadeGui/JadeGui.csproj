@@ -66,9 +66,6 @@
     <Compile Include="Singletons.cs" />
     <Compile Include="ViewModels\JadeCommands.cs" />
     <Compile Include="ViewModels\JadeViewModel.cs" />
-    <Compile Include="ViewModels\NotifyPropertyChangedImpl.cs" />
-    <Compile Include="ViewModels\RelayCommand.cs" />
-    <Compile Include="ViewModels\WorkspaceViewModel.cs" />
     <Compile Include="WorkspaceManager.cs" />
     <Page Include="MainMenu.xaml">
       <SubType>Designer</SubType>
@@ -119,6 +116,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\JadeUtils\JadeUtils\JadeUtils.csproj">
+      <Project>{52652847-ed88-486a-a51d-ce4a15f16c1f}</Project>
+      <Name>JadeUtils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\JadeControls\JadeControls.csproj">
       <Project>{fd26d2aa-3528-43e5-8401-71e52cfca245}</Project>
       <Name>JadeControls</Name>

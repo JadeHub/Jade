@@ -16,20 +16,22 @@ namespace JadeGui
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            JadeCore.IO.Path.Test();
-
             EventManager.RegisterClassHandler(typeof(TreeViewItem), TreeViewItem.PreviewMouseRightButtonDownEvent, new RoutedEventHandler(TreeViewItem_PreviewMouseRightButtonDownEvent));
 
             base.OnStartup(e);
 
             MainWindow window = new MainWindow();
 
-            // Create the ViewModel to which 
-            // the main window binds.
+            //These services are required to create the MainViewModel
+            JadeCore.Services.Provider.FileService = new JadeUtils.IO.FileService();
+            JadeCore.Services.Provider.WorkspaceController = new WorkspaceController();
 
+            //Create the main view model object
             var viewModel = new ViewModels.JadeViewModel();
+
+            //Attach it as a service
             JadeCore.Services.Provider.JadeViewModel = viewModel;
-            JadeCore.Services.Provider.FileService = new JadeCore.IO.FileService();
+            
             viewModel.RequestClose += delegate 
             { 
                 window.Close(); 

@@ -25,6 +25,6 @@ namespace JadeControls.Workspace.ViewModel
 
         #endregion
         
-        public JadeCore.IO.IFileHandle Handle { get { return _data.Handle; } }
+        public JadeUtils.IO.IFileHandle Handle { get { return _data.Handle; } }
     }
 }
