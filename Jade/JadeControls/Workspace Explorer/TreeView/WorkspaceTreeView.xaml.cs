@@ -23,7 +23,6 @@ namespace JadeControls.Workspace
         public WorkspaceTreeView()
         {
             InitializeComponent();
-
             CommandBindings.AddRange(ViewModel.TreeViewCommandAdaptor.CommandBindings);
         }
 

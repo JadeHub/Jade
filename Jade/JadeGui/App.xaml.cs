@@ -20,7 +20,7 @@ namespace JadeGui
 
             base.OnStartup(e);
 
-            MainWindow window = new MainWindow();
+            
 
             //These services are required to create the MainViewModel
             JadeCore.Services.Provider.FileService = new JadeUtils.IO.FileService();
@@ -29,6 +29,8 @@ namespace JadeGui
 
             //Create the main view model object
             var viewModel = new ViewModels.JadeViewModel();
+
+            MainWindow window = new MainWindow();
 
             viewModel.RequestClose += delegate 
             { 

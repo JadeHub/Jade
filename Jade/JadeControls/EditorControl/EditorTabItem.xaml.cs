@@ -13,28 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace JadeGui
+namespace JadeControls.EditorControl
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for EditorTabItem.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class EditorTabItem : UserControl
     {
-        public MainWindow()
+        public EditorTabItem()
         {
             InitializeComponent();
         }
-
-        private ViewModels.JadeViewModel ViewModel
-        {
-            get { return (ViewModels.JadeViewModel)this.DataContext; }
-        }
-
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
-        {
-            e.Cancel = !ViewModel.RequestExit();
-        }
-
-        
     }
 }

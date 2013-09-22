@@ -35,7 +35,7 @@ namespace JadeControls.Workspace.ViewModel
                 return _tree;
             }
         }
-
+        /*
         public string Name
         {
             get
@@ -58,13 +58,7 @@ namespace JadeControls.Workspace.ViewModel
             {
                 return _data.Path;
             }
-          /*  set
-            {
-                _data.Path = value;
-                OnPropertyChanged("Path");
-                OnPropertyChanged("Directory");
-            }*/
-        }
+        }*/
 
         #endregion
     }

@@ -11,7 +11,8 @@ namespace JadeControls.EditorControl.ViewModel
     {
         #region Data
 
-        private IEditorDoc _document; 
+        private IEditorDoc _document;
+        private int _caretOffset;
         private bool _selected;
         private ICSharpCode.AvalonEdit.Document.TextDocument _avDoc;
 
@@ -21,6 +22,7 @@ namespace JadeControls.EditorControl.ViewModel
         {
             _document = doc;            
             _selected = false;
+            _caretOffset = 0;
           //  _avDoc = new ICSharpCode.AvalonEdit.Document.TextDocument();
         }
 
@@ -31,9 +33,17 @@ namespace JadeControls.EditorControl.ViewModel
 
         #region Public Properties
 
+        public int Offset 
+        { 
+            get { return _caretOffset; } 
+            set { _caretOffset = value; OnPropertyChanged("Offset"); } 
+        }
+
         public JadeUtils.IO.FilePath Path { get { return _document.Path; } }
 
         public override string DisplayName { get { return _document.Name; } }
+
+        public string Text { get { return _avDoc.Text; } set { } }
 
         public bool Selected 
         { 

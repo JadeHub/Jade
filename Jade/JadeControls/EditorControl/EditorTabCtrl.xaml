@@ -17,6 +17,7 @@
                     Background="WhiteSmoke" BorderThickness="0" 
                     IsSynchronizedWithCurrentItem="True" 
                     ItemsSource="{Binding Path=OpenDocuments}" 
+                    SelectedItem="{Binding Path=SelectedDocument}"
                     ItemTemplate="{StaticResource ClosableTabItemTemplate}"
                     Margin="0">   
             </TabControl>

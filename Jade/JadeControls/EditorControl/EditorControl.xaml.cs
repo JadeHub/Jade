@@ -23,7 +23,21 @@ namespace JadeControls.EditorControl
         public EditorControl()
         {
             InitializeComponent();
+            this.DataContextChanged += EditorControl_DataContextChanged;
+            
             //textEditor.ShowLineNumbers = true;
         }
+
+        void EditorControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            ((ViewModel.EditorControlViewModel)(DataContext)).Commands.Bind(CommandBindings);
+        }
+
+        private void TabCtrl_Loaded_1(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        
     }
 }
