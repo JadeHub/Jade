@@ -23,7 +23,7 @@ namespace JadeControls.EditorControl
         public EditorControl()
         {
             InitializeComponent();
-            textEditor.ShowLineNumbers = true;
+            //textEditor.ShowLineNumbers = true;
         }
     }
 }

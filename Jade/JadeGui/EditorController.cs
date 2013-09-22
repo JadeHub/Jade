@@ -13,10 +13,14 @@ namespace JadeGui
 
         #endregion
 
+        #region Constructor
+
         public EditorSourceDocument(IFileHandle file)
         {
             _file = file;
         }
+
+        #endregion
 
         #region Public Properties
 
@@ -34,8 +38,6 @@ namespace JadeGui
         {
             get { return false; }
         }
-
-        public IFileHandle Handle { get { return _file; } }
 
         #endregion
     }

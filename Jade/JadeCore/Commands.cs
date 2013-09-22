@@ -16,4 +16,56 @@ namespace JadeCore
         public static readonly RoutedCommand ViewLineNumbers = new RoutedCommand("ViewLineNumbers", typeof(object));
         public static readonly RoutedCommand CloseAllDocuments = new RoutedCommand("CloseAllDocuments", typeof(object));
     }
+
+    public interface IJadeCommandHandler
+    {
+        #region Commands
+
+        void OnOpenDocument(JadeUtils.IO.IFileHandle file);
+
+        /// <summary>
+        /// Close the application.
+        /// </summary>
+        void OnExit();
+
+        /// <summary>
+        /// Create a new Workspace.
+        /// </summary>
+        void OnNewWorkspace();
+
+        /// <summary>
+        /// Close the current workspace.
+        /// </summary>
+        void OnCloseWorkspace();
+        bool CanCloseWorkspace();
+
+        /// <summary>
+        /// Open an existing Workspace.
+        /// </summary>
+        void OnOpenWorkspace();
+        bool CanOpenWorkspace();
+
+        /// <summary>
+        /// Save the current Workspace.
+        /// </summary>
+        void OnSaveWorkspace();
+        bool CanSaveWorkspace();
+
+        /// <summary>
+        /// Save the current Workspace.
+        /// </summary>
+        void OnSaveAsWorkspace();
+        bool CanSaveAsWorkspace();
+
+        /// <summary>
+        /// Toggle Line number display.
+        /// </summary>
+        void OnViewLineNumbers();
+        bool CanViewLineNumbers();
+
+        void OnCloseAllDocuments();
+        bool CanCloseAllDocuments();
+
+        #endregion
+    }
 }

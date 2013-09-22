@@ -93,7 +93,7 @@ namespace JadeControls.EditorControl.ViewModel
 
         void OnDocumentOpened(JadeCore.EditorDocChangeEventArgs args)
         {
-            DocumentViewModel d = new DocumentViewModel(args.Document.Handle.Name, args.Document.Handle.Path);
+            DocumentViewModel d = new DocumentViewModel(args.Document);
             _openDocuments.Add(d);
             SelectedDocument = d;
         }

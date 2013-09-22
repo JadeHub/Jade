@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Input;
 using System.IO;
+using JadeCore;
 using JadeUtils.IO;
 
 namespace JadeControls.EditorControl.ViewModel
@@ -10,17 +11,15 @@ namespace JadeControls.EditorControl.ViewModel
     {
         #region Data
 
-        private string _name;
-        private FilePath _path;
+        private IEditorDoc _document; 
         private bool _selected;
         private ICSharpCode.AvalonEdit.Document.TextDocument _avDoc;
 
         #endregion
 
-        public DocumentViewModel(string name, FilePath path)
+        public DocumentViewModel(IEditorDoc doc)
         {
-            _name = name;
-            _path = path;
+            _document = doc;            
             _selected = false;
           //  _avDoc = new ICSharpCode.AvalonEdit.Document.TextDocument();
         }
@@ -32,9 +31,9 @@ namespace JadeControls.EditorControl.ViewModel
 
         #region Public Properties
 
-        public JadeUtils.IO.FilePath Path { get { return _path; } }
+        public JadeUtils.IO.FilePath Path { get { return _document.Path; } }
 
-        public override string DisplayName { get { return _name; } }
+        public override string DisplayName { get { return _document.Name; } }
 
         public bool Selected 
         { 
@@ -48,7 +47,7 @@ namespace JadeControls.EditorControl.ViewModel
                 OnPropertyChanged("Selected");
                 if (_selected && _avDoc == null)
                 {
-                    using (FileStream fs = new FileStream(_path.Str, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    using (FileStream fs = new FileStream(_document.Path.Str, FileMode.Open, FileAccess.Read, FileShare.Read))
                     {
                         using (StreamReader reader = ICSharpCode.AvalonEdit.Utils.FileReader.OpenStream(fs, System.Text.Encoding.UTF8))
                         {

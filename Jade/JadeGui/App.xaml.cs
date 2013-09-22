@@ -30,9 +30,6 @@ namespace JadeGui
             //Create the main view model object
             var viewModel = new ViewModels.JadeViewModel();
 
-            //Attach it as a service
-            JadeCore.Services.Provider.JadeViewModel = viewModel;
-            
             viewModel.RequestClose += delegate 
             { 
                 window.Close(); 

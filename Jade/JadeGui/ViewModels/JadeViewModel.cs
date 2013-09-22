@@ -17,7 +17,7 @@ namespace JadeGui.ViewModels
     /// <summary>
     /// Main View Model class. Singleton instance that lives the life of the application
     /// </summary>
-    internal class JadeViewModel : JadeControls.NotifyPropertyChanged, JadeCore.ViewModels.IJadeViewModel
+    internal class JadeViewModel : JadeControls.NotifyPropertyChanged, JadeCore.IJadeCommandHandler
     {
         #region Data
 

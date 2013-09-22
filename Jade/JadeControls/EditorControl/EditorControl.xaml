@@ -4,19 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+             xmlns:local="clr-namespace:JadeControls.EditorControl"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        
-        <avalonEdit:TextEditor
-				Name="textEditor"
-				FontFamily="Consolas"
-				FontSize="10pt"
-				SyntaxHighlighting="C#"
-            Margin="5,0"
-            Document="{Binding SelectedDocument.Document}"
-            >
-            
-        </avalonEdit:TextEditor>
+        <local:TabCtrl>
+            <avalonEdit:TextEditor
+				   
+				    FontFamily="Consolas"
+				    FontSize="10pt"
+				    SyntaxHighlighting="C#"
+                Margin="5,0"
+                Document="{Binding SelectedDocument.Document}"
+                />
+        </local:TabCtrl>
     </Grid>
 </UserControl>

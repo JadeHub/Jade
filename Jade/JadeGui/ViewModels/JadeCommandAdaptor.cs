@@ -8,26 +8,26 @@ namespace JadeGui.ViewModels
         private delegate void OnCommandDel(object parameter);
         private delegate bool CanDoCommandDel();
         
-        private JadeCore.ViewModels.IJadeViewModel _vm;
+        private JadeCore.IJadeCommandHandler _handler;
 
-        public JadeCommandAdaptor(JadeCore.ViewModels.IJadeViewModel vm)
+        public JadeCommandAdaptor(JadeCore.IJadeCommandHandler handler)
         {
-            _vm = vm;
+            _handler = handler;
         }
 
         public void Bind(CommandBindingCollection bindings)
         {
-            Register(bindings, JadeCore.Commands.OpenDocument, delegate(object param) { _vm.OnOpenDocument(param as JadeUtils.IO.IFileHandle); });
+            Register(bindings, JadeCore.Commands.OpenDocument, delegate(object param) { _handler.OnOpenDocument(param as JadeUtils.IO.IFileHandle); });
 
-            Register(bindings, JadeCore.Commands.Exit, delegate { _vm.OnExit(); });
-            Register(bindings, JadeCore.Commands.NewWorkspace, delegate { _vm.OnNewWorkspace(); });
-            Register(bindings, JadeCore.Commands.CloseWorkspace, delegate { _vm.OnCloseWorkspace(); }, delegate { return _vm.CanCloseWorkspace(); });
-            Register(bindings, JadeCore.Commands.OpenWorkspace, delegate { _vm.OnOpenWorkspace(); }, delegate { return _vm.CanOpenWorkspace(); });
-            Register(bindings, JadeCore.Commands.SaveWorkspace, delegate { _vm.OnSaveWorkspace(); }, delegate { return _vm.CanSaveWorkspace(); });
-            Register(bindings, JadeCore.Commands.SaveAsWorkspace, delegate { _vm.OnSaveAsWorkspace(); }, delegate { return _vm.CanSaveAsWorkspace(); });
+            Register(bindings, JadeCore.Commands.Exit, delegate { _handler.OnExit(); });
+            Register(bindings, JadeCore.Commands.NewWorkspace, delegate { _handler.OnNewWorkspace(); });
+            Register(bindings, JadeCore.Commands.CloseWorkspace, delegate { _handler.OnCloseWorkspace(); }, delegate { return _handler.CanCloseWorkspace(); });
+            Register(bindings, JadeCore.Commands.OpenWorkspace, delegate { _handler.OnOpenWorkspace(); }, delegate { return _handler.CanOpenWorkspace(); });
+            Register(bindings, JadeCore.Commands.SaveWorkspace, delegate { _handler.OnSaveWorkspace(); }, delegate { return _handler.CanSaveWorkspace(); });
+            Register(bindings, JadeCore.Commands.SaveAsWorkspace, delegate { _handler.OnSaveAsWorkspace(); }, delegate { return _handler.CanSaveAsWorkspace(); });
 
-            Register(bindings, JadeCore.Commands.ViewLineNumbers, delegate { _vm.OnViewLineNumbers(); }, delegate { return _vm.CanViewLineNumbers(); });
-            Register(bindings, JadeCore.Commands.CloseAllDocuments, delegate { _vm.OnCloseAllDocuments(); }, delegate { return _vm.CanCloseAllDocuments(); });
+            Register(bindings, JadeCore.Commands.ViewLineNumbers, delegate { _handler.OnViewLineNumbers(); }, delegate { return _handler.CanViewLineNumbers(); });
+            Register(bindings, JadeCore.Commands.CloseAllDocuments, delegate { _handler.OnCloseAllDocuments(); }, delegate { return _handler.CanCloseAllDocuments(); });
         }
 
         private void Register(CommandBindingCollection bindings, ICommand command, OnCommandDel onCmd, CanDoCommandDel canDoCmd)

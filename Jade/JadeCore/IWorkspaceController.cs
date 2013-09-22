@@ -57,8 +57,14 @@ namespace JadeCore
         /// <returns>true if saved</returns>
         bool SaveWorkspaceAs(string path);
 
+        /// <summary>
+        /// Returns the current workspace
+        /// </summary>
         JadeData.Workspace.IWorkspace CurrentWorkspace { get; }
 
+        /// <summary>
+        /// True if the current workspace has beeb modified
+        /// </summary>
         bool CurrentWorkspaceModified { get; set; }
     }
 }
