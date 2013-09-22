@@ -39,7 +39,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FakeData.cs" />
     <Compile Include="Persistence\Project.cs">
       <DependentUpon>Project.xsd</DependentUpon>
     </Compile>

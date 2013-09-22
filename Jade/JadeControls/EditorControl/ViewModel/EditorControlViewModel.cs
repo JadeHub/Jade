@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
+using JadeUtils.IO;
 
 namespace JadeControls.EditorControl.ViewModel
 {
     internal class DocumentCollection
     {
-        private ObservableCollection<JadeCore.ViewModels.IEditorDocument> _documents;
+        private ObservableCollection<DocumentViewModel> _documents;
 
         internal DocumentCollection()
         {
-            _documents = new ObservableCollection<JadeCore.ViewModels.IEditorDocument>();
+            _documents = new ObservableCollection<DocumentViewModel>();
             _documents.CollectionChanged += OnOpenDocumentsChanged;
         }
 
-        internal void Add(JadeCore.ViewModels.IEditorDocument doc)
+        internal void Add(DocumentViewModel doc)
         {
             _documents.Add(doc);
         }
@@ -45,10 +44,10 @@ namespace JadeControls.EditorControl.ViewModel
         {
             DocumentViewModel doc = sender as DocumentViewModel;
             _documents.Remove(doc);
-            doc.Dispose();
+            
         }
 
-        public ObservableCollection<JadeCore.ViewModels.IEditorDocument> Documents
+        public ObservableCollection<DocumentViewModel> Documents
         {
             get
             {
@@ -56,51 +55,52 @@ namespace JadeControls.EditorControl.ViewModel
             }
         }
 
-        public void CloseAll()
+        public void Close(FilePath path)
         {
-            JadeCore.ViewModels.IEditorDocument[] tmp = _documents.ToArray();
-
-            foreach (DocumentViewModel doc in tmp)
+            foreach (DocumentViewModel doc in _documents)
             {
-                _documents.Remove(doc);
-                doc.Dispose();
+                if (doc.Path.Equals(path))
+                {
+                    _documents.Remove(doc);
+                    break;
+                }
             }
         }
     }
 
-    public class EditorControlViewModel : JadeControls.NotifyPropertyChanged, JadeCore.ViewModels.IEditorViewModel
+    public class EditorControlViewModel : JadeControls.NotifyPropertyChanged
     {
         #region Data
 
         private DocumentCollection _openDocuments;
         private DocumentViewModel _selectedDocument;
+        private JadeCore.IEditorController _controller;
 
         #endregion
 
-        public EditorControlViewModel()
+        public EditorControlViewModel(JadeCore.IEditorController controller)
         {
+            _controller = controller;
+            _controller.DocumentOpened += OnDocumentOpened;
+            _controller.DocumentClosed += OnDocumentClosed;
             _openDocuments = new DocumentCollection();
-          /*  _openDocuments.Add(new DocumentViewModel("test1", "11111"));
-            _openDocuments.Add(new DocumentViewModel("test2", "22222"));
-            _selectedDocument = _openDocuments.Documents.ElementAt(0);
-            _selectedDocument.Selected = true;*/
         }
 
-        public void OpenSourceFile(JadeUtils.IO.IFileHandle handle)
+        void OnDocumentClosed(JadeCore.EditorDocChangeEventArgs args)
         {
-            DocumentViewModel d = new DocumentViewModel(handle.Name, handle.Path.Str);
+            _openDocuments.Close(args.Document.Path);                
+        }
+
+        void OnDocumentOpened(JadeCore.EditorDocChangeEventArgs args)
+        {
+            DocumentViewModel d = new DocumentViewModel(args.Document.Handle.Name, args.Document.Handle.Path);
             _openDocuments.Add(d);
             SelectedDocument = d;
         }
 
-        public void CloseAllDocuments()
-        {
-            _openDocuments.CloseAll();
-        }
-
         #region Public Properties
 
-        public ObservableCollection<JadeCore.ViewModels.IEditorDocument> OpenDocuments
+        public ObservableCollection<DocumentViewModel> OpenDocuments
         {
             get { return _openDocuments.Documents; }
         }

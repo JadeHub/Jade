@@ -55,7 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="EditorManager.cs" />
+    <Compile Include="EditorController.cs" />
     <Compile Include="JadeTreeViewExtentions.cs" />
     <Compile Include="MainMenu.xaml.cs">
       <DependentUpon>MainMenu.xaml</DependentUpon>
@@ -63,7 +63,6 @@
     <Compile Include="MainToolbar.xaml.cs">
       <DependentUpon>MainToolbar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Singletons.cs" />
     <Compile Include="ViewModels\JadeCommands.cs" />
     <Compile Include="ViewModels\JadeViewModel.cs" />
     <Compile Include="WorkspaceManager.cs" />
@@ -149,9 +148,7 @@
   <ItemGroup>
     <Resource Include="Images\File.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="AddProjectFileWindow\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Images\Workspace.png" />
   </ItemGroup>

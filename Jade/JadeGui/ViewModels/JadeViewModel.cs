@@ -12,6 +12,7 @@ namespace JadeGui.ViewModels
 {
     using JadeData;
     using JadeControls.Workspace.ViewModel;
+    using JadeControls.EditorControl.ViewModel;
     
     /// <summary>
     /// Main View Model class. Singleton instance that lives the life of the application
@@ -21,8 +22,12 @@ namespace JadeGui.ViewModels
         #region Data
 
         private JadeCommandAdaptor _commands;
+
         private JadeCore.IWorkspaceController _workspaceController;
         private WorkspaceViewModel _currentWorkspace;
+
+        private EditorControlViewModel _editorModel;
+        private JadeCore.IEditorController _editorController;
        
         #endregion
 
@@ -31,8 +36,11 @@ namespace JadeGui.ViewModels
         public JadeViewModel()
         {
             _workspaceController = JadeCore.Services.Provider.WorkspaceController;
+            //Todo - Workspace viewmodel to track WorkspaceController changes
             _workspaceController.WorkspaceChanged += delegate { OnWorkspaceChanged(); };
-            _editorModel = new JadeControls.EditorControl.ViewModel.EditorControlViewModel();
+
+            _editorController = JadeCore.Services.Provider.EditorController;
+            _editorModel = new JadeControls.EditorControl.ViewModel.EditorControlViewModel(_editorController);
             _commands = new JadeCommandAdaptor(this);
             UpdateWindowTitle();
         }
@@ -64,7 +72,6 @@ namespace JadeGui.ViewModels
                 if (_workspaceController.WorkspaceOpen)
                 {
                     return _workspaceController.CurrentWorkspace.Name + " - Jade IDE";
-                    //return _workspaceManager.ViewModel.Name + " - Jade IDE";
                 }
                 return "Jade IDE";
             }            
@@ -83,9 +90,9 @@ namespace JadeGui.ViewModels
 
         #region EditorControl
 
-        private JadeControls.EditorControl.ViewModel.EditorControlViewModel _editorModel;
+        
 
-        public JadeCore.ViewModels.IEditorViewModel Editor
+        public EditorControlViewModel Editor
         {
             get { return _editorModel; }
         }
@@ -133,7 +140,7 @@ namespace JadeGui.ViewModels
 
         public void OnOpenDocument(JadeUtils.IO.IFileHandle file)
         {
-            _editorModel.OpenSourceFile(file);
+            _editorController.OpenSourceFile(file);
         }
 
         #region Exit
@@ -235,12 +242,12 @@ namespace JadeGui.ViewModels
 
         public void OnCloseAllDocuments()
         {
-            Editor.CloseAllDocuments();
+            _editorController.CloseAllDocuments();            
         }
 
         public bool CanCloseAllDocuments()
         {
-            return Editor.OpenDocuments.Count > 0;
+            return _editorController.HasOpenDocuments;
         }
 
         #endregion

@@ -17,6 +17,12 @@ namespace JadeUtils.IO
             return new FilePath(path);
         }
 
+        public override bool Equals(object obj)
+        {
+            FilePath other = (FilePath)obj;
+            return base.Equals(obj) && other.Str.ToLowerInvariant() == this.Str.ToLowerInvariant();
+        }
+
         /// <summary>
         /// Create a FilePath struct pointing to a temporary file path which is guaranteed not to exist.
         /// </summary>

@@ -27,15 +27,23 @@ namespace JadeData.Project
         
         #endregion
 
+        #region Constructor
+
         public File(JadeUtils.IO.IFileHandle file)
         {
             _file = file;
         }
 
+        #endregion
+
+        #region Public Properties
+
         public string Name { get { return _file.Name; } }
         public ItemType Type { get { return ItemType.File; } }
         public string Path { get { return _file.Path.Str; } }
         public JadeUtils.IO.IFileHandle Handle { get { return _file; } }
+
+        #endregion
     }
 
     public interface IFolder
@@ -61,12 +69,16 @@ namespace JadeData.Project
 
         #endregion
 
+        #region Constructor
+
         public Folder(string name)
         {
             this._name = name;
             this._items = new List<IItem>();
             this._folders = new List<IFolder>();
         }
+
+        #endregion
 
         #region IFolder Implementation
 
@@ -152,6 +164,8 @@ namespace JadeData.Project
 
         #endregion
 
+        #region Constructor
+
         public Project(string name, JadeUtils.IO.IFileHandle file)
         {
             _file = file;
@@ -159,6 +173,8 @@ namespace JadeData.Project
             _items = new Dictionary<string, IItem>();
             _folders = new List<IFolder>();
         }
+
+        #endregion
 
         #region IProject Implementation
 

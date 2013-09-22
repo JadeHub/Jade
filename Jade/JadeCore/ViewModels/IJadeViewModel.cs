@@ -4,29 +4,9 @@ using System.Collections.ObjectModel;
 using System.Text;
 
 namespace JadeCore.ViewModels
-{
-    public interface IEditorDocument
-    {
-        string DisplayName
-        {
-            get;
-        }
-    }
-
-    public interface IEditorViewModel
-    {
-        void OpenSourceFile(JadeUtils.IO.IFileHandle file);
-        void CloseAllDocuments();
-        ObservableCollection<IEditorDocument> OpenDocuments { get; }
-    }
-
+{  
     public interface IJadeViewModel
-    {
-        IEditorViewModel Editor
-        {
-            get;
-        }
-        
+    {        
         #region Commands
 
         void OnOpenDocument(JadeUtils.IO.IFileHandle file);
@@ -34,7 +14,7 @@ namespace JadeCore.ViewModels
         /// <summary>
         /// Close the application.
         /// </summary>
-        void OnExit();
+      //  void OnExit();
 
         /// <summary>
         /// Create a new Workspace.

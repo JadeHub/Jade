@@ -11,6 +11,7 @@ namespace JadeCore
         JadeCore.ViewModels.IJadeViewModel JadeViewModel { get; set; }
         JadeUtils.IO.IFileService FileService { get; set; }
         JadeCore.IWorkspaceController WorkspaceController { get; set; }
+        JadeCore.IEditorController EditorController { get; set; }
     }
 
     public class Services
@@ -30,5 +31,6 @@ namespace JadeCore
         public JadeCore.ViewModels.IJadeViewModel JadeViewModel { get; set; }
         public JadeUtils.IO.IFileService FileService { get; set; }
         public JadeCore.IWorkspaceController WorkspaceController { get; set; }
+        public JadeCore.IEditorController EditorController { get; set; }
     }
 }
