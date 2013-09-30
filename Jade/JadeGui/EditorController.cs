@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using JadeUtils.IO;
 using JadeCore;
 
@@ -9,7 +10,9 @@ namespace JadeGui
     {
         #region Data
 
-        IFileHandle _file;
+        private IFileHandle _file;
+        private string _content;
+        private bool _modified;
 
         #endregion
 
@@ -36,7 +39,35 @@ namespace JadeGui
 
         public bool Modified 
         {
-            get { return false; }
+            get { return _modified; }
+            set { _modified = value; }
+        }
+
+        public string Content
+        {
+            get
+            {
+                if (_content == null)
+                {
+                    Load();
+                }
+                return _content;
+            }
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void Load()
+        {
+            using (FileStream fs = new FileStream(Path.Str, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                using (StreamReader reader = new StreamReader(fs, System.Text.Encoding.UTF8))
+                {
+                    _content = reader.ReadToEnd();
+                }
+            }
         }
 
         #endregion
@@ -46,8 +77,8 @@ namespace JadeGui
     {
         #region Data
 
-
         private Dictionary<FilePath, IEditorDoc> _openDocuments;
+        private IEditorDoc _activeDocument;
 
         #endregion
 
@@ -72,7 +103,8 @@ namespace JadeGui
 
         public JadeCore.IEditorDoc ActiveDocument
         {
-            get { return null; }
+            get { return _activeDocument; }
+            set { _activeDocument = value; }
         }
 
         public bool HasOpenDocuments { get { return _openDocuments.Count > 0; } }
@@ -87,6 +119,7 @@ namespace JadeGui
             {
                 IEditorDoc doc = new EditorSourceDocument(file);
                 _openDocuments.Add(file.Path, doc);
+                ActiveDocument = doc;
                 OnDocumentOpen(doc);
             }
         }

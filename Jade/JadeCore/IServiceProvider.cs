@@ -8,9 +8,10 @@ namespace JadeCore
 {
     public interface IServiceProvider
     {
+        JadeCore.Properties.Settings Settings { get;}
         JadeUtils.IO.IFileService FileService { get; set; }
         JadeCore.IWorkspaceController WorkspaceController { get; set; }
-        JadeCore.IEditorController EditorController { get; set; }
+        JadeCore.IEditorController EditorController { get; set; }        
     }
 
     public class Services
@@ -27,6 +28,7 @@ namespace JadeCore
 
     public class ServiceProvider : IServiceProvider
     {
+        public JadeCore.Properties.Settings Settings { get { return JadeCore.Properties.Settings.Default; } }
         public JadeUtils.IO.IFileService FileService { get; set; }
         public JadeCore.IWorkspaceController WorkspaceController { get; set; }
         public JadeCore.IEditorController EditorController { get; set; }

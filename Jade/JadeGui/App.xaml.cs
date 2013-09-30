@@ -14,14 +14,14 @@ namespace JadeGui
     /// </summary>
     public partial class App : Application
     {
+        private MainWindow _window;
+
         protected override void OnStartup(StartupEventArgs e)
         {
             EventManager.RegisterClassHandler(typeof(TreeViewItem), TreeViewItem.PreviewMouseRightButtonDownEvent, new RoutedEventHandler(TreeViewItem_PreviewMouseRightButtonDownEvent));
 
             base.OnStartup(e);
-
             
-
             //These services are required to create the MainViewModel
             JadeCore.Services.Provider.FileService = new JadeUtils.IO.FileService();
             JadeCore.Services.Provider.WorkspaceController = new WorkspaceController();
@@ -30,20 +30,40 @@ namespace JadeGui
             //Create the main view model object
             var viewModel = new ViewModels.JadeViewModel();
 
-            MainWindow window = new MainWindow();
+            _window = new MainWindow();
 
             viewModel.RequestClose += delegate 
             { 
-                window.Close(); 
+                _window.Close(); 
             };
                     
-            // Allow all controls in the window to 
+            // Allow all controls in the _window to 
             // bind to the ViewModel by setting the 
             // DataContext, which propagates down 
             // the element tree.
-            window.DataContext = viewModel;
-            viewModel.Commands.Bind(window.CommandBindings);
-            window.Show();
+            _window.DataContext = viewModel;
+            viewModel.Commands.Bind(_window.CommandBindings);
+
+            JadeCore.Properties.Settings settings = JadeCore.Services.Provider.Settings;
+            if (settings.MainWindowPosition != null)
+            {
+                _window.RestoreWindowPosition(settings.MainWindowPosition);
+            }
+
+            _window.Closed += _window_Closed;
+            _window.Show();
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            JadeCore.Services.Provider.Settings.Save();
+            base.OnExit(e);
+        }
+
+        void _window_Closed(object sender, EventArgs e)
+        {
+            JadeCore.Services.Provider.Settings.MainWindowPosition = _window.WindowPosition;
+            JadeCore.Services.Provider.WorkspaceController.SaveSettings();
         }
 
         private void TreeViewItem_PreviewMouseRightButtonDownEvent(object sender, RoutedEventArgs e)

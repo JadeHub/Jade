@@ -9,6 +9,8 @@ namespace JadeCore
         /// Raised when a workspace is created, opened, closed or saved.
         /// </summary>
         event EventHandler WorkspaceChanged;
+        
+        void SaveSettings();
 
         /// <summary>
         /// Returns true if there is an open workspace
@@ -26,23 +28,14 @@ namespace JadeCore
         bool CloseWorkspace();
 
         /// <summary>
-        /// Create a new workspace. Throws if WorkspaceOpen is true
+        /// Close any open workspace and create a new, empty workspace with the given name.
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="path"></param>
         void NewWorkspace(string name);
 
         /// <summary>
-        /// Open a workspace file. Throws if WorkspaceOpen is true
+        /// Prompt the user for a name, close any open workspace and create a new, empty workspace.
         /// </summary>
-        /// <param name="path">full path to .jws file</param>
         void OpenWorkspace(IFileHandle file);
-
-        /// <summary>
-        /// Save the current workspace. Will use the current path or prompt the user if unknown.
-        /// </summary>
-        /// <returns>true if saved</returns>
-        bool SaveWorkspace();
 
         /// <summary>
         /// Prompt the use user to either Save, discard or cancel.
@@ -55,7 +48,7 @@ namespace JadeCore
         /// Save the current workspace to the specified path.
         /// </summary>
         /// <returns>true if saved</returns>
-        bool SaveWorkspaceAs(string path);
+        bool SaveWorkspace(string path);
 
         /// <summary>
         /// Returns the current workspace
@@ -66,5 +59,7 @@ namespace JadeCore
         /// True if the current workspace has beeb modified
         /// </summary>
         bool CurrentWorkspaceModified { get; set; }
+
+        RecentFileList RecentFiles { get; }
     }
 }

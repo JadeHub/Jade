@@ -130,6 +130,12 @@
             </HierarchicalDataTemplate>
             <DataTemplate DataType="{x:Type WorkspaceTreeViewModels:File}" >
                 <StackPanel Orientation="Horizontal" ContextMenu="{DynamicResource FileContextMenu}">
+                    <StackPanel.ToolTip>
+                        <TextBlock FontSize="11"  
+                                    Foreground="Black" 
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Path}" />
+                    </StackPanel.ToolTip>
                     <Image HorizontalAlignment="Left" Width="16" Height="16" Margin="3,0" Source="{StaticResource FileIconSource}" />
                     <TextBlock Text="{Binding DisplayName}" />                    
                 </StackPanel>

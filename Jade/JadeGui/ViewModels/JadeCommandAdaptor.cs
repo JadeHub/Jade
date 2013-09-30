@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using JadeCore;
 
 namespace JadeGui.ViewModels
 {
@@ -17,17 +18,26 @@ namespace JadeGui.ViewModels
 
         public void Bind(CommandBindingCollection bindings)
         {
-            Register(bindings, JadeCore.Commands.OpenDocument, delegate(object param) { _handler.OnOpenDocument(param as JadeUtils.IO.IFileHandle); });
+            Register(bindings, Commands.OpenDocument,       delegate(object param) { _handler.OnOpenDocument(param as JadeUtils.IO.IFileHandle); });
 
-            Register(bindings, JadeCore.Commands.Exit, delegate { _handler.OnExit(); });
-            Register(bindings, JadeCore.Commands.NewWorkspace, delegate { _handler.OnNewWorkspace(); });
-            Register(bindings, JadeCore.Commands.CloseWorkspace, delegate { _handler.OnCloseWorkspace(); }, delegate { return _handler.CanCloseWorkspace(); });
-            Register(bindings, JadeCore.Commands.OpenWorkspace, delegate { _handler.OnOpenWorkspace(); }, delegate { return _handler.CanOpenWorkspace(); });
-            Register(bindings, JadeCore.Commands.SaveWorkspace, delegate { _handler.OnSaveWorkspace(); }, delegate { return _handler.CanSaveWorkspace(); });
-            Register(bindings, JadeCore.Commands.SaveAsWorkspace, delegate { _handler.OnSaveAsWorkspace(); }, delegate { return _handler.CanSaveAsWorkspace(); });
+            Register(bindings, ApplicationCommands.New,     delegate { _handler.OnNewFile(); },         delegate { return _handler.CanNewFile(); });
+            Register(bindings, ApplicationCommands.Open,    delegate { _handler.OnOpenFile(); },        delegate { return _handler.CanOpenFile(); });
+            Register(bindings, ApplicationCommands.Save,    delegate { _handler.OnSaveFile(); },        delegate { return _handler.CanSaveFile(); });
+            Register(bindings, ApplicationCommands.SaveAs,  delegate { _handler.OnSaveAsFile(); },      delegate { return _handler.CanSaveAsFile(); });
+            Register(bindings, Commands.SaveAllFiles,       delegate { _handler.OnSaveAllFiles(); },    delegate { return _handler.CanSaveAllFiles(); });
+            Register(bindings, ApplicationCommands.Close,   delegate { _handler.OnCloseFile(); },       delegate { return _handler.CanCloseFile(); });
 
-            Register(bindings, JadeCore.Commands.ViewLineNumbers, delegate { _handler.OnViewLineNumbers(); }, delegate { return _handler.CanViewLineNumbers(); });
-            Register(bindings, JadeCore.Commands.CloseAllDocuments, delegate { _handler.OnCloseAllDocuments(); }, delegate { return _handler.CanCloseAllDocuments(); });
+            Register(bindings, Commands.Exit,               delegate { _handler.OnExit(); });
+            Register(bindings, Commands.NewWorkspace,       delegate { _handler.OnNewWorkspace(); });
+            Register(bindings, Commands.CloseWorkspace,     delegate { _handler.OnCloseWorkspace(); },  delegate { return _handler.CanCloseWorkspace(); });
+            Register(bindings, Commands.PromptOpenWorkspace, delegate { _handler.OnPromptOpenWorkspace(); }, delegate { return _handler.CanPromptOpenWorkspace(); });
+            Register(bindings, Commands.OpenWorkspace,      delegate(object param) { _handler.OnOpenWorkspace(param as string); },   delegate { return _handler.CanOpenWorkspace(); });
+            Register(bindings, Commands.SaveWorkspace,      delegate { _handler.OnSaveWorkspace(); },   delegate { return _handler.CanSaveWorkspace(); });
+            Register(bindings, Commands.SaveAsWorkspace,    delegate { _handler.OnSaveAsWorkspace(); }, delegate { return _handler.CanSaveAsWorkspace(); });
+
+            Register(bindings, Commands.ViewLineNumbers,    delegate { _handler.OnViewLineNumbers(); }, delegate { return _handler.CanViewLineNumbers(); });
+
+            Register(bindings, Commands.CloseAllDocuments,  delegate { _handler.OnCloseAllDocuments(); }, delegate { return _handler.CanCloseAllDocuments(); });
         }
 
         private void Register(CommandBindingCollection bindings, ICommand command, OnCommandDel onCmd, CanDoCommandDel canDoCmd)

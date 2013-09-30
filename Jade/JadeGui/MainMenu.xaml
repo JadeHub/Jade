@@ -4,13 +4,34 @@
         xmlns:JadeCore="clr-namespace:JadeCore;assembly=JadeCore"
         Height="25">
     <MenuItem Header="_File">
+        <MenuItem Header="_New File..." Command="ApplicationCommands.New"/>
+        <MenuItem Header="_Open File..." Command="ApplicationCommands.Open"/>
+        <MenuItem Header="_Save File" Command="ApplicationCommands.Save"/>
+        <MenuItem Header="Save File _As..." Command="ApplicationCommands.SaveAs"/>
+        <MenuItem Header="Save A_ll..." Command="JadeCore:Commands.SaveAllFiles"/>
+        <MenuItem Header="_Close File" Command="ApplicationCommands.Close"/>
+        <Separator/>
+        <MenuItem Header="E_xit" Command="JadeCore:Commands.Exit" />
+    </MenuItem>
+    
+    <MenuItem Header="_Workspace">
         <MenuItem Header="New Workspace..." Command="JadeCore:Commands.NewWorkspace" />
-        <MenuItem Header="Open Workspace..." Command="JadeCore:Commands.OpenWorkspace"  />
+        <MenuItem Header="Open Workspace..." Command="JadeCore:Commands.PromptOpenWorkspace"  />
         <MenuItem Header="Save Workspace" Command="JadeCore:Commands.SaveWorkspace" />
         <MenuItem Header="Save Workspace As..." Command="JadeCore:Commands.SaveAsWorkspace" />
         <MenuItem Header="Close Workspace" Command="JadeCore:Commands.CloseWorkspace"  />
-        <MenuItem Header="E_xit" Command="JadeCore:Commands.Exit" />
+        <Separator/>
+        <MenuItem Header="Recent Workspaces..." ItemsSource="{Binding WorkspaceController.RecentFiles.Files}"  >
+            <MenuItem.ItemContainerStyle>
+                <Style TargetType="MenuItem">
+                    <Setter Property="Header" Value="{Binding}"/>
+                    <Setter Property="Command" Value="JadeCore:Commands.OpenWorkspace" />
+                    <Setter Property="CommandParameter" Value="{Binding}" />
+                </Style>
+            </MenuItem.ItemContainerStyle>
+        </MenuItem>
     </MenuItem>
+    
     <MenuItem Header="_Edit">
         <MenuItem Header="Undo" Command="Undo"/>
         <MenuItem Header="Redo" Command="Redo"/>
@@ -19,9 +40,11 @@
         <MenuItem Header="Copy" Command="Copy" />
         <MenuItem Header="Paste" Command="Paste" />
     </MenuItem>
+    
     <MenuItem Header="_View">
         <MenuItem Header="Line Numbers" Command="JadeCore:Commands.ViewLineNumbers" IsCheckable="True"/>
     </MenuItem>
+    
     <MenuItem Header="_Window">
         <MenuItem Header="Close All Documents" Command="JadeCore:Commands.CloseAllDocuments"/>
     </MenuItem>

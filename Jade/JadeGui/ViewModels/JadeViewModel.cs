@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -88,9 +89,7 @@ namespace JadeGui.ViewModels
         
         #endregion
 
-        #region EditorControl
-
-        
+        #region EditorControl   
 
         public EditorControlViewModel Editor
         {
@@ -101,7 +100,7 @@ namespace JadeGui.ViewModels
 
         #region Workspace
         
-        private JadeCore.IWorkspaceController WorkspaceManager
+        public JadeCore.IWorkspaceController WorkspaceController
         {
             get
             {
@@ -159,7 +158,7 @@ namespace JadeGui.ViewModels
             {
                 try
                 {
-                    WorkspaceManager.NewWorkspace(name);
+                    WorkspaceController.NewWorkspace(name);
                 }
                 catch (Exception e)
                 {
@@ -170,15 +169,15 @@ namespace JadeGui.ViewModels
 
         public void OnCloseWorkspace()
         {
-            WorkspaceManager.CloseWorkspace();
+            WorkspaceController.CloseWorkspace();
         }
 
         public bool CanCloseWorkspace()
         {
-            return WorkspaceManager.WorkspaceOpen;
+            return WorkspaceController.WorkspaceOpen;
         }
 
-        public void OnOpenWorkspace()
+        public void OnPromptOpenWorkspace()
         {
             IFileHandle handle = JadeCore.GuiUtils.PromptOpenFile(".jws", "Jade Workspace files (.jws)|*.jws", true);
             if (handle == null)
@@ -188,7 +187,25 @@ namespace JadeGui.ViewModels
 
             try
             {
-                WorkspaceManager.OpenWorkspace(handle);
+                WorkspaceController.OpenWorkspace(handle);
+            }
+            catch (Exception e)
+            {
+                JadeCore.GuiUtils.DisplayErrorAlert("Error opening workspace. " + e.ToString());
+            }
+        }
+
+        public bool CanPromptOpenWorkspace()
+        {
+            return true;
+        }
+
+        public void OnOpenWorkspace(string path)
+        {
+            try
+            {
+                IFileHandle handle = JadeCore.Services.Provider.FileService.MakeFileHandle(path);
+                WorkspaceController.OpenWorkspace(handle);
             }
             catch (Exception e)
             {
@@ -209,12 +226,12 @@ namespace JadeGui.ViewModels
                 if (JadeCore.GuiUtils.PromptSaveFile(".jws", "Jade Workspace files (.jws)|*.jws", "", out path) == false)
                     return;
             }
-            WorkspaceManager.SaveWorkspaceAs(path);
+            WorkspaceController.SaveWorkspace(path);
         }
 
         public bool CanSaveWorkspace()
         {
-            return WorkspaceManager.RequiresSave;
+            return WorkspaceController.RequiresSave;
         }
 
         public void OnSaveAsWorkspace()
@@ -222,13 +239,13 @@ namespace JadeGui.ViewModels
             string path;
             if (JadeCore.GuiUtils.PromptSaveFile(".jws", "Jade Workspace files (.jws)|*.jws", "", out path))
             {
-                WorkspaceManager.SaveWorkspaceAs(path);
+                WorkspaceController.SaveWorkspace(path);
             }
         }
 
         public bool CanSaveAsWorkspace()
         {
-            return WorkspaceManager.WorkspaceOpen;
+            return WorkspaceController.WorkspaceOpen;
         }
 
         public void OnViewLineNumbers()
@@ -246,6 +263,80 @@ namespace JadeGui.ViewModels
         }
 
         public bool CanCloseAllDocuments()
+        {
+            return _editorController.HasOpenDocuments;
+        }
+
+        public void OnNewFile()
+        {
+        }
+
+        public bool CanNewFile()
+        {
+            return true;
+        }
+
+        public void OnOpenFile()
+        {
+            IFileHandle handle = JadeCore.GuiUtils.PromptOpenFile(".cs", "C# Source files (.cs)|*.cs", true);
+            if (handle == null)
+            {
+                return;
+            }
+
+            try
+            {
+                _editorController.OpenSourceFile(handle);
+                //WorkspaceController.OpenWorkspace(handle);
+            }
+            catch (Exception e)
+            {
+                JadeCore.GuiUtils.DisplayErrorAlert("Error opening file. " + e.ToString());
+            }
+        }
+
+        public bool CanOpenFile()
+        {
+            return true;
+        }
+
+        public void OnSaveFile()
+        {
+        }
+
+        public bool CanSaveFile()
+        {
+            return _editorController.HasOpenDocuments && _editorController.ActiveDocument.Modified;
+        }
+
+        public void OnSaveAsFile()
+        {
+            string path;
+            if (JadeCore.GuiUtils.PromptSaveFile(".c#", "C# Source files (.cs)|*.cs", "", out path))
+            {
+                //WorkspaceController.SaveWorkspaceAs(path);
+            }
+        }
+
+        public bool CanSaveAsFile()
+        {
+            return _editorController.HasOpenDocuments;
+        }
+
+        public void OnSaveAllFiles()
+        {
+        }
+
+        public bool CanSaveAllFiles()
+        {
+            return _editorController.HasOpenDocuments;
+        }
+
+        public void OnCloseFile()
+        {
+        }
+
+        public bool CanCloseFile()
         {
             return _editorController.HasOpenDocuments;
         }

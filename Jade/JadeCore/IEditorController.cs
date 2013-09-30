@@ -7,7 +7,8 @@ namespace JadeCore
     {
         string Name { get; }
         FilePath Path { get; }
-        bool Modified { get; }
+        bool Modified { get; set; }
+        string Content { get; }
     }
 
     public class EditorDocChangeEventArgs : EventArgs
@@ -28,7 +29,7 @@ namespace JadeCore
         event EditorDocChangeEvent DocumentClosed;
         event EditorDocChangeEvent DocumentSelected;
 
-        IEditorDoc ActiveDocument { get; }
+        IEditorDoc ActiveDocument { get; set; }
         bool HasOpenDocuments{ get; }
         
         void OpenSourceFile(IFileHandle file);

@@ -9,8 +9,7 @@ namespace JadeData.Project
 {
     public enum ItemType
     {
-        File,
-        Metadata
+        File
     }
 
     public interface IItem

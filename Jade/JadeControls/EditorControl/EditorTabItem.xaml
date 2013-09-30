@@ -7,15 +7,14 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <!--
-        <local:CodeEditor
+        
+       <local:CodeEditor
                         x:Name="editor"
 				        FontFamily="Consolas"
 				        FontSize="10pt"
 				        SyntaxHighlighting="C#"
                         Margin="5,0"
-                        Document="{Binding Document}"/>
-        -->
-        <TextBox Text="{Binding Text}" />
+                        Document="{Binding TextDocument}"/>
+       
     </Grid>
 </UserControl>

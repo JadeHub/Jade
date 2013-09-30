@@ -6,68 +6,6 @@ using JadeUtils.IO;
 
 namespace JadeControls.EditorControl.ViewModel
 {
-    internal class DocumentCollection
-    {
-        private ObservableCollection<DocumentViewModel> _documents;
-
-        internal DocumentCollection()
-        {
-            _documents = new ObservableCollection<DocumentViewModel>();
-            _documents.CollectionChanged += OnOpenDocumentsChanged;
-        }
-
-        internal void Add(DocumentViewModel doc)
-        {
-            _documents.Add(doc);
-        }
-
-        internal bool Contains(string displayName)
-        {
-            foreach (DocumentViewModel d in _documents)
-                if (d.DisplayName == displayName)
-                    return true;
-            return false;
-        }
-
-        private void OnOpenDocumentsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (e.NewItems != null && e.NewItems.Count != 0)
-                foreach (DocumentViewModel doc in e.NewItems)
-                    doc.RequestClose += this.OnDocumentRequestClose;
-
-            if (e.OldItems != null && e.OldItems.Count != 0)
-                foreach (DocumentViewModel doc in e.OldItems)
-                    doc.RequestClose -= this.OnDocumentRequestClose;
-        }
-
-        private void OnDocumentRequestClose(object sender, EventArgs e)
-        {
-            DocumentViewModel doc = sender as DocumentViewModel;
-            _documents.Remove(doc);
-            
-        }
-
-        public ObservableCollection<DocumentViewModel> Documents
-        {
-            get
-            {
-                return _documents;
-            }
-        }
-
-        public void Close(FilePath path)
-        {
-            foreach (DocumentViewModel doc in _documents)
-            {
-                if (doc.Path.Equals(path))
-                {
-                    _documents.Remove(doc);
-                    break;
-                }
-            }
-        }
-    }
-
     public class EditorControlCommandAdaptor
     {
         private delegate void OnCommandDel(object parameter);
@@ -105,8 +43,9 @@ namespace JadeControls.EditorControl.ViewModel
     {
         #region Data
 
-        private DocumentCollection _openDocuments;
-        private DocumentViewModel _selectedDocument;
+        private ObservableCollection<EditorTabItem> _tabItems;
+
+        private EditorTabItem _selectedDocument;
         private JadeCore.IEditorController _controller;
         private EditorControlCommandAdaptor _commands;
 
@@ -116,11 +55,15 @@ namespace JadeControls.EditorControl.ViewModel
 
         public EditorControlViewModel(JadeCore.IEditorController controller)
         {
+            //Bind to the Model
             _controller = controller;
             _controller.DocumentOpened += OnModelDocumentOpened;
             _controller.DocumentClosed += OnModelDocumentClosed;
-            _openDocuments = new DocumentCollection();
+
+            //Setup Command Adaptor
             _commands = new EditorControlCommandAdaptor(this);
+
+            _tabItems = new ObservableCollection<EditorTabItem>();            
         }
 
         #endregion
@@ -129,15 +72,17 @@ namespace JadeControls.EditorControl.ViewModel
 
         private void OnModelDocumentClosed(JadeCore.EditorDocChangeEventArgs args)
         {
-            _openDocuments.Close(args.Document.Path);                
+            
         }
 
         private void OnModelDocumentOpened(JadeCore.EditorDocChangeEventArgs args)
         {
             DocumentViewModel d = new DocumentViewModel(args.Document);
-            _openDocuments.Add(d);
-            SelectedDocument = d;
-            OnPropertyChanged("OpenDocuments");
+            EditorTabItem view = new EditorTabItem();
+            view.DataContext = d;
+            _tabItems.Add(view);
+            SelectedDocument = view;
+            OnPropertyChanged("TabItems");
         }
 
         #endregion
@@ -145,24 +90,32 @@ namespace JadeControls.EditorControl.ViewModel
         #region Public Properties
 
         public EditorControlCommandAdaptor Commands { get { return _commands; } }
+                
+        public ObservableCollection<EditorTabItem> TabItems { get { return _tabItems; } }
 
-        public ObservableCollection<DocumentViewModel> OpenDocuments
-        {
-            get { return _openDocuments.Documents; }
-        }
-
-        public DocumentViewModel SelectedDocument
+        public EditorTabItem SelectedDocument
         {
             get { return _selectedDocument; }
             set
             {
                 if (_selectedDocument != null)
                 {
-                    _selectedDocument.Selected = false;
+                    DocumentViewModel vm = _selectedDocument.DataContext as DocumentViewModel;
+                    vm.Selected = false;
                 }
                 _selectedDocument = value;
                 if (_selectedDocument != null)
-                    _selectedDocument.Selected = true;
+                {
+                    DocumentViewModel vm = _selectedDocument.DataContext as DocumentViewModel;
+                    vm.Selected = true;
+
+                    _controller.ActiveDocument = vm.Document;
+                }
+                else
+                {
+                    _controller.ActiveDocument = null;
+                }
+                
                 OnPropertyChanged("SelectedDocument");
             }
         }

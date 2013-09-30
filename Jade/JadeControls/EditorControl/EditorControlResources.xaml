@@ -4,19 +4,6 @@
     xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
     xmlns:vm="clr-namespace:JadeControls.EditorControl.ViewModel"
     xmlns:local="clr-namespace:JadeControls.EditorControl">
-   
-  <DataTemplate DataType="{x:Type vm:DocumentViewModel}">
-        <local:EditorTabItem/>
-      <!--
-                        x:Name="editor"
-				        FontFamily="Consolas"
-				        FontSize="10pt"
-				        SyntaxHighlighting="C#"
-                        Margin="5,0"
-                        Document="{Binding Document}"/>
-      -->
-    </DataTemplate>
-    
 
     <LinearGradientBrush x:Key="Brush_HeaderBackground" StartPoint="0.5,0" EndPoint="0.5,1">
         <GradientStop Color="#66000088" Offset="0" />
@@ -96,8 +83,6 @@
         />
     </DockPanel>
   </DataTemplate>
-
-    
     
     <Style TargetType="{x:Type TabItem}">
         <Setter Property="Template">
@@ -111,8 +96,7 @@
                                 HorizontalAlignment="Center"
                                 ContentSource="Header"
                                 Margin="4,2,4,2"/>
-                        </Border>
-
+                            </Border>
                     </Grid>
                     
                     <ControlTemplate.Triggers>

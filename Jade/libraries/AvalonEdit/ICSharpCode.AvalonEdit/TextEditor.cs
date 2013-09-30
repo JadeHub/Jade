@@ -101,7 +101,10 @@ namespace ICSharpCode.AvalonEdit
 		/// </summary>
 		public TextDocument Document {
 			get { return (TextDocument)GetValue(DocumentProperty); }
-			set { SetValue(DocumentProperty, value); }
+			set 
+            { 
+                SetValue(DocumentProperty, value); 
+            }
 		}
 		
 		/// <summary>

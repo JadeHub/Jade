@@ -5,20 +5,23 @@ using System.Text;
 using System.Windows;
 using System.Threading.Tasks;
 using JadeUtils.IO;
+using JadeCore;
 
 namespace JadeGui
 {
     public class WorkspaceController : JadeCore.IWorkspaceController
     {
+        #region Data
+
         private JadeData.Workspace.IWorkspace _workspace;
         private bool _modified;
+        private JadeCore.RecentFileList _recentFiles;
+
+        #endregion
+
+        #region Events
 
         public event EventHandler WorkspaceChanged;
-
-        public WorkspaceController()
-        {
-            _modified = false;
-        }
 
         private void OnWorkspaceChanged()
         {
@@ -26,11 +29,32 @@ namespace JadeGui
             if (handler != null)
                 handler(this, EventArgs.Empty);
         }
-               
+
+        #endregion
+
+        #region Constructor
+
+        public WorkspaceController()
+        {
+            _modified = false;
+            _recentFiles = new JadeCore.RecentFileList();
+            LoadSettings(JadeCore.Services.Provider.Settings);
+        }
+
+        #endregion
+        
+        #region Public Properties
+
         public JadeData.Workspace.IWorkspace CurrentWorkspace 
         {
             get { return _workspace; }
         }
+
+        public RecentFileList RecentFiles 
+        { 
+            get { return _recentFiles;}
+        }
+        
 
         public bool CurrentWorkspaceModified 
         {
@@ -53,10 +77,10 @@ namespace JadeGui
             }
         }
 
-        /// <summary>
-        /// Close the current workspace, if open.
-        /// </summary>
-        /// <returns></returns>
+        #endregion
+        
+        #region Public Methods
+
         public bool CloseWorkspace()
         {
             if (WorkspaceOpen == false)
@@ -72,10 +96,6 @@ namespace JadeGui
             return true;
         }
 
-        /// <summary>
-        /// Prompt the use user to either Save, discard or cancel.
-        /// </summary>
-        /// <returns>true if saved or discarded</returns>
         public bool SaveOrDiscardWorkspace()
         {
             if (WorkspaceOpen == false)
@@ -110,61 +130,14 @@ namespace JadeGui
             }
             return true;
         }
-
-        /// <summary>
-        /// Save the current workspace. Will use the current path or prompt the user if unknown.
-        /// </summary>
-        /// <returns>true if saved</returns>
-        public bool SaveWorkspace()
-        {
-            if (WorkspaceOpen == false)
-            {
-                throw new Exception("Attempt to save null workspace.");
-            }
-
-            if (CurrentWorkspaceModified)
-            {
-                string path = _workspace.Path;
-                if (path == null || path.Length == 0)
-                {
-                    if(JadeCore.GuiUtils.PromptSaveFile(".jws", "Jade Workspace files (.jws)|*.jws", "", out path) == false)
-                    {
-                        return false;
-                    }                    
-                }
-                return WriteWorkspace(path);
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// Save the current workspace to the specified path.
-        /// </summary>
-        /// <returns>true if saved</returns>
-        public bool SaveWorkspaceAs(string path)
+                
+        public bool SaveWorkspace(string path)
         {
             if (WorkspaceOpen == false)
             {
                 throw new Exception("Attempt to save null workspace.");
             }
             return WriteWorkspace(path);           
-        }
-
-        private bool WriteWorkspace(string path)
-        {
-            try
-            {
-                JadeData.Persistence.Workspace.Writer.Write(_workspace, path);
-                CurrentWorkspaceModified = false;
-                _workspace.Path = path;
-                OnWorkspaceChanged();
-                return true;
-            }
-            catch (Exception e)
-            {
-                JadeCore.GuiUtils.DisplayErrorAlert("Error saving workspace. " + e.ToString());
-            }
-            return false;
         }
 
         public void NewWorkspace(string name)
@@ -199,13 +172,58 @@ namespace JadeGui
             try
             {
                 _workspace = JadeData.Persistence.Workspace.Reader.Read(file, JadeCore.Services.Provider.FileService);
+                _recentFiles.Add(file.Path.Str);
                 OnWorkspaceChanged();
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 _workspace = null;
                 throw;
             }
         }
+
+        #endregion
+
+        #region Private Methods
+
+        private bool WriteWorkspace(string path)
+        {
+            try
+            {
+                JadeData.Persistence.Workspace.Writer.Write(_workspace, path);
+                CurrentWorkspaceModified = false;
+                _workspace.Path = path;
+                OnWorkspaceChanged();
+                return true;
+            }
+            catch (Exception e)
+            {
+                JadeCore.GuiUtils.DisplayErrorAlert("Error saving workspace. " + e.ToString());
+            }
+            return false;
+        }
+
+        #endregion
+
+        #region Settings
+
+        private void LoadSettings(JadeCore.Properties.Settings settings)
+        {
+            if (settings.RecentFiles != null)
+            {
+                _recentFiles.Load(settings.RecentFiles);
+            }
+        }
+
+        public void SaveSettings()
+        {
+            JadeCore.Properties.Settings settings = JadeCore.Services.Provider.Settings;
+            if (settings.RecentFiles == null)
+                settings.RecentFiles = new System.Collections.Specialized.StringCollection();
+            _recentFiles.Save(settings.RecentFiles);
+        }
+
+        #endregion
+
     }
 }

@@ -65,7 +65,7 @@
     </Compile>
     <Compile Include="ViewModels\JadeCommandAdaptor.cs" />
     <Compile Include="ViewModels\JadeViewModel.cs" />
-    <Compile Include="WorkspaceManager.cs" />
+    <Compile Include="WorkspaceController.cs" />
     <Page Include="MainMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
