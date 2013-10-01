@@ -25,7 +25,7 @@ namespace JadeGui.ViewModels
             Register(bindings, ApplicationCommands.Save,    delegate { _handler.OnSaveFile(); },        delegate { return _handler.CanSaveFile(); });
             Register(bindings, ApplicationCommands.SaveAs,  delegate { _handler.OnSaveAsFile(); },      delegate { return _handler.CanSaveAsFile(); });
             Register(bindings, Commands.SaveAllFiles,       delegate { _handler.OnSaveAllFiles(); },    delegate { return _handler.CanSaveAllFiles(); });
-            Register(bindings, ApplicationCommands.Close,   delegate { _handler.OnCloseFile(); },       delegate { return _handler.CanCloseFile(); });
+            Register(bindings, Commands.CloseFile,          delegate { _handler.OnCloseFile(); },       delegate { return _handler.CanCloseFile(); });
 
             Register(bindings, Commands.Exit,               delegate { _handler.OnExit(); });
             Register(bindings, Commands.NewWorkspace,       delegate { _handler.OnNewWorkspace(); });

@@ -45,8 +45,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands.cs" />
+    <Compile Include="Editor\EditorController.cs" />
+    <Compile Include="Editor\EditorSourceDocument.cs" />
     <Compile Include="GuiUtils.cs" />
-    <Compile Include="IEditorController.cs" />
+    <Compile Include="Editor\IEditorController.cs" />
     <Compile Include="IServiceProvider.cs" />
     <Compile Include="IWorkspaceController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

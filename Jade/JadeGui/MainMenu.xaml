@@ -9,9 +9,15 @@
         <MenuItem Header="_Save File" Command="ApplicationCommands.Save"/>
         <MenuItem Header="Save File _As..." Command="ApplicationCommands.SaveAs"/>
         <MenuItem Header="Save A_ll..." Command="JadeCore:Commands.SaveAllFiles"/>
+        <!--
         <MenuItem Header="_Close File" Command="ApplicationCommands.Close"/>
+        -->
         <Separator/>
         <MenuItem Header="E_xit" Command="JadeCore:Commands.Exit" />
+    </MenuItem>
+
+    <MenuItem Header="v">
+        <MenuItem Header="_Close File" Command="JadeCore:Commands.CloseFile"/>
     </MenuItem>
     
     <MenuItem Header="_Workspace">

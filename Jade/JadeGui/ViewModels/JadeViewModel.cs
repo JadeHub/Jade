@@ -139,7 +139,7 @@ namespace JadeGui.ViewModels
 
         public void OnOpenDocument(JadeUtils.IO.IFileHandle file)
         {
-            _editorController.OpenSourceFile(file);
+            _editorController.OpenDocument(file);
         }
 
         #region Exit
@@ -286,8 +286,7 @@ namespace JadeGui.ViewModels
 
             try
             {
-                _editorController.OpenSourceFile(handle);
-                //WorkspaceController.OpenWorkspace(handle);
+                _editorController.OpenDocument(handle);
             }
             catch (Exception e)
             {
@@ -302,6 +301,7 @@ namespace JadeGui.ViewModels
 
         public void OnSaveFile()
         {
+            _editorController.SaveActiveDocument();
         }
 
         public bool CanSaveFile()
@@ -334,6 +334,7 @@ namespace JadeGui.ViewModels
 
         public void OnCloseFile()
         {
+            _editorController.CloseActiveDocument();
         }
 
         public bool CanCloseFile()

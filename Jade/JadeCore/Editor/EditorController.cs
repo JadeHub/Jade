@@ -1,78 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
-using System.IO;
 using JadeUtils.IO;
-using JadeCore;
 
-namespace JadeGui
+namespace JadeCore.Editor
 {
-    public class EditorSourceDocument : JadeCore.IEditorDoc
-    {
-        #region Data
-
-        private IFileHandle _file;
-        private string _content;
-        private bool _modified;
-
-        #endregion
-
-        #region Constructor
-
-        public EditorSourceDocument(IFileHandle file)
-        {
-            _file = file;
-        }
-
-        #endregion
-
-        #region Public Properties
-
-        public string Name 
-        {
-            get { return _file.Name; }
-        }
-
-        public FilePath Path 
-        {
-            get { return _file.Path; }
-        }
-
-        public bool Modified 
-        {
-            get { return _modified; }
-            set { _modified = value; }
-        }
-
-        public string Content
-        {
-            get
-            {
-                if (_content == null)
-                {
-                    Load();
-                }
-                return _content;
-            }
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        private void Load()
-        {
-            using (FileStream fs = new FileStream(Path.Str, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                using (StreamReader reader = new StreamReader(fs, System.Text.Encoding.UTF8))
-                {
-                    _content = reader.ReadToEnd();
-                }
-            }
-        }
-
-        #endregion
-    }
-
     public class EditorController : JadeCore.IEditorController
     {
         #region Data
@@ -94,7 +26,6 @@ namespace JadeGui
         #region Events
 
         public event EditorDocChangeEvent DocumentOpened;
-        public event EditorDocChangeEvent DocumentClosed;
         public event EditorDocChangeEvent DocumentSelected;
 
         #endregion
@@ -113,7 +44,7 @@ namespace JadeGui
 
         #region Public Methods
 
-        public void OpenSourceFile(IFileHandle file)
+        public void OpenDocument(IFileHandle file)
         {
             if (_openDocuments.ContainsKey(file.Path) == false)
             {
@@ -122,6 +53,18 @@ namespace JadeGui
                 ActiveDocument = doc;
                 OnDocumentOpen(doc);
             }
+        }
+
+        public void SaveActiveDocument()
+        {
+            Debug.Assert(ActiveDocument != null);
+
+        }
+
+        public void CloseActiveDocument()
+        {
+            if(ActiveDocument != null)
+                CloseDocument(ActiveDocument);
         }
 
         public void CloseAllDocuments()
@@ -140,7 +83,9 @@ namespace JadeGui
                 return;
 
             _openDocuments.Remove(doc.Path);
-            OnDocumentClose(doc);
+            if (ActiveDocument != null && ActiveDocument.Equals(doc))
+                ActiveDocument = null;
+            doc.Close();
         }
 
         #endregion
@@ -151,12 +96,7 @@ namespace JadeGui
         {
             RaiseDocEvent(DocumentOpened, doc);
         }
-
-        private void OnDocumentClose(IEditorDoc doc)
-        {
-            RaiseDocEvent(DocumentClosed, doc);
-        }
-
+                
         private void OnDocumentSelect(IEditorDoc doc)
         {
             RaiseDocEvent(DocumentSelected, doc);

@@ -57,8 +57,8 @@ namespace JadeControls.EditorControl.ViewModel
         {
             //Bind to the Model
             _controller = controller;
-            _controller.DocumentOpened += OnModelDocumentOpened;
-            _controller.DocumentClosed += OnModelDocumentClosed;
+            _controller.DocumentOpened += OnControllerDocumentOpened;
+            //_controller.DocumentClosed += OnModelDocumentClosed;
 
             //Setup Command Adaptor
             _commands = new EditorControlCommandAdaptor(this);
@@ -70,17 +70,21 @@ namespace JadeControls.EditorControl.ViewModel
 
         #region Model event handlers
 
-        private void OnModelDocumentClosed(JadeCore.EditorDocChangeEventArgs args)
+        private void OnDocumentClosing(EditorTabItem tabItem)
         {
-            
+            if (_tabItems.Contains(tabItem))
+            {
+                _tabItems.Remove(tabItem);
+            }
         }
 
-        private void OnModelDocumentOpened(JadeCore.EditorDocChangeEventArgs args)
+        private void OnControllerDocumentOpened(JadeCore.EditorDocChangeEventArgs args)
         {
             DocumentViewModel d = new DocumentViewModel(args.Document);
             EditorTabItem view = new EditorTabItem();
             view.DataContext = d;
             _tabItems.Add(view);
+            args.Document.OnClosing += delegate { OnDocumentClosing(view); };
             SelectedDocument = view;
             OnPropertyChanged("TabItems");
         }
@@ -135,6 +139,16 @@ namespace JadeControls.EditorControl.ViewModel
         public bool CanDoClose()
         {
             return true;
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private JadeCore.IEditorDoc GetDocument(EditorTabItem tabItem)
+        {
+            DocumentViewModel vm = tabItem.DataContext as DocumentViewModel;
+            return vm.Document;
         }
 
         #endregion

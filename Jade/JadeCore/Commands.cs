@@ -13,6 +13,7 @@ namespace JadeCore
         public static readonly RoutedCommand SaveWorkspace = new RoutedCommand("SaveWorkspace", typeof(object));
         public static readonly RoutedCommand SaveAsWorkspace = new RoutedCommand("SaveAsWorkspace", typeof(object));
         public static readonly RoutedCommand SaveAllFiles = new RoutedCommand("SaveAllFiles", typeof(object));
+        public static readonly RoutedCommand CloseFile = new RoutedCommand("CloseFile", typeof(object));
         public static readonly RoutedCommand Exit = new RoutedCommand("Exit", typeof(object));
 
         public static readonly RoutedCommand ViewLineNumbers = new RoutedCommand("ViewLineNumbers", typeof(object));

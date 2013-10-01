@@ -16,11 +16,14 @@ namespace JadeControls.EditorControl.ViewModel
 
         #endregion
 
+      //  public event EventHandler OnDocumentClosing;
+
         #region Constructor
 
         public DocumentViewModel(IEditorDoc doc)
         {
-            _document = doc;            
+            _document = doc;
+            //_document.OnClosing += delegate(object sender, EventArgs args) { OnDocumentClosing(sender, args); };
             _selected = false;
         }
 
@@ -71,7 +74,7 @@ namespace JadeControls.EditorControl.ViewModel
 
         void _avDoc_TextChanged(object sender, EventArgs e)
         {
-            Modified = true;
+            _document.Content = _avDoc.Text;
         }
 
         public ICSharpCode.AvalonEdit.Document.TextDocument TextDocument
@@ -85,5 +88,6 @@ namespace JadeControls.EditorControl.ViewModel
         }
 
         #endregion        
+        
     }
 }

@@ -5,10 +5,14 @@ namespace JadeCore
 {
     public interface IEditorDoc
     {
+        event EventHandler OnClosing;
+
         string Name { get; }
         FilePath Path { get; }
         bool Modified { get; set; }
-        string Content { get; }
+        string Content { get; set; }
+
+        void Close();
     }
 
     public class EditorDocChangeEventArgs : EventArgs
@@ -26,13 +30,15 @@ namespace JadeCore
     public interface IEditorController
     {
         event EditorDocChangeEvent DocumentOpened;
-        event EditorDocChangeEvent DocumentClosed;
         event EditorDocChangeEvent DocumentSelected;
 
         IEditorDoc ActiveDocument { get; set; }
         bool HasOpenDocuments{ get; }
-        
-        void OpenSourceFile(IFileHandle file);
-        void CloseAllDocuments();        
+
+        void OpenDocument(IFileHandle file);
+        void SaveActiveDocument();
+        void CloseAllDocuments();
+        void CloseActiveDocument();
+
     }
 }
