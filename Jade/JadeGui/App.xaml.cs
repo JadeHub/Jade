@@ -27,10 +27,10 @@ namespace JadeGui
             JadeCore.Services.Provider.WorkspaceController = new WorkspaceController();
             JadeCore.Services.Provider.EditorController = new JadeCore.Editor.EditorController();
 
-            //Create the main view model object
-            var viewModel = new ViewModels.JadeViewModel();
-
             _window = new MainWindow();
+
+            //Create the main view model object
+            var viewModel = new ViewModels.JadeViewModel(_window);
 
             viewModel.RequestClose += delegate 
             { 

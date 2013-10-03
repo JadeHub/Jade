@@ -42,3 +42,4 @@ namespace JadeData
         public static Workspace.IWorkspace Workspace { get { return _workspace; } }
     }
 }
+}

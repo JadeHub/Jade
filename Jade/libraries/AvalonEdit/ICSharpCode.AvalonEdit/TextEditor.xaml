@@ -46,6 +46,9 @@
 					Opacity="0.7"/>
 			</Setter.Value>
 		</Setter>
+        <Setter Property="SelectionCornerRadius">
+            <Setter.Value>0</Setter.Value>
+        </Setter>
 		<Setter Property="SelectionBorder">
 			<Setter.Value>
 				<Pen Brush="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"

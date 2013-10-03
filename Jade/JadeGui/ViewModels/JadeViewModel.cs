@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -29,12 +30,14 @@ namespace JadeGui.ViewModels
 
         private EditorControlViewModel _editorModel;
         private JadeCore.IEditorController _editorController;
-       
+
+        private Window _view;
+
         #endregion
 
         #region Contsructor
 
-        public JadeViewModel()
+        public JadeViewModel(Window view)
         {
             _workspaceController = JadeCore.Services.Provider.WorkspaceController;
             //Todo - Workspace viewmodel to track WorkspaceController changes
@@ -43,6 +46,8 @@ namespace JadeGui.ViewModels
             _editorController = JadeCore.Services.Provider.EditorController;
             _editorModel = new JadeControls.EditorControl.ViewModel.EditorControlViewModel(_editorController);
             _commands = new JadeCommandAdaptor(this);
+
+            _view = view;
             UpdateWindowTitle();
         }
 
@@ -325,7 +330,19 @@ namespace JadeGui.ViewModels
 
         public void OnSaveAllFiles()
         {
+            foreach (var doc in _editorController.ModifiedDocuments)
+            {
+                doc.Save();
+            }
         }
+
+        private bool? PromptSaveFiles(IEnumerable<string> files)
+        {
+            System.Diagnostics.Debug.Assert(_editorController.ModifiedDocuments.Any());
+            JadeControls.Dialogs.SaveFiles dlg = new JadeControls.Dialogs.SaveFiles();
+            dlg.DataContext = files;
+            return dlg.ShowDialog(_view);
+        }    
 
         public bool CanSaveAllFiles()
         {
@@ -334,6 +351,23 @@ namespace JadeGui.ViewModels
 
         public void OnCloseFile()
         {
+            Debug.Assert(_editorController.ActiveDocument != null);
+
+            if (_editorController.ActiveDocument.Modified)
+            { 
+                List<string> files = new List<string>();
+                files.Add(_editorController.ActiveDocument.Path.Str);
+
+                bool? result = PromptSaveFiles(files);
+
+                if (result == null)
+                    return;
+
+                if (result == true)
+                {
+                    _editorController.SaveActiveDocument();
+                }
+            }
             _editorController.CloseActiveDocument();
         }
 
@@ -348,6 +382,22 @@ namespace JadeGui.ViewModels
 
         public bool RequestExit()
         {
+            if (_editorController.ModifiedDocuments.Any())
+            {
+                bool? result = PromptSaveFiles(_editorController.ModifiedDocuments.Select(doc => doc.Path.Str));
+                if (result == true)
+                {
+                    //User asked to save files
+                    OnSaveAllFiles();
+                }
+                else if(result == null)
+                {
+                    //user cancelled
+                    return false;
+                }
+                //if user pressed 'No', ie discard changes, we just continue
+            }
+
             if (_workspaceController.RequiresSave)
             {
                 return _workspaceController.SaveOrDiscardWorkspace();

@@ -27,10 +27,18 @@ namespace JadeCore.Editor
         #region Events
 
         public event EventHandler OnClosing;
+        public event EventHandler OnSaved;
 
         private void RaiseOnClosing()
         {
             EventHandler handler = OnClosing;
+            if (handler != null)
+                handler(this, EventArgs.Empty);
+        }
+
+        private void RaiseOnSaved()
+        {
+            EventHandler handler = OnSaved;
             if (handler != null)
                 handler(this, EventArgs.Empty);
         }
@@ -40,6 +48,19 @@ namespace JadeCore.Editor
         public void Close()
         {
             RaiseOnClosing();
+        }
+
+        public void Save()
+        {
+            using (FileStream fs = new FileStream(Path.Str, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write))
+            {
+                using (StreamWriter writer = new StreamWriter(fs, System.Text.Encoding.UTF8))
+                {
+                    writer.Write(_content);
+                    Modified = false;
+                    RaiseOnSaved();
+                }
+            }
         }
 
         #region Public Properties
@@ -54,13 +75,21 @@ namespace JadeCore.Editor
             get { return _file.Path; }
         }
 
+        public IFileHandle File
+        {
+            get { return _file; }
+        }
+
         public bool Modified
         {
             get
             {
                 return _modified;
             }
-            set { _modified = value; }
+            set 
+            { 
+                _modified = value; 
+            }
         }
 
         public string Content

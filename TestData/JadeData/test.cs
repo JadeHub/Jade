@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10362,7 +10362,7 @@ namespace JadeData.Persistence.Workspace
             try
             {                    
                 serializer.Serialize(stream, result);
-                stream.Close();
+               stream.Close();
                 return "";
             }
             catch
@@ -10376,4 +10376,6 @@ namespace JadeData.Persistence.Workspace
             }
         }
     }
+}
+ }
 }

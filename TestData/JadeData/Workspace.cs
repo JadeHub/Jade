@@ -10,7 +10,7 @@ namespace JadeData.Workspace
     {
         string Name { get; }
     }
-
+    
     public interface IFolder
     {
         string Name { get; }
@@ -166,3 +166,4 @@ namespace JadeData.Workspace
         #endregion
     }
 }
+

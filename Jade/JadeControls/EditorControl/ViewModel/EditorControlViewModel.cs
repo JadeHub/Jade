@@ -58,11 +58,9 @@ namespace JadeControls.EditorControl.ViewModel
             //Bind to the Model
             _controller = controller;
             _controller.DocumentOpened += OnControllerDocumentOpened;
-            //_controller.DocumentClosed += OnModelDocumentClosed;
 
             //Setup Command Adaptor
             _commands = new EditorControlCommandAdaptor(this);
-
             _tabItems = new ObservableCollection<EditorTabItem>();            
         }
 

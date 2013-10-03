@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Collections.Generic;
 using JadeUtils.IO;
 
@@ -40,6 +41,14 @@ namespace JadeCore.Editor
 
         public bool HasOpenDocuments { get { return _openDocuments.Count > 0; } }
 
+        public IEnumerable<IEditorDoc> ModifiedDocuments
+        {
+            get
+            {
+                return _openDocuments.Where(doc => doc.Value.Modified).Select(doc => doc.Value);
+            }
+        }
+
         #endregion
 
         #region Public Methods
@@ -58,7 +67,8 @@ namespace JadeCore.Editor
         public void SaveActiveDocument()
         {
             Debug.Assert(ActiveDocument != null);
-
+            Debug.Assert(ActiveDocument.File.Exists);
+            ActiveDocument.Save();
         }
 
         public void CloseActiveDocument()
