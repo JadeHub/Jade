@@ -11,7 +11,8 @@ namespace JadeCore
         JadeCore.Properties.Settings Settings { get;}
         JadeUtils.IO.IFileService FileService { get; set; }
         JadeCore.IWorkspaceController WorkspaceController { get; set; }
-        JadeCore.IEditorController EditorController { get; set; }        
+        JadeCore.IEditorController EditorController { get; set; }
+        JadeCore.Output.IOutputController OutputController { get; set; }
     }
 
     public class Services
@@ -32,5 +33,6 @@ namespace JadeCore
         public JadeUtils.IO.IFileService FileService { get; set; }
         public JadeCore.IWorkspaceController WorkspaceController { get; set; }
         public JadeCore.IEditorController EditorController { get; set; }
+        public JadeCore.Output.IOutputController OutputController { get; set; }
     }
 }

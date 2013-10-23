@@ -27,11 +27,6 @@ namespace JadeControls.EditorControl.ViewModel
 
         #endregion
 
-        public override string ToString()
-        {
-            return DisplayName;
-        }
-
         #region Public Properties
 
         public string Path { get { return _document.Path.Str; } }
@@ -61,12 +56,12 @@ namespace JadeControls.EditorControl.ViewModel
             set 
             { 
                 _selected = value;
-                OnPropertyChanged("Selected");
                 if (_selected && _avDoc == null)
                 {
                     _avDoc = new ICSharpCode.AvalonEdit.Document.TextDocument(_document.Content);
                     _avDoc.TextChanged += _avDoc_TextChanged;
                 }
+                OnPropertyChanged("Selected");
             } 
         }
 

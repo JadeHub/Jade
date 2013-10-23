@@ -26,7 +26,9 @@ namespace JadeGui
             JadeCore.Services.Provider.FileService = new JadeUtils.IO.FileService();
             JadeCore.Services.Provider.WorkspaceController = new WorkspaceController();
             JadeCore.Services.Provider.EditorController = new JadeCore.Editor.EditorController();
+            JadeCore.Services.Provider.OutputController = new JadeCore.Output.OutputController();
 
+            
             _window = new MainWindow();
 
             //Create the main view model object
@@ -43,6 +45,13 @@ namespace JadeGui
             // the element tree.
             _window.DataContext = viewModel;
             viewModel.Commands.Bind(_window.CommandBindings);
+
+            for (int i = 0; i < 20; i++)
+            {
+                JadeCore.Services.Provider.OutputController.Create(JadeCore.Output.Source.JadeDebug, JadeCore.Output.Level.Info, "Hello world");
+                JadeCore.Services.Provider.OutputController.Create(JadeCore.Output.Source.JadeDebug, JadeCore.Output.Level.Err, "This is an error");
+            }
+
 
             JadeCore.Properties.Settings settings = JadeCore.Services.Provider.Settings;
             if (settings.MainWindowPosition != null)

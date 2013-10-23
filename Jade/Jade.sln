@@ -17,6 +17,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JadeCore.Test", "JadeCode.T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JadeUtils", "..\JadeUtils\JadeUtils\JadeUtils.csproj", "{52652847-ED88-486A-A51D-CE4A15F16C1F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibClangcs", "LibClangcs\LibClangcs.csproj", "{413E491A-5C65-44EE-8BCD-9E47B1B8377E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibClangcs.Test", "LibClangcs\LibClangcs.Test\LibClangcs.Test.csproj", "{FCD5E761-0011-4735-A66C-9B17EBADF269}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JadeHack", "JadeHack\JadeHack.csproj", "{CAAFFCDE-7725-4D83-9BBA-F14D57567A5D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +57,18 @@ Global
 		{52652847-ED88-486A-A51D-CE4A15F16C1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52652847-ED88-486A-A51D-CE4A15F16C1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52652847-ED88-486A-A51D-CE4A15F16C1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{413E491A-5C65-44EE-8BCD-9E47B1B8377E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{413E491A-5C65-44EE-8BCD-9E47B1B8377E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{413E491A-5C65-44EE-8BCD-9E47B1B8377E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{413E491A-5C65-44EE-8BCD-9E47B1B8377E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCD5E761-0011-4735-A66C-9B17EBADF269}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCD5E761-0011-4735-A66C-9B17EBADF269}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCD5E761-0011-4735-A66C-9B17EBADF269}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCD5E761-0011-4735-A66C-9B17EBADF269}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAAFFCDE-7725-4D83-9BBA-F14D57567A5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAAFFCDE-7725-4D83-9BBA-F14D57567A5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAAFFCDE-7725-4D83-9BBA-F14D57567A5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAAFFCDE-7725-4D83-9BBA-F14D57567A5D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

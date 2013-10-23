@@ -20,7 +20,7 @@
                         ItemsSource="{Binding Path=TabItems}" 
                         SelectedItem="{Binding Path=SelectedDocument}" 
                         IsSynchronizedWithCurrentItem="True"
-                        >
+                        BorderBrush="Transparent">
             
                 <TabControl.RenderTransform>
                     <TranslateTransform/>

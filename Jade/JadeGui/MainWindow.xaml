@@ -4,6 +4,7 @@
         xmlns:local="clr-namespace:JadeGui"
         xmlns:JadeCtrlsWorkspace="clr-namespace:JadeControls.Workspace;assembly=JadeControls"
         xmlns:JadeCtrlsEditor="clr-namespace:JadeControls.EditorControl;assembly=JadeControls"
+        xmlns:JadeCtrlsOutput="clr-namespace:JadeControls.OutputControl;assembly=JadeControls"
         xmlns:JadeCtrlsOpenDocuments="clr-namespace:JadeControls.OpenDocuments;assembly=JadeControls"
         Title="{Binding MainWindowTitle}" Height="900" Width="1500" Top="0" Left="0">    
     <DockPanel>        
@@ -15,10 +16,22 @@
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
             <DockPanel Grid.Column="0" Margin="4 0 0 0">                
-                <JadeCtrlsWorkspace:WorkspaceCtrl DataContext="{Binding Workspace}"/>                
+                <JadeCtrlsWorkspace:WorkspaceCtrl DataContext="{Binding Workspace}"/>
             </DockPanel>
-            <GridSplitter Grid.Column="0" Width="4" />
-            <JadeCtrlsEditor:EditorControl Grid.Column="1" DataContext="{Binding Editor}" />
+            <GridSplitter Grid.Column="0" Width="4" Background="LightGray" Margin="0,-1,0,1"/>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="120"/>
+                </Grid.RowDefinitions>
+                <JadeCtrlsEditor:EditorControl Grid.Row="0" DataContext="{Binding Editor}" />
+                <GridSplitter ResizeDirection="Rows" Grid.Row="0" Width="Auto" Height="3" 
+                    Background="LightGray"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Bottom"
+                    Margin="0"/>
+                <JadeCtrlsOutput:OutputControl Grid.Row="1" DataContext="{Binding Output}" />
+            </Grid>
         </Grid>
     </DockPanel>
 </Window>

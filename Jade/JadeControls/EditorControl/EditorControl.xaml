@@ -10,29 +10,6 @@
     <Grid>
 
         <local:TabCtrl />
-
-        <!--
-        <TabControl ItemsSource="{Binding OpenDocuments}">
-            <TabControl.ItemTemplate>
         
-                <DataTemplate>
-                    <TextBlock
-                    Text="{Binding DisplayName}" />
-                </DataTemplate>
-            </TabControl.ItemTemplate>
-            <TabControl.ContentTemplate>
-        
-                <DataTemplate>
-                    <avalonEdit:TextEditor				   
-				        FontFamily="Consolas"
-				        FontSize="10pt"
-				        SyntaxHighlighting="C#"
-                        Margin="5,0"
-                        Document="{Binding Document}"/>
-                </DataTemplate>
-            </TabControl.ContentTemplate>
-            
-        </TabControl>
-        -->
     </Grid>
 </UserControl>

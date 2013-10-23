@@ -209,18 +209,18 @@ namespace JadeGui
 
         private void LoadSettings(JadeCore.Properties.Settings settings)
         {
-            if (settings.RecentFiles != null)
+            if (settings.RecentWorkspaceFiles != null)
             {
-                _recentFiles.Load(settings.RecentFiles);
+                _recentFiles.Load(settings.RecentWorkspaceFiles);
             }
         }
 
         public void SaveSettings()
         {
             JadeCore.Properties.Settings settings = JadeCore.Services.Provider.Settings;
-            if (settings.RecentFiles == null)
-                settings.RecentFiles = new System.Collections.Specialized.StringCollection();
-            _recentFiles.Save(settings.RecentFiles);
+            if (settings.RecentWorkspaceFiles == null)
+                settings.RecentWorkspaceFiles = new System.Collections.Specialized.StringCollection();
+            _recentFiles.Save(settings.RecentWorkspaceFiles);
         }
 
         #endregion

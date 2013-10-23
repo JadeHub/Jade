@@ -1,20 +1,15 @@
-﻿using System;
-using System.Diagnostics;
+﻿using JadeUtils.IO;
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using JadeControls;
 using System.Windows;
-using JadeUtils.IO;
 
 namespace JadeGui.ViewModels
 {
-    using JadeData;
-    using JadeControls.Workspace.ViewModel;
     using JadeControls.EditorControl.ViewModel;
+    using JadeControls.OutputControl.ViewModel;
+    using JadeControls.Workspace.ViewModel;
     
     /// <summary>
     /// Main View Model class. Singleton instance that lives the life of the application
@@ -31,6 +26,9 @@ namespace JadeGui.ViewModels
         private EditorControlViewModel _editorModel;
         private JadeCore.IEditorController _editorController;
 
+        private JadeCore.Output.IOutputController _outputController;
+        private OutputViewModel _outputModel;
+
         private Window _view;
 
         #endregion
@@ -45,8 +43,11 @@ namespace JadeGui.ViewModels
 
             _editorController = JadeCore.Services.Provider.EditorController;
             _editorModel = new JadeControls.EditorControl.ViewModel.EditorControlViewModel(_editorController);
-            _commands = new JadeCommandAdaptor(this);
 
+            _outputController = JadeCore.Services.Provider.OutputController;
+            _outputModel = new OutputViewModel(_outputController);
+
+            _commands = new JadeCommandAdaptor(this);
             _view = view;
             UpdateWindowTitle();
         }
@@ -113,6 +114,12 @@ namespace JadeGui.ViewModels
             }
         }
         
+        #endregion
+
+        #region Editor
+
+        public OutputViewModel Output { get { return _outputModel; } }
+
         #endregion
 
         #region RequestClose [event]
@@ -346,7 +353,7 @@ namespace JadeGui.ViewModels
 
         public bool CanSaveAllFiles()
         {
-            return _editorController.HasOpenDocuments;
+            return _editorController.ModifiedDocuments.Any();
         }
 
         public void OnCloseFile()

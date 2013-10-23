@@ -84,12 +84,12 @@ namespace JadeCore.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.Specialized.StringCollection RecentFiles {
+        public global::System.Collections.Specialized.StringCollection RecentWorkspaceFiles {
             get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["RecentFiles"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["RecentWorkspaceFiles"]));
             }
             set {
-                this["RecentFiles"] = value;
+                this["RecentWorkspaceFiles"] = value;
             }
         }
     }
