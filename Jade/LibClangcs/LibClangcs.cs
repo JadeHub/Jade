@@ -54,7 +54,7 @@ namespace LibClang
                 return data0 == other.data0 && data1 == other.data1 && data2 == other.data2;
             }
         }
-
+        
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate LibClang.Cursor.ChildVisitResult CursorVisitor(Cursor cursor, Cursor parent, IntPtr data);
 
@@ -71,9 +71,8 @@ namespace LibClang
         internal static extern void clang_disposeIndex(IntPtr index);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        internal static extern IntPtr clang_createTranslationUnitFromSourceFile(
-            IntPtr index, string sourceFilename, int numClangCommandLineArgs,
-            string[] clangCommandLineArgs, uint numUnsavedFiles, UnsavedFile[] unsavedFiles);
+        internal static extern IntPtr clang_createTranslationUnitFromSourceFile(IntPtr index, string sourceFilename, 
+            int numClangCommandLineArgs, string[] clangCommandLineArgs, uint numUnsavedFiles, UnsavedFile[] unsavedFiles);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         internal static extern Cursor clang_getTranslationUnitCursor(IntPtr tu);
@@ -97,8 +96,8 @@ namespace LibClang
         internal static extern SourceLocation clang_getCursorLocation(Cursor cursor);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        internal unsafe static extern void clang_getInstantiationLocation(
-            SourceLocation location, IntPtr* file, out uint line, out uint column, out uint offset);
+        internal unsafe static extern void clang_getInstantiationLocation(SourceLocation location, IntPtr* file, 
+                                                            out uint line, out uint column, out uint offset);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         internal static extern IntPtr clang_getFile(IntPtr tu, string filename);
@@ -109,13 +108,27 @@ namespace LibClang
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         internal static extern IntPtr clang_IndexAction_create(IntPtr index);
 
+        
         #region Indexing
 
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-        internal struct IndexerIncludeFileInfo
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct IndexLocation
         {
-            internal SourceLocation location;
-            internal string fileName;
+            readonly IntPtr data0;
+            readonly IntPtr data1;
+            readonly uint data2;
+
+            public bool Equals(IndexLocation other)
+            {
+                return data0 == other.data0 && data1 == other.data1 && data2 == other.data2;
+            }
+        }
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        internal unsafe struct IndexerIncludeFileInfo
+        {
+            internal IndexLocation location;
+            internal sbyte* fileName;
             internal IntPtr file;
             internal int isImport;
             internal int isAngled;
@@ -131,6 +144,62 @@ namespace LibClang
             internal int isImplicit;
         }
 
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        internal struct IndexerAttributeInfo
+        {
+            internal Indexer.AttributeKind kind;
+            internal Cursor cursor;
+            internal IndexLocation location;
+        }
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        internal unsafe struct EntityInfo
+        {
+            internal Indexer.EntityKind kind;
+            internal Indexer.EntityCXXTemplateKind templateKind;
+            internal Indexer.EntityLanguage language;
+            internal sbyte* name;
+            internal sbyte* USR;
+            internal Cursor cursor;
+            internal IndexerAttributeInfo** attributes;
+            internal int numAttributes;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal unsafe struct IndexerContainerInfo
+        {
+            internal Cursor cursor;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal unsafe struct IndexerDeclarationInfo
+        {
+            internal EntityInfo* entityInfo;
+            internal Cursor cursor;
+            internal IndexLocation location;
+            internal IndexerContainerInfo* semanticContainer;
+            internal IndexerContainerInfo* lexicalContainer;
+            internal int isRedeclaration;
+            internal int isDefinition;
+            internal int isContainer;
+            internal IndexerContainerInfo* declAsContainer;
+            internal int isImplicit;
+            internal IndexerAttributeInfo** attributes;
+            internal int numAttributes;
+            internal int flags;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal unsafe struct IndexerEntityReferenceInfo
+        {
+            internal Indexer.EntityReferenceKind kind;
+            internal Cursor cursor;
+            internal IndexLocation location;
+            internal EntityInfo* referencedEntity;
+            internal EntityInfo* parentEntity;
+            internal IndexerContainerInfo* container;
+        }
+                
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate int IndexerAbort(IntPtr clientData, IntPtr reserved);
 
@@ -141,7 +210,7 @@ namespace LibClang
         internal delegate IndexClientFile IndexerEnteredMainFile(IntPtr clientData, IntPtr mainFile, IntPtr reserved);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate IndexClientFile IndexerPPIncludedFile(IntPtr client_data, IndexerIncludeFileInfo includedFile);
+        internal unsafe delegate IndexClientFile IndexerPPIncludedFile(IntPtr client_data, IndexerIncludeFileInfo* includedFileInfo);
   
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate IndexClientAstFile IndexerImportedASTFile(IntPtr clientData, IndexerImportedAstFileInfo astFileInfo);
@@ -150,10 +219,10 @@ namespace LibClang
         internal delegate IndexClientContainer IndexerStartTranslationUnit(IntPtr clientData, IntPtr reserved);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void IndexerDeclaration(IntPtr clientData, IntPtr a);
+        internal unsafe delegate void IndexerDeclaration(IntPtr clientData, IndexerDeclarationInfo* a);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void IndexerEntityReference(IntPtr clientData, IntPtr a);
+        internal unsafe delegate void IndexerEntityReference(IntPtr clientData, IndexerEntityReferenceInfo* reference);
         
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
         internal struct IndexerCallbacks
@@ -162,12 +231,12 @@ namespace LibClang
             * \brief Called periodically to check whether indexing should be aborted.
             * Should return 0 to continue, and non-zero to abort.
             */
-            internal IndexerAbort abort;
+            internal IndexerAbort abortQuery;
 
             /**
             * \brief Called at the end of indexing; passes the complete diagnostic set.
             */
-            internal IndexerDiagnostic diag;
+            internal IndexerDiagnostic diagnostic;
 
             internal IndexerEnteredMainFile enterMainFile;
 
@@ -199,12 +268,15 @@ namespace LibClang
             internal IndexerEntityReference entityRef;
         }
 
+        
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         internal static extern int clang_indexSourceFile(IndexingSession session, IntPtr clientData,
                                 IndexerCallbacks[] cbs, uint cbsSize, uint indexOptions,
                                 string fileName, string[] cmdLineArgs, int cmdLineCount,
                                 UnsavedFile[] unsavedFiles, uint numUnsavedFiles, out IntPtr translationUnit, uint tuOptions);
 
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern SourceLocation clang_indexLoc_getCXSourceLocation(IndexLocation idxLoc);
 
         #endregion
     }

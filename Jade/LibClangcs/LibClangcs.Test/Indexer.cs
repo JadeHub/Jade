@@ -12,15 +12,12 @@ namespace LibClang.Test
     public class IndexerTests
     {
         Index index;
-        //TranslationUnit testcpp;
-
+        
         [TestInitialize()]
         public void InitializeTest()
         {
             index = new Index(true, false);
-            //testcpp = index.CreateTranslationUnit("TestFiles\\test.cc");
             Assert.AreNotEqual(index.Handle, IntPtr.Zero);
-          //  Assert.AreNotEqual(testcpp.Handle, IntPtr.Zero);
         }
 
         [TestCleanup()]
@@ -33,7 +30,7 @@ namespace LibClang.Test
         [TestMethod]
         public void TestMethod1()
         {
-            Indexer indexer = new Indexer(index, "TestFiles\\test.cc");
+            Indexer.Indexer indexer = new Indexer.Indexer(index, "TestFiles\\test.cc");
             indexer.Parse();
         }
     }
