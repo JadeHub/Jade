@@ -95,11 +95,10 @@ namespace JadeControls.Workspace.ViewModel
             }
             else if (sel is ProjectFolder)
             {
-              /*  ProjectFolder paremtVm = sel as ProjectFolder;
-                JadeData.Project.IFolder parent = paremtVm.Data;
-                   _data.AddFolder(f);
-                                   JadeData.Project.IFolder newFolderData = new JadeData.Project.Folder(name);
-                   paremtVm.AddNewChildFolder(newFolderData);*/
+                ProjectFolder paremtVm = sel as ProjectFolder;
+                JadeCore.Project.IFolder parent = paremtVm.Data;
+                JadeCore.Project.IFolder newFolderData = new JadeCore.Project.Folder(parent.OwningProject, name);
+                paremtVm.AddNewChildFolder(newFolderData);
             }
             else
             {

@@ -1,9 +1,5 @@
-﻿using System;
+﻿using JadeUtils.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using JadeUtils.IO;
 
 namespace JadeCore.Workspace
 {
@@ -128,6 +124,7 @@ namespace JadeCore.Workspace
         public IList<Project.IItem> Items { get { return _project.Items; } }
         public IList<Project.IFolder> Folders { get { return _project.Folders; } }
         public CppView.IProjectIndex SourceIndex { get { return _project.SourceIndex; } }
+        public JadeCore.Project.IProject OwningProject { get { return _project.OwningProject; } }
 
         public void AddItem(JadeCore.Project.IItem item) { _project.AddItem(item); }
         public bool RemoveItem(string file) { return _project.RemoveItem(file); }
@@ -151,7 +148,7 @@ namespace JadeCore.Workspace
         private IFileHandle _file;
         private Folder _rootFolder;
 
-        #endregion
+        #endregion  
 
         public Workspace(string name, IFileHandle file)
         {

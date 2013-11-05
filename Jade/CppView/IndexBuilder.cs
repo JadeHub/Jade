@@ -8,12 +8,22 @@ namespace CppView
         Stopped
     }
 
+    public enum IndexBuilderItemPriority
+    {
+        Immediate,
+        High,
+        Low
+    }
+
     public interface IIndexBuilder
     {
         void Start();
         void Stop();
 
         IndexBuilderState State { get; }
+
+        void AddFile(JadeUtils.IO.IFileHandle file, IndexBuilderItemPriority priority);
+        void RemoveItem(JadeUtils.IO.IFileHandle file);
     }
 
     public class IndexBuilder : IIndexBuilder
@@ -28,8 +38,7 @@ namespace CppView
         public IndexBuilder(IProjectIndex index)
         {
             _index = index;
-
-            //watch the files in project, push them through a LibClang.Indexer updating _index as we go                                                                                                                                                             
+            _state = IndexBuilderState.Stopped;
         }
 
         public void Start()
@@ -43,6 +52,16 @@ namespace CppView
         public IndexBuilderState State
         {
             get { return _state; }
+        }
+
+        public void AddFile(JadeUtils.IO.IFileHandle file, IndexBuilderItemPriority priority)
+        {
+
+        }
+
+        public void RemoveItem(JadeUtils.IO.IFileHandle file)
+        {
+
         }
     }
 }

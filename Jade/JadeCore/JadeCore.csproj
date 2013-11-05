@@ -51,6 +51,9 @@
     <Compile Include="GuiUtils.cs" />
     <Compile Include="Editor\IEditorController.cs" />
     <Compile Include="IServiceProvider.cs" />
+    <Compile Include="Project\File.cs" />
+    <Compile Include="Project\Folder.cs" />
+    <Compile Include="Project\Item.cs" />
     <Compile Include="Project\Persistence\Project.cs" />
     <Compile Include="Project\Persistence\ProjectReaderWriter.cs" />
     <Compile Include="Project\Persistence\Reader.cs" />
