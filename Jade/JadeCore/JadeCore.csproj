@@ -51,7 +51,14 @@
     <Compile Include="GuiUtils.cs" />
     <Compile Include="Editor\IEditorController.cs" />
     <Compile Include="IServiceProvider.cs" />
-    <Compile Include="IWorkspaceController.cs" />
+    <Compile Include="Project\Persistence\Project.cs" />
+    <Compile Include="Project\Persistence\ProjectReaderWriter.cs" />
+    <Compile Include="Project\Persistence\Reader.cs" />
+    <Compile Include="Project\Persistence\Workspace.cs" />
+    <Compile Include="Project\Persistence\WorkspaceReaderWriter.cs" />
+    <Compile Include="Project\Persistence\Writer.cs" />
+    <Compile Include="Project\Project.cs" />
+    <Compile Include="Workspace\IWorkspaceController.cs" />
     <Compile Include="Output\Output.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -64,6 +71,8 @@
     <Compile Include="UserInput.xaml.cs">
       <DependentUpon>UserInput.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Workspace\Workspace.cs" />
+    <Compile Include="Workspace\WorkspaceController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="UserInput.xaml">
@@ -76,13 +85,19 @@
       <Project>{52652847-ed88-486a-a51d-ce4a15f16c1f}</Project>
       <Name>JadeUtils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\JadeData\JadeData.csproj">
-      <Project>{54f7c814-eb99-47d9-87e3-b57c3d9fb511}</Project>
-      <Name>JadeData</Name>
+    <ProjectReference Include="..\CppView\CppView.csproj">
+      <Project>{114dd183-3a0b-434d-84b0-f22bb62c6b86}</Project>
+      <Name>CppView</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Project\Persistence\Project.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Project\Persistence\Workspace.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

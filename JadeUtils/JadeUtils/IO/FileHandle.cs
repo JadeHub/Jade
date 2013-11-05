@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.Collections.Generic;
 
 namespace JadeUtils.IO
 {
@@ -7,6 +6,7 @@ namespace JadeUtils.IO
     {
         private IFileService _service;
         private FilePath _path;
+        private List<IFileObserver> _observers;
 
         public FileHandle(IFileService service, string path)
             : this(service, FilePath.Make(path))
@@ -17,6 +17,7 @@ namespace JadeUtils.IO
         {
             _service = service;
             _path = path;
+            _observers = new List<IFileObserver>();
         }
 
         public void Dispose()
@@ -39,6 +40,16 @@ namespace JadeUtils.IO
             {
                 return System.IO.File.Exists(_path.Str);
             }
+        }
+
+        public void AddFileObserver(IFileObserver observer)
+        {
+            _observers.Add(observer);
+        }
+
+        public void RemoveFileObserver(IFileObserver observer)
+        {
+            _observers.Remove(observer);
         }
     }
 }

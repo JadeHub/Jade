@@ -11,13 +11,13 @@ namespace JadeControls.Workspace.ViewModel
     {
         #region Data
 
-        private JadeData.Workspace.IWorkspace _data;
+        private JadeCore.Workspace.IWorkspace _data;
 
         #endregion
 
         #region Constructor
 
-        public WorkspaceTree(JadeData.Workspace.IWorkspace workspace)
+        public WorkspaceTree(JadeCore.Workspace.IWorkspace workspace)
             : base(null, workspace)
         {
             _data = workspace;
@@ -40,7 +40,7 @@ namespace JadeControls.Workspace.ViewModel
 
         #region Private Properties
 
-        JadeCore.IWorkspaceController WorkspaceController
+        JadeCore.Workspace.IWorkspaceController WorkspaceController
         {
             get
             {
@@ -89,15 +89,17 @@ namespace JadeControls.Workspace.ViewModel
             if (sel is WorkspaceFolder)
             {
                 WorkspaceFolder parentVm = sel as WorkspaceFolder;
-                JadeData.Workspace.IFolder newFolderData = new JadeData.Workspace.Folder(name);                
+                JadeCore.Workspace.IFolder newFolderData = new JadeCore.Workspace.Folder(name);                
                 parentVm.AddNewChildFolder(newFolderData);
                 
             }
             else if (sel is ProjectFolder)
             {
-                   ProjectFolder paremtVm = sel as ProjectFolder;
-                   JadeData.Project.IFolder newFolderData = new JadeData.Project.Folder(name);
-                   paremtVm.AddNewChildFolder(newFolderData);
+              /*  ProjectFolder paremtVm = sel as ProjectFolder;
+                JadeData.Project.IFolder parent = paremtVm.Data;
+                   _data.AddFolder(f);
+                                   JadeData.Project.IFolder newFolderData = new JadeData.Project.Folder(name);
+                   paremtVm.AddNewChildFolder(newFolderData);*/
             }
             else
             {
@@ -134,7 +136,7 @@ namespace JadeControls.Workspace.ViewModel
                 return;
             }
 
-            JadeData.Project.IProject project = new JadeData.Project.Project(name, 
+            JadeCore.Project.IProject project = new JadeCore.Project.Project(name, 
                                                     Services.Provider.FileService.MakeFileHandle(".\\" + name + ".jpj"));
             vm.AddNewProject(project);
             vm.Expanded = true;

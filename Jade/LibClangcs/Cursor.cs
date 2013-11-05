@@ -1,13 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LibClang
 {
     public class Cursor
     {
+        #region Data
+
+        //private
+        private SourceRange _extent;
+        private string _spelling;
+
+        #endregion
+
+        #region Properties
+
+        private SourceRange BuildExtent()
+        {
+            return new SourceRange(Dll.clang_getCursorExtent(Handle));
+        }
+
+        public SourceRange Extent
+        {
+            get { return _extent ?? (_extent = BuildExtent()); }
+        }
+
+        #endregion
+
         internal Dll.Cursor Handle
         {
             get;
@@ -25,8 +43,7 @@ namespace LibClang
             get;
             private set;
         }
-
-        private string _spelling;
+                
         public string Spelling
         {
             get { return _spelling ?? (_spelling = Dll.clang_getCursorSpelling(Handle).ManagedString); }
@@ -39,7 +56,6 @@ namespace LibClang
                 return new SourceLocation(Dll.clang_getCursorLocation(Handle));
             }
         }
-        
 
         public enum ChildVisitResult
         {
@@ -58,9 +74,33 @@ namespace LibClang
                 IntPtr.Zero);
         }
 
+        public static bool operator == (Cursor left, Cursor right)
+        {
+            return left.Handle == right.Handle;
+        }
+
+        public static bool operator !=(Cursor left, Cursor right)
+        {
+            return left.Handle != right.Handle;
+        }
+
         public override string ToString()
         {
-            return Spelling + " is " + Kind + " in ";// +Location;
+            return Kind + " in " + Location.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj != null && obj is Cursor)
+            {
+                return (obj as Cursor).Handle == Handle;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return Handle.GetHashCode();
         }
     }
 }

@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 using JadeUtils.IO;
 using JadeCore;
 
-namespace JadeGui
+namespace JadeCore.Workspace
 {
-    public class WorkspaceController : JadeCore.IWorkspaceController
+    public class WorkspaceController : JadeCore.Workspace.IWorkspaceController
     {
         #region Data
 
-        private JadeData.Workspace.IWorkspace _workspace;
+        private JadeCore.Workspace.IWorkspace _workspace;
         private bool _modified;
         private JadeCore.RecentFileList _recentFiles;
 
@@ -45,7 +45,7 @@ namespace JadeGui
         
         #region Public Properties
 
-        public JadeData.Workspace.IWorkspace CurrentWorkspace 
+        public JadeCore.Workspace.IWorkspace CurrentWorkspace 
         {
             get { return _workspace; }
         }
@@ -151,7 +151,7 @@ namespace JadeGui
             {
                 IFileHandle file = JadeCore.Services.Provider.FileService.MakeFileHandle(FilePath.MakeTemporaryFilePath());
 
-                _workspace = new JadeData.Workspace.Workspace(name, file);
+                _workspace = new JadeCore.Workspace.Workspace(name, file);
                 CurrentWorkspaceModified = true;
                 OnWorkspaceChanged();
             }
@@ -171,7 +171,7 @@ namespace JadeGui
 
             try
             {
-                _workspace = JadeData.Persistence.Workspace.Reader.Read(file, JadeCore.Services.Provider.FileService);
+                _workspace = JadeCore.Persistence.Workspace.Reader.Read(file, JadeCore.Services.Provider.FileService);
                 _recentFiles.Add(file.Path.Str);
                 OnWorkspaceChanged();
             }
@@ -190,7 +190,7 @@ namespace JadeGui
         {
             try
             {
-                JadeData.Persistence.Workspace.Writer.Write(_workspace, path);
+                JadeCore.Persistence.Workspace.Writer.Write(_workspace, path);
                 CurrentWorkspaceModified = false;
                 _workspace.Path = path;
                 OnWorkspaceChanged();

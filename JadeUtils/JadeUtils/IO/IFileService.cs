@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace JadeUtils.IO
 {
     public interface IFileService
@@ -22,6 +17,6 @@ namespace JadeUtils.IO
         /// </summary>
         /// <param name="path">path</param>
         /// <returns>New IFileHandle object</returns>
-        IFileHandle MakeFileHandle(FilePath path);
+        IFileHandle MakeFileHandle(FilePath path);        
     }
 }

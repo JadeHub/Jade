@@ -62,6 +62,10 @@ namespace JadeCore.Editor
                 ActiveDocument = doc;
                 OnDocumentOpen(doc);
             }
+            else
+            {
+                ActiveDocument = _openDocuments[file.Path];
+            }
         }
 
         public void SaveActiveDocument()

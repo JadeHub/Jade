@@ -30,6 +30,11 @@ namespace LibClang.Indexer
                 _container = new Cursor(_handle.container->cursor);
         }
 
+        public override string ToString()
+        {
+            return string.Format("Ref To {0} from {1}", _refedEntity.Name, Location);
+        }
+
         #region Properties
 
         public EntityReferenceKind Kind

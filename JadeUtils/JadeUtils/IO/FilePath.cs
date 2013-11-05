@@ -89,6 +89,14 @@ namespace JadeUtils.IO
             }
         }
 
+        public string Extention
+        {
+            get
+            {
+                return System.IO.Path.GetExtension(_path);
+            }
+        }
+
         #endregion
     }
 }

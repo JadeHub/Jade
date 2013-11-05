@@ -1,7 +1,6 @@
-﻿using System;
-using System.Diagnostics;
+﻿using JadeUtils.IO;
+using System;
 using System.IO;
-using JadeUtils.IO;
 
 namespace JadeCore.Editor
 {
@@ -45,6 +44,8 @@ namespace JadeCore.Editor
 
         #endregion
 
+        #region Public Methods
+
         public void Close()
         {
             RaiseOnClosing();
@@ -62,6 +63,8 @@ namespace JadeCore.Editor
                 }
             }
         }
+
+        #endregion
 
         #region Public Properties
 

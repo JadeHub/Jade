@@ -10,7 +10,7 @@ namespace JadeCore
     {
         JadeCore.Properties.Settings Settings { get;}
         JadeUtils.IO.IFileService FileService { get; set; }
-        JadeCore.IWorkspaceController WorkspaceController { get; set; }
+        JadeCore.Workspace.IWorkspaceController WorkspaceController { get; set; }
         JadeCore.IEditorController EditorController { get; set; }
         JadeCore.Output.IOutputController OutputController { get; set; }
     }
@@ -31,7 +31,7 @@ namespace JadeCore
     {
         public JadeCore.Properties.Settings Settings { get { return JadeCore.Properties.Settings.Default; } }
         public JadeUtils.IO.IFileService FileService { get; set; }
-        public JadeCore.IWorkspaceController WorkspaceController { get; set; }
+        public JadeCore.Workspace.IWorkspaceController WorkspaceController { get; set; }
         public JadeCore.IEditorController EditorController { get; set; }
         public JadeCore.Output.IOutputController OutputController { get; set; }
     }

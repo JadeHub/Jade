@@ -54,6 +54,7 @@
     <Compile Include="LibClangcs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SourceLocation.cs" />
+    <Compile Include="SourceRange.cs" />
     <Compile Include="TranslationUnit.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

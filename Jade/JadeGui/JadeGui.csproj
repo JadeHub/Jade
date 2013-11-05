@@ -64,7 +64,6 @@
     </Compile>
     <Compile Include="ViewModels\JadeCommandAdaptor.cs" />
     <Compile Include="ViewModels\JadeViewModel.cs" />
-    <Compile Include="WorkspaceController.cs" />
     <Page Include="MainMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -125,10 +124,6 @@
     <ProjectReference Include="..\JadeCore\JadeCore.csproj">
       <Project>{59cad747-608c-447a-b2af-f8fd7ace39b2}</Project>
       <Name>JadeCore</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\JadeData\JadeData.csproj">
-      <Project>{54f7c814-eb99-47d9-87e3-b57c3d9fb511}</Project>
-      <Name>JadeData</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -11,13 +11,13 @@ namespace JadeControls.Workspace.ViewModel
     {
         #region Data
 
-        private readonly JadeData.Project.IProject _data;
+        private readonly JadeCore.Project.IProject _data;
 
         #endregion
 
         #region Constructor
 
-        public Project(TreeNodeBase parent, JadeData.Project.IProject project)
+        public Project(TreeNodeBase parent, JadeCore.Project.IProject project)
             :base(parent, project)
         {
             _data = project;

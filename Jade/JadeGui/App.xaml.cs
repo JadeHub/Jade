@@ -24,7 +24,7 @@ namespace JadeGui
             
             //These services are required to create the MainViewModel
             JadeCore.Services.Provider.FileService = new JadeUtils.IO.FileService();
-            JadeCore.Services.Provider.WorkspaceController = new WorkspaceController();
+            JadeCore.Services.Provider.WorkspaceController = new JadeCore.Workspace.WorkspaceController();
             JadeCore.Services.Provider.EditorController = new JadeCore.Editor.EditorController();
             JadeCore.Services.Provider.OutputController = new JadeCore.Output.OutputController();
 

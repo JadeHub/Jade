@@ -7,11 +7,11 @@ using System.Xml;
 using System.Xml.Serialization;
 using JadeUtils.IO;
 
-namespace JadeData.Persistence.Workspace
+namespace JadeCore.Persistence.Workspace
 {
     public static class Reader
     {
-        private static JadeData.Project.IProject MakeProject(string workspaceDir, ProjectType xml, IFileService fileService)
+        private static JadeCore.Project.IProject MakeProject(string workspaceDir, ProjectType xml, IFileService fileService)
         {
             string path = xml.Path;
             if (System.IO.Path.IsPathRooted(path) == false)
@@ -22,9 +22,9 @@ namespace JadeData.Persistence.Workspace
             return Persistence.Project.Reader.Read(path, fileService);
         }
 
-        private static JadeData.Workspace.IFolder MakeFolder(string workspaceDir, FolderType xml, IFileService fileService)
+        private static JadeCore.Workspace.IFolder MakeFolder(string workspaceDir, FolderType xml, IFileService fileService)
         {
-            JadeData.Workspace.IFolder result = new JadeData.Workspace.Folder(xml.Name);
+            JadeCore.Workspace.IFolder result = new JadeCore.Workspace.Folder(xml.Name);
 
             foreach (FolderType f in xml.Folders)
             {
@@ -37,7 +37,7 @@ namespace JadeData.Persistence.Workspace
             return result;
         }
 
-        static public JadeData.Workspace.IWorkspace Read(IFileHandle file, IFileService fileService)
+        static public JadeCore.Workspace.IWorkspace Read(IFileHandle file, IFileService fileService)
         {
             WorkspaceType xml;
             XmlSerializer serializer = new XmlSerializer(typeof(WorkspaceType));
@@ -52,7 +52,7 @@ namespace JadeData.Persistence.Workspace
                 tr.Dispose();
             }
 
-            JadeData.Workspace.IWorkspace result = new JadeData.Workspace.Workspace(xml.Name, file);
+            JadeCore.Workspace.IWorkspace result = new JadeCore.Workspace.Workspace(xml.Name, file);
             foreach (FolderType f in xml.Folders)
             {
                 result.AddFolder(MakeFolder(result.Directory, f, fileService));
@@ -68,7 +68,7 @@ namespace JadeData.Persistence.Workspace
 
     public static class Writer
     {
-        static private ProjectType MakeProject(JadeData.Workspace.ProjectItem proj, string workspaceDir)
+        static private ProjectType MakeProject(JadeCore.Workspace.ProjectItem proj, string workspaceDir)
         {
             ProjectType result = new ProjectType();
 
@@ -78,7 +78,7 @@ namespace JadeData.Persistence.Workspace
             return result;
         }
 
-        static private FolderType MakeFolder(JadeData.Workspace.IFolder folder, string workspaceDir)
+        static private FolderType MakeFolder(JadeCore.Workspace.IFolder folder, string workspaceDir)
         {
             FolderType result = new FolderType();
             result.Name = folder.Name;
@@ -90,8 +90,8 @@ namespace JadeData.Persistence.Workspace
             }
             result.Folders = subs;
 
-            List<JadeData.Workspace.ProjectItem> projTemps = new List<JadeData.Workspace.ProjectItem>();
-            foreach (JadeData.Workspace.ProjectItem proj in folder.Items.OfType<JadeData.Workspace.ProjectItem>())
+            List<JadeCore.Workspace.ProjectItem> projTemps = new List<JadeCore.Workspace.ProjectItem>();
+            foreach (JadeCore.Workspace.ProjectItem proj in folder.Items.OfType<JadeCore.Workspace.ProjectItem>())
             {
                 projTemps.Add(proj);
             }
@@ -105,16 +105,16 @@ namespace JadeData.Persistence.Workspace
             return result;
         }
 
-        static private string GetProjectPath(JadeData.Workspace.IWorkspace workspace, JadeData.Project.IProject proj)
+        static private string GetProjectPath(JadeCore.Workspace.IWorkspace workspace, JadeCore.Project.IProject proj)
         {
             return "";
         }
 
-        static public string Write(JadeData.Workspace.IWorkspace workspace, string path)
+        static public string Write(JadeCore.Workspace.IWorkspace workspace, string path)
         {
             string workspaceDir = System.IO.Path.GetDirectoryName(path);
 
-            JadeData.Workspace.IFolder folder = workspace;
+            JadeCore.Workspace.IFolder folder = workspace;
             WorkspaceType result = new WorkspaceType();
 
             result.Name = workspace.Name;
@@ -126,8 +126,8 @@ namespace JadeData.Persistence.Workspace
             }
             result.Folders = subs;
 
-            List<JadeData.Workspace.ProjectItem> projTemps = new List<JadeData.Workspace.ProjectItem>();
-            foreach (JadeData.Workspace.ProjectItem proj in folder.Items.OfType<JadeData.Workspace.ProjectItem>())
+            List<JadeCore.Workspace.ProjectItem> projTemps = new List<JadeCore.Workspace.ProjectItem>();
+            foreach (JadeCore.Workspace.ProjectItem proj in folder.Items.OfType<JadeCore.Workspace.ProjectItem>())
             {
                 projTemps.Add(proj);
             }

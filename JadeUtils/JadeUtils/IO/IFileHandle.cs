@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace JadeUtils.IO
 {
@@ -30,6 +26,16 @@ namespace JadeUtils.IO
 
     public delegate void FileChangeEvent(FileChangeEventArgs args);
 
+    public interface IFileObserver
+    {
+        void Created(IFileHandle h);
+        void Opened(IFileHandle h);
+        void Read(IFileHandle h);
+        void Written(IFileHandle h);
+        void ChangedExternally(IFileHandle h);
+        void Deleted(IFileHandle h);
+    }
+
     public interface IFileHandle : IDisposable
     {
         /// <summary>
@@ -43,5 +49,8 @@ namespace JadeUtils.IO
         FilePath Path { get; }
                 
         bool Exists { get; }
+
+        void AddFileObserver(IFileObserver observer);
+        void RemoveFileObserver(IFileObserver observer);
     }
 }

@@ -11,13 +11,13 @@ namespace JadeControls.Workspace.ViewModel
     {
         #region Data
 
-        private readonly JadeData.Project.File _data;
+        private readonly JadeCore.Project.File _data;
 
         #endregion
 
         #region Constructor
 
-        public File(TreeNodeBase parent, JadeData.Project.File file)
+        public File(TreeNodeBase parent, JadeCore.Project.File file)
             : base(file.Name, parent)
         {
             _data = file;

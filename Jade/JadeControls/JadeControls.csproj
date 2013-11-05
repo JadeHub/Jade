@@ -161,10 +161,6 @@
       <Project>{59cad747-608c-447a-b2af-f8fd7ace39b2}</Project>
       <Name>JadeCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\JadeData\JadeData.csproj">
-      <Project>{54f7c814-eb99-47d9-87e3-b57c3d9fb511}</Project>
-      <Name>JadeData</Name>
-    </ProjectReference>
     <ProjectReference Include="..\libraries\AvalonEdit\ICSharpCode.AvalonEdit\ICSharpCode.AvalonEdit.csproj">
       <Project>{6c55b776-26d4-4db3-a6ab-87e783b2f3d1}</Project>
       <Name>ICSharpCode.AvalonEdit</Name>

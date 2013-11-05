@@ -9,27 +9,27 @@ namespace JadeControls.Workspace.ViewModel
     {
         #region Data
 
-        private JadeData.Workspace.IFolder _data;
+        private JadeCore.Workspace.IFolder _data;
 
         #endregion
 
         #region Constructor
 
-        public WorkspaceFolder(TreeNodeBase parent, JadeData.Workspace.IFolder data)
+        public WorkspaceFolder(TreeNodeBase parent, JadeCore.Workspace.IFolder data)
             : base(data.Name, parent)
         {
             _data = data;
-            foreach (JadeData.Workspace.IFolder f in _data.Folders)
+            foreach (JadeCore.Workspace.IFolder f in _data.Folders)
             {
                 WorkspaceFolder folder = new WorkspaceFolder(this, f);
                 AddChildFolder(f);
             }
 
-            foreach (JadeData.Workspace.IItem item in _data.Items)
+            foreach (JadeCore.Workspace.IItem item in _data.Items)
             {
-                if (item is JadeData.Project.IProject)
+                if (item is JadeCore.Project.IProject)
                 {
-                    AddChildProject(item as JadeData.Project.IProject);
+                    AddChildProject(item as JadeCore.Project.IProject);
                 }
             }
         }
@@ -51,27 +51,27 @@ namespace JadeControls.Workspace.ViewModel
             return false;
         }
 
-        public void AddNewChildFolder(JadeData.Workspace.IFolder f)
+        public void AddNewChildFolder(JadeCore.Workspace.IFolder f)
         {
             _data.AddFolder(f);
             AddChildFolder(f);
             OnPropertyChanged("Children");
         }
 
-        public void AddNewProject(JadeData.Project.IProject p)
+        public void AddNewProject(JadeCore.Project.IProject p)
         {
             _data.AddProject(p);
             AddChildProject(p);
             OnPropertyChanged("Children");
         }
 
-        private void AddChildFolder(JadeData.Workspace.IFolder f)
+        private void AddChildFolder(JadeCore.Workspace.IFolder f)
         {
             WorkspaceFolder folder = new WorkspaceFolder(this, f);
             Children.Add(folder);
         }
 
-        private void AddChildProject(JadeData.Project.IProject p)
+        private void AddChildProject(JadeCore.Project.IProject p)
         {
             Project project = new Project(this, p);
             Children.Add(project);

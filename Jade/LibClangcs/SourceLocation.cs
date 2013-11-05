@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LibClang
 {
-    public class SourceLocation //: IComparable
+    public class SourceLocation : IComparable
     {
         internal Dll.SourceLocation Handle
         {
@@ -34,6 +30,61 @@ namespace LibClang
             Column = (int)column;
             Offset = (int)offset;
             File = new File(file);
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} {1}:{2}", File.Name, Line, Column);
+        }
+
+        public static bool operator ==(SourceLocation left, SourceLocation right)
+        {
+            return left.File == right.File && left.Offset == right.Offset;
+        }
+
+        public static bool operator !=(SourceLocation left, SourceLocation right)
+        {
+            return left.File != right.File || left.Offset != right.Offset;
+        }
+
+        public static bool operator <(SourceLocation first, SourceLocation second)
+        {
+            return first.Offset < second.Offset;
+        }
+
+        public static bool operator >(SourceLocation first, SourceLocation second)
+        {
+            return first.Offset > second.Offset;
+        }
+
+        public static bool operator <=(SourceLocation first, SourceLocation second)
+        {
+            return first.Offset < second.Offset || first.Offset == second.Offset;
+        }
+
+        public static bool operator >=(SourceLocation first, SourceLocation second)
+        {
+            return first.Offset > second.Offset || first.Offset == second.Offset;
+        }
+
+        public int CompareTo(object obj)
+        {
+            SourceLocation other = obj as SourceLocation;
+            if (other == null)
+            {
+                throw new ArgumentException("Incorrect type for comparison", "obj");
+            }
+            return Offset.CompareTo(other.Offset);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is SourceLocation && (SourceLocation)obj == this;
+        }
+
+        public override int GetHashCode()
+        {
+            return (File.ToString() + Offset).GetHashCode();
         }
     }
 }

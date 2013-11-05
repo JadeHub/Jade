@@ -48,6 +48,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CppView\CppView.csproj">
+      <Project>{114dd183-3a0b-434d-84b0-f22bb62c6b86}</Project>
+      <Name>CppView</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LibClangcs\LibClangcs.csproj">
       <Project>{413e491a-5c65-44ee-8bcd-9e47b1b8377e}</Project>
       <Name>LibClangcs</Name>

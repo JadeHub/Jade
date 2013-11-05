@@ -21,7 +21,7 @@ namespace LibClang.Indexer
 
         public override string ToString()
         {
-            return Cursor.Kind.ToString() + ":" + _name;
+            return Cursor.Kind.ToString() + ":" + _name + " " + _cur.ToString();
         }
 
         #region Properties

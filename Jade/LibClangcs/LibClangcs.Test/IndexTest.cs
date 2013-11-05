@@ -18,7 +18,7 @@ namespace LibClang.Test
         public void CreateTranslationUnit()
         {
             Index i = new Index(true, false);
-            TranslationUnit tu = i.CreateTranslationUnit("TestFiles\\test.cc");
+            TranslationUnit tu = new TranslationUnit(i, "TestFiles\\test.cc");
             Assert.AreNotEqual(tu.Handle, IntPtr.Zero);
             i.Dispose();            
         }
@@ -29,7 +29,7 @@ namespace LibClang.Test
             Index i = new Index(true, true);
             try
             {
-                TranslationUnit tu = i.CreateTranslationUnit("badfilename.cc");
+                TranslationUnit tu = new TranslationUnit(i, "badfilename.cc");
                 Assert.Fail();
             }
             catch (System.IO.FileNotFoundException e)

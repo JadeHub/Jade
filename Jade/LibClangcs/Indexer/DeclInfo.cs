@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace LibClang.Indexer
 {
@@ -37,6 +34,8 @@ namespace LibClang.Indexer
 
             if(handle.declAsContainer != (Dll.IndexerContainerInfo*)IntPtr.Zero)
                 _declAsContainer = new Cursor(handle.declAsContainer->cursor);
+            Debug.Assert(Location == Cursor.Location);
+            
         }
 
         #region Properties

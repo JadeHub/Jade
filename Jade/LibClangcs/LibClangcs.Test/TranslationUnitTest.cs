@@ -15,7 +15,7 @@ namespace LibClang.Test
         public void InitializeTest()
         {
             index = new Index(true, false);
-            testcpp = index.CreateTranslationUnit("TestFiles\\test.cc");
+            testcpp = new TranslationUnit(index, "TestFiles\\test.cc");
             Assert.AreNotEqual(index.Handle, IntPtr.Zero);
             Assert.AreNotEqual(testcpp.Handle, IntPtr.Zero);            
         }

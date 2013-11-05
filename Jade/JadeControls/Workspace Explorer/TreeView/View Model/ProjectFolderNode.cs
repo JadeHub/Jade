@@ -15,27 +15,27 @@ namespace JadeControls.Workspace.ViewModel
         /// <summary>
         /// Underlying model data
         /// </summary>
-        private JadeData.Project.IFolder _data;
+        private JadeCore.Project.IFolder _data;
 
         #endregion
 
         #region Constructor
 
-        public ProjectFolder(TreeNodeBase parent, JadeData.Project.IFolder data)
+        public ProjectFolder(TreeNodeBase parent, JadeCore.Project.IFolder data)
             : base(data.Name, parent)
         {
             _data = data;
 
-            foreach (JadeData.Project.IFolder f in _data.Folders)
+            foreach (JadeCore.Project.IFolder f in _data.Folders)
             {
                 AddChildFolder(new ProjectFolder(this, f));
             }
 
-            foreach (JadeData.Project.IItem i in _data.Items)
+            foreach (JadeCore.Project.IItem i in _data.Items)
             {
-                if (i is JadeData.Project.File)
+                if (i is JadeCore.Project.File)
                 {
-                    AddChildFile(new File(this, i as JadeData.Project.File));
+                    AddChildFile(new File(this, i as JadeCore.Project.File));
                 }
             }
         }
@@ -44,7 +44,7 @@ namespace JadeControls.Workspace.ViewModel
 
         #region Public Methods
 
-        public void AddNewChildFolder(JadeData.Project.IFolder f)
+        public void AddNewChildFolder(JadeCore.Project.IFolder f)
         {
             _data.AddFolder(f);
             AddChildFolder(new ProjectFolder(this, f));
@@ -57,11 +57,17 @@ namespace JadeControls.Workspace.ViewModel
                 throw new Exception("Attempt to add duplicate file name to project.");
             }
 
-            JadeData.Project.File data = new JadeData.Project.File(fileHandle);
+            JadeCore.Project.File data = new JadeCore.Project.File(fileHandle);
             _data.AddItem(data);
             AddChildFile(new File(this, data));
             OnPropertyChanged("Children");
         }
+
+        #endregion
+
+        #region Properties
+
+        public JadeCore.Project.IFolder Data { get { return _data; } }
 
         #endregion
 

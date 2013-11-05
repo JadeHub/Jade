@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using JadeUtils.IO;
 
-namespace JadeData.Workspace
+namespace JadeCore.Workspace
 {
     public interface IItem
     {
@@ -32,9 +32,13 @@ namespace JadeData.Workspace
 
     public class Folder : IFolder
     {
+        #region Data 
+
         private readonly string name;
         private List<IFolder> folders;
         private List<IItem> items;
+        
+        #endregion
 
         public Folder(string name)
         {
@@ -43,9 +47,15 @@ namespace JadeData.Workspace
             this.items = new List<IItem>();
         }
 
+        #region Properties
+
         public string Name { get { return name; } }
         public IList<IFolder> Folders { get { return folders; } }
         public IList<IItem> Items { get { return items; } }
+        
+        #endregion
+
+        #region Public Methods
 
         public void AddProject(Project.IProject p)
         {
@@ -94,6 +104,8 @@ namespace JadeData.Workspace
             }
             return false;
         }
+        
+        #endregion
     }
 
     public class ProjectItem : IItem, Project.IProject
@@ -115,15 +127,18 @@ namespace JadeData.Workspace
 
         public IList<Project.IItem> Items { get { return _project.Items; } }
         public IList<Project.IFolder> Folders { get { return _project.Folders; } }
+        public CppView.IProjectIndex SourceIndex { get { return _project.SourceIndex; } }
 
-        public void AddItem(JadeData.Project.IItem item) { _project.AddItem(item); }
+        public void AddItem(JadeCore.Project.IItem item) { _project.AddItem(item); }
         public bool RemoveItem(string file) { return _project.RemoveItem(file); }
         public bool HasItem(string name) { return _project.HasItem(name); }
-        public void AddFolder(JadeData.Project.IFolder f) {_project.AddFolder(f);}
+        public void AddFolder(JadeCore.Project.IFolder f) {_project.AddFolder(f);}
         public bool RemoveFolder(string name) { return _project.RemoveFolder(name); }
         public bool HasFolder(string name) { return _project.HasFolder(name); }
         public string Path { get { return _project.Path; } }
         public string Directory { get { return _project.Directory; } }
+        public void OnItemAdded(JadeCore.Project.IItem item) { _project.OnItemAdded(item); }
+        public void OnItemRemoved(JadeCore.Project.IItem item) { _project.OnItemRemoved(item); }
 
         #endregion
     }

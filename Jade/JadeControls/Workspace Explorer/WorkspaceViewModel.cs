@@ -9,18 +9,18 @@ using System.Windows;
 
 namespace JadeControls.Workspace.ViewModel
 {
-    using JadeData;
+    using JadeCore;
 
     public class WorkspaceViewModel : JadeControls.NotifyPropertyChanged
     {
         #region Data
 
-        private JadeData.Workspace.IWorkspace _data;
+        private JadeCore.Workspace.IWorkspace _data;
         private WorkspaceTree _tree;
 
         #endregion
 
-        public WorkspaceViewModel(JadeData.Workspace.IWorkspace data)
+        public WorkspaceViewModel(JadeCore.Workspace.IWorkspace data)
         {
             _data = data;
             _tree = new JadeControls.Workspace.ViewModel.WorkspaceTree(_data);

@@ -31,7 +31,7 @@ namespace LibClang.Test
         public void TestMethod1()
         {
             Indexer.Indexer indexer = new Indexer.Indexer(index, "TestFiles\\test.cc");
-            indexer.Parse();
+            //indexer.Parse();
         }
     }
 }

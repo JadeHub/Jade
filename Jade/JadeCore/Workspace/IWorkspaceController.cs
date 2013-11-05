@@ -1,7 +1,7 @@
 ﻿using System;
 using JadeUtils.IO;
 
-namespace JadeCore
+namespace JadeCore.Workspace 
 {
     public interface IWorkspaceController
     {
@@ -53,7 +53,7 @@ namespace JadeCore
         /// <summary>
         /// Returns the current workspace
         /// </summary>
-        JadeData.Workspace.IWorkspace CurrentWorkspace { get; }
+        JadeCore.Workspace.IWorkspace CurrentWorkspace { get; }
 
         /// <summary>
         /// True if the current workspace has beeb modified

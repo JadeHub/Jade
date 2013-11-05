@@ -20,7 +20,7 @@ namespace JadeGui.ViewModels
 
         private JadeCommandAdaptor _commands;
 
-        private JadeCore.IWorkspaceController _workspaceController;
+        private JadeCore.Workspace.IWorkspaceController _workspaceController;
         private WorkspaceViewModel _currentWorkspace;
 
         private EditorControlViewModel _editorModel;
@@ -105,8 +105,8 @@ namespace JadeGui.ViewModels
         #endregion
 
         #region Workspace
-        
-        public JadeCore.IWorkspaceController WorkspaceController
+
+        public JadeCore.Workspace.IWorkspaceController WorkspaceController
         {
             get
             {
