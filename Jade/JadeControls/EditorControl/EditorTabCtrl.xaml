@@ -18,7 +18,7 @@
     <Grid>
             <TabControl x:Name="documentView" 
                         ItemsSource="{Binding Path=TabItems}" 
-                        SelectedItem="{Binding Path=SelectedDocument}" 
+                        SelectedItem="{Binding Path=SelectedDocumentTab}" 
                         IsSynchronizedWithCurrentItem="True"
                         BorderBrush="Transparent">
             

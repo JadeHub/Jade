@@ -43,7 +43,8 @@ namespace LibClang
             {
                 throw new System.IO.FileNotFoundException("Couldn't find input file.", Filename);
             }
-            _handle = Dll.clang_parseTranslationUnit(_index.Handle, Filename, null, 0, null, 0, (int)TranslationUnitFlags.PrecompiledPreamble);
+                      
+            _handle = Dll.clang_parseTranslationUnit(_index.Handle, Filename, null, 0, null, 0, 0);//(int)TranslationUnitFlags.PrecompiledPreamble);
             return Valid;
         }
 

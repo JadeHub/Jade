@@ -3,14 +3,18 @@
 namespace Test {
 
 SomeClass::SomeClass()
-:	mI(0)
 {
-	mI = 9;
 }
 
-void main()
+int ReturnInt()
 {
-	SomeClass sc;
+	return 7;
+}
+
+void SomeClass::Fn()
+{
+	int sam = ReturnInt();
+	
 }
 
 }

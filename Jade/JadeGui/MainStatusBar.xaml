@@ -1,0 +1,27 @@
+﻿<StatusBar x:Class="JadeGui.MainStatusBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Height="25"
+            Background="LightBlue">
+    <StatusBarItem DockPanel.Dock="Right" Width="100">
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Offset "/>
+            <TextBlock Text="{Binding Editor.SelectedDocument.CaretLocation.Offset}"/>
+        </StackPanel>
+    </StatusBarItem>
+    <StatusBarItem DockPanel.Dock="Right" Width="100">
+        <StackPanel Orientation="Horizontal">
+        <TextBlock Text="Character "/>
+        <TextBlock Text="{Binding Editor.SelectedDocument.CaretLocation.Column}"/>
+        </StackPanel>
+    </StatusBarItem>
+    <StatusBarItem DockPanel.Dock="Right" Width="100">
+        <StackPanel Orientation="Horizontal">
+        <TextBlock Text="Line "/>
+        <TextBlock Text="{Binding Editor.SelectedDocument.CaretLocation.Line}"/>
+        </StackPanel>
+    </StatusBarItem>
+    <StatusBarItem>
+        <TextBlock>Ready</TextBlock>
+    </StatusBarItem>
+</StatusBar>

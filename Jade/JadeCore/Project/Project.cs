@@ -8,7 +8,7 @@ namespace JadeCore.Project
         string Path { get; }
         string Directory { get; }
 
-        CppView.IProjectIndex SourceIndex { get; }
+        CppView.IProjectSourceIndex SourceIndex { get; }
 
         void OnItemAdded(IItem item);
         void OnItemRemoved(IItem item);
@@ -25,7 +25,8 @@ namespace JadeCore.Project
         //maintain a list of all source files in all folders
         private List<IItem> _allSourceFiles;
 
-        private CppView.IProjectIndex _sourceIndex;
+        private CppView.IProjectSourceIndex _sourceIndex;
+        
         private CppView.IIndexBuilder _indexBuilder;
 
         #endregion
@@ -40,8 +41,8 @@ namespace JadeCore.Project
             _folders = new List<IFolder>();
             _allSourceFiles = new List<IItem>();
 
-            _sourceIndex = new CppView.ProjectIndex();
-            _indexBuilder = new CppView.IndexBuilder(_sourceIndex);
+            _sourceIndex = new CppView.ProjectSourceIndex(new CppView.ProjectSymbolTable());
+            _indexBuilder = new CppView.IndexBuilder(_sourceIndex, _sourceIndex);
         }
 
         #endregion
@@ -53,7 +54,7 @@ namespace JadeCore.Project
         public IList<IFolder> Folders { get { return _folders; } }
         public IProject OwningProject { get { return this; } }
 
-        public CppView.IProjectIndex SourceIndex { get { return _sourceIndex; } }
+        public CppView.IProjectSourceIndex SourceIndex { get { return _sourceIndex; } }
 
         public string Path { get { return _file.Path.Str; } }
         public string Directory { get { return _file.Path.Directory; } }
@@ -120,7 +121,7 @@ namespace JadeCore.Project
                 File f = item as File;
                 if (f.Type == ItemType.CppSourceFile)
                 {
-                    _allSourceFiles.Add(f);
+                    AddSourceFile(f);
                 }
             }
         }
@@ -132,9 +133,23 @@ namespace JadeCore.Project
                 File f = item as File;
                 if (f.Type == ItemType.CppSourceFile)
                 {
-                    _allSourceFiles.Remove(f);
+                    
                 }
             }
+        }
+
+        private void AddSourceFile(File f)
+        {
+            _allSourceFiles.Add(f);
+            _indexBuilder.AddSourceFile(f.Handle, CppView.IndexBuilderItemPriority.Immediate);
+            //_sourceIndex.Dump();
+        }
+
+        private void RemoveSourceFile(File f)
+        {
+            _allSourceFiles.Remove(f);
+
+            
         }
 
         #endregion

@@ -6,27 +6,49 @@ using System.Threading.Tasks;
 
 namespace CppView
 {
+    using JadeUtils.IO;
+
     public interface ISourceFile
     {
-        
+        JadeUtils.IO.FilePath Path { get; }
     }
 
     public class SourceFile : ISourceFile
     {
-        private JadeUtils.IO.IFileHandle _file;
+        private FilePath _path;
 
-        public SourceFile(JadeUtils.IO.IFileHandle file)
+        public SourceFile(string path)
         {
-            _file = file;
+            _path = JadeUtils.IO.FilePath.Make(path);            
+        }
+
+        public SourceFile(FilePath path)
+        {
+            _path = path;
         }
 
         #region Properties
 
-        public JadeUtils.IO.IFileHandle File
+        public JadeUtils.IO.FilePath Path
         {
-            get { return _file; }
+            get { return _path; }
         }
 
         #endregion
+
+        public override string ToString()
+        {
+            return _path.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return _path.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return _path.GetHashCode();
+        }
     }
 }

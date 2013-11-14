@@ -11,15 +11,24 @@ namespace CppView
         int Line { get; }
         int Column { get; }
         int Offset { get; }
+        ISourceFile File { get; }
     }
 
     internal class CodeLocation : ICodeLocation
     {
-        public CodeLocation(LibClang.SourceLocation loc)
+        public CodeLocation(LibClang.SourceLocation loc, ISourceFile file)
         {
+            Handle = loc;
             Line = loc.Line;
             Column = loc.Column;
-            Offset = loc.Offset;
+            Offset = loc.Offset;        
+            File = file;
+        }
+
+        public LibClang.SourceLocation Handle
+        {
+            get;
+            private set;
         }
 
         public int Line
@@ -38,6 +47,32 @@ namespace CppView
         {
             get;
             private set;
+        }
+
+        public ISourceFile File
+        {
+            get;
+            private set;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0}:{1}:{2}", Line, Column, Offset);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is CodeLocation)
+            {
+                CodeLocation rhs = obj as CodeLocation;
+                return rhs.File == File && rhs.Offset == Offset;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return File.GetHashCode() + Offset;
         }
     }
 }

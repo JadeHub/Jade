@@ -16,20 +16,29 @@ namespace CppView
     {
         #region Data
 
-        private LibClang.SourceRange _range;
+        private ICodeLocation _start;
+        private ICodeLocation _end;
 
         #endregion
 
-        public CodeRange(LibClang.SourceRange range)
+        public CodeRange(LibClang.Cursor cur, ISourceFile file)
         {
-            _range = range;
+            LibClang.SourceRange range = cur.Extent;
+            
+            _start = new CodeLocation(range.Start, file);
+            _end = new CodeLocation(range.End, file);
         }
 
         #region Properties
 
-        public ICodeLocation Start { get { return null; } }
-        public ICodeLocation End { get { return null; } }
+        public ICodeLocation Start { get { return _start; } }
+        public ICodeLocation End { get { return _end; } }
 
         #endregion
+
+        public override string ToString()
+        {
+            return string.Format("{0}->{1}", Start, End);
+        }
     }
 }

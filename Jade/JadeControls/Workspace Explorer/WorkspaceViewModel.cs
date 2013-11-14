@@ -35,30 +35,6 @@ namespace JadeControls.Workspace.ViewModel
                 return _tree;
             }
         }
-        /*
-        public string Name
-        {
-            get
-            {
-                return _data.Name;
-            }
-        }
-
-        public string Directory
-        {
-            get
-            {
-                return _data.Directory;
-            }
-        }
-
-        public string Path
-        {
-            get
-            {
-                return _data.Path;
-            }
-        }*/
 
         #endregion
     }

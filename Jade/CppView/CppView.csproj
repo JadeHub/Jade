@@ -42,12 +42,14 @@
     <Compile Include="CodeLocation.cs" />
     <Compile Include="CodeRange.cs" />
     <Compile Include="Declaration.cs" />
-    <Compile Include="ProjectIndex.cs" />
     <Compile Include="IndexBuilder.cs" />
-    <Compile Include="Project.cs" />
+    <Compile Include="ProjectSourceIndex.cs" />
     <Compile Include="Reference.cs" />
     <Compile Include="SourceFile.cs" />
-    <Compile Include="TranslationUnit.cs" />
+    <Compile Include="Symbol Table\FileTable.cs" />
+    <Compile Include="Symbol Table\LineTable.cs" />
+    <Compile Include="Symbol Table\ProjectTable.cs" />
+    <Compile Include="Symbol Table\SymbolTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -60,6 +62,7 @@
       <Name>LibClangcs</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -2,7 +2,8 @@
 <Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="CppTest" xmlns="http://JadeData.org/Project.xsd">
   <Folders />
   <Files>
-    <File Path=".\test.cpp" />
-    <File Path=".\test.h" />
+    <File Path="test.cpp" />
+    <File Path="test.h" />
+    <File Path="main.cpp" />
   </Files>
 </Project>

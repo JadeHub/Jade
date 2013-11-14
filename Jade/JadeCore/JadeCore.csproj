@@ -56,10 +56,8 @@
     <Compile Include="Project\Item.cs" />
     <Compile Include="Project\Persistence\Project.cs" />
     <Compile Include="Project\Persistence\ProjectReaderWriter.cs" />
-    <Compile Include="Project\Persistence\Reader.cs" />
     <Compile Include="Project\Persistence\Workspace.cs" />
     <Compile Include="Project\Persistence\WorkspaceReaderWriter.cs" />
-    <Compile Include="Project\Persistence\Writer.cs" />
     <Compile Include="Project\Project.cs" />
     <Compile Include="Workspace\IWorkspaceController.cs" />
     <Compile Include="Output\Output.cs" />

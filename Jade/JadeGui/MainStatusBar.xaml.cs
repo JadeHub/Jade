@@ -13,19 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace JadeControls.EditorControl
+namespace JadeGui
 {
     /// <summary>
-    /// Interaction logic for EditorTabItem.xaml
+    /// Interaction logic for MainStatusBar.xaml
     /// </summary>
-    public partial class EditorTabItem : UserControl
+    public partial class MainStatusBar
     {
-        public EditorTabItem()
+        public MainStatusBar()
         {
             InitializeComponent();
-            
         }
-
-        public CodeEditor CodeEditor { get { return editor; } }
     }
 }

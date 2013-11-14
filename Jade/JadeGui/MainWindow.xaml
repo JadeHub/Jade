@@ -6,10 +6,12 @@
         xmlns:JadeCtrlsEditor="clr-namespace:JadeControls.EditorControl;assembly=JadeControls"
         xmlns:JadeCtrlsOutput="clr-namespace:JadeControls.OutputControl;assembly=JadeControls"
         xmlns:JadeCtrlsOpenDocuments="clr-namespace:JadeControls.OpenDocuments;assembly=JadeControls"
-        Title="{Binding MainWindowTitle}" Height="900" Width="1500" Top="0" Left="0">    
+        Title="{Binding MainWindowTitle}" Height="900" Width="1500" Top="0" Left="0"
+        ResizeMode="CanResizeWithGrip">    
     <DockPanel>        
         <local:MainMenu DockPanel.Dock="Top"/>
-        <local:MainToolbar DockPanel.Dock="Top" />       
+        <local:MainToolbar DockPanel.Dock="Top" />
+        <local:MainStatusBar DockPanel.Dock="Bottom"/>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="150"/>

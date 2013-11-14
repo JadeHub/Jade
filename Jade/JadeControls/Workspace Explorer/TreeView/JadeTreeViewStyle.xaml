@@ -122,7 +122,9 @@
                         </MultiTrigger>
                         <Trigger Property="IsSelected" Value="true">
                             <Setter TargetName="Bd" Property="Background" Value="LightBlue"/>
+                            <!--
                             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                            -->
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>

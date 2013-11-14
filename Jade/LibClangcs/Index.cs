@@ -105,7 +105,9 @@ namespace LibClang
 
         public Index(bool excludeDeclarationsFromPch, bool displayDiagnostics)
         {
+         //   Dll.clang_enableMT();
             Handle = Dll.clang_createIndex(excludeDeclarationsFromPch ? 1 : 0, displayDiagnostics ? 1 : 0);
+            System.Diagnostics.Debug.WriteLine(Handle);
         }
 
         public void Dispose()

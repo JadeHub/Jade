@@ -28,6 +28,8 @@ namespace LibClang.Indexer
                 _parentEntity = new EntityInfo(*_handle.parentEntity);
             if(_handle.container != (Dll.IndexerContainerInfo*)IntPtr.Zero)
                 _container = new Cursor(_handle.container->cursor);
+
+            SourceLocation l = Location;
         }
 
         public override string ToString()

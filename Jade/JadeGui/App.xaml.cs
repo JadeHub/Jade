@@ -45,12 +45,8 @@ namespace JadeGui
             // the element tree.
             _window.DataContext = viewModel;
             viewModel.Commands.Bind(_window.CommandBindings);
-
-            for (int i = 0; i < 20; i++)
-            {
-                JadeCore.Services.Provider.OutputController.Create(JadeCore.Output.Source.JadeDebug, JadeCore.Output.Level.Info, "Hello world");
-                JadeCore.Services.Provider.OutputController.Create(JadeCore.Output.Source.JadeDebug, JadeCore.Output.Level.Err, "This is an error");
-            }
+            
+            JadeCore.Services.Provider.OutputController.Create(JadeCore.Output.Source.JadeDebug, JadeCore.Output.Level.Info, "Hello world");
 
 
             JadeCore.Properties.Settings settings = JadeCore.Services.Provider.Settings;
@@ -61,6 +57,8 @@ namespace JadeGui
 
             _window.Closed += _window_Closed;
             _window.Show();
+
+            viewModel.OnOpenWorkspace(@"C:\Code\GitHub\Jade\TestData\CppTest\CppTest.jws");
         }
 
         protected override void OnExit(ExitEventArgs e)

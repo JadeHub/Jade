@@ -31,6 +31,8 @@ namespace JadeGui.ViewModels
 
         private Window _view;
 
+        private JadeControls.Symbols.SymbolsWindow _symbolsWindow;
+
         #endregion
 
         #region Contsructor
@@ -57,10 +59,19 @@ namespace JadeGui.ViewModels
             if(_workspaceController.CurrentWorkspace != null)
             {
                 _currentWorkspace = new WorkspaceViewModel(_workspaceController.CurrentWorkspace);
+                if (_symbolsWindow == null)
+                {
+                    _symbolsWindow = new JadeControls.Symbols.SymbolsWindow();
+                    _symbolsWindow.Owner = _view;
+                }
+                
+                _symbolsWindow.DataContext = new JadeControls.Symbols.SymbolsViewModel(_workspaceController.CurrentWorkspace.ActiveProject);
+                _symbolsWindow.Show();
             }
             else
             {
                 _currentWorkspace = null;
+                _symbolsWindow.DataContext = null;
             }
             OnPropertyChanged("Workspace"); 
             UpdateWindowTitle();
@@ -104,18 +115,6 @@ namespace JadeGui.ViewModels
 
         #endregion
 
-        #region Workspace
-
-        public JadeCore.Workspace.IWorkspaceController WorkspaceController
-        {
-            get
-            {
-                return _workspaceController;
-            }
-        }
-        
-        #endregion
-
         #region Editor
 
         public OutputViewModel Output { get { return _outputModel; } }
@@ -143,6 +142,14 @@ namespace JadeGui.ViewModels
         public WorkspaceViewModel Workspace
         {
             get { return _currentWorkspace; }
+        }
+
+        public JadeCore.Workspace.IWorkspaceController WorkspaceController
+        {
+            get
+            {
+                return _workspaceController;
+            }
         }
         
         #endregion
@@ -218,6 +225,7 @@ namespace JadeGui.ViewModels
             {
                 IFileHandle handle = JadeCore.Services.Provider.FileService.MakeFileHandle(path);
                 WorkspaceController.OpenWorkspace(handle);
+
             }
             catch (Exception e)
             {

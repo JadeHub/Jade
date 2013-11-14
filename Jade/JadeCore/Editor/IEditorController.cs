@@ -45,5 +45,6 @@ namespace JadeCore
         void CloseAllDocuments();
         void CloseActiveDocument();
 
+        void Display(JadeUtils.IO.FilePath path, int line, int col);
     }
 }

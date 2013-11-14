@@ -16,7 +16,7 @@ namespace LibClang
         private Dll.SourceRange _handle;
         private SourceLocation _start;
         private SourceLocation _end;
-
+        
         #endregion
 
         #region Constructor
@@ -27,6 +27,7 @@ namespace LibClang
             _start = new SourceLocation(Dll.clang_getRangeStart(_handle));
             _end = new SourceLocation(Dll.clang_getRangeEnd(_handle));
             Debug.Assert(_start <= _end);
+            Debug.Assert(_start.File == _end.File);
         }
 
         static SourceRange()
@@ -40,6 +41,8 @@ namespace LibClang
 
         public SourceLocation Start { get { return _start; } }
         public SourceLocation End { get { return _end; } }
+
+        public File File { get { return _start.File; } }
 
         #endregion
     }

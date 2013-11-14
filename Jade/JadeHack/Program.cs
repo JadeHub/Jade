@@ -35,17 +35,16 @@ namespace JadeHack
     class Program
     {
         static void Main(string[] args)
-        {
-            Index idx = new Index(true, true);
+        {          
+            CppView.ProjectSymbolTable st = new CppView.ProjectSymbolTable();
+            CppView.IProjectSourceIndex si = new CppView.ProjectSourceIndex(st);
 
-            //TranslationUnit tu = new TranslationUnit(idx, @"C:\Code\clang\llvm\tools\clang\tools\libclang\CIndex.cpp");
-            TranslationUnit tu = new TranslationUnit(idx, @"C:\Code\GitHub\Jade\TestData\CppTest\test.cpp");
-            Indexer indexer = new Indexer(idx, tu);
+            CppView.IndexBuilder builder = new CppView.IndexBuilder(si, si);
 
-            tu.Parse();
+            builder.AddSourceFile(new JadeUtils.IO.FileHandle(@"C:\Code\GitHub\Jade\TestData\CppTest\test.cpp"), CppView.IndexBuilderItemPriority.Immediate);
+            builder.AddSourceFile(new JadeUtils.IO.FileHandle(@"C:\Code\GitHub\Jade\TestData\CppTest\main.cpp"), CppView.IndexBuilderItemPriority.Immediate);
 
-            indexer.Abc(new IndexObserver());
-            
+            //pi.Dump();
         }
     }
 }

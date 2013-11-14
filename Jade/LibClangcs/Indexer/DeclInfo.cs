@@ -70,6 +70,16 @@ namespace LibClang.Indexer
             get { return _declAsContainer; }
         }
 
+        public bool IsDefinition
+        {
+            get { return Dll.clang_isCursorDefinition(_cur.Handle) != 0; }
+        }
+
+        public bool IsRedefinition
+        {
+            get { return _handle.isRedeclaration != 0; }
+        }
+
         #endregion
     }
 }

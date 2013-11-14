@@ -17,7 +17,7 @@ namespace JadeCore.Persistence.Project
             if (System.IO.Path.IsPathRooted(path) == false)
             {
                 //Convert from relative path stored in project xml file
-                path = System.IO.Path.Combine(projectDir, path);
+                path = System.IO.Path.Combine(projectDir, path);                
             }
             return new JadeCore.Project.File(fileService.MakeFileHandle(path));
         }

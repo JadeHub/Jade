@@ -13,8 +13,7 @@ namespace JadeControls
     {
         public CodeEditor()
         {
-            ShowLineNumbers = true;
-            
+            ShowLineNumbers = true;            
         }
 
         void OnDocChange(object sender, EventArgs e)

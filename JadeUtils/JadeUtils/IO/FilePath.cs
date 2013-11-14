@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Diagnostics;
 
 namespace JadeUtils.IO
 {
@@ -19,8 +20,13 @@ namespace JadeUtils.IO
 
         public override bool Equals(object obj)
         {
-            FilePath other = (FilePath)obj;
-            return base.Equals(obj) && other.Str.ToLowerInvariant() == this.Str.ToLowerInvariant();
+            if (obj is FilePath)
+            {
+                FilePath rhs = (FilePath)obj;
+                return rhs.Str.ToLowerInvariant() == this.Str.ToLowerInvariant();
+
+            }
+            return false;
         }
 
         /// <summary>
@@ -49,8 +55,12 @@ namespace JadeUtils.IO
 
         private FilePath(string path)
         {
-            System.Diagnostics.Debug.Assert(path.Length > 0);
+            Debug.Assert(path.Length > 0);            
             _path = path;
+            if (System.IO.File.Exists(_path))
+            {
+                Normalise();
+            }
         }
 
         #endregion
@@ -62,11 +72,29 @@ namespace JadeUtils.IO
             return _path.GetHashCode();
         }
 
+        public override string ToString()
+        {
+            return Str;
+        }
+
         public string Str { get { return _path; } }
         
         public bool IsAbsolute()
         {
             return System.IO.Path.IsPathRooted(_path);
+        }
+
+        public void Normalise()
+        {
+            try
+            {
+                Uri uri = new Uri(_path);
+                _path = uri.LocalPath;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.ToString());
+            }
         }
 
         /// <summary>

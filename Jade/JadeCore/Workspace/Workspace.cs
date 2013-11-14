@@ -24,6 +24,7 @@ namespace JadeCore.Workspace
     {
         string Path { get; set; }
         string Directory { get; }
+        JadeCore.Project.IProject ActiveProject { get; }
     }
 
     public class Folder : IFolder
@@ -123,7 +124,7 @@ namespace JadeCore.Workspace
 
         public IList<Project.IItem> Items { get { return _project.Items; } }
         public IList<Project.IFolder> Folders { get { return _project.Folders; } }
-        public CppView.IProjectIndex SourceIndex { get { return _project.SourceIndex; } }
+        public CppView.IProjectSourceIndex SourceIndex { get { return _project.SourceIndex; } }
         public JadeCore.Project.IProject OwningProject { get { return _project.OwningProject; } }
 
         public void AddItem(JadeCore.Project.IItem item) { _project.AddItem(item); }
@@ -159,19 +160,23 @@ namespace JadeCore.Workspace
 
         #region IWorkspace Implementation
 
-        public string Path 
+        public string Path { get { return _file.Path.Str; } set { } }
+
+        public string Directory { get { return _file.Path.Directory; } }
+
+        public JadeCore.Project.IProject ActiveProject 
         { 
             get 
             {
-                return _file.Path.Str; 
-            }
-            set
-            {
-                //_path = value;
+                //todo - just return first project for now
+                foreach (IItem item in _rootFolder.Items)
+                {
+                    if (item is Project.IProject)
+                        return item as Project.IProject;
+                }
+                return null;
             }
         }
-
-        public string Directory { get { return _file.Path.Directory; } }
 
         #endregion
 

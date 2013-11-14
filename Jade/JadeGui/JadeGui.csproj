@@ -59,12 +59,19 @@
     <Compile Include="MainMenu.xaml.cs">
       <DependentUpon>MainMenu.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MainStatusBar.xaml.cs">
+      <DependentUpon>MainStatusBar.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainToolbar.xaml.cs">
       <DependentUpon>MainToolbar.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\JadeCommandAdaptor.cs" />
     <Compile Include="ViewModels\JadeViewModel.cs" />
     <Page Include="MainMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainStatusBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

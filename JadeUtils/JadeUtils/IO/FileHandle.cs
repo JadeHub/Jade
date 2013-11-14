@@ -13,6 +13,12 @@ namespace JadeUtils.IO
         {   
         }
 
+        public FileHandle(string path)
+            : this(null, FilePath.Make(path))
+        {
+
+        }
+
         public FileHandle(IFileService service, FilePath path)
         {
             _service = service;

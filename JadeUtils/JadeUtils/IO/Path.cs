@@ -10,7 +10,20 @@ namespace JadeUtils.IO
     {
         public static string CombinePaths(string path1, string path2)
         {
+            
             return System.IO.Path.Combine(path1, path2);
+        }
+
+        public static bool AreSamePath(string path1, string path2)
+        {
+            try
+            {
+                return System.IO.Path.GetFullPath(path1) == System.IO.Path.GetFullPath(path2);
+            }
+            catch (System.Exception)
+            {
+                return false;
+            }
         }
 
         public static bool IsPathDirectory(string path)

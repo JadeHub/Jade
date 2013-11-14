@@ -19,7 +19,8 @@ namespace LibClang
             {
                 get
                 {
-                    string res = Marshal.PtrToStringAnsi((IntPtr)Spelling);
+                    //string res = Marshal.PtrToStringAnsi((IntPtr)Spelling);
+                    string res = Marshal.PtrToStringAnsi(clang_getCString(this));
                     Dll.clang_disposeString(this);
                     return res;
                 }
@@ -71,6 +72,14 @@ namespace LibClang
         };
 
         [StructLayout(LayoutKind.Sequential)]
+        internal struct Type
+        {
+            internal LibClang.TypeKind kind;
+            readonly IntPtr data0;
+            readonly IntPtr data1;
+        };
+
+        [StructLayout(LayoutKind.Sequential)]
         internal struct SourceLocation
         {
             readonly IntPtr data0;
@@ -100,6 +109,9 @@ namespace LibClang
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         internal static extern void clang_disposeString(ClangString str);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern IntPtr clang_getCString(ClangString str);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         internal static extern IntPtr clang_createIndex(int excludeDeclarationsFromPch, int displayDiagnostics);
@@ -167,7 +179,36 @@ namespace LibClang
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         internal static extern IntPtr clang_IndexAction_create(IntPtr index);
 
-        
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern Type clang_getCursorType(Cursor c);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern uint clang_equalTypes(Type a, Type b);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern Type clang_getCanonicalType(Type t);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern Type clang_getPointeeType(Type t);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern Cursor clang_getTypeDeclaration(Type t);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern ClangString clang_getTypeKindSpelling(LibClang.TypeKind k);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern Type clang_getResultType(Type t);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern uint clang_isCursorDefinition(Cursor c);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern ClangString clang_getCursorUSR(Cursor c);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern Cursor clang_getCanonicalCursor(Cursor c);
+                
         #region Indexing
 
         [StructLayout(LayoutKind.Sequential)]
@@ -340,6 +381,9 @@ namespace LibClang
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         internal static extern int clang_indexTranslationUnit(IndexingSession session, IntPtr clientData,
                                 IndexerCallbacks[] cbs, uint cbsSize, uint indexOptions, IntPtr translationUnit);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void clang_enableMT();
 
         #endregion
     }

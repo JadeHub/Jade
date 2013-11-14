@@ -1,14 +1,26 @@
 ﻿#pragma once
 
+//#include <string>
+
+
 namespace Test {
+
+struct AStruct;
+
+struct AStruct
+{
+	int i;
+};
 
 class SomeClass
 {
 public:
 	SomeClass();
 
+	void Fn();
 private:
-	int mI;
+	AStruct MSt;
+	int p;
 };
 
 }

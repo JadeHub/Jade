@@ -15,7 +15,6 @@ namespace LibClang.Indexer
 
         #region Data
 
-        private IntPtr _session;
         private Dll.IndexerCallbacks _cbs;
         
         private TranslationUnit _translationUnit;
@@ -28,14 +27,15 @@ namespace LibClang.Indexer
         {            
             Index = idx;
             _translationUnit = tu;
-            _session = Index.CreateIndexingSession();
+            //_session = Index.CreateIndexingSession();
         }
 
         public Indexer(Index idx, string fileName): this()
         {
             Index = idx;
             Filename = fileName;
-            _session = Index.CreateIndexingSession();
+            _translationUnit = new LibClang.TranslationUnit(Index, Filename);
+            _translationUnit.Parse();            
         }
         
         private unsafe Indexer()
@@ -55,31 +55,18 @@ namespace LibClang.Indexer
                 
         private IObserver _observer;
 
-        public int Abc(IObserver o)
+        public int Parse(IObserver o, IntPtr session)
         {
             _observer = o;
 
-            int err = Dll.clang_indexTranslationUnit(_session, IntPtr.Zero, new Dll.IndexerCallbacks[] { _cbs },
-                                            (uint)System.Runtime.InteropServices.Marshal.SizeOf(_cbs), 0, _translationUnit.Handle);
+            IntPtr tu = IntPtr.Zero;
+
             /*
-            _translationUnit = null;
-
-            DateTime dt1 = DateTime.Now;
-            
-            int err = Dll.clang_indexSourceFile(_session, IntPtr.Zero, new Dll.IndexerCallbacks[]{_cbs}, 
-                                            (uint)System.Runtime.InteropServices.Marshal.SizeOf(_cbs),
-                                            (int)(0x01 | 0x10), Filename, null, 0, null, 0, out _translationUnitPtr, 0x40);
-            
-
-            DateTime dt2 = DateTime.Now;
-            System.Diagnostics.Debug.WriteLine(string.Format("{0}", (dt2 - dt1).Seconds));
-
-            int err = Dll.clang_indexTranslationUnit(_session, IntPtr.Zero, new Dll.IndexerCallbacks[] { _cbs },
-                                            (uint)System.Runtime.InteropServices.Marshal.SizeOf(_cbs), 0, _translationUnitPtr);
-
-            DateTime dt3 = DateTime.Now;
-            System.Diagnostics.Debug.WriteLine(string.Format("{0}", (dt3 - dt2).Seconds));
-            */
+            int err = Dll.clang_indexSourceFile(session, IntPtr.Zero, new Dll.IndexerCallbacks[1] { _cbs },
+                                            (uint)System.Runtime.InteropServices.Marshal.SizeOf(_cbs), 0, Filename, null, 0, null, 0, out tu, 0);
+             */
+            int err = Dll.clang_indexTranslationUnit(session, IntPtr.Zero, new Dll.IndexerCallbacks[1] { _cbs },
+                                            (uint)System.Runtime.InteropServices.Marshal.SizeOf(_cbs), 0x2, _translationUnit.Handle);
             return err;
         }
 
@@ -121,7 +108,8 @@ namespace LibClang.Indexer
 
         private IntPtr OnIndexerEnteredMainFile(IntPtr clientData, IntPtr mainFile, IntPtr reserved)
         {
-            Debug.WriteLine("Enter main file");
+            string name = Dll.clang_getFileName(mainFile).ManagedString;
+            Debug.WriteLine("Enter main file " + name);
             return IntPtr.Zero;
         }
 

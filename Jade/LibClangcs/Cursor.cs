@@ -9,6 +9,8 @@ namespace LibClang
         //private
         private SourceRange _extent;
         private string _spelling;
+        private Type _type;
+        private string _usr;
 
         #endregion
 
@@ -36,6 +38,7 @@ namespace LibClang
         {
             Handle = handle;
             Kind = Dll.clang_getCursorKind(Handle);
+            
         }
 
         public CursorKind Kind
@@ -55,6 +58,22 @@ namespace LibClang
             {
                 return new SourceLocation(Dll.clang_getCursorLocation(Handle));
             }
+        }
+
+        public Type Type
+        {
+            get { return _type ?? (_type = new Type(Dll.clang_getCursorType(Handle))); }
+        }
+
+        public string Usr
+        {
+            get { return _usr ?? (_usr = Dll.clang_getCursorUSR(Handle).ManagedString);}
+        
+        }
+
+        public bool IsCanonical
+        {
+            get { return Dll.clang_getCanonicalCursor(Handle) == Handle;}
         }
 
         public enum ChildVisitResult
