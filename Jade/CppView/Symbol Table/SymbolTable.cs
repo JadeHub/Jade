@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,20 +7,24 @@ using System.Diagnostics;
 
 namespace CppView
 {
+    using JadeUtils.IO;
+
     public interface ISymbolTable
     {
         bool Add(IDeclaration decl);
         bool Add(IReference refer);
 
         bool HasDeclaration(string usr);
-        bool HasDeclaration(string usr, ISourceFile file, int offset);
-        bool HasReference(string refedUSR, ISourceFile file, int offset);
+        bool HasDeclaration(string usr, FilePath path, int offset);
+        bool HasReference(string refedUSR, FilePath path, int offset);
 
         IDeclaration GetCanonicalDefinition(string usr);
 
         IEnumerable<IDeclaration> GetDeclarations(string usr);
         IEnumerable<string> DeclarationUSRs { get; }
         IEnumerable<IReference> References { get; }
+
+        ICodeElement GetElementAt(FilePath path, int offset);
 
         void Dump();
     }
@@ -81,26 +85,26 @@ namespace CppView
             }
         }
 
-        public bool HasDeclaration(string usr, ISourceFile file, int offset)
+        public bool HasDeclaration(string usr, FilePath path, int offset)
         {
             lock (_lock)
             {
                 foreach (IDeclaration decl in GetDeclarations(usr))
                 {
-                    if (decl.Location.File == file && decl.Location.Offset == offset)
+                    if (decl.Location.Path == path && decl.Location.Offset == offset)
                         return true;
                 }
             }
             return false;
         }
 
-        public bool HasReference(string refedUSR, ISourceFile file, int offset)
+        public bool HasReference(string refedUSR, FilePath path, int offset)
         {
             lock (_lock)
             {
                 foreach (IReference r in References)
                 {
-                    if (r.ReferencedUSR == refedUSR && r.Location.Offset == offset && r.Location.File == file)
+                    if (r.ReferencedUSR == refedUSR && r.Location.Offset == offset && r.Location.Path == path)
                         return true;
                 }
             }
@@ -156,13 +160,39 @@ namespace CppView
             }
         }
 
+        public ICodeElement GetElementAt(FilePath path, int offset)
+        {
+            return null;
+        }
+
+        /*
+        public ICodeElement GetElementAt(ISourceFile file, int offset)
+        {
+            foreach (IList<IDeclaration> decls in _declarations.Values)
+            {
+                foreach (IDeclaration decl in decls)
+                    if (decl.Location.Offset == offset)
+                        return decl;
+            }
+
+            foreach (IReference refr in _references)
+            {
+                if (refr.Location.Offset == offset)
+                    return refr;
+            }
+            return null;
+        }
+        */
         public void Dump()
         {
             lock (_lock)
             {
-                foreach (IDeclaration decl in _declarations.Values)
+                foreach (IList<IDeclaration> decls in _declarations.Values)
                 {
-                    Debug.WriteLine(string.Format("Decl {0}", decl));
+                    foreach (IDeclaration decl in decls)
+                    {
+                        Debug.WriteLine(string.Format("Decl {0}", decl));
+                    }
                 }
                 foreach (IReference r in _references)
                 {

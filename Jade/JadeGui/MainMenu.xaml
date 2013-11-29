@@ -42,6 +42,7 @@
     </MenuItem>
     
     <MenuItem Header="_View">
+        <MenuItem Header="Symbols..." Command="JadeCore:Commands.ViewSymbolsWindow"/>
         <MenuItem Header="Line Numbers" Command="JadeCore:Commands.ViewLineNumbers" IsCheckable="True"/>
     </MenuItem>
     

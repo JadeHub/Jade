@@ -50,5 +50,10 @@ namespace JadeCore.Project
         public JadeUtils.IO.IFileHandle Handle { get { return _file; } }
 
         #endregion
+
+        public override string ToString()
+        {
+            return _file.ToString();
+        }
     }
 }

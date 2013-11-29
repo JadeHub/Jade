@@ -1,120 +1,153 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace CppView
 {
-    public interface IFileSymbolTable : ISymbolTable
-    {
-        ISourceFile SourceFile { get; }
-        IEnumerable<ILineSymbolTable> Lines { get; }
-    }
+    using JadeUtils.IO;
 
+    /*
+    public interface IFileSymbolTable //: ISymbolTable
+    {
+       // ISourceFile SourceFile { get; }
+        bool Add(IDeclaration decl);
+        bool Add(IReference reference);
+        ICodeElement GetElementAt(int offset);
+        void Dump();
+       // ILineSymbolTable GetLine(int line);
+    }
+    
     public class FileSymbolTable : IFileSymbolTable
     {
-        #region Data
+        private class Line
+        {
+            private readonly int _line;
+            private IList<ICodeElement> _elems;
 
-        private ISourceFile _sourceFile;
-        private SymbolTableImpl _indexImpl;
-        private Dictionary<int, ILineSymbolTable> _lines;
+            public Line(int line) 
+            {
+                _line = line;
+                _elems = new List<ICodeElement>();
+            }
+
+            public bool AddItem(ICodeElement elem)
+            {
+                int col = elem.LocalCursor.Location.Column;
+                
+                for (int i = 0; i < _elems.Count; i++)
+                {
+                   // Debug.Assert(col != _elems[i].LocalCursor.Location.Column);
+                    if (col < _elems[i].LocalCursor.Location.Column)
+                    {
+                        _elems.Insert(i, elem);
+                        return true;
+                    }
+                }
+                _elems.Add(elem);
+                return true;
+            }
+            
+            public ICodeElement GetElementAt(int offset)
+            {
+                for (int i = 0; i < _elems.Count; i++)
+                {
+                    //if(_elems[i].LocalCursor.Extent.ContainsOffset(offset))
+                    if (_elems[i].LocalCursor.Location.Offset >= offset && offset <= _elems[i].LocalCursor.Location.Offset + _elems[i].Name.Length)
+                    {
+                        return _elems[i];
+                    }
+                }
+                return null;
+            }
+
+            public int StartOffset
+            {
+                get
+                {
+                    Debug.Assert(_elems.Count > 0);
+                    return _elems[0].LocalCursor.Extent.Start.Offset;
+                }
+            }
+
+            public int EndOffset
+            {
+                get
+                {
+                    Debug.Assert(_elems.Count > 0);
+                    return _elems[_elems.Count - 1].LocalCursor.Location.Offset + _elems[_elems.Count - 1].Name.Length;
+                }
+            }
+        }
+
+        #region Data
+             
+        private Dictionary<int, Line> _lines;
 
         #endregion
 
-        public ISourceFile SourceFile { get { return _sourceFile; } }
+        //public ISourceFile SourceFile { get { return _sourceFile; } }
 
-        public IEnumerable<ILineSymbolTable> Lines
-        {
-            get { return _lines.Values; }
-        }
 
-        public FileSymbolTable(ISourceFile sf)
+        public FileSymbolTable(FilePath path)
         {
-            _sourceFile = sf;
-            _indexImpl = new SymbolTableImpl();
-            _lines = new Dictionary<int, ILineSymbolTable>();
-        }
+            _lines = new Dictionary<int, Line>();
+        } 
 
         public bool Add(IDeclaration decl)
         {
-            if (_indexImpl.Add(decl))
-            {
-                GetLineIndex(decl.Location.Line).Add(decl);
-                return true;
-            }
-            return false;
+            Line line = GetOrAddLine(decl.Location.Line);
+            return line.AddItem(decl);
         }
 
         public bool Add(IReference refer)
         {
-            if (_indexImpl.Add(refer))
+            Line line = GetOrAddLine(refer.Location.Line);
+            return line.AddItem(refer);
+        }
+        
+        public ICodeElement GetElementAt(int offset)
+        {
+            foreach (Line line in _lines.Values)
             {
-                GetLineIndex(refer.Location.Line).Add(refer);
-                return true;
+                if(offset >= line.StartOffset && offset <= line.EndOffset)
+                {
+                    return line.GetElementAt(offset);
+                }
             }
-            return false;
+            return null;
         }
-
-        public bool HasDeclaration(string usr)
-        {
-            return _indexImpl.HasDeclaration(usr);
-        }
-
-        public bool HasDeclaration(string usr, ISourceFile file, int offset)
-        {
-            return _indexImpl.HasDeclaration(usr, file, offset);
-        }
-
-        public bool HasReference(string refedUSR, ISourceFile file, int offset)
-        {
-            return _indexImpl.HasReference(refedUSR, file, offset);
-        }
-
-        public IDeclaration GetCanonicalDefinition(string usr)
-        {
-            return _indexImpl.GetCanonicalDefinition(usr);
-        }
-
-        public IEnumerable<IDeclaration> GetDeclarations(string usr)
-        {
-            return _indexImpl.GetDeclarations(usr);
-        }
-        public IEnumerable<string> DeclarationUSRs
-        {
-            get
-            {
-                return _indexImpl.DeclarationUSRs;
-            }
-        }
-
-        public IEnumerable<IReference> References { get { return _indexImpl.References; } }
 
         public void Dump()
         {
             foreach (int lineNum in _lines.Keys)
             {
-                ILineSymbolTable line = _lines[lineNum];
+                Line line = _lines[lineNum];
                 Debug.WriteLine("Line " + lineNum);
-                line.Dump();
+                //line.Dump();
             }
             //_indexImpl.Dump();
         }
-
+        
         #region Private Methods
 
-        private ILineSymbolTable GetLineIndex(int line)
+        private Line GetOrAddLine(int l)
         {
-            ILineSymbolTable li;
-            if (_lines.TryGetValue(line, out li))
-            {
-                return li;
-            }
-            li = new LineSymbolTable();
-            _lines.Add(line, li);
-            return li;
+            Line result;
+            if (_lines.TryGetValue(l, out result))
+                return result;
+            result = new Line(l);
+            _lines.Add(l, result);
+            return result;
+        }
+
+        private Line FindLine(int l)
+        {
+            Line result;
+            if (_lines.TryGetValue(l, out result))
+                return result;
+            return null;
         }
 
         #endregion
     }
+     */ 
 }

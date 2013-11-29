@@ -6,15 +6,18 @@ SomeClass::SomeClass()
 {
 }
 
-int ReturnInt()
+int ReturnInt(int i)
 {
-	return 7;
+	return i;
 }
 
 void SomeClass::Fn()
 {
-	int sam = ReturnInt();
-	
+	AStruct as;
+	AnEnum ae;
+	int sam = 
+		ReturnInt(7);	
 }
 
 }
+

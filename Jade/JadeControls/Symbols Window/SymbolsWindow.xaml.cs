@@ -16,14 +16,14 @@ namespace JadeControls.Symbols
                 
         void RefListCtrl_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            JadeControls.Symbols.SymbolsViewModel vm = (JadeControls.Symbols.SymbolsViewModel)DataContext;
+            JadeControls.Symbols.SymbolsWindowViewModel vm = (JadeControls.Symbols.SymbolsWindowViewModel)DataContext;
             vm.OnRefDoubleClick(vm.SelectedReference);
         }
 
         void DeclListCtrl_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            JadeControls.Symbols.SymbolsViewModel vm = (JadeControls.Symbols.SymbolsViewModel)DataContext;
-            vm.OnDeclDoubleClick(vm.SelectedDeclaration);
+            JadeControls.Symbols.SymbolsWindowViewModel vm = (JadeControls.Symbols.SymbolsWindowViewModel)DataContext;
+            vm.OnDeclDoubleClick(vm.SelectedDeclaration, this);
         }
     }
 }

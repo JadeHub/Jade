@@ -58,6 +58,26 @@ namespace LibClang
             }
             return Valid;
         }
+        
+        public Cursor GetCursorAt(SourceLocation location)
+        {
+            Dll.Cursor cur = Dll.clang_getCursor(Handle, location.Handle);
+            if (cur.IsNull())
+                return null;
+            return new Cursor(cur);
+        }
+
+        public Cursor GetCursorAt(string path, uint offset)
+        {
+            IntPtr f = Dll.clang_getFile(Handle, path);
+            if (f == IntPtr.Zero)
+            {
+                return null;
+            }
+
+            Dll.SourceLocation loc = Dll.clang_getLocationForOffset(Handle, f, offset);
+            return GetCursorAt(new SourceLocation(loc));
+        }
 
         #region Properties
 
@@ -95,5 +115,10 @@ namespace LibClang
         }
         
         #endregion
+
+        public override int GetHashCode()
+        {
+            return Handle.ToInt32();
+        }
     }
 }

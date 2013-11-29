@@ -41,9 +41,11 @@ namespace JadeControls.Workspace
         {
             ViewModel.WorkspaceViewModel wvm = DataContext as ViewModel.WorkspaceViewModel;
 
+            bool f = this.IsFocused;
             ViewModel.WorkspaceTree w = wvm.Tree as ViewModel.WorkspaceTree;
             w.OnDoubleClick();
+            f = this.IsFocused;
         }
-		
+
     }
 }

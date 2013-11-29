@@ -113,16 +113,18 @@ namespace JadeCore.Editor
         {
             if (_openDocuments.ContainsKey(file.Path) == false)
             {
+                //A new document
                 IEditorDoc doc = new EditorSourceDocument(file);
                 _openDocuments.Add(file.Path, doc);
-                ActiveDocument = doc;
                 OnDocumentOpen(doc);
+                ActiveDocument = doc;                
             }
-            else
+            //this doc is already open, if it's not the active document, activate it
+            else if(ActiveDocument == null || ActiveDocument.File != file)
             {
                 ActiveDocument = _openDocuments[file.Path];
             }
-        }
+         }
 
         public void SaveActiveDocument()
         {
@@ -156,13 +158,6 @@ namespace JadeCore.Editor
             if (ActiveDocument != null && ActiveDocument.Equals(doc))
                 ActiveDocument = null;
             doc.Close();
-        }
-
-        public void Display(JadeUtils.IO.FilePath path, int line, int col)
-        {
-            IFileHandle f = Services.Provider.FileService.MakeFileHandle(path);
-
-            OpenDocument(f);
         }
 
         #endregion

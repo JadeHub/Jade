@@ -7,7 +7,8 @@
         xmlns:JadeCtrlsOutput="clr-namespace:JadeControls.OutputControl;assembly=JadeControls"
         xmlns:JadeCtrlsOpenDocuments="clr-namespace:JadeControls.OpenDocuments;assembly=JadeControls"
         Title="{Binding MainWindowTitle}" Height="900" Width="1500" Top="0" Left="0"
-        ResizeMode="CanResizeWithGrip">    
+        ResizeMode="CanResizeWithGrip"
+        PreviewGotKeyboardFocus="Window_PreviewGotKeyboardFocus_1">    
     <DockPanel>        
         <local:MainMenu DockPanel.Dock="Top"/>
         <local:MainToolbar DockPanel.Dock="Top" />

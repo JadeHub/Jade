@@ -10,6 +10,7 @@ namespace JadeGui.ViewModels
     using JadeControls.EditorControl.ViewModel;
     using JadeControls.OutputControl.ViewModel;
     using JadeControls.Workspace.ViewModel;
+    using JadeUtils.IO;
     
     /// <summary>
     /// Main View Model class. Singleton instance that lives the life of the application
@@ -59,20 +60,13 @@ namespace JadeGui.ViewModels
             if(_workspaceController.CurrentWorkspace != null)
             {
                 _currentWorkspace = new WorkspaceViewModel(_workspaceController.CurrentWorkspace);
-                if (_symbolsWindow == null)
-                {
-                    _symbolsWindow = new JadeControls.Symbols.SymbolsWindow();
-                    _symbolsWindow.Owner = _view;
-                }
-                
-                _symbolsWindow.DataContext = new JadeControls.Symbols.SymbolsViewModel(_workspaceController.CurrentWorkspace.ActiveProject);
-                _symbolsWindow.Show();
             }
             else
             {
                 _currentWorkspace = null;
-                _symbolsWindow.DataContext = null;
             }
+
+            DisplaySymbolsWindow(_workspaceController != null ?_workspaceController.CurrentWorkspace.ActiveProject : null);
             OnPropertyChanged("Workspace"); 
             UpdateWindowTitle();
         }
@@ -159,6 +153,8 @@ namespace JadeGui.ViewModels
         public void OnOpenDocument(JadeUtils.IO.IFileHandle file)
         {
             _editorController.OpenDocument(file);
+            if (_editorModel.SelectedDocument != null)
+                _editorModel.SelectedDocument.DisplayLocation(_editorModel.SelectedDocument.CaretLocation);
         }
 
         #region Exit
@@ -391,6 +387,33 @@ namespace JadeGui.ViewModels
             return _editorController.HasOpenDocuments;
         }
 
+        public void OnDisplayCodeLocation(object param)
+        {
+            CppView.ICodeLocation loc = (CppView.ICodeLocation)param;            
+            IFileHandle f = JadeCore.Services.Provider.FileService.MakeFileHandle(loc.Path);
+            OnOpenDocument(f);
+            if (_editorModel.SelectedDocument != null)
+                _editorModel.SelectedDocument.DisplayLocation(new JadeCore.Editor.CodeLocation(loc.Line, loc.Column, loc.Offset));            
+        }
+
+        public void OnHighlightCodeLocation(JadeUtils.IO.FilePath path, int startOffset, int endOffset)
+        {
+            IFileHandle f = JadeCore.Services.Provider.FileService.MakeFileHandle(path);
+            OnOpenDocument(f);
+            if (_editorModel.SelectedDocument != null)
+                _editorModel.SelectedDocument.HighlightRange(startOffset, endOffset);
+        }
+
+        public void OnViewSymbolsWindow()
+        {
+            DisplaySymbolsWindow(_workspaceController.CurrentWorkspace.ActiveProject);
+        }
+
+        public bool CanViewSymbolsWindow()
+        {
+            return _workspaceController.CurrentWorkspace != null && _workspaceController.CurrentWorkspace.ActiveProject != null;
+        }
+
         #endregion
 
         #region public Methods
@@ -427,6 +450,29 @@ namespace JadeGui.ViewModels
         private void UpdateWindowTitle()
         {
             OnPropertyChanged("MainWindowTitle");
+        }
+
+        private void DisplaySymbolsWindow(JadeCore.Project.IProject proj)
+        {
+            if (proj == null)
+            {
+                if (_symbolsWindow != null)
+                {
+                    _symbolsWindow.Close();
+                    _symbolsWindow = null;
+                }
+                return;
+            }
+
+            if (_symbolsWindow == null)
+            {
+                _symbolsWindow = new JadeControls.Symbols.SymbolsWindow();
+                _symbolsWindow.Owner = _view;
+                _symbolsWindow.Closed += delegate { _symbolsWindow = null; };
+            }
+
+            _symbolsWindow.DataContext = new JadeControls.Symbols.SymbolsWindowViewModel(proj);
+            _symbolsWindow.Show();
         }
 
         #endregion

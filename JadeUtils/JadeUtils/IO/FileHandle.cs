@@ -57,5 +57,10 @@ namespace JadeUtils.IO
         {
             _observers.Remove(observer);
         }
+
+        public override string ToString()
+        {
+            return _path.ToString();
+        }
     }
 }

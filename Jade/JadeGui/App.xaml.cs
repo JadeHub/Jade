@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -34,6 +29,9 @@ namespace JadeGui
             //Create the main view model object
             var viewModel = new ViewModels.JadeViewModel(_window);
 
+            //the view model is this service - todo fix dependancies
+            JadeCore.Services.Provider.CommandHandler = viewModel;
+
             viewModel.RequestClose += delegate 
             { 
                 _window.Close(); 
@@ -44,6 +42,8 @@ namespace JadeGui
             // DataContext, which propagates down 
             // the element tree.
             _window.DataContext = viewModel;
+
+            //bind commands
             viewModel.Commands.Bind(_window.CommandBindings);
             
             JadeCore.Services.Provider.OutputController.Create(JadeCore.Output.Source.JadeDebug, JadeCore.Output.Level.Info, "Hello world");

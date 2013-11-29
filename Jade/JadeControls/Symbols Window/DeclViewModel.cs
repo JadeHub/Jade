@@ -28,13 +28,18 @@ namespace JadeControls.Symbols
             {
                 if (_decl.Kind == LibClang.Indexer.EntityKind.Field)
                 {
-                    return string.Format("{0} is {1} at {2} {3}", Name, _decl.Type, _decl.Location.File, _decl.Location); 
+                    return string.Format("{0} is {1} at {2} {3}", Name, _decl.Type, _decl.Location.Path, _decl.Location); 
                 }
-                return string.Format("{0} at {1} {2}", Name, _decl.Location.File, _decl.Location);
+                return string.Format("{0} at {1} {2}", Name, _decl.Location.Path, _decl.Location);
             }
         }
 
         public string Kind { get { return _decl.Kind.ToString(); } }
+
+        public CppView.IDeclaration Declaration
+        {
+            get { return _decl; }
+        }
 
         public override string ToString()
         {

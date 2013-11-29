@@ -8,10 +8,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
     <UserControl.Resources>
-
         <c:TabFileNameConverter x:Key="TabFileNameConverter"/>
-        
-      
     </UserControl.Resources>
     
     

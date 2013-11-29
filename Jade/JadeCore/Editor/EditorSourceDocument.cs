@@ -55,7 +55,7 @@ namespace JadeCore.Editor
         {
             using (FileStream fs = new FileStream(Path.Str, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write))
             {
-                using (StreamWriter writer = new StreamWriter(fs, System.Text.Encoding.UTF8))
+                using (StreamWriter writer = new StreamWriter(fs, System.Text.Encoding.ASCII))
                 {
                     writer.Write(_content);
                     Modified = false;
@@ -121,8 +121,8 @@ namespace JadeCore.Editor
         {
             using (FileStream fs = new FileStream(Path.Str, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                using (StreamReader reader = new StreamReader(fs, System.Text.Encoding.UTF8))
-                {
+                using (StreamReader reader = new StreamReader(fs, System.Text.Encoding.ASCII, false))
+                { 
                     _content = reader.ReadToEnd();
                 }
             }

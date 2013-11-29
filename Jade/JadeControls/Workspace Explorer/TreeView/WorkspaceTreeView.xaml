@@ -137,7 +137,7 @@
                                     Text="{Binding Path}" />
                     </StackPanel.ToolTip>
                     <Image HorizontalAlignment="Left" Width="16" Height="16" Margin="3,0" Source="{StaticResource FileIconSource}" />
-                    <TextBlock Text="{Binding DisplayName}" />                    
+                    <TextBlock Text="{Binding DisplayName}"  />
                 </StackPanel>
                 
             </DataTemplate>        

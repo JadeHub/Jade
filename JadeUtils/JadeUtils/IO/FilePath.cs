@@ -23,7 +23,12 @@ namespace JadeUtils.IO
             if (obj is FilePath)
             {
                 FilePath rhs = (FilePath)obj;
-                return rhs.Str.ToLowerInvariant() == this.Str.ToLowerInvariant();
+
+                if (this.IsNull && rhs.IsNull)
+                    return true;
+                                
+                if(rhs.IsNull == false && this.IsNull == false)
+                    return rhs.Str.ToLowerInvariant() == this.Str.ToLowerInvariant();
 
             }
             return false;
@@ -65,6 +70,19 @@ namespace JadeUtils.IO
 
         #endregion
 
+        public static bool operator ==(FilePath left, FilePath right)
+        {
+            return left.Equals(right);
+        }
+
+        /// <summary>
+        /// Inequality test.
+        /// </summary>
+        public static bool operator !=(FilePath left, FilePath right)
+        {
+            return !left.Equals(right);
+        }
+
         #region Public Interface
 
         public override int GetHashCode()
@@ -95,6 +113,11 @@ namespace JadeUtils.IO
             {
                 Debug.WriteLine(e.ToString());
             }
+        }
+
+        public bool IsNull
+        {
+            get { return _path == null; }
         }
 
         /// <summary>

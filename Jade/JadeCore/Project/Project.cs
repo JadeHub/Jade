@@ -25,8 +25,7 @@ namespace JadeCore.Project
         //maintain a list of all source files in all folders
         private List<IItem> _allSourceFiles;
 
-        private CppView.IProjectSourceIndex _sourceIndex;
-        
+        private CppView.IProjectSourceIndex _sourceIndex;        
         private CppView.IIndexBuilder _indexBuilder;
 
         #endregion
@@ -42,7 +41,7 @@ namespace JadeCore.Project
             _allSourceFiles = new List<IItem>();
 
             _sourceIndex = new CppView.ProjectSourceIndex(new CppView.ProjectSymbolTable());
-            _indexBuilder = new CppView.IndexBuilder(_sourceIndex, _sourceIndex);
+            _indexBuilder = new CppView.IndexBuilder(_sourceIndex);
         }
 
         #endregion

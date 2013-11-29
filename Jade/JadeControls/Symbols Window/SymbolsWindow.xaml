@@ -4,12 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:JadeControls.Symbols"
+             xmlns:c="clr-namespace:JadeControls.Converters"
              mc:Ignorable="d" 
              d:Height="500" Width="250"
              Title="Symbols">
     
     <Window.Resources>
-
+        <c:FileNamesFromFilePathConverters x:Key="FileNamesFromFilePathConverters"/>
         <Style x:Key="alternatingStyle" TargetType="{x:Type ListViewItem}">
             <Style.Triggers>
                 <Trigger Property="ItemsControl.AlternationIndex" Value="0">
@@ -27,14 +28,20 @@
         <DataTemplate x:Key="referenceItemTemplate" DataType="x:Type local:RefViewModel">
             <Border Padding="10">
                 <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                    <StackPanel.ToolTip>
+                        <TextBlock FontSize="11"  
+                                    Foreground="Black" 
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Details}" />
+                    </StackPanel.ToolTip>
                     <TextBlock FontFamily="Arial" FontSize="14"
                         FontWeight="Bold"
                         Width="auto" Height="auto"
-                        Text="{Binding Path=Kind}"/>
+                        Text="{Binding Kind}"/>
                     <TextBlock FontFamily="Arial" FontSize="12" 
                         FontWeight="Normal"
                         Width="auto" Height="auto"
-                        Text="{Binding Path=Details}" />
+                        Text="{Binding Details}" />
                 </StackPanel>
             </Border>
         </DataTemplate>
@@ -42,14 +49,20 @@
         <DataTemplate x:Key="declItemTemplate" DataType="x:Type local:DeclViewModel">
             <Border Padding="10">
                 <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                    <StackPanel.ToolTip>
+                        <TextBlock FontSize="11"  
+                                    Foreground="Black" 
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Details}" />
+                    </StackPanel.ToolTip>
                     <TextBlock FontFamily="Arial" FontSize="14"
                         FontWeight="Bold"
                         Width="auto" Height="auto"
-                        Text="{Binding Path=Kind}"/>
+                        Text="{Binding Kind}"/>
                 <TextBlock FontFamily="Arial" FontSize="12" 
                         FontWeight="Normal"
                         Width="auto" Height="auto"
-                        Text="{Binding Path=Details}" />
+                        Text="{Binding Details}" />
                 </StackPanel>
             </Border>
             
@@ -65,10 +78,19 @@
         </DataTemplate>
     </Window.Resources>
     
-    <DockPanel LastChildFill="True">        
-        
-        
-            <TabControl DockPanel.Dock="Bottom">
+    <DockPanel LastChildFill="True">
+        <ComboBox 
+            DockPanel.Dock="Top" 
+            ItemsSource="{Binding FileNames}"
+            SelectedItem="{Binding SelectedFile}"            
+            >
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <ContentPresenter Content="{Binding Converter={StaticResource FileNamesFromFilePathConverters}}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <TabControl DockPanel.Dock="Bottom">
                 <TabItem Header="Declarations">
                     <ListView Name="DeclListCtrl" ItemsSource="{Binding Declarations}"
                               ItemTemplate="{StaticResource declItemTemplate}" AlternationCount="2" ItemContainerStyle="{StaticResource alternatingStyle}"

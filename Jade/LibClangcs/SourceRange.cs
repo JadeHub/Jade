@@ -37,6 +37,11 @@ namespace LibClang
         
         #endregion
 
+        public bool ContainsOffset(int offset)
+        {
+            return offset >= Start.Offset && offset <= End.Offset;
+        }
+
         #region Properties
 
         public SourceLocation Start { get { return _start; } }

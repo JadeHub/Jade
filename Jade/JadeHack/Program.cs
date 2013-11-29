@@ -16,7 +16,7 @@ namespace JadeHack
             return false;
         }
 
-        public void PPIncludeFile(Indexer indexer, IncludeFileInfo includeFile)
+        public void IncludeFile(LibClang.Indexer.Indexer indexer, string path, LibClang.SourceLocation[] includeStack)
         {
 
         }
@@ -39,11 +39,12 @@ namespace JadeHack
             CppView.ProjectSymbolTable st = new CppView.ProjectSymbolTable();
             CppView.IProjectSourceIndex si = new CppView.ProjectSourceIndex(st);
 
-            CppView.IndexBuilder builder = new CppView.IndexBuilder(si, si);
+            CppView.IndexBuilder builder = new CppView.IndexBuilder(si);
 
-            builder.AddSourceFile(new JadeUtils.IO.FileHandle(@"C:\Code\GitHub\Jade\TestData\CppTest\test.cpp"), CppView.IndexBuilderItemPriority.Immediate);
-            builder.AddSourceFile(new JadeUtils.IO.FileHandle(@"C:\Code\GitHub\Jade\TestData\CppTest\main.cpp"), CppView.IndexBuilderItemPriority.Immediate);
+            builder.AddSourceFile(new JadeUtils.IO.FileHandle(@"C:\Code\GitHub\Jade\TestData\CppTest\test2.cpp"), CppView.IndexBuilderItemPriority.Immediate);
+     //       builder.AddSourceFile(new JadeUtils.IO.FileHandle(@"C:\Code\GitHub\Jade\TestData\CppTest\main.cpp"), CppView.IndexBuilderItemPriority.Immediate);
 
+            st.Dump();
             //pi.Dump();
         }
     }

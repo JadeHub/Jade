@@ -30,6 +30,8 @@ namespace LibClang.Indexer
                 _container = new Cursor(_handle.container->cursor);
 
             SourceLocation l = Location;
+
+            
         }
 
         public override string ToString()

@@ -1,44 +1,9 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
-using JadeUtils.IO;
+using System.Diagnostics;
 
 namespace JadeControls.EditorControl.ViewModel
 {
-    public class EditorControlCommandAdaptor
-    {
-        private delegate void OnCommandDel(object parameter);
-        private delegate bool CanDoCommandDel();
-
-        private EditorControlViewModel _vm;
-
-        public EditorControlCommandAdaptor(EditorControlViewModel vm)
-        {
-            _vm = vm;
-        }
-
-        public void Bind(CommandBindingCollection bindings)
-        {
-            Register(bindings, ApplicationCommands.Close, delegate(object param) { _vm.OnClose(param);}, delegate {return _vm.CanDoClose();});
-        }
-
-        private void Register(CommandBindingCollection bindings, ICommand command, OnCommandDel onCmd, CanDoCommandDel canDoCmd)
-        {
-            bindings.Add(new CommandBinding(command,
-                                        delegate(object target, ExecutedRoutedEventArgs args)
-                                        {
-                                            onCmd(args.Parameter);
-                                            args.Handled = true;
-                                        },
-                                        delegate(object target, CanExecuteRoutedEventArgs args)
-                                        {
-                                            args.CanExecute = canDoCmd();
-                                            args.Handled = true;
-                                        }));
-        }
-    }
-
     public class EditorControlViewModel : JadeControls.NotifyPropertyChanged
     {
         #region Data
@@ -91,12 +56,14 @@ namespace JadeControls.EditorControl.ViewModel
         {
             EditorTabItem view = new EditorTabItem();
 
-            DocumentViewModel d = new DocumentViewModel(args.Document, view.CodeEditor);            
+            DocumentViewModel d = new SourceDocumentViewModel(args.Document, view.CodeEditor);
             view.DataContext = d;
             _tabItems.Add(view);
             args.Document.OnClosing += delegate { OnDocumentClosing(view); };
             SelectedDocumentTab = view;
             OnPropertyChanged("TabItems");
+            //hack to preload the document so we can immediatly set the cursor location
+            view.CodeEditor.Document = d.TextDocument;
         }
 
         #endregion
@@ -159,7 +126,7 @@ namespace JadeControls.EditorControl.ViewModel
                 DocumentViewModel doc = param as DocumentViewModel;
             }
         }
-
+                
         public bool CanDoClose()
         {
             return true;

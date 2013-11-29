@@ -30,6 +30,7 @@ namespace LibClang
             Column = (int)column;
             Offset = (int)offset;
             File = new File(file);
+            
         }
 
         public override string ToString()

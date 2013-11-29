@@ -42,6 +42,7 @@
     <Compile Include="CodeLocation.cs" />
     <Compile Include="CodeRange.cs" />
     <Compile Include="Declaration.cs" />
+    <Compile Include="HeaderFile.cs" />
     <Compile Include="IndexBuilder.cs" />
     <Compile Include="ProjectSourceIndex.cs" />
     <Compile Include="Reference.cs" />

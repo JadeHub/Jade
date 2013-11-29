@@ -13,6 +13,7 @@ namespace JadeCore
         JadeCore.Workspace.IWorkspaceController WorkspaceController { get; set; }
         JadeCore.IEditorController EditorController { get; set; }
         JadeCore.Output.IOutputController OutputController { get; set; }
+        JadeCore.IJadeCommandHandler CommandHandler { get; set; }
     }
 
     public class Services
@@ -34,5 +35,6 @@ namespace JadeCore
         public JadeCore.Workspace.IWorkspaceController WorkspaceController { get; set; }
         public JadeCore.IEditorController EditorController { get; set; }
         public JadeCore.Output.IOutputController OutputController { get; set; }
+        public JadeCore.IJadeCommandHandler CommandHandler { get; set; }
     }
 }

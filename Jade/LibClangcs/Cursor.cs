@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace LibClang
 {
@@ -36,9 +37,9 @@ namespace LibClang
 
         internal Cursor(Dll.Cursor handle)
         {
+            Debug.Assert(handle.IsNull() == false);
             Handle = handle;
-            Kind = Dll.clang_getCursorKind(Handle);
-            
+            Kind = Dll.clang_getCursorKind(Handle);            
         }
 
         public CursorKind Kind
@@ -75,7 +76,7 @@ namespace LibClang
         {
             get { return Dll.clang_getCanonicalCursor(Handle) == Handle;}
         }
-
+                
         public enum ChildVisitResult
         {
             Break,
@@ -95,6 +96,8 @@ namespace LibClang
 
         public static bool operator == (Cursor left, Cursor right)
         {
+            if ((object)left == null && (object)right == null) return true;
+            if ((object)left == null || (object)right == null) return false;
             return left.Handle == right.Handle;
         }
 

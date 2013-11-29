@@ -6,23 +6,25 @@ using System.Threading.Tasks;
 
 namespace CppView
 {
+    using JadeUtils.IO;
+
     public interface ICodeLocation
     {
         int Line { get; }
         int Column { get; }
         int Offset { get; }
-        ISourceFile File { get; }
+        FilePath Path { get; }
     }
 
     internal class CodeLocation : ICodeLocation
     {
-        public CodeLocation(LibClang.SourceLocation loc, ISourceFile file)
+        public CodeLocation(LibClang.SourceLocation loc, FilePath path)
         {
             Handle = loc;
             Line = loc.Line;
             Column = loc.Column;
             Offset = loc.Offset;        
-            File = file;
+            Path = path;
         }
 
         public LibClang.SourceLocation Handle
@@ -49,7 +51,7 @@ namespace CppView
             private set;
         }
 
-        public ISourceFile File
+        public FilePath Path
         {
             get;
             private set;
@@ -65,14 +67,14 @@ namespace CppView
             if (obj is CodeLocation)
             {
                 CodeLocation rhs = obj as CodeLocation;
-                return rhs.File == File && rhs.Offset == Offset;
+                return rhs.Path == Path && rhs.Offset == Offset;
             }
             return false;
         }
 
         public override int GetHashCode()
         {
-            return File.GetHashCode() + Offset;
+            return Path.GetHashCode() + Offset;
         }
     }
 }

@@ -84,5 +84,13 @@ namespace JadeGui
                 }
             }
         }
+
+
+        
+        private void Window_PreviewGotKeyboardFocus_1(object sender, KeyboardFocusChangedEventArgs e)
+        {
+
+        }
+		
     }
 }

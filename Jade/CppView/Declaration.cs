@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace CppView
 {
+    using JadeUtils.IO;
+
     public interface ICodeElement
     {
         ICodeLocation Location { get; }
         ICodeRange Range { get; }
         string Name { get; }
+        LibClang.Cursor LocalCursor { get; }
     }
 
     public interface IDeclaration : ICodeElement
@@ -19,6 +18,7 @@ namespace CppView
         LibClang.Cursor Cursor { get; }
         LibClang.Indexer.EntityKind Kind { get; }
         string Usr { get; }
+        FilePath Path { get; }
     }    
 
     public class Declaration : IDeclaration
@@ -28,26 +28,33 @@ namespace CppView
         private LibClang.Indexer.DeclInfo _decl;
         private ICodeLocation _location;
         private ICodeRange _range;
-        private ISourceFile _file;
+        private FilePath _path;
+        private LibClang.Cursor _localCursor;
         
         #endregion
 
-        public Declaration(LibClang.Indexer.DeclInfo decl, ISourceFile file)
+        public Declaration(LibClang.Indexer.DeclInfo decl, FilePath path, LibClang.Cursor localCursor)
         {
             _decl = decl;
-            _file = file;
-            //Debug.Assert(decl.Location.File.Name.ToLowerInvariant() == file.Path.To)
-            Debug.Assert(JadeUtils.IO.Path.AreSamePath(decl.Location.File.Name, file.Path.ToString()));
+            _path = path;
+            _localCursor = localCursor;
+            Debug.Assert(JadeUtils.IO.Path.AreSamePath(decl.Location.File.Name, _path.ToString()));
+            //Debug.WriteLine("Decl " + decl.Cursor.Spelling + " at " + decl.Cursor.Location);
         }
 
         public ICodeLocation Location
         {
-            get { return _location ?? (_location = new CodeLocation(_decl.Location, _file)); }
+            get { return _location ?? (_location = new CodeLocation(_decl.Location, _path)); }
         }
 
         public ICodeRange Range
         {
-            get { return _range ?? (_range = new CodeRange(_decl.Cursor, _file)); }
+            get { return _range ?? (_range = new CodeRange(_decl.Cursor, _path)); }
+        }
+
+        public FilePath Path
+        {
+            get { return _path; }
         }
 
         public string Name
@@ -57,7 +64,6 @@ namespace CppView
 
         public string Usr
         {
-            //get { return _decl.EntityInfo.Usr; }
             get { return _decl.Cursor.Usr; }
         }
 
@@ -70,6 +76,11 @@ namespace CppView
             get { return _decl.EntityInfo.Kind; }
         }
 
+        public LibClang.Cursor LocalCursor
+        {
+            get { return _localCursor; }
+        }
+
         public override int GetHashCode()
         {
             return _decl.EntityInfo.Usr.GetHashCode() + Location.GetHashCode();
@@ -78,7 +89,7 @@ namespace CppView
         public override string ToString()
         {
             return string.Format("{0} is a {1} at {2} in {3} Range({4}) Usr \"{5}\" Type {6} Definition {7} Redef {8}",
-                                 Name, Kind, Location, Location.File, Range, Usr, _decl.Cursor.Type, _decl.IsDefinition, _decl.IsRedefinition);
+                                 Name, Kind, Location, Location.Path, Range, Usr, _decl.Cursor.Type, _decl.IsDefinition, _decl.IsRedefinition);
         }
     }
 }

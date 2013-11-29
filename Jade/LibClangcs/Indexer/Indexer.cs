@@ -8,7 +8,8 @@ namespace LibClang.Indexer
         public interface IObserver
         {
             bool Abort(Indexer indexer);
-            void PPIncludeFile(Indexer indexer, IncludeFileInfo includeFile);
+            //void PPIncludeFile(Indexer indexer, IncludeFileInfo includeFile);
+            void IncludeFile(Indexer indexer, string path, SourceLocation[] inclutionStack);
             void EntityDeclaration(Indexer indexer, DeclInfo decl);
             void EntityReference(Indexer indexer, EntityReference reference);
         }
@@ -16,6 +17,7 @@ namespace LibClang.Indexer
         #region Data
 
         private Dll.IndexerCallbacks _cbs;
+        private Dll.CXInclusionVisitor _includeCallback;
         
         private TranslationUnit _translationUnit;
         
@@ -30,13 +32,14 @@ namespace LibClang.Indexer
             //_session = Index.CreateIndexingSession();
         }
 
+        /*
         public Indexer(Index idx, string fileName): this()
         {
             Index = idx;
             Filename = fileName;
             _translationUnit = new LibClang.TranslationUnit(Index, Filename);
             _translationUnit.Parse();            
-        }
+        }*/
         
         private unsafe Indexer()
         {
@@ -49,6 +52,8 @@ namespace LibClang.Indexer
             _cbs.startTU = OnIndexerStartTranslationUnit;
             _cbs.index = OnIndexerDeclaration;
             _cbs.entityRef = OnIndexerEntityReference;
+
+            _includeCallback = OnCxxIncludeVisit;
         }
 
         #endregion
@@ -60,6 +65,8 @@ namespace LibClang.Indexer
             _observer = o;
 
             IntPtr tu = IntPtr.Zero;
+
+            Dll.clang_getInclusions(_translationUnit.Handle, _includeCallback, IntPtr.Zero);
 
             /*
             int err = Dll.clang_indexSourceFile(session, IntPtr.Zero, new Dll.IndexerCallbacks[1] { _cbs },
@@ -78,11 +85,12 @@ namespace LibClang.Indexer
             private set;
         }
 
+        /*
         public string Filename
         {
             get;
             private set;
-        }
+        }*/
         
         public TranslationUnit TranslationUnit
         {
@@ -95,6 +103,20 @@ namespace LibClang.Indexer
         #endregion
 
         #region event handlers
+
+        private unsafe void OnCxxIncludeVisit(IntPtr fileHandle, Dll.SourceLocation* inclusionStack, uint includeStackSize, IntPtr clientData)
+        {
+            SourceLocation[] locs = new SourceLocation[includeStackSize];
+            Dll.SourceLocation* incStackPtr = inclusionStack;
+            for (uint i = 0; i < includeStackSize; i++)
+            {
+                locs[i] = new SourceLocation(*incStackPtr);
+                incStackPtr++;
+            }
+            string path = Dll.clang_getFileName(fileHandle).ManagedString;
+            if (includeStackSize > 0)
+                _observer.IncludeFile(this, path, locs);
+        }
 
         private int OnIndexerAbortQuery(IntPtr clientData, IntPtr reserved)
         {
@@ -115,7 +137,8 @@ namespace LibClang.Indexer
 
         private unsafe IntPtr OnIndexerPPIncludedFile(IntPtr client_data, Dll.IndexerIncludeFileInfo* includedFileInfo)
         {
-            _observer.PPIncludeFile(this, new IncludeFileInfo(*includedFileInfo));
+            //never called
+         //   _observer.PPIncludeFile(this, new IncludeFileInfo(*includedFileInfo));
             return IntPtr.Zero;
         }
         

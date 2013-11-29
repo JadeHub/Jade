@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace CppView
 {
+    using JadeUtils.IO;
+
     public interface ICodeRange
     {
         ICodeLocation Start { get; }
@@ -21,12 +23,12 @@ namespace CppView
 
         #endregion
 
-        public CodeRange(LibClang.Cursor cur, ISourceFile file)
+        public CodeRange(LibClang.Cursor cur, FilePath path)
         {
             LibClang.SourceRange range = cur.Extent;
             
-            _start = new CodeLocation(range.Start, file);
-            _end = new CodeLocation(range.End, file);
+            _start = new CodeLocation(range.Start, path);
+            _end = new CodeLocation(range.End, path);
         }
 
         #region Properties

@@ -54,7 +54,7 @@ namespace JadeCore.Workspace
         /// Returns the current workspace
         /// </summary>
         JadeCore.Workspace.IWorkspace CurrentWorkspace { get; }
-
+                
         /// <summary>
         /// True if the current workspace has beeb modified
         /// </summary>

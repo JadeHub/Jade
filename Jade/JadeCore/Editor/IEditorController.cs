@@ -1,9 +1,14 @@
-﻿using System;
+﻿using JadeUtils.IO;
+using System;
 using System.Collections.Generic;
-using JadeUtils.IO;
 
 namespace JadeCore
 {
+    /// <summary>
+    /// A file that can be opened in the editor. 
+    /// The file representation used by the EditorController
+    /// EditorSourceDocument is implementation for source files
+    /// </summary>
     public interface IEditorDoc
     {
         event EventHandler OnClosing;
@@ -45,6 +50,6 @@ namespace JadeCore
         void CloseAllDocuments();
         void CloseActiveDocument();
 
-        void Display(JadeUtils.IO.FilePath path, int line, int col);
+        
     }
 }

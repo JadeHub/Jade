@@ -1,6 +1,8 @@
 ﻿
 namespace CppView
 {
+    using JadeUtils.IO;
+
     public interface IReference : ICodeElement
     {
         /// <summary>
@@ -19,18 +21,21 @@ namespace CppView
         private LibClang.Indexer.EntityReference _reference;
         private string _referencedUSR;
         private ICodeLocation _location;
-        private ISourceFile _file;
+        private FilePath _path;
         private ISymbolTable _symbolTable;
         private ICodeRange _range;
-                
+        private LibClang.Cursor _localCursor;
+                        
         #endregion
 
-        public Reference(string referencedUSR, LibClang.Indexer.EntityReference reference, ISourceFile file, ISymbolTable symbolTable)
+        public Reference(string referencedUSR, LibClang.Indexer.EntityReference reference, 
+                        FilePath path, ISymbolTable symbolTable, LibClang.Cursor localCursor)
         {
             _referencedUSR = referencedUSR;
             _reference = reference;
-            _file = file;
+            _path = path;
             _symbolTable = symbolTable;
+            _localCursor = localCursor;
         }
 
         public string ReferencedUSR
@@ -45,17 +50,17 @@ namespace CppView
 
         public ICodeLocation Location
         {
-            get { return _location ?? (_location = new CodeLocation(_reference.Location, File)); }
+            get { return _location ?? (_location = new CodeLocation(_reference.Location, Path)); }
         }
 
-        public ISourceFile File
+        public FilePath Path
         {
-            get { return _file; }
+            get { return _path; }
         }
 
         public ICodeRange Range 
         {
-            get { return _range ?? (_range = new CodeRange(_reference.Cursor, _file)); }
+            get { return _range ?? (_range = new CodeRange(_reference.Cursor, Path)); }
         }
 
         public string Name 
@@ -63,9 +68,14 @@ namespace CppView
             get { return _reference.Cursor.Spelling; }
         }
 
+        public LibClang.Cursor LocalCursor
+        {
+            get { return _localCursor; }
+        }
+
         public override string ToString()
         {
-            return string.Format("Refr to {0} at {1} in {2}", ReferencedDecl.Name, Location, Location.File);
+            return string.Format("Refr to {0} at {1} in {2}", ReferencedDecl.Name, Location, Location.Path);
         }        
     }
 }

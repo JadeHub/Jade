@@ -36,6 +36,11 @@ namespace JadeControls.Workspace.ViewModel
             }
         }
 
+        private void TreeView_PreviewGotKeyboardFocus_1(object sender, KeyboardFocusChangedEventArgs e)
+        {
+
+        }
+
         #endregion
     }
 }

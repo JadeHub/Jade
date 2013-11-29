@@ -59,7 +59,9 @@
       <DependentUpon>EditorTabItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="EditorControl\ViewModel\DocumentViewModel.cs" />
+    <Compile Include="EditorControl\ViewModel\EditorCommands.cs" />
     <Compile Include="EditorControl\ViewModel\EditorControlViewModel.cs" />
+    <Compile Include="EditorControl\ViewModel\SourceDocumentViewModel.cs" />
     <Compile Include="OpenDocumentsControl\OpenDocListControl.xaml.cs">
       <DependentUpon>OpenDocListControl.xaml</DependentUpon>
     </Compile>

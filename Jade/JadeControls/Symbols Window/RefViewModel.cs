@@ -19,13 +19,16 @@ namespace JadeControls.Symbols
             _decl = _ref.ReferencedDecl;
         }
 
+        public CppView.IReference Reference { get { return _ref; } }
+
         public string Name {get { return _ref.ToString(); } }
 
         public string Details
         {
             get
             {
-                return string.Format("{0} to {1} {2}", _ref, _decl.Location.File, _decl.Location);
+                return string.Format("{0} to {1} {2}", _ref, _decl.Location.Path, _decl.Location);
+                //return _ref.C
                 
             }
         }

@@ -1,6 +1,5 @@
-﻿using System;
+﻿using JadeCore;
 using System.Windows.Input;
-using JadeCore;
 
 namespace JadeGui.ViewModels
 {
@@ -35,9 +34,12 @@ namespace JadeGui.ViewModels
             Register(bindings, Commands.SaveWorkspace,      delegate { _handler.OnSaveWorkspace(); },   delegate { return _handler.CanSaveWorkspace(); });
             Register(bindings, Commands.SaveAsWorkspace,    delegate { _handler.OnSaveAsWorkspace(); }, delegate { return _handler.CanSaveAsWorkspace(); });
 
+            Register(bindings, Commands.ViewSymbolsWindow, delegate { _handler.OnViewSymbolsWindow(); }, delegate { return _handler.CanViewSymbolsWindow(); });
             Register(bindings, Commands.ViewLineNumbers,    delegate { _handler.OnViewLineNumbers(); }, delegate { return _handler.CanViewLineNumbers(); });
 
             Register(bindings, Commands.CloseAllDocuments,  delegate { _handler.OnCloseAllDocuments(); }, delegate { return _handler.CanCloseAllDocuments(); });
+
+            Register(bindings, Commands.DisplayCodeLocation,  delegate { _handler.OnDisplayCodeLocation(null); }, delegate { return true; });
         }
 
         private void Register(CommandBindingCollection bindings, ICommand command, OnCommandDel onCmd, CanDoCommandDel canDoCmd)

@@ -1,36 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CppView
 {
     using JadeUtils.IO;
 
-    public interface ICodeFile
+    public interface IHeaderFile : ICodeFile
     {
-        FilePath Path { get; }
+        void MentionedIn(LibClang.TranslationUnit tu);
+        LibClang.TranslationUnit DefaultTranslationUnit { get; }        
     }
 
-    public interface ISourceFile : ICodeFile
-    {        
-        LibClang.TranslationUnit TranslationUnit { get; set; }
-    }
-
-    public class SourceFile : ISourceFile
+    public class HeaderFile : IHeaderFile
     {
         private FilePath _path;
-        private LibClang.TranslationUnit _tu; 
-
-        public SourceFile(string path)
-        {
-            _path = JadeUtils.IO.FilePath.Make(path);            
-        }
-
-        public SourceFile(FilePath path)
+        private HashSet<LibClang.TranslationUnit> _tus;
+                
+        public HeaderFile(FilePath path)
         {
             _path = path;
+            _tus = new HashSet<LibClang.TranslationUnit>();
+        }
+
+        public void MentionedIn(LibClang.TranslationUnit tu)
+        {
+            _tus.Add(tu);
         }
 
         #region Properties
@@ -40,16 +35,15 @@ namespace CppView
             get { return _path; }
         }
 
-        public LibClang.TranslationUnit TranslationUnit 
-        {
+        public LibClang.TranslationUnit DefaultTranslationUnit 
+        { 
             get 
             {
-                return _tu;
-            }
-
-            set
-            {
-                _tu = value;
+                if (_tus.Count > 0)
+                {
+                    return _tus.First();
+                }
+                return null;
             }
         }
 

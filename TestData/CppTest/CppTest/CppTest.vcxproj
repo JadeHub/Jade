@@ -13,9 +13,11 @@
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\test.cpp" />
+    <ClCompile Include="..\test2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\test.h" />
+    <ClInclude Include="..\test2.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{98CC9031-B16D-453E-8EF3-1CE197823AF9}</ProjectGuid>

@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 
 namespace CppView
 {
+    using JadeUtils.IO;
+
+    /*
     public interface ILineSymbolTable : ISymbolTable
     {
-
+       // ICodeElement GetElementAt(int col);
     }
 
     public class LineSymbolTable : ILineSymbolTable
@@ -48,14 +51,14 @@ namespace CppView
             return _indexImpl.HasDeclaration(usr);
         }
 
-        public bool HasDeclaration(string usr, ISourceFile file, int offset)
+        public bool HasDeclaration(string usr, FilePath path, int offset)
         {
-            return _indexImpl.HasDeclaration(usr, file, offset);
+            return _indexImpl.HasDeclaration(usr, path, offset);
         }
 
-        public bool HasReference(string refedUSR, ISourceFile file, int offset)
+        public bool HasReference(string refedUSR, FilePath path, int offset)
         {
-            return _indexImpl.HasReference(refedUSR, file, offset);
+            return _indexImpl.HasReference(refedUSR, path, offset);
         }
 
         public IDeclaration GetCanonicalDefinition(string usr)
@@ -77,6 +80,11 @@ namespace CppView
 
         public IEnumerable<IReference> References { get { return _indexImpl.References; } }
 
+        public ICodeElement GetElementAt(ISourceFile file, int offset)
+        {
+            return _indexImpl.GetElementAt(file, offset);
+        }
+
         public void Dump()
         {
             _indexImpl.Dump();
@@ -87,4 +95,5 @@ namespace CppView
 
         #endregion
     }
+     */ 
 }
