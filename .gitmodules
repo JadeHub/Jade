@@ -1,3 +1,6 @@
 [submodule "x_libclangcs"]
 	path = x_libclangcs
 	url = https://github.com/JadeHub/LibClangCS.git
+[submodule "externals/libclangcs"]
+	path = externals/libclangcs
+	url = https://github.com/JadeHub/LibClangCS.git
