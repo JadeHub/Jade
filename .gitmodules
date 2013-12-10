@@ -1,0 +1,3 @@
+[submodule "x_libclangcs"]
+	path = x_libclangcs
+	url = https://github.com/JadeHub/LibClangCS.git
