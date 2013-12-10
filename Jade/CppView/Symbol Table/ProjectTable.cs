@@ -101,61 +101,7 @@ namespace CppView
         {
             get { return _indexImpl.References; } 
         }
-        /*
-        public IFileSymbolTable GetFileSymbolTable(FilePath path)
-        {
-            IFileSymbolTable result;
-            _files.TryGetValue(path, out result);
-            return result;
-        }*/
-
-        public ICodeElement GetElementAt(FilePath path, int offset)
-        {
-            //ISourceFile sourceFile = 
-
-
-            return _indexImpl.GetElementAt(path, offset);
-
-            /*IFileSymbolTable fileTable = GetFileSymbolTable(file.Path);
-            if (fileTable == null) return null;
-
-            return fileTable.GetElementAt(offset);*/
-            /*
-            if (file.TranslationUnit == null)
-            {
-            //    file.TranslationUnit = _files.Values.Last().SourceFile.TranslationUnit;
-            }
-            
-            LibClang.Cursor c = file.TranslationUnit.GetCursorAt(file.Path.Str, (uint)offset);
-            
-            if (c == null)
-            {
-                return null;
-            }
-
-            Debug.WriteLine("Cursor = " + c);
-
-            IFileSymbolTable fileTable = GetFileSymbolTable(file.Path);
-            if(fileTable == null)
-            {
-                return null;
-            }
-
-            return fileTable.GetElementAt(c.Location.Offset);
-             */
-            /*
-            ILineSymbolTable lineTable = fileTable.GetLine(c.Location.Line);
-            if (lineTable == null)
-            {
-                return null;
-            }
-
-            ICodeElement elem = lineTable.GetElementAt(file, c.Location.Offset);
-            
-            return elem;*/
-        //    return null;
-        }
-
+        
         public void Dump()
         {
             _indexImpl.Dump();

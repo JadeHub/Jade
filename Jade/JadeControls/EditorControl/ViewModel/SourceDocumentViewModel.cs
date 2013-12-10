@@ -5,65 +5,48 @@ using JadeCore;
 using JadeUtils.IO;
 
 namespace JadeControls.EditorControl.ViewModel
-{    
+{
     public class SourceDocumentViewModel : DocumentViewModel
     {
-        public SourceDocumentViewModel(IEditorDoc doc, CodeEditor view) : base(doc, view)
+        public ISourceBrowserStrategy BrowseStrategy { get; private set; }
+
+        public SourceDocumentViewModel(IEditorDoc doc, CodeEditor view, ISourceBrowserStrategy browseStrategy) 
+            : base(doc, view)
         {
-            RegisterCommands(view.CommandBindings);
-            
+            BrowseStrategy = browseStrategy;
+            RegisterCommands(view.CommandBindings);            
         }
 
         private void RegisterCommands(CommandBindingCollection commandBindings)
         {
-            commandBindings.Add(new CommandBinding(EditorCommands.GoToDefinition,
+            commandBindings.Add(new CommandBinding(EditorCommands.JumpTo,
                                         delegate(object target, ExecutedRoutedEventArgs a)
                                         {
-                                            OnGoToDefinition(this.CaretLocation);
+                                            OnJumpTo(this.CaretLocation);
                                             a.Handled = true;
                                         },
                                         delegate(object target, CanExecuteRoutedEventArgs a)
                                         {
-                                            a.CanExecute = true;
+                                            a.CanExecute = CanJumpTo(this.CaretLocation);
                                             a.Handled = true;
                                         }));
         }
 
-        private void OnGoToDefinition(JadeCore.Editor.CodeLocation loc)
+        private void OnJumpTo(JadeCore.Editor.CodeLocation loc)
         {
-            CppView.IProjectSourceIndex index = GetProjectSourceIndex();
-            if(index == null) return;
+            CppView.ICodeLocation location = new CppView.CodeLocation(loc.Line, loc.Column, loc.Offset, Document.File.Path);
 
-            LibClang.Cursor c = index.GetCursorAt(Document.File.Path, loc.Offset);
-
-            //CppView.ICodeElement codeElem = index.GetElementAt(Document.File.Path, loc.Offset);
-
-            /*
-            CppView.ISourceFile file = index.FileStore.FindSourceFile(Document.File.Path);
-            if(file == null) return;
-
-            CppView.ICodeElement codeElem = index.SymbolTable.GetElementAt(file, loc.Offset);
-            if (codeElem == null)
-                return;
-
-            if (codeElem is CppView.IReference)
+            location = BrowseStrategy.JumpTo(location);
+            if (location != null)
             {
-                codeElem = (codeElem as CppView.IReference).ReferencedDecl;
+                JadeCore.IJadeCommandHandler cmdHandler = JadeCore.Services.Provider.CommandHandler;
+                cmdHandler.OnDisplayCodeLocation(location);
             }
-
-            JadeCore.IJadeCommandHandler cmdHandler = JadeCore.Services.Provider.CommandHandler;
-            cmdHandler.OnDisplayCodeLocation(codeElem.Location);
-            * */
         }
 
-        private CppView.IProjectSourceIndex GetProjectSourceIndex()
+        private bool CanJumpTo(JadeCore.Editor.CodeLocation loc)
         {
-            if (Services.Provider.WorkspaceController.CurrentWorkspace != null &&
-                Services.Provider.WorkspaceController.CurrentWorkspace.ActiveProject != null)
-            {
-                return Services.Provider.WorkspaceController.CurrentWorkspace.ActiveProject.SourceIndex;
-            }
-            return null;
+            return true;
         }
     }
 }

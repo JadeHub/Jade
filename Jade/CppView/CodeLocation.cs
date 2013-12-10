@@ -16,21 +16,30 @@ namespace CppView
         FilePath Path { get; }
     }
 
-    internal class CodeLocation : ICodeLocation
+    public class CodeLocation : ICodeLocation
     {
+        public CodeLocation(LibClang.SourceLocation loc)
+        {
+            Line = loc.Line;
+            Column = loc.Column;
+            Offset = loc.Offset;
+            Path = FilePath.Make(loc.File.Name);
+        }
+
         public CodeLocation(LibClang.SourceLocation loc, FilePath path)
         {
-            Handle = loc;
             Line = loc.Line;
             Column = loc.Column;
             Offset = loc.Offset;        
             Path = path;
         }
 
-        public LibClang.SourceLocation Handle
+        public CodeLocation(int line, int column, int offset, FilePath path)
         {
-            get;
-            private set;
+            Line = line;
+            Column = column;
+            Offset = offset;
+            Path = path;
         }
 
         public int Line

@@ -2,8 +2,10 @@
 
 #include "test2.h"
 
-namespace Test {
+extern void GlobalFn();
 
+namespace Test {
+	
 struct AStruct;
 
 struct AStruct
@@ -13,18 +15,32 @@ struct AStruct
 
 enum AnEnum
 {
-	k = 0
+	AnEnum_Item1 = 0
 };
 
 class SomeClass
 {
 public:
 	SomeClass();
+	SomeClass(int i);
+	SomeClass(const SomeClass& other);
+	~SomeClass();
 
+	SomeClass& operator=(const SomeClass& other);
+
+
+
+	Struct22 a22;
 
 	static	int j;
 
 	void Fn();
+
+	inline bool InlinedMethod()
+	{
+		return false;
+	}
+
 private:
 	AStruct MSt;
 	AnEnum mEnum;

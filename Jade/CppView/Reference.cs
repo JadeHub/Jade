@@ -45,7 +45,11 @@ namespace CppView
 
         public IDeclaration ReferencedDecl
         {
-            get { return _symbolTable.GetCanonicalDefinition(ReferencedUSR); }
+            get 
+            { 
+                IDeclaration d = _symbolTable.GetCanonicalDefinition(ReferencedUSR);
+                return d;
+            }
         }
 
         public ICodeLocation Location

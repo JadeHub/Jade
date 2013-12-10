@@ -5,7 +5,7 @@ namespace JadeControls.EditorControl
 {
     public class EditorCommands
     {
-        public static readonly RoutedCommand GoToDefinition = new RoutedCommand("GoToDefinition", typeof(object));        
+        public static readonly RoutedCommand JumpTo = new RoutedCommand("JumpTo", typeof(object));        
     }
 
     public class EditorControlCommandAdaptor

@@ -72,11 +72,65 @@ namespace LibClang
         
         }
 
-        public bool IsCanonical
+        public Cursor CanonicalCursor
         {
-            get { return Dll.clang_getCanonicalCursor(Handle) == Handle;}
+            get 
+            {
+                Dll.Cursor cur = Dll.clang_getCursorDefinition(Handle);
+                if (cur == Handle)
+                    return this;
+                return cur.IsNull() ? null : new Cursor(cur);
+            }
+        }
+
+        public bool IsDefinition
+        {
+            get { return Dll.clang_isCursorDefinition(Handle) != 0; }
+        }
+
+        public Cursor Definition
+        {
+            get 
+            {
+                Dll.Cursor cur = Dll.clang_getCursorDefinition(Handle);
+                return (cur.IsNull() || cur == Handle) ? null : new Cursor(cur);
+            }
+        }
+
+        public bool IsReference
+        {
+            get { return Dll.clang_isReference(Kind) != 0; }
         }
                 
+        public Cursor CursorReferenced
+        {
+            get
+            {
+                Dll.Cursor cur = Dll.clang_getCursorReferenced(Handle);
+                return (cur.IsNull() || cur == Handle) ? null : new Cursor(cur);
+            }
+        }
+
+        public Cursor LexicalParentCurosr
+        {
+            get
+            {
+                Dll.Cursor cur = Dll.clang_getCursorLexicalParent(Handle);
+                return cur.IsNull() ? null : new Cursor(cur);
+            }
+        }
+
+        public Cursor SemanticParentCurosr
+        {
+            get
+            {
+                Dll.Cursor cur = Dll.clang_getCursorSemanticParent(Handle);
+                return cur.IsNull() ? null : new Cursor(cur);
+            }
+        }
+
+        public bool IsInvalid { get { return Dll.clang_isInvalid(Kind) != 0; } }
+
         public enum ChildVisitResult
         {
             Break,
@@ -103,7 +157,7 @@ namespace LibClang
 
         public static bool operator !=(Cursor left, Cursor right)
         {
-            return left.Handle != right.Handle;
+            return !(left == right);
         }
 
         public override string ToString()

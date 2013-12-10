@@ -28,11 +28,6 @@ namespace JadeControls.EditorControl.ViewModel
 
         #region Constructor
 
-        public void OnGoToDefinition()
-        {
-
-        }
-
         protected DocumentViewModel(IEditorDoc doc, CodeEditor view)
         {
             _document = doc;

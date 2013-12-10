@@ -1,7 +1,10 @@
+#pragma once
 
+namespace Test {
 
-#ifndef Blah
-#define Blah 0
-#endif
+struct Struct22
+{
+};
 
+}
 

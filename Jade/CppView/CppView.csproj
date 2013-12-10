@@ -47,8 +47,6 @@
     <Compile Include="ProjectSourceIndex.cs" />
     <Compile Include="Reference.cs" />
     <Compile Include="SourceFile.cs" />
-    <Compile Include="Symbol Table\FileTable.cs" />
-    <Compile Include="Symbol Table\LineTable.cs" />
     <Compile Include="Symbol Table\ProjectTable.cs" />
     <Compile Include="Symbol Table\SymbolTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

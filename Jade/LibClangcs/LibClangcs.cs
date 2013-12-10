@@ -7,6 +7,11 @@ using IndexingSession = System.IntPtr;
 
 namespace LibClang
 {
+    public class Helper
+    {
+
+    }
+
     internal class Dll
     {
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
@@ -147,6 +152,12 @@ namespace LibClang
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
         internal static extern CursorKind clang_getCursorKind(Cursor c);
 
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern uint clang_isReference(CursorKind ck);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        public static extern uint clang_isInvalid(CursorKind kc);
+                
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         internal static extern ClangString clang_getCursorSpelling(Cursor c);
 
@@ -161,6 +172,9 @@ namespace LibClang
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
         internal static extern SourceLocation clang_getCursorLocation(Cursor cursor);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern Cursor clang_getCursorReferenced(Cursor c);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
         internal static extern SourceRange clang_getCursorExtent(Cursor cursor);
@@ -194,6 +208,12 @@ namespace LibClang
         public static extern Cursor clang_getNullCursor();
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        public static extern Cursor clang_getCursorLexicalParent(Cursor c);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        public static extern Cursor clang_getCursorSemanticParent(Cursor c);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
         public static extern uint clang_equalTypes(Type a, Type b);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
@@ -218,7 +238,7 @@ namespace LibClang
         internal static extern Cursor clang_getCursorDefinition(Cursor c);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        public static extern ClangString clang_getCursorUSR(Cursor c);
+        internal static extern ClangString clang_getCursorUSR(Cursor c);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
         internal static extern Cursor clang_getCanonicalCursor(Cursor c);

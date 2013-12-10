@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace CppView
 {
@@ -30,7 +26,6 @@ namespace CppView
         ISourceFileStore FileStore { get; }
 
         LibClang.Cursor GetCursorAt(FilePath path, int offset);
-        //ICodeElement GetElementAt(FilePath path, int offset);
     }
 
     public class ProjectSourceIndex : IProjectSourceIndex, ISourceFileStore
@@ -153,13 +148,6 @@ namespace CppView
                 return file;
             return FindHeaderFile(path);
         }
-
-        /*
-        public ICodeElement GetElementAt(FilePath path, int offset)
-        {
-            return null;
-        }
-         * */
 
         public LibClang.Cursor GetCursorAt(FilePath path, int offset)
         {

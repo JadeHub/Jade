@@ -4,6 +4,11 @@ using System.Diagnostics;
 
 namespace JadeControls.EditorControl.ViewModel
 {
+    using JadeCore;
+
+    /// <summary>
+    /// View model for the entire Editor Control. Manages the collection of tabs and associated DocumentViewModels
+    /// </summary>
     public class EditorControlViewModel : JadeControls.NotifyPropertyChanged
     {
         #region Data
@@ -56,7 +61,9 @@ namespace JadeControls.EditorControl.ViewModel
         {
             EditorTabItem view = new EditorTabItem();
 
-            DocumentViewModel d = new SourceDocumentViewModel(args.Document, view.CodeEditor);
+            ISourceBrowserStrategy browserStrategy = new SourceBrowserStrategy(GetProjectSourceIndex());
+
+            DocumentViewModel d = new SourceDocumentViewModel(args.Document, view.CodeEditor, browserStrategy);
             view.DataContext = d;
             _tabItems.Add(view);
             args.Document.OnClosing += delegate { OnDocumentClosing(view); };
@@ -152,6 +159,16 @@ namespace JadeControls.EditorControl.ViewModel
         {
             DocumentViewModel vm = tabItem.DataContext as DocumentViewModel;
             return vm.Document;
+        }
+
+        private CppView.IProjectSourceIndex GetProjectSourceIndex()
+        {
+            if (Services.Provider.WorkspaceController.CurrentWorkspace != null &&
+                Services.Provider.WorkspaceController.CurrentWorkspace.ActiveProject != null)
+            {
+                return Services.Provider.WorkspaceController.CurrentWorkspace.ActiveProject.SourceIndex;
+            }
+            return null;
         }
 
         #endregion

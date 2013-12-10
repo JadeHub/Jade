@@ -27,13 +27,14 @@ namespace JadeControls.Symbols
         {
             get
             {
-                return string.Format("{0} to {1} {2}", _ref, _decl.Location.Path, _decl.Location);
+                //return string.Format("{0} to {1} {2}", _ref, _decl.Location.Path, _decl.Location);
+                return _ref.ToString();
                 //return _ref.C
                 
             }
         }
 
-        public string Kind { get { return _decl.Kind.ToString(); } }
+        public string Kind { get { return _decl == null ? "null" :  _decl.Kind.ToString(); } }
 
         public override string ToString()
         {

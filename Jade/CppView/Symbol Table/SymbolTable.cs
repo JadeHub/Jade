@@ -24,8 +24,6 @@ namespace CppView
         IEnumerable<string> DeclarationUSRs { get; }
         IEnumerable<IReference> References { get; }
 
-        ICodeElement GetElementAt(FilePath path, int offset);
-
         void Dump();
     }
 
@@ -117,7 +115,7 @@ namespace CppView
             {
                 foreach (IDeclaration d in GetDeclarations(usr))
                 {
-                    if (d.Cursor.IsCanonical)
+                    if(d.Cursor == d.Cursor.CanonicalCursor)
                         return d;
                 }
             }
@@ -160,29 +158,6 @@ namespace CppView
             }
         }
 
-        public ICodeElement GetElementAt(FilePath path, int offset)
-        {
-            return null;
-        }
-
-        /*
-        public ICodeElement GetElementAt(ISourceFile file, int offset)
-        {
-            foreach (IList<IDeclaration> decls in _declarations.Values)
-            {
-                foreach (IDeclaration decl in decls)
-                    if (decl.Location.Offset == offset)
-                        return decl;
-            }
-
-            foreach (IReference refr in _references)
-            {
-                if (refr.Location.Offset == offset)
-                    return refr;
-            }
-            return null;
-        }
-        */
         public void Dump()
         {
             lock (_lock)

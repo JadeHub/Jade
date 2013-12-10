@@ -61,6 +61,7 @@
     <Compile Include="EditorControl\ViewModel\DocumentViewModel.cs" />
     <Compile Include="EditorControl\ViewModel\EditorCommands.cs" />
     <Compile Include="EditorControl\ViewModel\EditorControlViewModel.cs" />
+    <Compile Include="EditorControl\ViewModel\SourceBrowserStrategy\ISourceBrowserStrategy.cs" />
     <Compile Include="EditorControl\ViewModel\SourceDocumentViewModel.cs" />
     <Compile Include="OpenDocumentsControl\OpenDocListControl.xaml.cs">
       <DependentUpon>OpenDocListControl.xaml</DependentUpon>
@@ -185,25 +186,6 @@
       <Project>{6c55b776-26d4-4db3-a6ab-87e783b2f3d1}</Project>
       <Name>ICSharpCode.AvalonEdit</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\Copy.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <Content Include="Images\Cut.png" />
-    <EmbeddedResource Include="Images\Delete.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <Content Include="Images\File.png" />
-    <Content Include="Images\Folder.png" />
-    <Content Include="Images\Open.png" />
-    <EmbeddedResource Include="Images\Paste.png" />
-    <Content Include="Images\Project.png" />
-    <Content Include="Images\Redo.png" />
-    <Content Include="Images\Save.png" />
-    <Content Include="Images\Undo.png" />
-    <Content Include="Images\WordWrap.png" />
-    <Content Include="Images\Workspace.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

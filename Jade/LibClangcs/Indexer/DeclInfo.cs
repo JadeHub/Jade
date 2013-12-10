@@ -72,7 +72,7 @@ namespace LibClang.Indexer
 
         public bool IsDefinition
         {
-            get { return Dll.clang_isCursorDefinition(_cur.Handle) != 0; }
+            get { return _cur.IsDefinition; }
         }
 
         public bool IsRedefinition
