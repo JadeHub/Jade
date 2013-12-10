@@ -15,13 +15,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JadeCore.Test", "JadeCode.T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JadeUtils", "..\JadeUtils\JadeUtils\JadeUtils.csproj", "{52652847-ED88-486A-A51D-CE4A15F16C1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibClangcs", "LibClangcs\LibClangcs.csproj", "{413E491A-5C65-44EE-8BCD-9E47B1B8377E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibClangcs.Test", "LibClangcs\LibClangcs.Test\LibClangcs.Test.csproj", "{FCD5E761-0011-4735-A66C-9B17EBADF269}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JadeHack", "JadeHack\JadeHack.csproj", "{CAAFFCDE-7725-4D83-9BBA-F14D57567A5D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CppView", "CppView\CppView.csproj", "{114DD183-3A0B-434D-84B0-F22BB62C6B86}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Externals", "Externals", "{584CC272-70D5-46F3-A950-972150643790}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibClangCS", "..\externals\libclangcs\LibClangCS.csproj", "{D68FAB6F-29E2-4159-B398-70559930AEB8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,14 +53,6 @@ Global
 		{52652847-ED88-486A-A51D-CE4A15F16C1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52652847-ED88-486A-A51D-CE4A15F16C1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52652847-ED88-486A-A51D-CE4A15F16C1F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{413E491A-5C65-44EE-8BCD-9E47B1B8377E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{413E491A-5C65-44EE-8BCD-9E47B1B8377E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{413E491A-5C65-44EE-8BCD-9E47B1B8377E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{413E491A-5C65-44EE-8BCD-9E47B1B8377E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FCD5E761-0011-4735-A66C-9B17EBADF269}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FCD5E761-0011-4735-A66C-9B17EBADF269}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FCD5E761-0011-4735-A66C-9B17EBADF269}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FCD5E761-0011-4735-A66C-9B17EBADF269}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CAAFFCDE-7725-4D83-9BBA-F14D57567A5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CAAFFCDE-7725-4D83-9BBA-F14D57567A5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CAAFFCDE-7725-4D83-9BBA-F14D57567A5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -69,11 +61,16 @@ Global
 		{114DD183-3A0B-434D-84B0-F22BB62C6B86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{114DD183-3A0B-434D-84B0-F22BB62C6B86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{114DD183-3A0B-434D-84B0-F22BB62C6B86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D68FAB6F-29E2-4159-B398-70559930AEB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D68FAB6F-29E2-4159-B398-70559930AEB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D68FAB6F-29E2-4159-B398-70559930AEB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D68FAB6F-29E2-4159-B398-70559930AEB8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{6C55B776-26D4-4DB3-A6AB-87E783B2F3D1} = {5BB6A2A8-226F-4B22-8FA8-E82D37B62659}
+		{D68FAB6F-29E2-4159-B398-70559930AEB8} = {584CC272-70D5-46F3-A950-972150643790}
 	EndGlobalSection
 EndGlobal

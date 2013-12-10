@@ -52,13 +52,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\externals\libclangcs\LibClangCS.csproj">
+      <Project>{d68fab6f-29e2-4159-b398-70559930aeb8}</Project>
+      <Name>LibClangCS</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\JadeUtils\JadeUtils\JadeUtils.csproj">
       <Project>{52652847-ed88-486a-a51d-ce4a15f16c1f}</Project>
       <Name>JadeUtils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LibClangcs\LibClangcs.csproj">
-      <Project>{413e491a-5c65-44ee-8bcd-9e47b1b8377e}</Project>
-      <Name>LibClangcs</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
