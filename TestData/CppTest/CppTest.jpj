@@ -5,5 +5,6 @@
     <File Path="test.cpp" />
     <File Path="test.h" />
     <File Path="main.cpp" />
+    <File Path="..\..\..\LibClangCS\LibClangTest\TestCode\simple_class.cpp" />
   </Files>
 </Project>
