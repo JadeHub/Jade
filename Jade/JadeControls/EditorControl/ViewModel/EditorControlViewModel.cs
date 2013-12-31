@@ -13,12 +13,8 @@ namespace JadeControls.EditorControl.ViewModel
     {
         #region Data
 
-        private ObservableCollection<EditorTabItem> _tabItems;
-        private ObservableCollection<object> _documents;
-
-        private EditorTabItem _selectedDocumentTab;
+        private ObservableCollection<DocumentViewModel> _documents;
         private JadeCore.IEditorController _controller;
-        private EditorControlCommandAdaptor _commands;
         private DocumentViewModel _selectedDocument;
 
         #endregion
@@ -32,88 +28,45 @@ namespace JadeControls.EditorControl.ViewModel
             _controller.DocumentOpened += OnControllerDocumentOpened;
             _controller.DocumentSelected += OnControllerDocumentSelected;
 
-            //Setup Command Adaptor
-            _commands = new EditorControlCommandAdaptor(this);            
-            _tabItems = new ObservableCollection<EditorTabItem>();
-            _documents = new ObservableCollection<object>();
+            _documents = new ObservableCollection<DocumentViewModel>();
         }
 
         #endregion
 
         #region Model event handlers
 
-        private void OnDocumentClosing(EditorTabItem tabItem)
+        private void OnDocumentClosing(DocumentViewModel vm)
         {
-            if (_tabItems.Contains(tabItem))
+            if (_documents.Contains(vm))
             {
-                _documents.Remove(tabItem.DataContext as DocumentViewModel);
-                _tabItems.Remove(tabItem);
+                _documents.Remove(vm);
             }
         }
 
         private void OnControllerDocumentSelected(JadeCore.EditorDocChangeEventArgs args)
         {
-            EditorTabItem tabItem = GetTabItem(args.Document);
-            if (tabItem != null)
-            {
-                SelectedDocumentTab = tabItem;
-            }
+            DocumentViewModel vm = GetViewModel(args.Document);
+            if (vm == null)
+                return;
+            SelectedDocument = vm;
         }
 
         private void OnControllerDocumentOpened(JadeCore.EditorDocChangeEventArgs args)
         {
-            EditorTabItem view = new EditorTabItem();
-
             ISourceBrowserStrategy browserStrategy = new SourceBrowserStrategy(GetProjectSourceIndex());
 
-            DocumentViewModel d = new SourceDocumentViewModel(args.Document, view.CodeEditor, browserStrategy);
-            view.DataContext = d;
-            _tabItems.Add(view);
+            DocumentViewModel d = new SourceDocumentViewModel(args.Document, browserStrategy);
             _documents.Add(d);
-            args.Document.OnClosing += delegate { OnDocumentClosing(view); };
-            SelectedDocumentTab = view;
-            OnPropertyChanged("TabItems");
-            //hack to preload the document so we can immediatly set the cursor location
-            view.CodeEditor.Document = d.TextDocument;
+            args.Document.OnClosing += delegate { OnDocumentClosing(d); };           
+            SelectedDocument = d;           
         }
 
         #endregion
 
         #region Public Properties
-
-        public EditorControlCommandAdaptor Commands { get { return _commands; } }                
-        public ObservableCollection<EditorTabItem> TabItems { get { return _tabItems; } }
-        public ObservableCollection<object> Documents { get { return _documents; } }
-
-        public EditorTabItem SelectedDocumentTab
-        {
-            get { return _selectedDocumentTab; }
-            set
-            {
-                if (_selectedDocumentTab != null)
-                {
-                    DocumentViewModel vm = _selectedDocumentTab.DataContext as DocumentViewModel;
-                    vm.Selected = false;
-                }
-                _selectedDocumentTab = value;
-                if (_selectedDocumentTab != null)
-                {
-                    DocumentViewModel vm = _selectedDocumentTab.DataContext as DocumentViewModel;
-                    vm.Selected = true;
-                    SelectedDocument = vm;
-                    _controller.ActiveDocument = vm.Document;
-
-                }
-                else
-                {
-                    SelectedDocument = null;
-                    _controller.ActiveDocument = null;
-                }
-                
-                OnPropertyChanged("SelectedDocumentTab");
-            }
-        }
-
+           
+        public ObservableCollection<DocumentViewModel> Documents { get { return _documents; } }
+        
         public DocumentViewModel SelectedDocument
         {
             get { return _selectedDocument; }
@@ -121,7 +74,13 @@ namespace JadeControls.EditorControl.ViewModel
             {
                 if (_selectedDocument != value)
                 {
+                    if (_selectedDocument != null)
+                    {
+                        _selectedDocument.Selected = false;
+                    }
                     _selectedDocument = value;
+                    _controller.ActiveDocument = _selectedDocument.Document;
+                    _selectedDocument.Selected = true;
                     OnPropertyChanged("SelectedDocument");
                 }
             }
@@ -141,7 +100,7 @@ namespace JadeControls.EditorControl.ViewModel
                 
         public bool CanDoClose()
         {
-            return true;
+            return SelectedDocument != null;
         }
 
         #endregion
@@ -150,29 +109,12 @@ namespace JadeControls.EditorControl.ViewModel
 
         public DocumentViewModel GetViewModel(JadeCore.IEditorDoc doc)
         {
-            EditorTabItem tab = GetTabItem(doc);
-            if (tab == null)
-                return null;
-
-            return tab.DataContext as DocumentViewModel;
-        }
-
-        private EditorTabItem GetTabItem(JadeCore.IEditorDoc doc)
-        {
-            foreach (EditorTabItem item in _tabItems)
+            foreach (DocumentViewModel vm in _documents)
             {
-                if (GetDocument(item) == doc)
-                {
-                    return item;
-                }
+                if (vm.Document == doc)
+                    return vm;
             }
             return null;
-        }
-
-        private JadeCore.IEditorDoc GetDocument(EditorTabItem tabItem)
-        {
-            DocumentViewModel vm = tabItem.DataContext as DocumentViewModel;
-            return vm.Document;
         }
 
         private CppView.IProjectSourceIndex GetProjectSourceIndex()

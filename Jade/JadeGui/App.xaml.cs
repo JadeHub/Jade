@@ -9,7 +9,7 @@ namespace JadeGui
     /// </summary>
     public partial class App : Application
     {
-        private MainWindow _window;
+        private DockingGui.MainWindow _mainWindow;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -23,30 +23,29 @@ namespace JadeGui
             JadeCore.Services.Provider.EditorController = new JadeCore.Editor.EditorController();
             JadeCore.Services.Provider.OutputController = new JadeCore.Output.OutputController();
 
-            
-            _window = new MainWindow();
             var dockWindow = new DockingGui.MainWindow();
+            _mainWindow = dockWindow;
 
             //Create the main view model object
-            var viewModel = new ViewModels.JadeViewModel(_window);
+            var viewModel = new ViewModels.JadeViewModel(dockWindow);
 
             //the view model is this service - todo fix dependancies
             JadeCore.Services.Provider.CommandHandler = viewModel;
 
             viewModel.RequestClose += delegate 
-            { 
-                _window.Close(); 
+            {
+                dockWindow.Close(); 
             };
                     
             // Allow all controls in the _window to 
             // bind to the ViewModel by setting the 
             // DataContext, which propagates down 
             // the element tree.
-            _window.DataContext = viewModel;
+            //_window.DataContext = viewModel;
             dockWindow.DataContext = viewModel;
 
             //bind commands
-            viewModel.Commands.Bind(_window.CommandBindings);
+            //viewModel.Commands.Bind(_window.CommandBindings);
             viewModel.Commands.Bind(dockWindow.CommandBindings);
             
             JadeCore.Services.Provider.OutputController.Create(JadeCore.Output.Source.JadeDebug, JadeCore.Output.Level.Info, "Hello world");
@@ -58,8 +57,9 @@ namespace JadeGui
                 dockWindow.RestoreWindowPosition(settings.MainWindowPosition);
             }
 
-            _window.Closed += _window_Closed;
+            //_window.Closed += _window_Closed;
          //   _window.Show();
+            dockWindow.Closed += _window_Closed;
             dockWindow.Show();
 
             viewModel.OnOpenWorkspace(@"C:\Code\GitHub\Jade\TestData\CppTest\CppTest.jws");
@@ -73,7 +73,7 @@ namespace JadeGui
 
         void _window_Closed(object sender, EventArgs e)
         {
-            JadeCore.Services.Provider.Settings.MainWindowPosition = _window.WindowPosition;
+            JadeCore.Services.Provider.Settings.MainWindowPosition = _mainWindow.WindowPosition;
             JadeCore.Services.Provider.WorkspaceController.SaveSettings();
         }
 

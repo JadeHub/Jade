@@ -65,7 +65,17 @@ namespace JadeGui.DockingGui
                 {
                     WindowState = WindowState.Normal;
                 }
-            }
+            }        
+        }
+
+        private ViewModels.JadeViewModel ViewModel
+        {
+            get { return (ViewModels.JadeViewModel)this.DataContext; }
+        }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = !ViewModel.RequestExit();
         }
     }
 }

@@ -89,11 +89,11 @@ namespace JadeGui.ViewModels
 
         #region Docking Windows
 
-        public ObservableCollection<JadeControls.DockingToolViewModel> ToolWindows
+        public ObservableCollection<JadeControls.Docking.ToolPaneViewModel> ToolWindows
         {
             get
             {
-                ObservableCollection<JadeControls.DockingToolViewModel> result = new ObservableCollection<JadeControls.DockingToolViewModel>();
+                ObservableCollection<JadeControls.Docking.ToolPaneViewModel> result = new ObservableCollection<JadeControls.Docking.ToolPaneViewModel>();
                                 
                 if (_currentWorkspace != null)
                     result.Add(_currentWorkspace);
@@ -210,8 +210,6 @@ namespace JadeGui.ViewModels
         public void OnOpenDocument(JadeUtils.IO.IFileHandle file)
         {
             _editorController.OpenDocument(file);
-            if (_editorViewModel.SelectedDocument != null)
-                _editorViewModel.SelectedDocument.DisplayLocation(_editorViewModel.SelectedDocument.CaretLocation);
         }
 
         #region Exit

@@ -11,7 +11,7 @@ namespace JadeControls.Workspace.ViewModel
 {
     using JadeCore;
 
-    public class WorkspaceViewModel : DockingToolViewModel
+    public class WorkspaceViewModel : JadeControls.Docking.ToolPaneViewModel
     {
         #region Data
 
@@ -22,6 +22,8 @@ namespace JadeControls.Workspace.ViewModel
 
         public WorkspaceViewModel(JadeCore.Workspace.IWorkspace data)
         {
+            Title = "Workspace";
+            ContentId = "WorkspaceToolPane";            
             _data = data;
             _tree = new JadeControls.Workspace.ViewModel.WorkspaceTree(_data);
         }
@@ -35,8 +37,6 @@ namespace JadeControls.Workspace.ViewModel
                 return _tree;
             }
         }
-
-        public override string DisplayName { get { return "Workspace"; } }
 
         private void TreeView_PreviewGotKeyboardFocus_1(object sender, KeyboardFocusChangedEventArgs e)
         {

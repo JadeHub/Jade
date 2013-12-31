@@ -46,9 +46,10 @@ namespace JadeControls.EditorControl.ViewModel
             {
                 if (c.CursorReferenced != null)
                     result = c.CursorReferenced;
-                if (c.Definition != null)
+                else if (c.Definition != null)
                     result = c.Definition;
-                result = c.CanonicalCursor;
+                else
+                    result = c.CanonicalCursor;
             }
             return result == null ? null : new CodeLocation(result.Location);
         }

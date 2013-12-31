@@ -17,9 +17,10 @@ namespace JadeControls
 
         #endregion
     }
-
+    /*
     public abstract class DockingToolViewModel : JadeControls.NotifyPropertyChanged
     {
         abstract public string DisplayName { get; }
     }
+     */ 
 }

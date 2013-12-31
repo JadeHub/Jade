@@ -6,7 +6,7 @@ using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Folding;
 using JadeControls.EditorControl.ViewModel;
 
-namespace JadeControls
+namespace JadeControls.EditorControl
 {
     /// <summary>
     /// Wrapper around the Avalon TextEditor
@@ -20,6 +20,17 @@ namespace JadeControls
             TextArea.MouseRightButtonDown += TextArea_MouseRightButtonDown;
             this.Loaded += CodeEditor_Loaded;
 
+            this.DataContextChanged += CodeEditor_DataContextChanged;
+        }
+
+        void CodeEditor_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (DataContext != null && DataContext is DocumentViewModel)
+            {
+                DocumentViewModel vm = DataContext as DocumentViewModel;
+                vm.SetView(this);
+                vm.RegisterCommands(this.CommandBindings);
+            }
         }
 
         void TextArea_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -33,12 +44,8 @@ namespace JadeControls
 
         void CodeEditor_Loaded(object sender, RoutedEventArgs e)
         {
-          //  Keyboard.Focus(TextArea);
-            if(DataContext != null && DataContext is DocumentViewModel)
-            {
-                DocumentViewModel vm = DataContext as DocumentViewModel;
-                
-            }
+            Keyboard.Focus(TextArea);
+            
         }
 
         void CodeEditor_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)

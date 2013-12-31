@@ -10,14 +10,13 @@ namespace JadeControls.EditorControl.ViewModel
     {
         public ISourceBrowserStrategy BrowseStrategy { get; private set; }
 
-        public SourceDocumentViewModel(IEditorDoc doc, CodeEditor view, ISourceBrowserStrategy browseStrategy) 
-            : base(doc, view)
+        public SourceDocumentViewModel(IEditorDoc doc, ISourceBrowserStrategy browseStrategy) 
+            : base(doc)
         {
             BrowseStrategy = browseStrategy;
-            RegisterCommands(view.CommandBindings);            
         }
 
-        private void RegisterCommands(CommandBindingCollection commandBindings)
+        public override void RegisterCommands(CommandBindingCollection commandBindings)
         {
             commandBindings.Add(new CommandBinding(EditorCommands.JumpTo,
                                         delegate(object target, ExecutedRoutedEventArgs a)

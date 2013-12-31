@@ -42,7 +42,7 @@ namespace JadeControls.OutputControl.ViewModel
         }
     }
 
-    public class OutputViewModel : DockingToolViewModel
+    public class OutputViewModel : JadeControls.Docking.ToolPaneViewModel
     {
         private JadeCore.Output.IOutputController _Controller;
         private JadeCore.Collections.ObservableCollectionTransform<JadeCore.Output.IItem, OutputItemViewModel> _Items;
@@ -50,6 +50,8 @@ namespace JadeControls.OutputControl.ViewModel
 
         public OutputViewModel(JadeCore.Output.IOutputController controller)
         {
+            Title = "Output";
+            ContentId = "OutputToolPane";
             _Controller = controller;
             _Items = new JadeCore.Collections.ObservableCollectionTransform<JadeCore.Output.IItem, OutputItemViewModel>(_Controller.Items, 
                 delegate (JadeCore.Output.IItem i){ return new OutputItemViewModel(i); });
@@ -110,7 +112,5 @@ namespace JadeControls.OutputControl.ViewModel
                 return _sb.ToString();
             }            
         }
-
-        public override string DisplayName { get { return "Output"; } }
     }
 }

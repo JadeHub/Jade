@@ -23,7 +23,7 @@ namespace JadeGui.DockingGui
             if (item is DocumentViewModel)
                 return DocumentStyle;
 
-            if (item is JadeControls.DockingToolViewModel)
+            if (item is JadeControls.Docking.ToolPaneViewModel)
                 return ToolStyle;
 
             return base.SelectStyle(item, container);

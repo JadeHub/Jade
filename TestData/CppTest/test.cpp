@@ -4,7 +4,6 @@ void GlobalFn()
 {
 }
 
-
 namespace Test {
 
 SomeClass::SomeClass()
@@ -33,6 +32,8 @@ SomeClass& SomeClass::operator=(const SomeClass& other)
 
 int ReturnInt(int i)
 {
+	AStruct as;
+	as.i = i;
 	return AnEnum_Item1;
 }
 
@@ -48,4 +49,6 @@ void SomeClass::Fn()
 }
 
 }
+
+
 

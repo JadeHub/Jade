@@ -8,11 +8,15 @@
         xmlns:JadeControls="clr-namespace:JadeControls;assembly=JadeControls"
         xmlns:JadeCtrlsWorkspace="clr-namespace:JadeControls.Workspace;assembly=JadeControls"        
         xmlns:JadeCtrlsOutput="clr-namespace:JadeControls.OutputControl;assembly=JadeControls"
+        xmlns:JadeCtrlsEditor="clr-namespace:JadeControls.EditorControl;assembly=JadeControls"
+        xmlns:JadeCtrlsConv="clr-namespace:JadeControls.Converters;assembly=JadeControls"
         xmlns:editor_ctrl="clr-namespace:JadeControls.EditorControl;assembly=JadeControls"
         xmlns:JadeCore="clr-namespace:JadeCore;assembly=JadeCore"
         Title="MainDockWindow" Height="300" Width="300">
     <Window.Resources>
         <BitmapImage x:Key="DeleteIconSource" UriSource="pack://application:,,,/Images/RightArrow.png" />
+        <avalonDock:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <JadeCtrlsConv:TabFileNameConverter x:Key="TabFileNameConverter"/>
     </Window.Resources>
     <DockPanel>
         <JadeGui:MainMenu DockPanel.Dock="Top"/>
@@ -20,26 +24,35 @@
         <JadeGui:MainStatusBar DockPanel.Dock="Bottom"/>
         <Grid>
             
-            <avalonDock:DockingManager
+            <avalonDock:DockingManager x:Name="dockManager"
                                        DocumentsSource="{Binding Editor.Documents}"
                                        AnchorablesSource="{Binding ToolWindows}"
                                        ActiveContent="{Binding ActiveDockContent, Mode=TwoWay}">
+                
+                
+                
+                <avalonDock:DockingManager.DocumentHeaderTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="{Binding IconSource}" Margin="0,0,4,0"/>
+                            <TextBlock Text="{Binding Title}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </avalonDock:DockingManager.DocumentHeaderTemplate>
+            
                                 
-                
-                
                 <avalonDock:DockingManager.LayoutItemTemplateSelector>
                     <local:PanesTemplateSelector>
                         <local:PanesTemplateSelector.DocumentViewTemplate>
                             <DataTemplate>
-                                <JadeControls:CodeEditor
-                                        x:Name="editor"
+                                <JadeCtrlsEditor:CodeEditor                                        
 				                        FontFamily="Consolas"
 				                        FontSize="10pt"                        
 				                        SyntaxHighlighting="C#"
                                         Margin="5,0"
                                         Document="{Binding TextDocument}"
                                         FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}">
-                                                    <JadeControls:CodeEditor.ContextMenu>
+                                                    <JadeCtrlsEditor:CodeEditor.ContextMenu>
                                                         <ContextMenu>
                                                             <MenuItem Header="Jump To..." Command="editor_ctrl:EditorCommands.JumpTo" CommandParameter="{Binding .}" >
                                                                 <MenuItem.Icon>
@@ -47,8 +60,8 @@
                                                                 </MenuItem.Icon>
                                                             </MenuItem>
                                                         </ContextMenu>
-                                    </JadeControls:CodeEditor.ContextMenu>
-                                </JadeControls:CodeEditor>
+                                                    </JadeCtrlsEditor:CodeEditor.ContextMenu>
+                                </JadeCtrlsEditor:CodeEditor>
                             </DataTemplate>
                         </local:PanesTemplateSelector.DocumentViewTemplate>
                                                 
@@ -72,26 +85,48 @@
                         
                         <local:PanesStyleSelector.ToolStyle>
                             <Style TargetType="{x:Type avalonDock:LayoutAnchorableItem}">
-                                <Setter Property="Title" Value="{Binding Model.DisplayName}"/>                                
+                                <Setter Property="ContentId" Value="{Binding Model.ContentId}"/>
+                                <Setter Property="Title" Value="{Binding Model.Title}"/>                                
+                                <Setter Property="IconSource" Value="{Binding Model.IconSource}"/>
+                                <Setter Property="Visibility" Value="{Binding Model.IsVisible, Mode=TwoWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter={x:Static Visibility.Hidden}}"/>
+                                <Setter Property="ContentId" Value="{Binding Model.ContentId}"/>
+                                <Setter Property="IsSelected" Value="{Binding Model.IsSelected, Mode=TwoWay}"/>
                             </Style>
                         </local:PanesStyleSelector.ToolStyle>
                                                 
                         <local:PanesStyleSelector.DocumentStyle>
                             <Style TargetType="{x:Type avalonDock:LayoutItem}">
-                                <Setter Property="Title" Value="{Binding Model.DisplayName}"/>
+                                <Setter Property="ContentId" Value="{Binding Model.ContentId}"/>
+                                <Setter Property="Title" Value="{Binding Model.Title}"/>
+                                
+                                <Setter Property="Title">
+                                    <Setter.Value>
+                                        <MultiBinding Converter="{StaticResource TabFileNameConverter}">
+                                                <Binding Path="Model.Title"/>
+                                                <Binding Path="Model.Modified"/>
+                                    </MultiBinding>
+                                    </Setter.Value>
+                                </Setter>
+                                
+                                
                                 <Setter Property="ToolTip" Value="{Binding Model.Path}"/>
                                 <Setter Property="CloseCommand" Value="JadeCore:Commands.CloseFile"/>
+                                <Setter Property="IconSource" Value="{Binding Model.IconSource}"/>
+                                <Setter Property="ContentId" Value="{Binding Model.ContentId}"/>
+                                <Setter Property="IsSelected" Value="{Binding Model.IsSelected, Mode=TwoWay}"/>
                             </Style>
                         </local:PanesStyleSelector.DocumentStyle>
                     </local:PanesStyleSelector>
                 </avalonDock:DockingManager.LayoutItemContainerStyleSelector>
 
                 <avalonDock:LayoutRoot>
-                    <avalonDock:LayoutPanel Orientation="Horizontal">                        
-                        <avalonDock:LayoutAnchorablePane DockWidth="150"/>
-                        <avalonDock:LayoutDocumentPane/>                        
-                    </avalonDock:LayoutPanel>
+                        <avalonDock:LayoutPanel Orientation="Horizontal">                        
+                            <avalonDock:LayoutAnchorablePane DockWidth="150">                                
+                            </avalonDock:LayoutAnchorablePane>
+                            <avalonDock:LayoutDocumentPane/>
+                        </avalonDock:LayoutPanel>
                 </avalonDock:LayoutRoot>
+                    
             </avalonDock:DockingManager>
         </Grid>
     </DockPanel>

@@ -1,13 +1,17 @@
 ﻿using JadeCore;
 using System;
+using System.Windows.Input;
+using System.Windows.Media.Imaging;
+using System.Windows.Media;
 
 namespace JadeControls.EditorControl.ViewModel
-{
-    
+{    
     //wrapps an IEditorDoc and associated CodeEditor view 
-    public class DocumentViewModel : NotifyPropertyChanged
+    public abstract class DocumentViewModel : Docking.PaneViewModel
     {
         #region Data
+
+        static ImageSourceConverter ISC = new ImageSourceConverter();
 
         private IEditorDoc _document;
         private bool _selected;
@@ -16,22 +20,33 @@ namespace JadeControls.EditorControl.ViewModel
         private ICSharpCode.AvalonEdit.Document.TextDocument _avDoc;
         private CodeEditor _view;
         private JadeCore.Editor.CodeLocation _caretLocation;
-        
+                
         #endregion
 
         #region Constructor
 
-        protected DocumentViewModel(IEditorDoc doc, CodeEditor view)
+        protected DocumentViewModel(IEditorDoc doc)
         {
+            Title = doc.Name;
+            ContentId = doc.Path.Str;
+            IconSource = ISC.ConvertFromInvariantString("pack://application:,,,/Images/File.png") as ImageSource;
             _document = doc;
             _document.OnSaved += delegate { OnPropertyChanged("Modified"); };
-            _view = view;
             _selected = false;
             _caretLocation = new JadeCore.Editor.CodeLocation(0, 0, 0);
-            _view.TextArea.Caret.PositionChanged += Caret_PositionChanged;
-            _avDoc = new ICSharpCode.AvalonEdit.Document.TextDocument(_document.Content);
+        }
+
+        public void SetView(CodeEditor view)
+        {
+            _view = view;
+            _avDoc = _view.Document;
+
+            //Load the document
+            _avDoc.Text = _document.Content;
             _avDoc.TextChanged += _avDoc_TextChanged;
             
+            _view.CaretOffset = _caretLocation.Offset;
+            _view.TextArea.Caret.PositionChanged += Caret_PositionChanged;
         }
 
         #endregion
@@ -39,19 +54,10 @@ namespace JadeControls.EditorControl.ViewModel
         #region Public Properties
 
         public string Path { get { return _document.Path.Str; } }
-        
-        public string DisplayName 
-        { 
-            get 
-            {
-                return _document.Name; 
-            }
-        }
 
         public bool Modified
         {
             get { return _document.Modified; }
-
             set
             {
                 if (_document.Modified != value)
@@ -84,9 +90,11 @@ namespace JadeControls.EditorControl.ViewModel
             get { return _caretLocation;}
             set
             {
-                if (_view.CaretOffset != value.Offset)
+                if (_caretLocation.Offset != value.Offset)
                 {
-                    _view.CaretOffset = value.Offset;
+                    _caretLocation = value;
+                    if(_view != null)
+                        _view.CaretOffset = value.Offset;
                     OnPropertyChanged("CaretLocation");
                 }
             }
@@ -113,7 +121,7 @@ namespace JadeControls.EditorControl.ViewModel
         public void DisplayLocation(JadeCore.Editor.CodeLocation loc)
         {
             CaretLocation = loc;
-            _view.TextArea.Focus();           
+           // _view.TextArea.Focus();           
         }
 
         public void HighlightRange(int startOffset, int endOffset)
@@ -153,5 +161,7 @@ namespace JadeControls.EditorControl.ViewModel
         }
 
         #endregion
+
+        public abstract void RegisterCommands(CommandBindingCollection commandBindings);
     }
 }

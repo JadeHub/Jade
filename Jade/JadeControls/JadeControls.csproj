@@ -44,31 +44,18 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CodeEditor.cs" />
+    <Compile Include="Docking\PaneViewModel.cs" />
+    <Compile Include="Docking\ToolPaneViewModel.cs" />
+    <Compile Include="EditorControl\CodeEditor.cs" />
     <Compile Include="Converters\TabFileNameConverter.cs" />
     <Compile Include="Dialogs\SaveFiles.xaml.cs">
       <DependentUpon>SaveFiles.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="EditorControl\EditorControl.xaml.cs">
-      <DependentUpon>EditorControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="EditorControl\EditorTabCtrl.xaml.cs">
-      <DependentUpon>EditorTabCtrl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="EditorControl\EditorTabItem.xaml.cs">
-      <DependentUpon>EditorTabItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="EditorControl\ViewModel\DocumentViewModel.cs" />
     <Compile Include="EditorControl\ViewModel\EditorCommands.cs" />
     <Compile Include="EditorControl\ViewModel\EditorControlViewModel.cs" />
     <Compile Include="EditorControl\ViewModel\SourceBrowserStrategy\ISourceBrowserStrategy.cs" />
     <Compile Include="EditorControl\ViewModel\SourceDocumentViewModel.cs" />
-    <Compile Include="OpenDocumentsControl\OpenDocListControl.xaml.cs">
-      <DependentUpon>OpenDocListControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="OpenDocumentsControl\OpenDocDetail.xaml.cs">
-      <DependentUpon>OpenDocDetail.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Output Control\OutputControl.xaml.cs">
       <DependentUpon>OutputControl.xaml</DependentUpon>
     </Compile>
@@ -108,34 +95,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="EditorControl\EditorControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="EditorControl\EditorTabCtrl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="EditorControl\EditorControlResources.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Resource Include="Workspace Explorer\TreeView\ScrollBarStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
-    <Page Include="EditorControl\EditorTabItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="OpenDocumentsControl\OpenDocListControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="OpenDocumentsControl\OpenDocDetail.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Output Control\OutputControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
