@@ -42,7 +42,7 @@ namespace JadeControls.OutputControl.ViewModel
         }
     }
 
-    public class OutputViewModel : NotifyPropertyChanged
+    public class OutputViewModel : DockingToolViewModel
     {
         private JadeCore.Output.IOutputController _Controller;
         private JadeCore.Collections.ObservableCollectionTransform<JadeCore.Output.IItem, OutputItemViewModel> _Items;
@@ -108,8 +108,9 @@ namespace JadeControls.OutputControl.ViewModel
             get
             {
                 return _sb.ToString();
-            }
-            
+            }            
         }
+
+        public override string DisplayName { get { return "Output"; } }
     }
 }

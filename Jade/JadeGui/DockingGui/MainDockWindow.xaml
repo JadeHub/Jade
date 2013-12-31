@@ -1,0 +1,98 @@
+﻿<Window x:Class="JadeGui.DockingGui.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:avalonDock="http://schemas.xceed.com/wpf/xaml/avalondock"
+        xmlns:shell="clr-namespace:Microsoft.Windows.Shell;assembly=AvalonDock"
+        xmlns:local="clr-namespace:JadeGui.DockingGui"
+        xmlns:JadeGui="clr-namespace:JadeGui"
+        xmlns:JadeControls="clr-namespace:JadeControls;assembly=JadeControls"
+        xmlns:JadeCtrlsWorkspace="clr-namespace:JadeControls.Workspace;assembly=JadeControls"        
+        xmlns:JadeCtrlsOutput="clr-namespace:JadeControls.OutputControl;assembly=JadeControls"
+        xmlns:editor_ctrl="clr-namespace:JadeControls.EditorControl;assembly=JadeControls"
+        xmlns:JadeCore="clr-namespace:JadeCore;assembly=JadeCore"
+        Title="MainDockWindow" Height="300" Width="300">
+    <Window.Resources>
+        <BitmapImage x:Key="DeleteIconSource" UriSource="pack://application:,,,/Images/RightArrow.png" />
+    </Window.Resources>
+    <DockPanel>
+        <JadeGui:MainMenu DockPanel.Dock="Top"/>
+        <JadeGui:MainToolbar DockPanel.Dock="Top" />
+        <JadeGui:MainStatusBar DockPanel.Dock="Bottom"/>
+        <Grid>
+            
+            <avalonDock:DockingManager
+                                       DocumentsSource="{Binding Editor.Documents}"
+                                       AnchorablesSource="{Binding ToolWindows}"
+                                       ActiveContent="{Binding ActiveDockContent, Mode=TwoWay}">
+                                
+                
+                
+                <avalonDock:DockingManager.LayoutItemTemplateSelector>
+                    <local:PanesTemplateSelector>
+                        <local:PanesTemplateSelector.DocumentViewTemplate>
+                            <DataTemplate>
+                                <JadeControls:CodeEditor
+                                        x:Name="editor"
+				                        FontFamily="Consolas"
+				                        FontSize="10pt"                        
+				                        SyntaxHighlighting="C#"
+                                        Margin="5,0"
+                                        Document="{Binding TextDocument}"
+                                        FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}">
+                                                    <JadeControls:CodeEditor.ContextMenu>
+                                                        <ContextMenu>
+                                                            <MenuItem Header="Jump To..." Command="editor_ctrl:EditorCommands.JumpTo" CommandParameter="{Binding .}" >
+                                                                <MenuItem.Icon>
+                                                                    <Image HorizontalAlignment="Left" Width="16" Height="16" Margin="3,0" Source="{StaticResource DeleteIconSource}" />
+                                                                </MenuItem.Icon>
+                                                            </MenuItem>
+                                                        </ContextMenu>
+                                    </JadeControls:CodeEditor.ContextMenu>
+                                </JadeControls:CodeEditor>
+                            </DataTemplate>
+                        </local:PanesTemplateSelector.DocumentViewTemplate>
+                                                
+                        <local:PanesTemplateSelector.WorkspaceViewTemplate>
+                            <DataTemplate> 
+                                <JadeCtrlsWorkspace:WorkspaceCtrl />                                
+                            </DataTemplate>
+                        </local:PanesTemplateSelector.WorkspaceViewTemplate>
+                                                
+                        <local:PanesTemplateSelector.OutputViewTemplate>
+                            <DataTemplate> 
+                                <JadeCtrlsOutput:OutputControl/>                                
+                            </DataTemplate>
+                        </local:PanesTemplateSelector.OutputViewTemplate>
+                        
+                    </local:PanesTemplateSelector>
+                </avalonDock:DockingManager.LayoutItemTemplateSelector>
+                
+                <avalonDock:DockingManager.LayoutItemContainerStyleSelector>
+                    <local:PanesStyleSelector>
+                        
+                        <local:PanesStyleSelector.ToolStyle>
+                            <Style TargetType="{x:Type avalonDock:LayoutAnchorableItem}">
+                                <Setter Property="Title" Value="{Binding Model.DisplayName}"/>                                
+                            </Style>
+                        </local:PanesStyleSelector.ToolStyle>
+                                                
+                        <local:PanesStyleSelector.DocumentStyle>
+                            <Style TargetType="{x:Type avalonDock:LayoutItem}">
+                                <Setter Property="Title" Value="{Binding Model.DisplayName}"/>
+                                <Setter Property="ToolTip" Value="{Binding Model.Path}"/>
+                                <Setter Property="CloseCommand" Value="JadeCore:Commands.CloseFile"/>
+                            </Style>
+                        </local:PanesStyleSelector.DocumentStyle>
+                    </local:PanesStyleSelector>
+                </avalonDock:DockingManager.LayoutItemContainerStyleSelector>
+
+                <avalonDock:LayoutRoot>
+                    <avalonDock:LayoutPanel Orientation="Horizontal">                        
+                        <avalonDock:LayoutAnchorablePane DockWidth="150"/>
+                        <avalonDock:LayoutDocumentPane/>                        
+                    </avalonDock:LayoutPanel>
+                </avalonDock:LayoutRoot>
+            </avalonDock:DockingManager>
+        </Grid>
+    </DockPanel>
+</Window>

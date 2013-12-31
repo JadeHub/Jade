@@ -11,7 +11,7 @@ namespace JadeControls.Workspace.ViewModel
 {
     using JadeCore;
 
-    public class WorkspaceViewModel : JadeControls.NotifyPropertyChanged
+    public class WorkspaceViewModel : DockingToolViewModel
     {
         #region Data
 
@@ -35,6 +35,8 @@ namespace JadeControls.Workspace.ViewModel
                 return _tree;
             }
         }
+
+        public override string DisplayName { get { return "Workspace"; } }
 
         private void TreeView_PreviewGotKeyboardFocus_1(object sender, KeyboardFocusChangedEventArgs e)
         {

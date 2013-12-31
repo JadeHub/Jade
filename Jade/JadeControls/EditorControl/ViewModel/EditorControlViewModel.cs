@@ -14,6 +14,7 @@ namespace JadeControls.EditorControl.ViewModel
         #region Data
 
         private ObservableCollection<EditorTabItem> _tabItems;
+        private ObservableCollection<object> _documents;
 
         private EditorTabItem _selectedDocumentTab;
         private JadeCore.IEditorController _controller;
@@ -32,8 +33,9 @@ namespace JadeControls.EditorControl.ViewModel
             _controller.DocumentSelected += OnControllerDocumentSelected;
 
             //Setup Command Adaptor
-            _commands = new EditorControlCommandAdaptor(this);
-            _tabItems = new ObservableCollection<EditorTabItem>();            
+            _commands = new EditorControlCommandAdaptor(this);            
+            _tabItems = new ObservableCollection<EditorTabItem>();
+            _documents = new ObservableCollection<object>();
         }
 
         #endregion
@@ -44,6 +46,7 @@ namespace JadeControls.EditorControl.ViewModel
         {
             if (_tabItems.Contains(tabItem))
             {
+                _documents.Remove(tabItem.DataContext as DocumentViewModel);
                 _tabItems.Remove(tabItem);
             }
         }
@@ -66,6 +69,7 @@ namespace JadeControls.EditorControl.ViewModel
             DocumentViewModel d = new SourceDocumentViewModel(args.Document, view.CodeEditor, browserStrategy);
             view.DataContext = d;
             _tabItems.Add(view);
+            _documents.Add(d);
             args.Document.OnClosing += delegate { OnDocumentClosing(view); };
             SelectedDocumentTab = view;
             OnPropertyChanged("TabItems");
@@ -79,6 +83,7 @@ namespace JadeControls.EditorControl.ViewModel
 
         public EditorControlCommandAdaptor Commands { get { return _commands; } }                
         public ObservableCollection<EditorTabItem> TabItems { get { return _tabItems; } }
+        public ObservableCollection<object> Documents { get { return _documents; } }
 
         public EditorTabItem SelectedDocumentTab
         {
@@ -112,7 +117,7 @@ namespace JadeControls.EditorControl.ViewModel
         public DocumentViewModel SelectedDocument
         {
             get { return _selectedDocument; }
-            private set
+            set
             {
                 if (_selectedDocument != value)
                 {
@@ -142,6 +147,15 @@ namespace JadeControls.EditorControl.ViewModel
         #endregion
 
         #region Private Methods
+
+        public DocumentViewModel GetViewModel(JadeCore.IEditorDoc doc)
+        {
+            EditorTabItem tab = GetTabItem(doc);
+            if (tab == null)
+                return null;
+
+            return tab.DataContext as DocumentViewModel;
+        }
 
         private EditorTabItem GetTabItem(JadeCore.IEditorDoc doc)
         {

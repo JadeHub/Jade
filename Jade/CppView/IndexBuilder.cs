@@ -133,7 +133,7 @@ namespace CppView
             if (f.TranslationUnit == null)
             {
                 f.TranslationUnit = new LibClang.TranslationUnit(_index, file.Path.Str);
-                f.TranslationUnit.Parse();
+                f.TranslationUnit.Parse(null);
             }
             else
             {

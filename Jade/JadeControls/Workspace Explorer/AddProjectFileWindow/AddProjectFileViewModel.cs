@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace JadeControls.Workspace
 {
-    internal class AddProjectFileViewModel : ViewModelBase, IDataErrorInfo
+    internal class AddProjectFileViewModel : NotifyPropertyChanged, IDataErrorInfo
     {
         private string _location;
         private string _fileNameText;
@@ -46,7 +46,7 @@ namespace JadeControls.Workspace
             }
         }
 
-        public override string DisplayName { get { return ""; } }
+        public string DisplayName { get { return ""; } }
 
         public IEnumerable<string> Paths
         {

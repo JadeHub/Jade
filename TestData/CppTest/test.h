@@ -28,8 +28,6 @@ public:
 
 	SomeClass& operator=(const SomeClass& other);
 
-
-
 	Struct22 a22;
 
 	static	int j;
@@ -45,6 +43,14 @@ private:
 	AStruct MSt;
 	AnEnum mEnum;
 	int p;
+};
+
+class ClassA
+{
+};
+
+class ClassB
+{
 };
 
 }

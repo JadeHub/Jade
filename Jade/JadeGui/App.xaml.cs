@@ -25,6 +25,7 @@ namespace JadeGui
 
             
             _window = new MainWindow();
+            var dockWindow = new DockingGui.MainWindow();
 
             //Create the main view model object
             var viewModel = new ViewModels.JadeViewModel(_window);
@@ -42,21 +43,24 @@ namespace JadeGui
             // DataContext, which propagates down 
             // the element tree.
             _window.DataContext = viewModel;
+            dockWindow.DataContext = viewModel;
 
             //bind commands
             viewModel.Commands.Bind(_window.CommandBindings);
+            viewModel.Commands.Bind(dockWindow.CommandBindings);
             
             JadeCore.Services.Provider.OutputController.Create(JadeCore.Output.Source.JadeDebug, JadeCore.Output.Level.Info, "Hello world");
-
-
+            
             JadeCore.Properties.Settings settings = JadeCore.Services.Provider.Settings;
             if (settings.MainWindowPosition != null)
             {
-                _window.RestoreWindowPosition(settings.MainWindowPosition);
+               // _window.RestoreWindowPosition(settings.MainWindowPosition);
+                dockWindow.RestoreWindowPosition(settings.MainWindowPosition);
             }
 
             _window.Closed += _window_Closed;
-            _window.Show();
+         //   _window.Show();
+            dockWindow.Show();
 
             viewModel.OnOpenWorkspace(@"C:\Code\GitHub\Jade\TestData\CppTest\CppTest.jws");
         }

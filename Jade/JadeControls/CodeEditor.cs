@@ -4,13 +4,14 @@ using System.Windows.Input;
 using System.ComponentModel;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Folding;
+using JadeControls.EditorControl.ViewModel;
 
 namespace JadeControls
 {
     /// <summary>
     /// Wrapper around the Avalon TextEditor
     /// </summary>
-    public class CodeEditor : TextEditor//, INotifyPropertyChanged
+    public class CodeEditor : TextEditor
     {
         public CodeEditor()
         {
@@ -32,18 +33,18 @@ namespace JadeControls
 
         void CodeEditor_Loaded(object sender, RoutedEventArgs e)
         {
-            Keyboard.Focus(TextArea);
+          //  Keyboard.Focus(TextArea);
+            if(DataContext != null && DataContext is DocumentViewModel)
+            {
+                DocumentViewModel vm = DataContext as DocumentViewModel;
+                
+            }
         }
 
         void CodeEditor_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (!(bool)(e.NewValue))
                 return;
-            
-        }
-    
-        void OnDocChange(object sender, EventArgs e)
-        {
             
         }
     }

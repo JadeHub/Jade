@@ -32,7 +32,7 @@ namespace JadeControls.EditorControl.ViewModel
         public ICodeLocation JumpTo(ICodeLocation location)
         {
             LibClang.Cursor c = Index.GetCursorAt(location.Path, location.Offset);
-            if (c == null || c.IsInvalid)
+            if (c == null || !c.Valid)
                 return null;
 
             LibClang.Cursor result = null;

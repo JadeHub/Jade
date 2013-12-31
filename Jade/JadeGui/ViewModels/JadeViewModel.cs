@@ -1,6 +1,6 @@
-﻿using JadeUtils.IO;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -15,7 +15,7 @@ namespace JadeGui.ViewModels
     /// <summary>
     /// Main View Model class. Singleton instance that lives the life of the application
     /// </summary>
-    internal class JadeViewModel : JadeControls.NotifyPropertyChanged, JadeCore.IJadeCommandHandler
+    internal class JadeViewModel : JadeControls.NotifyPropertyChanged , JadeCore.IJadeCommandHandler
     {
         #region Data
 
@@ -24,11 +24,11 @@ namespace JadeGui.ViewModels
         private JadeCore.Workspace.IWorkspaceController _workspaceController;
         private WorkspaceViewModel _currentWorkspace;
 
-        private EditorControlViewModel _editorModel;
+        private EditorControlViewModel _editorViewModel;
         private JadeCore.IEditorController _editorController;
 
         private JadeCore.Output.IOutputController _outputController;
-        private OutputViewModel _outputModel;
+        private OutputViewModel _outputViewModel;
 
         private Window _view;
 
@@ -45,14 +45,24 @@ namespace JadeGui.ViewModels
             _workspaceController.WorkspaceChanged += delegate { OnWorkspaceChanged(); };
 
             _editorController = JadeCore.Services.Provider.EditorController;
-            _editorModel = new JadeControls.EditorControl.ViewModel.EditorControlViewModel(_editorController);
+            _editorController.DocumentSelected += OnEditorControllerDocumentSelected;
+            _editorViewModel = new JadeControls.EditorControl.ViewModel.EditorControlViewModel(_editorController);
 
             _outputController = JadeCore.Services.Provider.OutputController;
-            _outputModel = new OutputViewModel(_outputController);
+            _outputViewModel = new OutputViewModel(_outputController);
 
             _commands = new JadeCommandAdaptor(this);
             _view = view;
             UpdateWindowTitle();
+        }
+
+        void OnEditorControllerDocumentSelected(JadeCore.EditorDocChangeEventArgs args)
+        {
+            DocumentViewModel doc = _editorViewModel.GetViewModel(args.Document);
+            if (doc != null)
+            {
+                ActiveDockContent = doc;
+            }
         }
 
         private void OnWorkspaceChanged()
@@ -60,13 +70,15 @@ namespace JadeGui.ViewModels
             if(_workspaceController.CurrentWorkspace != null)
             {
                 _currentWorkspace = new WorkspaceViewModel(_workspaceController.CurrentWorkspace);
+                
             }
             else
             {
                 _currentWorkspace = null;
             }
 
-            DisplaySymbolsWindow(_workspaceController != null ?_workspaceController.CurrentWorkspace.ActiveProject : null);
+            //DisplaySymbolsWindow(_workspaceController != null ?_workspaceController.CurrentWorkspace.ActiveProject : null);
+            OnPropertyChanged("ToolWindows");
             OnPropertyChanged("Workspace"); 
             UpdateWindowTitle();
         }
@@ -74,6 +86,51 @@ namespace JadeGui.ViewModels
         #endregion
 
         #region Public Properties
+
+        #region Docking Windows
+
+        public ObservableCollection<JadeControls.DockingToolViewModel> ToolWindows
+        {
+            get
+            {
+                ObservableCollection<JadeControls.DockingToolViewModel> result = new ObservableCollection<JadeControls.DockingToolViewModel>();
+                                
+                if (_currentWorkspace != null)
+                    result.Add(_currentWorkspace);
+                result.Add(_outputViewModel);
+                return result;
+            }
+        }
+
+        private object _activeDockContent;
+
+        public object ActiveDockContent
+        {
+            get
+            {
+                return _activeDockContent;
+            }
+
+            set
+            {
+                if (_activeDockContent != value)
+                {
+                    _activeDockContent = value;
+
+                    if (_activeDockContent is DocumentViewModel)
+                    {
+                        DocumentViewModel doc = _activeDockContent as DocumentViewModel;
+                        if(doc != Editor.SelectedDocument)
+                            Editor.SelectedDocument = _activeDockContent as DocumentViewModel;
+                    }
+                    OnPropertyChanged("ActiveDockContent");
+                }
+            }
+        }
+
+        #endregion
+
+        
 
         public JadeCommandAdaptor Commands { get { return _commands; } }
 
@@ -104,14 +161,14 @@ namespace JadeGui.ViewModels
 
         public EditorControlViewModel Editor
         {
-            get { return _editorModel; }
+            get { return _editorViewModel; }
         }
 
         #endregion
 
         #region Editor
 
-        public OutputViewModel Output { get { return _outputModel; } }
+        public OutputViewModel Output { get { return _outputViewModel; } }
 
         #endregion
 
@@ -153,8 +210,8 @@ namespace JadeGui.ViewModels
         public void OnOpenDocument(JadeUtils.IO.IFileHandle file)
         {
             _editorController.OpenDocument(file);
-            if (_editorModel.SelectedDocument != null)
-                _editorModel.SelectedDocument.DisplayLocation(_editorModel.SelectedDocument.CaretLocation);
+            if (_editorViewModel.SelectedDocument != null)
+                _editorViewModel.SelectedDocument.DisplayLocation(_editorViewModel.SelectedDocument.CaretLocation);
         }
 
         #region Exit
@@ -392,16 +449,16 @@ namespace JadeGui.ViewModels
             CppView.ICodeLocation loc = (CppView.ICodeLocation)param;            
             IFileHandle f = JadeCore.Services.Provider.FileService.MakeFileHandle(loc.Path);
             OnOpenDocument(f);
-            if (_editorModel.SelectedDocument != null)
-                _editorModel.SelectedDocument.DisplayLocation(new JadeCore.Editor.CodeLocation(loc.Line, loc.Column, loc.Offset));            
+            if (_editorViewModel.SelectedDocument != null)
+                _editorViewModel.SelectedDocument.DisplayLocation(new JadeCore.Editor.CodeLocation(loc.Line, loc.Column, loc.Offset));            
         }
 
         public void OnHighlightCodeLocation(JadeUtils.IO.FilePath path, int startOffset, int endOffset)
         {
             IFileHandle f = JadeCore.Services.Provider.FileService.MakeFileHandle(path);
             OnOpenDocument(f);
-            if (_editorModel.SelectedDocument != null)
-                _editorModel.SelectedDocument.HighlightRange(startOffset, endOffset);
+            if (_editorViewModel.SelectedDocument != null)
+                _editorViewModel.SelectedDocument.HighlightRange(startOffset, endOffset);
         }
 
         public void OnViewSymbolsWindow()

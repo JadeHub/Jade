@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows.Input;
-using System.Threading;
-using System.Windows.Threading;
-using JadeCore;
-using JadeUtils.IO;
+﻿using JadeCore;
+using System;
 
 namespace JadeControls.EditorControl.ViewModel
 {
     
     //wrapps an IEditorDoc and associated CodeEditor view 
-    public class DocumentViewModel : ViewModelBase
+    public class DocumentViewModel : NotifyPropertyChanged
     {
         #region Data
 
@@ -21,9 +16,7 @@ namespace JadeControls.EditorControl.ViewModel
         private ICSharpCode.AvalonEdit.Document.TextDocument _avDoc;
         private CodeEditor _view;
         private JadeCore.Editor.CodeLocation _caretLocation;
-
-        //private DocViewModelCommandAdaptor _commands;
-
+        
         #endregion
 
         #region Constructor
@@ -45,11 +38,15 @@ namespace JadeControls.EditorControl.ViewModel
 
         #region Public Properties
 
-    //    public DocViewModelCommandAdaptor Commands { get { return _commands; } }
-
         public string Path { get { return _document.Path.Str; } }
         
-        public override string DisplayName { get { return _document.Name; } }
+        public string DisplayName 
+        { 
+            get 
+            {
+                return _document.Name; 
+            }
+        }
 
         public bool Modified
         {
@@ -61,6 +58,7 @@ namespace JadeControls.EditorControl.ViewModel
                 {
                     _document.Modified = value;
                     OnPropertyChanged("Modified");
+                    OnPropertyChanged("DisplayName");
                 }
             }
         }

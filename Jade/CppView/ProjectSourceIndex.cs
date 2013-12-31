@@ -158,7 +158,7 @@ namespace CppView
             if (tu == null)
                 return null;
 
-            LibClang.Cursor c = tu.GetCursorAt(path.Str, (uint)offset);
+            LibClang.Cursor c = tu.GetCursorAt(path.Str, offset);
             return c;
         }
 

@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace JadeControls.Workspace.ViewModel
 {
-    public abstract class TreeNodeBase : ViewModelBase
+    public abstract class TreeNodeBase : NotifyPropertyChanged
     {
         #region Data
 
@@ -82,7 +82,7 @@ namespace JadeControls.Workspace.ViewModel
             protected set { _children = value; }
         }
 
-        public override string DisplayName
+        public string DisplayName
         {
             get { return _displayName; }
         }

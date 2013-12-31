@@ -9,6 +9,9 @@ namespace Test {
 
 SomeClass::SomeClass()
 {
+	unsigned u = 0;
+	int i = u;
+
 }
 
 SomeClass::SomeClass(int i)

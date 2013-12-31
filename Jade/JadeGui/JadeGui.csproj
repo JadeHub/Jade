@@ -55,6 +55,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DockingGui\DockingToolViewModel.cs" />
+    <Compile Include="DockingGui\MainDockWindow.xaml.cs">
+      <DependentUpon>MainDockWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DockingGui\PanesStyleSelector.cs" />
+    <Compile Include="DockingGui\PanesTemplateSelector.cs" />
     <Compile Include="JadeTreeViewExtentions.cs" />
     <Compile Include="MainMenu.xaml.cs">
       <DependentUpon>MainMenu.xaml</DependentUpon>
@@ -67,6 +73,10 @@
     </Compile>
     <Compile Include="ViewModels\JadeCommandAdaptor.cs" />
     <Compile Include="ViewModels\JadeViewModel.cs" />
+    <Page Include="DockingGui\MainDockWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -136,6 +146,30 @@
       <Project>{59cad747-608c-447a-b2af-f8fd7ace39b2}</Project>
       <Name>JadeCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\libraries\AvalonDock\Version2.0\Xceed.Wpf.AvalonDock.Themes.Aero\Xceed.Wpf.AvalonDock.Themes.Aero.csproj">
+      <Project>{ba72cce0-a9fb-4995-b496-7fec5c87b85b}</Project>
+      <Name>Xceed.Wpf.AvalonDock.Themes.Aero</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\libraries\AvalonDock\Version2.0\Xceed.Wpf.AvalonDock.Themes.Expression\Xceed.Wpf.AvalonDock.Themes.Expression.csproj">
+      <Project>{488dd8f7-9d3c-4f53-bd1f-84a095d9bc10}</Project>
+      <Name>Xceed.Wpf.AvalonDock.Themes.Expression</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\libraries\AvalonDock\Version2.0\Xceed.Wpf.AvalonDock.Themes.Metro\Xceed.Wpf.AvalonDock.Themes.Metro.csproj">
+      <Project>{89286eb4-b4a1-418c-839a-067b00f442d8}</Project>
+      <Name>Xceed.Wpf.AvalonDock.Themes.Metro</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\libraries\AvalonDock\Version2.0\Xceed.Wpf.AvalonDock.Themes.VS2010\Xceed.Wpf.AvalonDock.Themes.VS2010.csproj">
+      <Project>{b3fc3e21-5f2d-4581-aea2-59f671cffc21}</Project>
+      <Name>Xceed.Wpf.AvalonDock.Themes.VS2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\libraries\AvalonDock\Version2.0\Xceed.Wpf.AvalonDock\Xceed.Wpf.AvalonDock.csproj">
+      <Project>{db81988f-e0f2-45a0-a1fd-8c37f3d35244}</Project>
+      <Name>Xceed.Wpf.AvalonDock</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\libraries\AvalonEdit\ICSharpCode.AvalonEdit\ICSharpCode.AvalonEdit.csproj">
+      <Project>{6c55b776-26d4-4db3-a6ab-87e783b2f3d1}</Project>
+      <Name>ICSharpCode.AvalonEdit</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Cut.png" />
@@ -165,6 +199,7 @@
   <ItemGroup>
     <Resource Include="Images\Copy.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

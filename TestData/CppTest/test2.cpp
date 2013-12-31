@@ -1,3 +1,5 @@
+#include "test.h"
+
 struct StructA {};
 
 struct StructB
@@ -7,7 +9,6 @@ struct StructB
 
 void fn()
 {
-	StructA aaa;
 }
 
 
