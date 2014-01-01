@@ -10,7 +10,6 @@
         xmlns:JadeCtrlsOutput="clr-namespace:JadeControls.OutputControl;assembly=JadeControls"
         xmlns:JadeCtrlsEditor="clr-namespace:JadeControls.EditorControl;assembly=JadeControls"
         xmlns:JadeCtrlsConv="clr-namespace:JadeControls.Converters;assembly=JadeControls"
-        xmlns:editor_ctrl="clr-namespace:JadeControls.EditorControl;assembly=JadeControls"
         xmlns:JadeCore="clr-namespace:JadeCore;assembly=JadeCore"
         Title="MainDockWindow" Height="300" Width="300">
     <Window.Resources>
@@ -45,7 +44,7 @@
                     <local:PanesTemplateSelector>
                         <local:PanesTemplateSelector.DocumentViewTemplate>
                             <DataTemplate>
-                                <JadeCtrlsEditor:CodeEditor                                        
+                                <JadeCtrlsEditor:CodeEditor
 				                        FontFamily="Consolas"
 				                        FontSize="10pt"                        
 				                        SyntaxHighlighting="C#"
@@ -54,7 +53,7 @@
                                         FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}">
                                                     <JadeCtrlsEditor:CodeEditor.ContextMenu>
                                                         <ContextMenu>
-                                                            <MenuItem Header="Jump To..." Command="editor_ctrl:EditorCommands.JumpTo" CommandParameter="{Binding .}" >
+                                                            <MenuItem Header="Jump To..." Command="JadeCtrlsEditor:EditorCommands.JumpTo" CommandParameter="{Binding .}" >
                                                                 <MenuItem.Icon>
                                                                     <Image HorizontalAlignment="Left" Width="16" Height="16" Margin="3,0" Source="{StaticResource DeleteIconSource}" />
                                                                 </MenuItem.Icon>
@@ -119,12 +118,20 @@
                     </local:PanesStyleSelector>
                 </avalonDock:DockingManager.LayoutItemContainerStyleSelector>
 
+                <avalonDock:DockingManager.LayoutUpdateStrategy>
+                    <local:LayoutInitializer/>
+                </avalonDock:DockingManager.LayoutUpdateStrategy>
+                
                 <avalonDock:LayoutRoot>
                         <avalonDock:LayoutPanel Orientation="Horizontal">                        
-                            <avalonDock:LayoutAnchorablePane DockWidth="150">                                
-                            </avalonDock:LayoutAnchorablePane>
-                            <avalonDock:LayoutDocumentPane/>
-                        </avalonDock:LayoutPanel>
+                            <avalonDock:LayoutAnchorablePane Name="LeftToolPanel" DockWidth="150"/>
+                            <avalonDock:LayoutPanel Orientation="Vertical">
+                                <avalonDock:LayoutDocumentPane/>
+                                <avalonDock:LayoutAnchorablePane Name="LowerToolPanel" DockHeight="150"/>
+                            </avalonDock:LayoutPanel>
+                        </avalonDock:LayoutPanel>                  
+                    
+                    
                 </avalonDock:LayoutRoot>
                     
             </avalonDock:DockingManager>

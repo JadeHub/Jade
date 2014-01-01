@@ -13,6 +13,8 @@ namespace JadeControls.EditorControl
     /// </summary>
     public class CodeEditor : TextEditor
     {
+        private bool _firstLoad = true;
+
         public CodeEditor()
         {
             ShowLineNumbers = true;            
@@ -44,8 +46,11 @@ namespace JadeControls.EditorControl
 
         void CodeEditor_Loaded(object sender, RoutedEventArgs e)
         {
-            Keyboard.Focus(TextArea);
-            
+            if (_firstLoad)
+            {
+                Keyboard.Focus(TextArea);
+                _firstLoad = false;
+            }
         }
 
         void CodeEditor_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
