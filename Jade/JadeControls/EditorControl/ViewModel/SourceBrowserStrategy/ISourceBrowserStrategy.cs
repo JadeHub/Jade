@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LibClang;
 
 namespace JadeControls.EditorControl.ViewModel
 {
-    using LibClang;
-    using CppView;
-
+    /*
     public interface ISourceBrowserStrategy
     {
         /// <summary>
@@ -16,8 +15,8 @@ namespace JadeControls.EditorControl.ViewModel
         /// </summary>
         /// <param name="location"></param>
         /// <returns></returns>
-        ICodeLocation JumpTo(ICodeLocation location);
-        bool CanJumpToAt(ICodeLocation location);
+        //ICodeLocation JumpTo(ICodeLocation location);
+        //bool CanJumpToAt(ICodeLocation location);
     }
 
     public class SourceBrowserStrategy : ISourceBrowserStrategy
@@ -52,6 +51,8 @@ namespace JadeControls.EditorControl.ViewModel
                     result = c.CanonicalCursor;
             }
             return result == null ? null : new CodeLocation(result.Location);
+           
+            //return null;
         }
 
         public bool CanJumpToAt(ICodeLocation location)
@@ -84,6 +85,6 @@ namespace JadeControls.EditorControl.ViewModel
         }
 
     }
-
+    */
     
 }

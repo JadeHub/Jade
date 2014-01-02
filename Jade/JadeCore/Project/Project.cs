@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CppCodeBrowser;
 
 namespace JadeCore.Project
 {   
@@ -8,7 +9,7 @@ namespace JadeCore.Project
         string Path { get; }
         string Directory { get; }
 
-        CppView.IProjectSourceIndex SourceIndex { get; }
+        IProjectIndex SourceIndex { get; }
 
         void OnItemAdded(IItem item);
         void OnItemRemoved(IItem item);
@@ -25,8 +26,7 @@ namespace JadeCore.Project
         //maintain a list of all source files in all folders
         private List<IItem> _allSourceFiles;
 
-        private CppView.IProjectSourceIndex _sourceIndex;        
-        private CppView.IIndexBuilder _indexBuilder;
+        private CppCodeBrowser.IProject _browserProject;
 
         #endregion
 
@@ -40,8 +40,7 @@ namespace JadeCore.Project
             _folders = new List<IFolder>();
             _allSourceFiles = new List<IItem>();
 
-            _sourceIndex = new CppView.ProjectSourceIndex(new CppView.ProjectSymbolTable());
-            _indexBuilder = new CppView.IndexBuilder(_sourceIndex);
+            _browserProject = new CppCodeBrowser.Project(_name, new CppCodeBrowser.IndexBuilder());            
         }
 
         #endregion
@@ -53,7 +52,7 @@ namespace JadeCore.Project
         public IList<IFolder> Folders { get { return _folders; } }
         public IProject OwningProject { get { return this; } }
 
-        public CppView.IProjectSourceIndex SourceIndex { get { return _sourceIndex; } }
+        public IProjectIndex SourceIndex { get { return _browserProject.Index; } }
 
         public string Path { get { return _file.Path.Str; } }
         public string Directory { get { return _file.Path.Directory; } }
@@ -140,7 +139,8 @@ namespace JadeCore.Project
         private void AddSourceFile(File f)
         {
             _allSourceFiles.Add(f);
-            _indexBuilder.AddSourceFile(f.Handle, CppView.IndexBuilderItemPriority.Immediate);
+            _browserProject.AddSourceFile(f.Path, null);
+            //_indexBuilder.AddSourceFile(f.Handle, CppView.IndexBuilderItemPriority.Immediate);
             //_sourceIndex.Dump();
         }
 

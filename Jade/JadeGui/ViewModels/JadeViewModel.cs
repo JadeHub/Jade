@@ -32,8 +32,6 @@ namespace JadeGui.ViewModels
 
         private Window _view;
 
-        private JadeControls.Symbols.SymbolsWindow _symbolsWindow;
-
         #endregion
 
         #region Contsructor
@@ -77,7 +75,6 @@ namespace JadeGui.ViewModels
                 _currentWorkspace = null;
             }
 
-            //DisplaySymbolsWindow(_workspaceController != null ?_workspaceController.CurrentWorkspace.ActiveProject : null);
             OnPropertyChanged("ToolWindows");
             OnPropertyChanged("Workspace"); 
             UpdateWindowTitle();
@@ -444,11 +441,11 @@ namespace JadeGui.ViewModels
 
         public void OnDisplayCodeLocation(object param)
         {
-            CppView.ICodeLocation loc = (CppView.ICodeLocation)param;            
+            CppCodeBrowser.ICodeLocation loc = (CppCodeBrowser.ICodeLocation)param;            
             IFileHandle f = JadeCore.Services.Provider.FileService.MakeFileHandle(loc.Path);
             OnOpenDocument(f);
             if (_editorViewModel.SelectedDocument != null)
-                _editorViewModel.SelectedDocument.DisplayLocation(new JadeCore.Editor.CodeLocation(loc.Line, loc.Column, loc.Offset));            
+                _editorViewModel.SelectedDocument.DisplayLocation(new JadeCore.Editor.CodeLocation(0, 0, loc.Offset));            
         }
 
         public void OnHighlightCodeLocation(JadeUtils.IO.FilePath path, int startOffset, int endOffset)
@@ -457,11 +454,6 @@ namespace JadeGui.ViewModels
             OnOpenDocument(f);
             if (_editorViewModel.SelectedDocument != null)
                 _editorViewModel.SelectedDocument.HighlightRange(startOffset, endOffset);
-        }
-
-        public void OnViewSymbolsWindow()
-        {
-            DisplaySymbolsWindow(_workspaceController.CurrentWorkspace.ActiveProject);
         }
 
         public bool CanViewSymbolsWindow()
@@ -505,29 +497,6 @@ namespace JadeGui.ViewModels
         private void UpdateWindowTitle()
         {
             OnPropertyChanged("MainWindowTitle");
-        }
-
-        private void DisplaySymbolsWindow(JadeCore.Project.IProject proj)
-        {
-            if (proj == null)
-            {
-                if (_symbolsWindow != null)
-                {
-                    _symbolsWindow.Close();
-                    _symbolsWindow = null;
-                }
-                return;
-            }
-
-            if (_symbolsWindow == null)
-            {
-                _symbolsWindow = new JadeControls.Symbols.SymbolsWindow();
-                _symbolsWindow.Owner = _view;
-                _symbolsWindow.Closed += delegate { _symbolsWindow = null; };
-            }
-
-            _symbolsWindow.DataContext = new JadeControls.Symbols.SymbolsWindowViewModel(proj);
-            _symbolsWindow.Show();
         }
 
         #endregion

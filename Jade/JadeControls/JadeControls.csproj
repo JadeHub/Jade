@@ -60,12 +60,6 @@
       <DependentUpon>OutputControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Output Control\OutputControlViewModel.cs" />
-    <Compile Include="Symbols Window\DeclViewModel.cs" />
-    <Compile Include="Symbols Window\RefViewModel.cs" />
-    <Compile Include="Symbols Window\SymbolsViewModel.cs" />
-    <Compile Include="Symbols Window\SymbolsWindow.xaml.cs">
-      <DependentUpon>SymbolsWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Workspace Explorer\AddProjectFileWindow\AddProjectFileViewModel.cs" />
     <Compile Include="Workspace Explorer\AddProjectFileWindow\AddProjectFileWindow.xaml.cs">
       <DependentUpon>AddProjectFileWindow.xaml</DependentUpon>
@@ -102,10 +96,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Symbols Window\SymbolsWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Workspace Explorer\AddProjectFileWindow\AddProjectFileWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -128,17 +118,17 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\externals\libclangcs\LibClangCS\LibClangCS.csproj">
-      <Project>{20c98dfe-4a12-47b3-a264-e44439662005}</Project>
-      <Name>LibClangCS</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\JadeUtils\JadeUtils\JadeUtils.csproj">
       <Project>{52652847-ed88-486a-a51d-ce4a15f16c1f}</Project>
       <Name>JadeUtils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CppView\CppView.csproj">
-      <Project>{114dd183-3a0b-434d-84b0-f22bb62c6b86}</Project>
-      <Name>CppView</Name>
+    <ProjectReference Include="..\..\libs\CppCodeBrowser\CppCodeBrowser.csproj">
+      <Project>{4713d6fa-4b9d-4057-8f34-7f79d51258ea}</Project>
+      <Name>CppCodeBrowser</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\libs\LibClangCS\LibClangCS.csproj">
+      <Project>{d68fab6f-29e2-4159-b398-70559930aeb8}</Project>
+      <Name>LibClangCS</Name>
     </ProjectReference>
     <ProjectReference Include="..\JadeCore\JadeCore.csproj">
       <Project>{59cad747-608c-447a-b2af-f8fd7ace39b2}</Project>

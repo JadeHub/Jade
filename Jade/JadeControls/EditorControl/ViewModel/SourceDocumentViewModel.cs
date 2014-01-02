@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Windows.Input;
 using JadeCore;
 using JadeUtils.IO;
+using CppCodeBrowser;
 
 namespace JadeControls.EditorControl.ViewModel
 {
     public class SourceDocumentViewModel : DocumentViewModel
     {
-        public ISourceBrowserStrategy BrowseStrategy { get; private set; }
+        public ICodeBrowser BrowseStrategy { get; private set; }
 
-        public SourceDocumentViewModel(IEditorDoc doc, ISourceBrowserStrategy browseStrategy) 
+        public SourceDocumentViewModel(IEditorDoc doc, ICodeBrowser browseStrategy) 
             : base(doc)
         {
             BrowseStrategy = browseStrategy;
@@ -33,9 +34,10 @@ namespace JadeControls.EditorControl.ViewModel
 
         private void OnJumpTo(JadeCore.Editor.CodeLocation loc)
         {
-            CppView.ICodeLocation location = new CppView.CodeLocation(loc.Line, loc.Column, loc.Offset, Document.File.Path);
+            ICodeLocation location = new CodeLocation(Document.File.Path.Str, loc.Offset);
 
             location = BrowseStrategy.JumpTo(location);
+
             if (location != null)
             {
                 JadeCore.IJadeCommandHandler cmdHandler = JadeCore.Services.Provider.CommandHandler;

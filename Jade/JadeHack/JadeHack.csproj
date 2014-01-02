@@ -48,10 +48,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\externals\libclangcs\LibClangCS\LibClangCS.csproj">
-      <Project>{20c98dfe-4a12-47b3-a264-e44439662005}</Project>
-      <Name>LibClangCS</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\JadeUtils\JadeUtils\JadeUtils.csproj">
       <Project>{52652847-ed88-486a-a51d-ce4a15f16c1f}</Project>
       <Name>JadeUtils</Name>

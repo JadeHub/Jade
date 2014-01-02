@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JadeUtils.IO
 {
-    public static class Path
+    public static class PathUtils
     {
         public static string CombinePaths(string path1, string path2)
         {

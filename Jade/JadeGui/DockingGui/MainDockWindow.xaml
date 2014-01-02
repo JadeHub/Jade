@@ -27,8 +27,7 @@
                                        DocumentsSource="{Binding Editor.Documents}"
                                        AnchorablesSource="{Binding ToolWindows}"
                                        ActiveContent="{Binding ActiveDockContent, Mode=TwoWay}">
-                
-                
+                           
                 
                 <avalonDock:DockingManager.DocumentHeaderTemplate>
                     <DataTemplate>
@@ -47,7 +46,7 @@
                                 <JadeCtrlsEditor:CodeEditor
 				                        FontFamily="Consolas"
 				                        FontSize="10pt"                        
-				                        SyntaxHighlighting="C#"
+				                        SyntaxHighlighting="C++"
                                         Margin="5,0"
                                         Document="{Binding TextDocument}"
                                         FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}">

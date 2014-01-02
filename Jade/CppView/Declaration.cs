@@ -38,7 +38,7 @@ namespace CppView
             _decl = decl;
             _path = path;
             _localCursor = localCursor;
-            Debug.Assert(JadeUtils.IO.Path.AreSamePath(decl.Location.File.Name, _path.ToString()));
+            Debug.Assert(JadeUtils.IO.PathUtils.AreSamePath(decl.Location.File.Name, _path.ToString()));
             //Debug.WriteLine("Decl " + decl.Cursor.Spelling + " at " + decl.Cursor.Location);
         }
 

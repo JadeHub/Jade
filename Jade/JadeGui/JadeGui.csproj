@@ -126,9 +126,9 @@
       <Project>{52652847-ed88-486a-a51d-ce4a15f16c1f}</Project>
       <Name>JadeUtils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CppView\CppView.csproj">
-      <Project>{114dd183-3a0b-434d-84b0-f22bb62c6b86}</Project>
-      <Name>CppView</Name>
+    <ProjectReference Include="..\..\libs\CppCodeBrowser\CppCodeBrowser.csproj">
+      <Project>{4713d6fa-4b9d-4057-8f34-7f79d51258ea}</Project>
+      <Name>CppCodeBrowser</Name>
     </ProjectReference>
     <ProjectReference Include="..\JadeControls\JadeControls.csproj">
       <Project>{fd26d2aa-3528-43e5-8401-71e52cfca245}</Project>

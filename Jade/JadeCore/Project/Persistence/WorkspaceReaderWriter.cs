@@ -17,7 +17,7 @@ namespace JadeCore.Persistence.Workspace
             if (System.IO.Path.IsPathRooted(path) == false)
             {
                 //Convert from relative path stored in workspace xml file
-                path = JadeUtils.IO.Path.CombinePaths(workspaceDir, path);
+                path = JadeUtils.IO.PathUtils.CombinePaths(workspaceDir, path);
             }
             return Persistence.Project.Reader.Read(path, fileService);
         }
@@ -73,7 +73,7 @@ namespace JadeCore.Persistence.Workspace
             ProjectType result = new ProjectType();
 
             //Convert to relative path for storage in workspace
-            result.Path = JadeUtils.IO.Path.CalculateRelativePath(workspaceDir + @"\", proj.Path);
+            result.Path = JadeUtils.IO.PathUtils.CalculateRelativePath(workspaceDir + @"\", proj.Path);
             Persistence.Project.Writer.Write(proj, proj.Path);
             return result;
         }

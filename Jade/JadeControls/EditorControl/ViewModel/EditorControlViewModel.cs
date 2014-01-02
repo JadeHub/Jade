@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.Diagnostics;
+using CppCodeBrowser;
 
 namespace JadeControls.EditorControl.ViewModel
 {
@@ -53,7 +54,7 @@ namespace JadeControls.EditorControl.ViewModel
 
         private void OnControllerDocumentOpened(JadeCore.EditorDocChangeEventArgs args)
         {
-            ISourceBrowserStrategy browserStrategy = new SourceBrowserStrategy(GetProjectSourceIndex());
+            ICodeBrowser browserStrategy = new CodeBrowser(GetProjectSourceIndex());
 
             DocumentViewModel d = new SourceDocumentViewModel(args.Document, browserStrategy);
             _documents.Add(d);
@@ -116,8 +117,8 @@ namespace JadeControls.EditorControl.ViewModel
             }
             return null;
         }
-
-        private CppView.IProjectSourceIndex GetProjectSourceIndex()
+        
+        private CppCodeBrowser.IProjectIndex GetProjectSourceIndex()
         {
             if (Services.Provider.WorkspaceController.CurrentWorkspace != null &&
                 Services.Provider.WorkspaceController.CurrentWorkspace.ActiveProject != null)
@@ -126,7 +127,7 @@ namespace JadeControls.EditorControl.ViewModel
             }
             return null;
         }
-
+        
         #endregion
     }
 }

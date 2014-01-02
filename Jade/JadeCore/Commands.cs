@@ -20,8 +20,6 @@ namespace JadeCore
         public static readonly RoutedCommand CloseAllDocuments = new RoutedCommand("CloseAllDocuments", typeof(object));
 
         public static readonly RoutedCommand DisplayCodeLocation = new RoutedCommand("DisplayCodeLocation", typeof(object));
-
-        public static readonly RoutedCommand ViewSymbolsWindow = new RoutedCommand("ViewSymbolsWindow", typeof(object));
                
         static Commands()
         {
@@ -106,9 +104,6 @@ namespace JadeCore
         void OnDisplayCodeLocation(object param);
 
         void OnHighlightCodeLocation(JadeUtils.IO.FilePath file, int startOffset, int endOffset);
-
-        void OnViewSymbolsWindow();
-        bool CanViewSymbolsWindow();
 
         #endregion
     }
