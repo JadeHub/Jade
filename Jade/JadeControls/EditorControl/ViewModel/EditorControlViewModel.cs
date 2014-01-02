@@ -54,9 +54,7 @@ namespace JadeControls.EditorControl.ViewModel
 
         private void OnControllerDocumentOpened(JadeCore.EditorDocChangeEventArgs args)
         {
-            ICodeBrowser browserStrategy = new CodeBrowser(GetProjectSourceIndex());
-
-            DocumentViewModel d = new SourceDocumentViewModel(args.Document, browserStrategy);
+            DocumentViewModel d = new SourceDocumentViewModel(args.Document, GetProjectSourceIndex());
             _documents.Add(d);
             args.Document.OnClosing += delegate { OnDocumentClosing(d); };           
             SelectedDocument = d;           

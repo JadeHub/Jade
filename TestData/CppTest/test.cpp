@@ -40,6 +40,9 @@ int ReturnInt(int i)
 
 void SomeClass::Fn()
 {
+	SomeClass a(8);
+	SomeClass* sc = new SomeClass();
+		
 	AStruct as;
 	AnEnum ae;
 	int sam = 
@@ -49,6 +52,9 @@ void SomeClass::Fn()
 }
 
 }
+
+
+
 
 
 

@@ -47,6 +47,8 @@ private:
 
 class ClassA
 {
+public:
+	ClassA();
 };
 
 class ClassB

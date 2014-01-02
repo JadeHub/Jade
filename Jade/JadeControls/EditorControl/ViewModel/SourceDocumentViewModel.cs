@@ -1,20 +1,20 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Input;
 using JadeCore;
 using JadeUtils.IO;
-using CppCodeBrowser;
 
 namespace JadeControls.EditorControl.ViewModel
 {
     public class SourceDocumentViewModel : DocumentViewModel
     {
-        public ICodeBrowser BrowseStrategy { get; private set; }
-
-        public SourceDocumentViewModel(IEditorDoc doc, ICodeBrowser browseStrategy) 
+        private CppCodeBrowser.ICodeBrowser _jumpToBrowser;
+        
+        public SourceDocumentViewModel(IEditorDoc doc, CppCodeBrowser.IProjectIndex index) 
             : base(doc)
         {
-            BrowseStrategy = browseStrategy;
+            _jumpToBrowser = new CppCodeBrowser.JumpToBrowser(index);
         }
 
         public override void RegisterCommands(CommandBindingCollection commandBindings)
@@ -34,14 +34,12 @@ namespace JadeControls.EditorControl.ViewModel
 
         private void OnJumpTo(JadeCore.Editor.CodeLocation loc)
         {
-            ICodeLocation location = new CodeLocation(Document.File.Path.Str, loc.Offset);
+            var results = _jumpToBrowser.BrowseFrom(new CppCodeBrowser.CodeLocation(Document.File.Path.Str, loc.Offset));
 
-            location = BrowseStrategy.JumpTo(location);
-
-            if (location != null)
+            if (results != null && results.Count() > 0)
             {
                 JadeCore.IJadeCommandHandler cmdHandler = JadeCore.Services.Provider.CommandHandler;
-                cmdHandler.OnDisplayCodeLocation(location);
+                cmdHandler.OnDisplayCodeLocation(results.First());
             }
         }
 
