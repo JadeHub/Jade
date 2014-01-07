@@ -1,10 +1,7 @@
-﻿using System;
+﻿using ICSharpCode.AvalonEdit;
+using JadeControls.EditorControl.ViewModel;
 using System.Windows;
 using System.Windows.Input;
-using System.ComponentModel;
-using ICSharpCode.AvalonEdit;
-using ICSharpCode.AvalonEdit.Folding;
-using JadeControls.EditorControl.ViewModel;
 
 namespace JadeControls.EditorControl
 {
@@ -18,24 +15,24 @@ namespace JadeControls.EditorControl
         public CodeEditor()
         {
             ShowLineNumbers = true;            
-            TextArea.IsVisibleChanged += CodeEditor_IsVisibleChanged;
             TextArea.MouseRightButtonDown += TextArea_MouseRightButtonDown;
             this.Loaded += CodeEditor_Loaded;
 
             this.DataContextChanged += CodeEditor_DataContextChanged;
         }
 
-        void CodeEditor_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void CodeEditor_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (DataContext != null && DataContext is DocumentViewModel)
             {
                 DocumentViewModel vm = DataContext as DocumentViewModel;
                 vm.SetView(this);
-                vm.RegisterCommands(this.CommandBindings);
+                
+                TextArea.TextView.BackgroundRenderers.Add(new Highlighting.Underliner(vm.TextDocument));
             }
         }
 
-        void TextArea_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        private void TextArea_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             var position = GetPositionFromPoint(e.GetPosition(this));
             if (position.HasValue)
@@ -44,20 +41,13 @@ namespace JadeControls.EditorControl
             }
         }
 
-        void CodeEditor_Loaded(object sender, RoutedEventArgs e)
+        private void CodeEditor_Loaded(object sender, RoutedEventArgs e)
         {
             if (_firstLoad)
             {
                 Keyboard.Focus(TextArea);
                 _firstLoad = false;
             }
-        }
-
-        void CodeEditor_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (!(bool)(e.NewValue))
-                return;
-            
         }
     }
 }

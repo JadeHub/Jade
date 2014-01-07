@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArgChecking.cs" />
     <Compile Include="IO\FileHandle.cs" />
     <Compile Include="IO\FilePath.cs" />
     <Compile Include="IO\FileService.cs" />

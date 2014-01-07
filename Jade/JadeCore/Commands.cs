@@ -103,8 +103,6 @@ namespace JadeCore
 
         void OnDisplayCodeLocation(object param);
 
-        void OnHighlightCodeLocation(JadeUtils.IO.FilePath file, int startOffset, int endOffset);
-
         #endregion
     }
 }

@@ -12,13 +12,21 @@ namespace JadeControls.EditorControl.ViewModel
         #region Data
 
         static ImageSourceConverter ISC = new ImageSourceConverter();
-
-        private IEditorDoc _document;
+               
         private bool _selected;
+
+        /// <summary>
+        /// The doc from the EditorController
+        /// </summary>
+        private IEditorDoc _model;
+        private CodeEditor _view;
 
         //The view's view of the content
         private ICSharpCode.AvalonEdit.Document.TextDocument _avDoc;
-        private CodeEditor _view;
+
+        /// <summary>
+        /// Current location of cursor
+        /// </summary>
         private JadeCore.Editor.CodeLocation _caretLocation;
                 
         #endregion
@@ -30,51 +38,58 @@ namespace JadeControls.EditorControl.ViewModel
             Title = doc.Name;
             ContentId = doc.Path.Str;
             IconSource = ISC.ConvertFromInvariantString("pack://application:,,,/Images/File.png") as ImageSource;
-            _document = doc;
-            _document.OnSaved += delegate { OnPropertyChanged("Modified"); };
+            _model = doc;
+            _model.OnSaved += delegate { OnPropertyChanged("Modified"); };
             _selected = false;
             _caretLocation = new JadeCore.Editor.CodeLocation(0, 0, 0);
         }
 
-        public void SetView(CodeEditor view)
+        public virtual void SetView(CodeEditor view)
         {
             _view = view;
             _avDoc = _view.Document;
 
+            RegisterCommands(_view.CommandBindings);
+
             //Load the document
-            _avDoc.Text = _document.Content;
+            _avDoc.Text = _model.Content;
             _avDoc.TextChanged += _avDoc_TextChanged;
             
+            //Initialise the view's caret location in case CaretLocation has already been set.
             _view.CaretOffset = _caretLocation.Offset;
+            //Track changes in the caret location
             _view.TextArea.Caret.PositionChanged += Caret_PositionChanged;
+
+            //Let any derived class initialise
+            OnSetView(_view);
+        }
+
+        protected virtual void OnSetView(CodeEditor view)
+        {
         }
 
         #endregion
 
         #region Public Properties
 
-        public string Path { get { return _document.Path.Str; } }
+        public string Path { get { return _model.Path.Str; } }
 
         public bool Modified
         {
-            get { return _document.Modified; }
+            get { return _model.Modified; }
             set
             {
-                if (_document.Modified != value)
+                if (_model.Modified != value)
                 {
-                    _document.Modified = value;
+                    _model.Modified = value;
                     OnPropertyChanged("Modified");
-                    OnPropertyChanged("DisplayName");
                 }
             }
         }
 
         public bool Selected 
         { 
-            get 
-            { 
-                return _selected; 
-            } 
+            get { return _selected; } 
             set 
             {
                 if (value != _selected)
@@ -107,7 +122,7 @@ namespace JadeControls.EditorControl.ViewModel
 
         public IEditorDoc Document
         {
-            get { return _document; }
+            get { return _model; }
         }
 
         #endregion
@@ -136,7 +151,7 @@ namespace JadeControls.EditorControl.ViewModel
         private void _avDoc_TextChanged(object sender, EventArgs e)
         {
             bool m = Modified;
-            _document.Content = _avDoc.Text;
+            _model.Content = _avDoc.Text;
             if (!m)
                 OnPropertyChanged("Modified");
         }

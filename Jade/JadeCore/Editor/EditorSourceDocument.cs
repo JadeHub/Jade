@@ -53,11 +53,12 @@ namespace JadeCore.Editor
 
         public void Save()
         {
-            using (FileStream fs = new FileStream(Path.Str, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write))
+            using (FileStream fs = new FileStream(Path.Str, FileMode.Create, FileAccess.Write, FileShare.Write))
             {
                 using (StreamWriter writer = new StreamWriter(fs, System.Text.Encoding.ASCII))
                 {
-                    writer.Write(_content);
+                    System.Diagnostics.Debug.Write(_content);
+                    writer.Write(_content);                    
                     Modified = false;
                     RaiseOnSaved();
                 }

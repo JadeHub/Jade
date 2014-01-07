@@ -31,8 +31,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibClangCS", "..\libs\LibCl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CppCodeBrowser", "..\libs\CppCodeBrowser\CppCodeBrowser.csproj", "{4713D6FA-4B9D-4057-8F34-7F79D51258EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CppView", "CppView\CppView.csproj", "{114DD183-3A0B-434D-84B0-F22BB62C6B86}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,10 +89,6 @@ Global
 		{4713D6FA-4B9D-4057-8F34-7F79D51258EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4713D6FA-4B9D-4057-8F34-7F79D51258EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4713D6FA-4B9D-4057-8F34-7F79D51258EA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{114DD183-3A0B-434D-84B0-F22BB62C6B86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{114DD183-3A0B-434D-84B0-F22BB62C6B86}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{114DD183-3A0B-434D-84B0-F22BB62C6B86}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{114DD183-3A0B-434D-84B0-F22BB62C6B86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

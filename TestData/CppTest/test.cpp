@@ -1,4 +1,5 @@
 #include "test.h"
+#include <string>
 
 void GlobalFn()
 {
@@ -15,6 +16,7 @@ SomeClass::SomeClass()
 
 SomeClass::SomeClass(int i)
 {
+	int p = 0;
 }
 
 SomeClass::SomeClass(const SomeClass& other)
@@ -52,6 +54,24 @@ void SomeClass::Fn()
 }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

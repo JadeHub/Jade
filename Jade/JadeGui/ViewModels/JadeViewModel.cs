@@ -447,14 +447,14 @@ namespace JadeGui.ViewModels
             if (_editorViewModel.SelectedDocument != null)
                 _editorViewModel.SelectedDocument.DisplayLocation(new JadeCore.Editor.CodeLocation(0, 0, loc.Offset));            
         }
-
+        /*
         public void OnHighlightCodeLocation(JadeUtils.IO.FilePath path, int startOffset, int endOffset)
         {
             IFileHandle f = JadeCore.Services.Provider.FileService.MakeFileHandle(path);
             OnOpenDocument(f);
             if (_editorViewModel.SelectedDocument != null)
                 _editorViewModel.SelectedDocument.HighlightRange(startOffset, endOffset);
-        }
+        }*/
 
         public bool CanViewSymbolsWindow()
         {

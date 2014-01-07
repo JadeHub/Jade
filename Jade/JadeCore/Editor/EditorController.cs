@@ -1,8 +1,7 @@
-﻿using System;
+﻿using JadeUtils.IO;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Collections.Generic;
-using JadeUtils.IO;
 
 namespace JadeCore.Editor
 {
@@ -129,7 +128,6 @@ namespace JadeCore.Editor
         public void SaveActiveDocument()
         {
             Debug.Assert(ActiveDocument != null);
-            Debug.Assert(ActiveDocument.File.Exists);
             ActiveDocument.Save();
         }
 
