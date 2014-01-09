@@ -9,7 +9,7 @@ namespace JadeUtils
 {
     public static class ArgChecking
     {
-        public static void NotNull(object obj, string paramName, [CallerMemberName] string memberName = "")
+        public static void ThrowIfNull(object obj, string paramName, [CallerMemberName] string memberName = "")
         {
             if (obj == null)
                 throw new ArgumentNullException(paramName, "in " + memberName);

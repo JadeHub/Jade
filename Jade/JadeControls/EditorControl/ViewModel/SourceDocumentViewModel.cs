@@ -1,9 +1,6 @@
-﻿using System;
+﻿using JadeCore;
 using System.Linq;
-using System.Collections.Generic;
 using System.Windows.Input;
-using JadeCore;
-using JadeUtils.IO;
 
 namespace JadeControls.EditorControl.ViewModel
 {
@@ -11,7 +8,7 @@ namespace JadeControls.EditorControl.ViewModel
     {
         private CppCodeBrowser.ICodeBrowser _jumpToBrowser;
         private DiagnosticHighlighter _diagnosticHighlighter;
-        private ASTHighlighter _astHighlighter;
+    //    private ASTHighlighter _astHighlighter;
         private CppCodeBrowser.IProjectItem _fileBrowser;
 
         public SourceDocumentViewModel(IEditorDoc doc, CppCodeBrowser.IProjectIndex index) 
@@ -58,11 +55,9 @@ namespace JadeControls.EditorControl.ViewModel
             Highlighting.Underliner underliner = new Highlighting.Underliner(TextDocument);
             view.TextArea.TextView.BackgroundRenderers.Add(underliner);
 
-            _astHighlighter = new ASTHighlighter(_fileBrowser.TranslationUnits.First().Cursor, underliner, _fileBrowser.Path);
-
-
             if (_fileBrowser != null)            
-            {                
+            {
+                //_astHighlighter = new ASTHighlighter(_fileBrowser.TranslationUnits.First().Cursor, underliner, _fileBrowser.Path);
                 _diagnosticHighlighter = new DiagnosticHighlighter(_fileBrowser, underliner);
             }            
         }

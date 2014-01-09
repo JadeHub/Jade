@@ -1,5 +1,4 @@
 #include "test.h"
-#include <string>
 
 void GlobalFn()
 {
