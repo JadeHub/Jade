@@ -122,15 +122,15 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\JadeUtils\JadeUtils\JadeUtils.csproj">
+    <ProjectReference Include="..\JadeUtils\JadeUtils\JadeUtils.csproj">
       <Project>{52652847-ed88-486a-a51d-ce4a15f16c1f}</Project>
       <Name>JadeUtils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\libs\CppCodeBrowser\CppCodeBrowser.csproj">
+    <ProjectReference Include="..\Clang\CppCodeBrowser\CppCodeBrowser.csproj">
       <Project>{4713d6fa-4b9d-4057-8f34-7f79d51258ea}</Project>
       <Name>CppCodeBrowser</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\libs\LibClangCS\LibClangCS.csproj">
+    <ProjectReference Include="..\Clang\LibClangCS\LibClangCS.csproj">
       <Project>{d68fab6f-29e2-4159-b398-70559930aeb8}</Project>
       <Name>LibClangCS</Name>
     </ProjectReference>

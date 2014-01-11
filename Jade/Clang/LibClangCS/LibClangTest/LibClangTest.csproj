@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F922E1CF-0B9A-4827-96CC-BF8531CFF116}</ProjectGuid>
+    <ProjectGuid>{CD4C82F8-9CD0-4A2F-8E8E-648ECBD92460}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>JadeCode.Test</RootNamespace>
-    <AssemblyName>JadeCode.Test</AssemblyName>
+    <RootNamespace>LibClangTest</RootNamespace>
+    <AssemblyName>LibClangTest</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -50,18 +50,57 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="PathTests.cs" />
+    <Compile Include="EqualityTester.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="CursorTests.cs" />
+    <Compile Include="SourceLocationTests.cs" />
+    <Compile Include="SourceRangeTests.cs" />
+    <Compile Include="TestCode\TranslationUnits.cs" />
+    <Compile Include="FileTests.cs" />
+    <Compile Include="TranslationUnitTests.cs" />
+    <Compile Include="TypeTests.cs" />
+    <Compile Include="DiagnosticSetTests.cs" />
+    <Compile Include="DiagnosticTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\JadeUtils\JadeUtils\JadeUtils.csproj">
-      <Project>{52652847-ed88-486a-a51d-ce4a15f16c1f}</Project>
-      <Name>JadeUtils</Name>
+    <ProjectReference Include="..\LibClangCS.csproj">
+      <Project>{d68fab6f-29e2-4159-b398-70559930aeb8}</Project>
+      <Name>LibClangCS</Name>
     </ProjectReference>
-    <ProjectReference Include="..\JadeCore\JadeCore.csproj">
-      <Project>{59cad747-608c-447a-b2af-f8fd7ace39b2}</Project>
-      <Name>JadeCore</Name>
-    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestCode\header_tests1.h">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestCode\simple_class.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestCode\simple_class.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestCode\error_warning_class.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestCode\error_warning_class.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestCode\header_tests.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestCode\header_tests2.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestCode\string_include.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
