@@ -14,15 +14,17 @@ namespace LibClang
         #region Data
 
         private string _name = null;
+        private ITranslationUnitItemFactory _itemFactory;
         
         #endregion
 
         #region Constructor
 
-        internal File(IntPtr handle)
-        {
+        internal File(IntPtr handle, ITranslationUnitItemFactory itemFactory)
+        {            
             Debug.Assert(handle != IntPtr.Zero);
             Handle = handle;
+            _itemFactory = itemFactory;
         }
 
         #endregion
@@ -47,6 +49,23 @@ namespace LibClang
                 var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
                 return epoch.AddSeconds(Library.clang_getFileTime(Handle));
             }
+        }
+
+        #endregion
+
+        #region Find References
+
+        public bool FindAllReferences(Cursor c, Func<Cursor, SourceRange, bool> callback)
+        {
+            Library.CXCursorAndRangeVisitor visitor = new Library.CXCursorAndRangeVisitor();
+            visitor.context = IntPtr.Zero;
+            visitor.visit = delegate(IntPtr ctx, Library.Cursor cur, Library.SourceRange range)
+            {
+                if (callback(_itemFactory.CreateCursor(cur), _itemFactory.CreateSourceRange(range)) == true)
+                    return Library.CXVisitorResult.CXVisit_Continue;
+                return Library.CXVisitorResult.CXVisit_Break;
+            };
+            return Library.clang_findReferencesInFile(c.Handle, Handle, visitor) != Library.CXResult.CXResult_Invalid;
         }
 
         #endregion

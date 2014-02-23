@@ -22,6 +22,7 @@ namespace JadeGui
             JadeCore.Services.Provider.WorkspaceController = new JadeCore.Workspace.WorkspaceController();
             JadeCore.Services.Provider.EditorController = new JadeCore.Editor.EditorController();
             JadeCore.Services.Provider.OutputController = new JadeCore.Output.OutputController();
+            JadeCore.Services.Provider.SearchController = new JadeCore.Search.SearchController();
 
             var dockWindow = new DockingGui.MainWindow();
             _mainWindow = dockWindow;
@@ -37,15 +38,13 @@ namespace JadeGui
                 dockWindow.Close(); 
             };
                     
-            // Allow all controls in the _window to 
+            // Allow all controls in the dockWindow to 
             // bind to the ViewModel by setting the 
             // DataContext, which propagates down 
             // the element tree.
-            //_window.DataContext = viewModel;
             dockWindow.DataContext = viewModel;
 
             //bind commands
-            //viewModel.Commands.Bind(_window.CommandBindings);
             viewModel.Commands.Bind(dockWindow.CommandBindings);
             
             JadeCore.Services.Provider.OutputController.Create(JadeCore.Output.Source.JadeDebug, JadeCore.Output.Level.Info, "Hello world");
@@ -53,16 +52,13 @@ namespace JadeGui
             JadeCore.Properties.Settings settings = JadeCore.Services.Provider.Settings;
             if (settings.MainWindowPosition != null)
             {
-               // _window.RestoreWindowPosition(settings.MainWindowPosition);
                 dockWindow.RestoreWindowPosition(settings.MainWindowPosition);
             }
 
-            //_window.Closed += _window_Closed;
-         //   _window.Show();
             dockWindow.Closed += _window_Closed;
             dockWindow.Show();
 
-            viewModel.OnOpenWorkspace(@"C:\Code\GitHub\Jade\TestData\CppTest\CppTest.jws");
+            viewModel.OnOpenWorkspace(@"C:\Code\GitHub\JadeMaster\TestData\CppTest\CppTest.jws");
         }
 
         protected override void OnExit(ExitEventArgs e)

@@ -7,10 +7,10 @@ namespace JadeCore.Collections
 {
     public class ObservableCollectionTransform<FromT, ToT> : ObservableCollection<ToT> where FromT : class
     {
-        private ObservableCollection<FromT> _Source;
+        private INotifyCollectionChanged _Source;
         private Func<FromT, ToT> _Transformer;
 
-        public ObservableCollectionTransform(ObservableCollection<FromT> source, Func<FromT, ToT> transformer)
+        public ObservableCollectionTransform(INotifyCollectionChanged source, Func<FromT, ToT> transformer)
         {
             _Source = source;
             _Transformer = transformer;

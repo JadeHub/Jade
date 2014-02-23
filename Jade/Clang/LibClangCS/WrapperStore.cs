@@ -80,13 +80,18 @@ namespace LibClang
     /// </summary>
     internal class FileStore : WrapperObjectStore<IntPtr, File> 
     {
-        public FileStore() {}
+        private ITranslationUnitItemFactory _itemFactory;
+
+        public FileStore(ITranslationUnitItemFactory itemFactory) 
+        {
+            _itemFactory = itemFactory;
+        }
 
         protected override File Create(IntPtr handle)
         {            
             if(handle == IntPtr.Zero)
                 throw new ArgumentException("File Handle is null");
-            return new File(handle);
+            return new File(handle, _itemFactory);
         }
     }
 

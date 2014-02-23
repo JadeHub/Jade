@@ -7,6 +7,7 @@ void GlobalFn()
 namespace Test {
 
 SomeClass::SomeClass()
+: ii(0)
 {
 	unsigned u = 0;
 	int i = u;
@@ -14,11 +15,13 @@ SomeClass::SomeClass()
 }
 
 SomeClass::SomeClass(int i)
+: ii(i)
 {
 	int p = 0;
 }
 
 SomeClass::SomeClass(const SomeClass& other)
+: ii(other.ii)
 {
 }
 
@@ -39,18 +42,7 @@ int ReturnInt(int i)
 }
 
 
-void SomeClass::Fn()
-{
-	SomeClass a(8);
-	SomeClass* sc = new SomeClass();
-		
-	AStruct as;
-	AnEnum ae;
-	int sam = 
-		ReturnInt(7);	
-		
-	int k = sam * 2;		
-}
+
 
 }
 

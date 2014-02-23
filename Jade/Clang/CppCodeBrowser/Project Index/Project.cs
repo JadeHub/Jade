@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using JadeUtils.IO;
 
 namespace CppCodeBrowser
 {   
     public interface IProject
     {
-        void AddSourceFile(string path, string[] compilerArgs);
+        void AddSourceFile(FilePath path, string[] compilerArgs);
         IProjectIndex Index { get; }
     }
 
@@ -27,9 +23,9 @@ namespace CppCodeBrowser
             _indexer = indexBuilder;
         }
 
-        public void AddSourceFile(string path, string[] compilerArgs)
+        public void AddSourceFile(FilePath path, string[] compilerArgs)
         {
-            _indexer.IndexFile(path, compilerArgs);
+            _indexer.AddFile(path, compilerArgs);
         }
 
         public IProjectIndex Index

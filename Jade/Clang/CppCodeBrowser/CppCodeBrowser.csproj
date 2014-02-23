@@ -42,15 +42,21 @@
     <Compile Include="Browsing\JumpToBrowser.cs" />
     <Compile Include="Project Index\CodeLocation.cs" />
     <Compile Include="Project Index\HeaderFile.cs" />
+    <Compile Include="Project Index\IIndexBuilder.cs" />
     <Compile Include="Project Index\IProjectItem.cs" />
     <Compile Include="Project Index\Project.cs" />
     <Compile Include="Browsing\ICodeBrowser.cs" />
     <Compile Include="Project Index\IndexBuilder.cs" />
     <Compile Include="Project Index\ProjectIndex.cs" />
+    <Compile Include="Project Index\TranslationUnitSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Project Index\SoureFile.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\JadeUtils\JadeUtils\JadeUtils.csproj">
+      <Project>{52652847-ed88-486a-a51d-ce4a15f16c1f}</Project>
+      <Name>JadeUtils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LibClangCS\LibClangCS.csproj">
       <Project>{d68fab6f-29e2-4159-b398-70559930aeb8}</Project>
       <Name>LibClangCS</Name>

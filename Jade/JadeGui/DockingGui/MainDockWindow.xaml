@@ -8,6 +8,7 @@
         xmlns:JadeControls="clr-namespace:JadeControls;assembly=JadeControls"
         xmlns:JadeCtrlsWorkspace="clr-namespace:JadeControls.Workspace;assembly=JadeControls"        
         xmlns:JadeCtrlsOutput="clr-namespace:JadeControls.OutputControl;assembly=JadeControls"
+        xmlns:JadeCtrlsSearchResults="clr-namespace:JadeControls.SearchResultsControl;assembly=JadeControls"
         xmlns:JadeCtrlsEditor="clr-namespace:JadeControls.EditorControl;assembly=JadeControls"
         xmlns:JadeCtrlsConv="clr-namespace:JadeControls.Converters;assembly=JadeControls"
         xmlns:JadeCore="clr-namespace:JadeCore;assembly=JadeCore"
@@ -52,7 +53,12 @@
                                         FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}">
                                                     <JadeCtrlsEditor:CodeEditor.ContextMenu>
                                                         <ContextMenu>
-                                                            <MenuItem Header="Jump To..." Command="JadeCtrlsEditor:EditorCommands.JumpTo" CommandParameter="{Binding .}" >
+                                                            <MenuItem Header="Jump To" Command="JadeCtrlsEditor:EditorCommands.JumpTo" CommandParameter="{Binding .}" >
+                                                                <MenuItem.Icon>
+                                                                    <Image HorizontalAlignment="Left" Width="16" Height="16" Margin="3,0" Source="{StaticResource DeleteIconSource}" />
+                                                                </MenuItem.Icon>
+                                                            </MenuItem>
+                                                            <MenuItem Header="Find All References" Command="JadeCtrlsEditor:EditorCommands.FindAllReferences" CommandParameter="{Binding .}" >
                                                                 <MenuItem.Icon>
                                                                     <Image HorizontalAlignment="Left" Width="16" Height="16" Margin="3,0" Source="{StaticResource DeleteIconSource}" />
                                                                 </MenuItem.Icon>
@@ -74,6 +80,12 @@
                                 <JadeCtrlsOutput:OutputControl/>                                
                             </DataTemplate>
                         </local:PanesTemplateSelector.OutputViewTemplate>
+                        
+                        <local:PanesTemplateSelector.SearchResultsViewTemplate>
+                            <DataTemplate> 
+                                <JadeCtrlsSearchResults:SearchResultsControl/>                                
+                            </DataTemplate>
+                        </local:PanesTemplateSelector.SearchResultsViewTemplate>
                         
                     </local:PanesTemplateSelector>
                 </avalonDock:DockingManager.LayoutItemTemplateSelector>

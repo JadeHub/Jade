@@ -9,6 +9,7 @@ namespace JadeGui.ViewModels
 {
     using JadeControls.EditorControl.ViewModel;
     using JadeControls.OutputControl.ViewModel;
+    using JadeControls.SearchResultsControl.ViewModel;
     using JadeControls.Workspace.ViewModel;
     using JadeUtils.IO;
     
@@ -30,6 +31,9 @@ namespace JadeGui.ViewModels
         private JadeCore.Output.IOutputController _outputController;
         private OutputViewModel _outputViewModel;
 
+        private JadeCore.Search.ISearchController _searchController;
+        private SearchResultsViewModel _seachResultsViewModel;
+
         private Window _view;
 
         #endregion
@@ -48,6 +52,9 @@ namespace JadeGui.ViewModels
 
             _outputController = JadeCore.Services.Provider.OutputController;
             _outputViewModel = new OutputViewModel(_outputController);
+
+            _searchController = JadeCore.Services.Provider.SearchController;
+            _seachResultsViewModel = new SearchResultsViewModel(_searchController);
 
             _commands = new JadeCommandAdaptor(this);
             _view = view;
@@ -94,7 +101,8 @@ namespace JadeGui.ViewModels
                                 
                 if (_currentWorkspace != null)
                     result.Add(_currentWorkspace);
-                result.Add(_outputViewModel);
+                result.Add(_seachResultsViewModel);
+                result.Add(_outputViewModel);                
                 return result;
             }
         }
@@ -166,6 +174,8 @@ namespace JadeGui.ViewModels
         #region Editor
 
         public OutputViewModel Output { get { return _outputViewModel; } }
+
+        public SearchResultsViewModel SearchResults { get { return _seachResultsViewModel; } }
 
         #endregion
 

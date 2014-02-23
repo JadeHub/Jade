@@ -1,9 +1,10 @@
-﻿
+﻿using JadeUtils.IO;
+
 namespace CppCodeBrowser
 {
     public interface ICodeLocation
     {
-        string Path { get; }
+        FilePath Path { get; }
         int Offset { get; }        
     }
 
@@ -11,17 +12,17 @@ namespace CppCodeBrowser
     {
         public CodeLocation(LibClang.SourceLocation loc) : this()
         {
-            Path = loc.File.Name;
+            Path = FilePath.Make(loc.File.Name);
             Offset = loc.Offset;            
         }
 
         public CodeLocation(string path, int offset) : this()
         {
-            Path = path;
+            Path = FilePath.Make(path);
             Offset = offset;            
         }
 
-        public string Path
+        public FilePath Path
         {
             get;
             private set;

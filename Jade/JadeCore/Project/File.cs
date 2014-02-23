@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JadeUtils.IO;
 
 namespace JadeCore.Project
 {
@@ -46,7 +47,7 @@ namespace JadeCore.Project
 
         public string Name { get { return _file.Name; } }
         public ItemType Type { get { return _type; } }
-        public string Path { get { return _file.Path.Str; } }
+        public FilePath Path { get { return _file.Path; } }
         public JadeUtils.IO.IFileHandle Handle { get { return _file; } }
 
         #endregion

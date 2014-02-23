@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JadeUtils.IO;
 
 namespace CppCodeBrowser
 {
@@ -10,7 +11,7 @@ namespace CppCodeBrowser
     {
         private LibClang.TranslationUnit _tu;
 
-        internal SourceFile(string path, LibClang.TranslationUnit tu)
+        internal SourceFile(FilePath path, LibClang.TranslationUnit tu)
         {
             Path = path;
             _tu = tu;
@@ -26,7 +27,7 @@ namespace CppCodeBrowser
         /// <summary>
         /// File path.
         /// </summary>
-        public string Path
+        public FilePath Path
         {
             get;
             private set;
@@ -50,7 +51,7 @@ namespace CppCodeBrowser
         {
             get
             {
-                return _tu.Diagnostics.Where(d => d.Location.File.Name == Path);
+                return _tu.Diagnostics.Where(d => d.Location.File.Name == Path.Str);
             }
         }
 

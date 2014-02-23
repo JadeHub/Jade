@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using JadeUtils.IO;
 
 namespace CppCodeBrowser
 {
@@ -10,7 +8,7 @@ namespace CppCodeBrowser
     {
         private HashSet<LibClang.TranslationUnit> _tus;
 
-        public HeaderFile(string path)
+        public HeaderFile(FilePath path)
         {
             Path = path;
             _tus = new HashSet<LibClang.TranslationUnit>();
@@ -26,7 +24,7 @@ namespace CppCodeBrowser
         /// <summary>
         /// File path.
         /// </summary>
-        public string Path
+        public FilePath Path
         {
             get;
             private set;
@@ -52,7 +50,7 @@ namespace CppCodeBrowser
             {
                 foreach (LibClang.TranslationUnit tu in _tus)
                 {
-                    foreach (LibClang.Diagnostic diag in tu.Diagnostics.Where(d => System.IO.Path.GetFullPath(d.Location.File.Name) == Path))
+                    foreach (LibClang.Diagnostic diag in tu.Diagnostics.Where(d => System.IO.Path.GetFullPath(d.Location.File.Name) == Path.Str))
                     {
                         yield return diag;
                     }

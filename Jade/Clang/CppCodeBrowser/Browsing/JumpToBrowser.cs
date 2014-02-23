@@ -1,8 +1,8 @@
-﻿using LibClang;
-using System.Collections.Generic;
+﻿using JadeUtils;
+using LibClang;
+using System;
 using System.Diagnostics;
-using System.Linq;
-//using JadeUtils;
+using System.Collections.Generic;
 
 namespace CppCodeBrowser
 {
@@ -30,31 +30,23 @@ namespace CppCodeBrowser
             return true;
         }
 
-        public IEnumerable<ICodeLocation> BrowseFrom(ICodeLocation loc)
+        public void BrowseFrom(IEnumerable<LibClang.Cursor> fromCursors, Func<ICodeLocation, bool> OnResult)
         {
-            //ArgChecking.NotNull(loc, "loc");
+            ArgChecking.ThrowIfNull(fromCursors, "fromCursors");
             
-            IProjectItem item = _index.FindProjectItem(loc.Path);
-            if (item == null)
-                yield break;
-
-            foreach (TranslationUnit tu in item.TranslationUnits)
+            foreach (LibClang.Cursor c in fromCursors)
             {
-                ICodeLocation result = JumpTo(tu, loc);
-                if (result != null)
-                    yield return result;
+                ICodeLocation result = JumpTo(c);
+                {
+                    if (result!= null && OnResult(result) == false)
+                        break;
+                }
             }
         }
 
         #endregion
 
         #region Private Methods
-
-        private ICodeLocation JumpTo(TranslationUnit tu, ICodeLocation loc)
-        {
-            Cursor c = tu.GetCursorAt(loc.Path, loc.Offset);
-            return c == null || c.Kind == CursorKind.NoDeclFound ? null : JumpTo(c);
-        }
 
         private ICodeLocation JumpTo(Cursor c)
         {

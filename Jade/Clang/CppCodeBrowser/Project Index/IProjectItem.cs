@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using JadeUtils.IO;
 
 namespace CppCodeBrowser
 {
@@ -25,7 +22,7 @@ namespace CppCodeBrowser
         /// <summary>
         /// File path.
         /// </summary>
-        string Path { get; }
+        FilePath Path { get; }
 
         /// <summary>
         /// TranslationUnit objects which referenced this file. 

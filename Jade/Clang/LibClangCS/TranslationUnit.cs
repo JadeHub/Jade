@@ -14,30 +14,30 @@ namespace LibClang
     {
         public struct HeaderInfo
         {
-            public HeaderInfo(string path, IEnumerable<SourceLocation> stack)
+            public HeaderInfo(File file, IEnumerable<SourceLocation> stack)
             {
-                Path = path;
+                File = file;
                 InclusionStack = stack;
             }
 
-            public readonly string Path;
+            public readonly File File;
             public readonly IEnumerable<SourceLocation> InclusionStack;
 
             public override string ToString()
             {
-                return Path;
+                return File.Name;
             }
 
             public override int GetHashCode()
             {
-                return Path.GetHashCode();
+                return File.GetHashCode();
             }
 
             public override bool Equals(object obj)
             {
                 if (obj != null)
                 {
-                    return ((HeaderInfo)obj).Path.Equals(Path);
+                    return ((HeaderInfo)obj).File.Equals(File);
                 }
                 return false;
             }
@@ -145,18 +145,6 @@ namespace LibClang
             Library.SourceRange handle = Library.clang_getRange(start.Handle, end.Handle);
             return _itemStore.CreateSourceRange(handle);
         }
-        
-        public Cursor GetCursorAt(SourceLocation location)
-        {
-            if (location == null)
-                throw new ArgumentException("null Location passed to GetCursotAt().");
-
-            Library.Cursor cur = Library.clang_getCursor(Handle, location.Handle);
-            if (cur.IsNull)
-                return null;
-            cur = Library.clang_getCursor(Handle, location.Handle);
-            return _itemStore.CreateCursor(cur);
-        }
 
         public File GetFile(string path)
         {
@@ -200,6 +188,42 @@ namespace LibClang
                 return null;
             return GetCursorAt(loc);
         }
+
+        public Cursor GetCursorAt(SourceLocation location)
+        {
+            if (location == null)
+                throw new ArgumentException("null Location passed to GetCursotAt().");
+
+            Library.Cursor cur = Library.clang_getCursor(Handle, location.Handle);
+            if (cur.IsNull)
+                return null;
+            cur = Library.clang_getCursor(Handle, location.Handle);
+            return _itemStore.CreateCursor(cur);
+        }
+
+        public bool FindAllReferences(Cursor c, Func<Cursor, SourceRange, bool> callback)
+        {
+            Library.CXCursorAndRangeVisitor visitor = new Library.CXCursorAndRangeVisitor();
+            visitor.context = IntPtr.Zero;
+            visitor.visit = delegate(IntPtr ctx, Library.Cursor cur, Library.SourceRange range)
+            {
+                if (callback(_itemStore.CreateCursor(cur), _itemStore.CreateSourceRange(range)) == true)
+                    return Library.CXVisitorResult.CXVisit_Continue;
+                return Library.CXVisitorResult.CXVisit_Break;
+            };
+            
+            //Search source file
+            if (Library.clang_findReferencesInFile(c.Handle, File.Handle, visitor) == Library.CXResult.CXResult_Invalid)
+                return false;
+
+            foreach (HeaderInfo header in _headerFiles)
+            {
+                if (Library.clang_findReferencesInFile(c.Handle, header.File.Handle, visitor) == Library.CXResult.CXResult_Invalid)
+                    return false;
+            }
+
+            return true;
+        }
         
         #endregion
 
@@ -223,7 +247,9 @@ namespace LibClang
 
                         Cursor includeStatement = GetCursorAt(locationStack[0]);
 
-                        HeaderInfo header = new HeaderInfo(Library.clang_getFileName(fileHandle).ManagedString, locationStack);
+                        File file = _itemStore.CreateFile(fileHandle);
+
+                        HeaderInfo header = new HeaderInfo(file, locationStack);
                         _headerFiles.Add(header);
                     }
                 };

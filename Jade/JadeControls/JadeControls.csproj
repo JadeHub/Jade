@@ -64,6 +64,10 @@
       <DependentUpon>OutputControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Output Control\OutputControlViewModel.cs" />
+    <Compile Include="Search\SearchResultControl.xaml.cs">
+      <DependentUpon>SearchResultControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Search\SearchResultControlViewModel.cs" />
     <Compile Include="Workspace Explorer\AddProjectFileWindow\AddProjectFileViewModel.cs" />
     <Compile Include="Workspace Explorer\AddProjectFileWindow\AddProjectFileWindow.xaml.cs">
       <DependentUpon>AddProjectFileWindow.xaml</DependentUpon>
@@ -97,6 +101,10 @@
       <SubType>Designer</SubType>
     </Resource>
     <Page Include="Output Control\OutputControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Search\SearchResultControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

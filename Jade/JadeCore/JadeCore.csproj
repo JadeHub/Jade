@@ -60,6 +60,12 @@
     <Compile Include="Project\Persistence\Workspace.cs" />
     <Compile Include="Project\Persistence\WorkspaceReaderWriter.cs" />
     <Compile Include="Project\Project.cs" />
+    <Compile Include="Search\FindAllReferencesSearch.cs" />
+    <Compile Include="Search\CodeSearchResult.cs" />
+    <Compile Include="Search\ISearch.cs" />
+    <Compile Include="Search\ISearchProvider.cs" />
+    <Compile Include="Search\ISearchResult.cs" />
+    <Compile Include="Search\SearchService.cs" />
     <Compile Include="Workspace\IWorkspaceController.cs" />
     <Compile Include="Output\Output.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -83,6 +89,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Clang\LibClangCS\LibClangCS.csproj">
+      <Project>{d68fab6f-29e2-4159-b398-70559930aeb8}</Project>
+      <Name>LibClangCS</Name>
+    </ProjectReference>
     <ProjectReference Include="..\JadeUtils\JadeUtils\JadeUtils.csproj">
       <Project>{52652847-ed88-486a-a51d-ce4a15f16c1f}</Project>
       <Name>JadeUtils</Name>

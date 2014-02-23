@@ -31,7 +31,7 @@ namespace LibClang
         public TranslationUnitItemStore()
         {
             _cursorStore = new CursorStore(this);
-            _fileStore = new FileStore();
+            _fileStore = new FileStore(this);
             _locationStore = new SourceLocationStore(this);
             _sourceRangeStore = new SourceRangeStore(this);
             _typeStore = new TypeStore(this);

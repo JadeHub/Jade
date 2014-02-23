@@ -1,48 +1,37 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
+﻿using LibClang;
 using System.Windows.Media;
-
-using LibClang;
 
 namespace JadeControls.EditorControl.ViewModel
 {
     public class DiagnosticHighlighter
     {
         private Highlighting.IHighlighter _underliner;
-        private CppCodeBrowser.IProjectItem _itemBrowser;
+        private CppCodeBrowser.IProjectItem _projectItem;
 
-        public DiagnosticHighlighter(CppCodeBrowser.IProjectItem itemBrowser, Highlighting.IHighlighter underliner)
+        public DiagnosticHighlighter(CppCodeBrowser.IProjectItem projectItem, Highlighting.IHighlighter underliner)
         {
             _underliner = underliner;
-            _itemBrowser = itemBrowser;
+            _projectItem = projectItem;
             HighlightDiagnostics();
         }
 
         private void HighlightDiagnostics()
         {
-            _underliner.Clear();
-
-            foreach (TranslationUnit tu in _itemBrowser.TranslationUnits)
+            _underliner.Clear();            
+            foreach (TranslationUnit tu in _projectItem.TranslationUnits)
             {
                 foreach (Diagnostic d in tu.Diagnostics)
                 {
-                    if (System.IO.Path.GetFullPath(d.Location.File.Name) == _itemBrowser.Path)
+                    if (System.IO.Path.GetFullPath(d.Location.File.Name) == _projectItem.Path.Str)
                     {
                         HighlightDiagnostic(tu, d);
                     }
                 }
             }
-
-            /*foreach (Diagnostic diag in diagnostics)
-            {
-                HighlightDiagnostic(diag);
-            }*/
         }
 
         private SourceRange GetHighlightRange(TranslationUnit tu, Diagnostic diagnostic)
-        {
-            
+        {            
             Cursor cursor = tu.GetCursorAt(diagnostic.Location);
             if (cursor == null || cursor.Extent == null) return null;
 

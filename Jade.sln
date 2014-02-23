@@ -3,33 +3,37 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JadeGui", "Jade\JadeGui\JadeGui.csproj", "{4AC13476-245B-4AEE-A852-EE4DE4BC5763}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JadeControls", ""Jade\JadeControls\JadeControls.csproj", "{FD26D2AA-3528-43E5-8401-71E52CFCA245}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JadeControls", "Jade\JadeControls\JadeControls.csproj", "{FD26D2AA-3528-43E5-8401-71E52CFCA245}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JadeCore", ""Jade\JadeCore\JadeCore.csproj", "{59CAD747-608C-447A-B2AF-F8FD7ACE39B2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JadeCore", "Jade\JadeCore\JadeCore.csproj", "{59CAD747-608C-447A-B2AF-F8FD7ACE39B2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", ""Jade\Libraries", "{5BB6A2A8-226F-4B22-8FA8-E82D37B62659}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{5BB6A2A8-226F-4B22-8FA8-E82D37B62659}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICSharpCode.AvalonEdit", ""Jade\libraries\AvalonEdit\ICSharpCode.AvalonEdit\ICSharpCode.AvalonEdit.csproj", "{6C55B776-26D4-4DB3-A6AB-87E783B2F3D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICSharpCode.AvalonEdit", "Jade\libraries\AvalonEdit\ICSharpCode.AvalonEdit\ICSharpCode.AvalonEdit.csproj", "{6C55B776-26D4-4DB3-A6AB-87E783B2F3D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JadeCore.Test", ""Jade\JadeCode.Test\JadeCore.Test.csproj", "{F922E1CF-0B9A-4827-96CC-BF8531CFF116}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JadeCore.Test", "Jade\JadeCode.Test\JadeCore.Test.csproj", "{F922E1CF-0B9A-4827-96CC-BF8531CFF116}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JadeUtils", ""Jade\JadeUtils\JadeUtils\JadeUtils.csproj", "{52652847-ED88-486A-A51D-CE4A15F16C1F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JadeUtils", "Jade\JadeUtils\JadeUtils\JadeUtils.csproj", "{52652847-ED88-486A-A51D-CE4A15F16C1F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Externals", "Externals", "{584CC272-70D5-46F3-A950-972150643790}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xceed.Wpf.AvalonDock", ""Jade\libraries\AvalonDock\Version2.0\Xceed.Wpf.AvalonDock\Xceed.Wpf.AvalonDock.csproj", "{DB81988F-E0F2-45A0-A1FD-8C37F3D35244}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xceed.Wpf.AvalonDock", "Jade\libraries\AvalonDock\Version2.0\Xceed.Wpf.AvalonDock\Xceed.Wpf.AvalonDock.csproj", "{DB81988F-E0F2-45A0-A1FD-8C37F3D35244}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xceed.Wpf.AvalonDock.Themes.Aero", ""Jade\libraries\AvalonDock\Version2.0\Xceed.Wpf.AvalonDock.Themes.Aero\Xceed.Wpf.AvalonDock.Themes.Aero.csproj", "{BA72CCE0-A9FB-4995-B496-7FEC5C87B85B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xceed.Wpf.AvalonDock.Themes.Aero", "Jade\libraries\AvalonDock\Version2.0\Xceed.Wpf.AvalonDock.Themes.Aero\Xceed.Wpf.AvalonDock.Themes.Aero.csproj", "{BA72CCE0-A9FB-4995-B496-7FEC5C87B85B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xceed.Wpf.AvalonDock.Themes.Metro", ""Jade\libraries\AvalonDock\Version2.0\Xceed.Wpf.AvalonDock.Themes.Metro\Xceed.Wpf.AvalonDock.Themes.Metro.csproj", "{89286EB4-B4A1-418C-839A-067B00F442D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xceed.Wpf.AvalonDock.Themes.Metro", "Jade\libraries\AvalonDock\Version2.0\Xceed.Wpf.AvalonDock.Themes.Metro\Xceed.Wpf.AvalonDock.Themes.Metro.csproj", "{89286EB4-B4A1-418C-839A-067B00F442D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xceed.Wpf.AvalonDock.Themes.Expression", ""Jade\libraries\AvalonDock\Version2.0\Xceed.Wpf.AvalonDock.Themes.Expression\Xceed.Wpf.AvalonDock.Themes.Expression.csproj", "{488DD8F7-9D3C-4F53-BD1F-84A095D9BC10}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xceed.Wpf.AvalonDock.Themes.Expression", "Jade\libraries\AvalonDock\Version2.0\Xceed.Wpf.AvalonDock.Themes.Expression\Xceed.Wpf.AvalonDock.Themes.Expression.csproj", "{488DD8F7-9D3C-4F53-BD1F-84A095D9BC10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xceed.Wpf.AvalonDock.Themes.VS2010", ""Jade\libraries\AvalonDock\Version2.0\Xceed.Wpf.AvalonDock.Themes.VS2010\Xceed.Wpf.AvalonDock.Themes.VS2010.csproj", "{B3FC3E21-5F2D-4581-AEA2-59F671CFFC21}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xceed.Wpf.AvalonDock.Themes.VS2010", "Jade\libraries\AvalonDock\Version2.0\Xceed.Wpf.AvalonDock.Themes.VS2010\Xceed.Wpf.AvalonDock.Themes.VS2010.csproj", "{B3FC3E21-5F2D-4581-AEA2-59F671CFFC21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibClangCS", ""Jade\Clang\LibClangCS\LibClangCS.csproj", "{D68FAB6F-29E2-4159-B398-70559930AEB8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibClangCS", "Jade\Clang\LibClangCS\LibClangCS.csproj", "{D68FAB6F-29E2-4159-B398-70559930AEB8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CppCodeBrowser", ""Jade\Clang\CppCodeBrowser\CppCodeBrowser.csproj", "{4713D6FA-4B9D-4057-8F34-7F79D51258EA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CppCodeBrowser", "Jade\Clang\CppCodeBrowser\CppCodeBrowser.csproj", "{4713D6FA-4B9D-4057-8F34-7F79D51258EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CppCodeBrowserTest", "Jade\Clang\CppCodeBrowser\CppCodeBrowserTest\CppCodeBrowserTest.csproj", "{8CCFB00A-43A8-490B-AEF4-BAC620B9F0AE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibClangTest", "Jade\Clang\LibClangCS\LibClangTest\LibClangTest.csproj", "{CD4C82F8-9CD0-4A2F-8E8E-648ECBD92460}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,6 +93,14 @@ Global
 		{4713D6FA-4B9D-4057-8F34-7F79D51258EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4713D6FA-4B9D-4057-8F34-7F79D51258EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4713D6FA-4B9D-4057-8F34-7F79D51258EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CCFB00A-43A8-490B-AEF4-BAC620B9F0AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CCFB00A-43A8-490B-AEF4-BAC620B9F0AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CCFB00A-43A8-490B-AEF4-BAC620B9F0AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CCFB00A-43A8-490B-AEF4-BAC620B9F0AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD4C82F8-9CD0-4A2F-8E8E-648ECBD92460}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD4C82F8-9CD0-4A2F-8E8E-648ECBD92460}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD4C82F8-9CD0-4A2F-8E8E-648ECBD92460}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD4C82F8-9CD0-4A2F-8E8E-648ECBD92460}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -102,5 +114,7 @@ Global
 		{B3FC3E21-5F2D-4581-AEA2-59F671CFFC21} = {5BB6A2A8-226F-4B22-8FA8-E82D37B62659}
 		{D68FAB6F-29E2-4159-B398-70559930AEB8} = {584CC272-70D5-46F3-A950-972150643790}
 		{4713D6FA-4B9D-4057-8F34-7F79D51258EA} = {584CC272-70D5-46F3-A950-972150643790}
+		{8CCFB00A-43A8-490B-AEF4-BAC620B9F0AE} = {584CC272-70D5-46F3-A950-972150643790}
+		{CD4C82F8-9CD0-4A2F-8E8E-648ECBD92460} = {584CC272-70D5-46F3-A950-972150643790}
 	EndGlobalSection
 EndGlobal

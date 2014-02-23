@@ -1,44 +1,82 @@
-﻿using System;
+﻿using JadeUtils.IO;
+using LibClang;
+using System;
+using System.Collections.Generic;
 
 namespace CppCodeBrowser
-{
-    public interface IIndexBuilder : IDisposable
-    {
-        void IndexFile(string path, string[] compilerArgs);
-        IProjectIndex Index { get; }
-    }
-
+{       
     /// <summary>
     /// This is a simple synchronous implementation.
     /// </summary>
     public class IndexBuilder : IIndexBuilder
     {
+        private bool _disposed = false;
         private readonly ProjectIndex _index;
         private readonly LibClang.Index _libClangIndex;
+        private readonly HashSet<TranslationUnit> _allTus;
+
+        public event ItemIndexedEvent ItemIndexed;
+        public event ItemIndexingFailedEvent ItemIndexingFailed;
 
         public IndexBuilder()
         {
             _index = new ProjectIndex();
             _libClangIndex = new LibClang.Index(false, true);
+            _allTus = new HashSet<TranslationUnit>();
         }
 
         public void Dispose()
         {
-            //dispose translation units
+            if(_disposed) return;
+
+            foreach (TranslationUnit tu in _allTus)
+            {
+                tu.Dispose();
+            }
+            _allTus.Clear();
+            _disposed = true;
         }
 
-        public void IndexFile(string path, string[] compilerArgs)
+        public void AddFile(FilePath path, string[] compilerArgs)
         {
-            LibClang.TranslationUnit tu = new LibClang.TranslationUnit(_libClangIndex, path);
+            if (_disposed) return;
+
+            LibClang.TranslationUnit tu = new LibClang.TranslationUnit(_libClangIndex, path.Str);
 
             if (tu.Parse(compilerArgs) == false)
             {
                 tu.Dispose();
+                RaiseItemIndexingFailedEvent(path);
                 return;
             }
-            _index.AddSourceFile(path, tu);
+            _allTus.Add(tu);
+            IProjectItem item = _index.AddSourceFile(path, tu);
+            RaiseItemIndxedEvent(item);
         }
 
-        public IProjectIndex Index { get { return _index; } }
+        public IProjectIndex Index 
+        { 
+            get
+            {
+                if (_disposed) return null;
+                return _index; 
+            }
+        }
+
+        private void RaiseItemIndxedEvent(IProjectItem item)
+        {
+            if (_disposed) return;
+            ItemIndexedEvent handler = ItemIndexed;
+            if (handler != null)
+                handler(new ItemIndexedEventArgs(item));
+        }
+
+        private void RaiseItemIndexingFailedEvent(FilePath path)
+        {
+            if (_disposed) return;
+            ItemIndexingFailedEvent handler = ItemIndexingFailed;
+            if (handler != null)
+                handler(new ItemIndexingFailedEventArgs(path));
+        }
     }
 }

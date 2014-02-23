@@ -27,6 +27,6 @@ namespace JadeControls.Workspace.ViewModel
         
         public JadeUtils.IO.IFileHandle Handle { get { return _data.Handle; } }
 
-        public string Path { get { return _data.Path; } }
+        public string Path { get { return _data.Path.Str; } }
     }
 }

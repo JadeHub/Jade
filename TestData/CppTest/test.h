@@ -31,6 +31,7 @@ public:
 	Struct22 a22;
 
 	static	int j;
+	int ii;
 
 	void Fn();
 

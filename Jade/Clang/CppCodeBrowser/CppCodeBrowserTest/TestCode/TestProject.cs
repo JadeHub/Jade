@@ -16,8 +16,8 @@ namespace CppCodeBrowserTest
             IIndexBuilder ib = new IndexBuilder();
             Project proj = new Project("TestProject", ib);
 
-            proj.AddSourceFile("TestCode\\main.cpp", null);
-            proj.AddSourceFile("TestCode\\class_a.cpp", null);
+            /*proj.AddSourceFile("TestCode\\main.cpp", null);
+            proj.AddSourceFile("TestCode\\class_a.cpp", null);*/
 
             return proj;
         }

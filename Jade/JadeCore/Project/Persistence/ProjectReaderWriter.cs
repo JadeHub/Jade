@@ -70,7 +70,7 @@ namespace JadeCore.Persistence.Project
         {
             FileType result = new FileType();
             //Convert to relative path for storage in workspace
-            result.Path = JadeUtils.IO.PathUtils.CalculateRelativePath(projectDir + @"\", file.Path);
+            result.Path = JadeUtils.IO.PathUtils.CalculateRelativePath(projectDir + @"\", file.Path.Str);
             return result;
         }
 

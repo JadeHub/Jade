@@ -744,5 +744,6 @@ namespace LibClang
         internal static extern IntPtr clang_getDiagnosticSetFromTU(IntPtr Unit);  
 
         #endregion
+
     }
 }

@@ -8,6 +8,19 @@ ClassA::ClassA()
 {
 }
 
+void SomeClass::Fn()
+{
+	SomeClass a(8);
+	SomeClass* sc = new SomeClass();
+		
+	AStruct as;
+	AnEnum ae;
+	/*int sam = 
+		ReturnInt(7);	*/
+		
+//	int k = sam * 2;		
+}
+
 }
 
 

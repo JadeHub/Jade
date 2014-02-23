@@ -30,7 +30,8 @@ namespace JadeGui.DockingGui
             {
                 destPaneName = "LeftToolPanel";
             }
-            else if (anchorableToShow.Content is JadeControls.OutputControl.ViewModel.OutputViewModel)
+            else if (anchorableToShow.Content is JadeControls.OutputControl.ViewModel.OutputViewModel ||
+                    anchorableToShow.Content is JadeControls.SearchResultsControl.ViewModel.SearchResultsViewModel)
             {
                 destPaneName = "LowerToolPanel";
             }
