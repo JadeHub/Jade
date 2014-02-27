@@ -28,7 +28,9 @@
                                        DocumentsSource="{Binding Editor.Documents}"
                                        AnchorablesSource="{Binding ToolWindows}"
                                        ActiveContent="{Binding ActiveDockContent, Mode=TwoWay}">
-                           
+                <avalonDock:DockingManager.Theme>
+                    <avalonDock:AeroTheme/>
+                </avalonDock:DockingManager.Theme>
                 
                 <avalonDock:DockingManager.DocumentHeaderTemplate>
                     <DataTemplate>

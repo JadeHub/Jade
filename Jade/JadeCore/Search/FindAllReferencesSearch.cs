@@ -1,9 +1,9 @@
 ﻿using CppCodeBrowser;
+using LibClang;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Collections.ObjectModel;
-using LibClang;
+using System.Diagnostics;
 
 namespace JadeCore.Search
 {
@@ -51,6 +51,7 @@ namespace JadeCore.Search
             if (_searching)
                 throw new Exception("Attempt to perform reentrant search in FindAllReferencesSearch.");
 
+            HashSet<ICodeLocation> uniqueLocations = new HashSet<ICodeLocation>();
             _searching = true;
             foreach (LibClang.TranslationUnit tu in _projectIndex.TranslationUnits)
             {
@@ -61,9 +62,12 @@ namespace JadeCore.Search
                                         delegate(Cursor cursor, SourceRange range)
                                         {
                                             ICodeLocation loc = new CodeLocation(cursor.Location);
-                                            ISearchResult result = new CodeSearchResult(10, loc.Path, loc.Offset);
-                                            _results.Add(result);
-                                            Debug.WriteLine(result);
+                                            if (uniqueLocations.Add(loc))
+                                            {
+                                                ISearchResult result = new CodeSearchResult(10, loc.Path, loc.Offset);
+                                                _results.Add(result);
+                                                Debug.WriteLine(result);
+                                            }
                                             return true;
                                         });
                 }

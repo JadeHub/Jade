@@ -11,10 +11,10 @@
             </ComboBox>
         </ToolBar>
         <ScrollViewer>
-        <TextBlock 
+        <TextBox
             FontFamily="Consolas"
             FontSize="10pt"            
-            Text="{Binding Text}" Margin="3" />
+            Text="{Binding Text}" Margin="3"  />
         </ScrollViewer>
     </DockPanel>
 </UserControl>

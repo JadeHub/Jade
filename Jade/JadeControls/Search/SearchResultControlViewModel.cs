@@ -63,7 +63,7 @@ namespace JadeControls.SearchResultsControl.ViewModel
             }
             else 
             {
-                //RebuildString();
+                RebuildString();
             }
             OnPropertyChanged("Text");
         }
@@ -82,25 +82,21 @@ namespace JadeControls.SearchResultsControl.ViewModel
                 delegate(ISearchResult result) { return new ResultItemViewModel(result); });
 
             _items.CollectionChanged += SearchResults_CollectionChanged;
+            OnPropertyChanged("Text");
         }
         
         private void RebuildString()
         {
             _sb = new StringBuilder();
-            bool first = true;
+            
             foreach (ResultItemViewModel i in _items)
             {
-                if (!first)
+                if (_sb.Length > 0)
                 {
                     _sb.Append(Environment.NewLine);
 
                 }
-                else
-                {
-                    first = false;
-                }
                 _sb.Append(i.DisplayText);
-
             }
         }
 
@@ -114,6 +110,10 @@ namespace JadeControls.SearchResultsControl.ViewModel
             get
             {
                 return _sb.ToString();
+            }
+            set
+            {
+
             }
         }
     }
