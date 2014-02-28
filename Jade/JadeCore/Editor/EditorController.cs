@@ -5,54 +5,6 @@ using System.Linq;
 
 namespace JadeCore.Editor
 {
-    public class CodeLocation
-    {
-        public CodeLocation(int line, int column, int offset)
-        {
-            Line = line;
-            Column = column;
-            Offset = offset;
-        }
-
-        public int Line
-        {
-            get;
-            set;
-        }
-
-        public int Column
-        {
-            get;
-            set;
-        }
-
-        public int Offset
-        {
-            get;
-            set;
-        }
-
-        public override string ToString()
-        {
-            return string.Format("{0}:{1}", Line, Column);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is CodeLocation)
-            {
-                CodeLocation rhs = obj as CodeLocation;
-                return Offset == rhs.Offset;
-            }
-            return false;
-        }
-
-        public override int GetHashCode()
-        {
-            return Offset;
-        }
-    }
-
     public class EditorController : JadeCore.IEditorController
     {
         #region Data

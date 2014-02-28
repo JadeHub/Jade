@@ -27,7 +27,7 @@ namespace JadeControls.EditorControl.ViewModel
         /// <summary>
         /// Current location of cursor
         /// </summary>
-        private JadeCore.Editor.CodeLocation _caretLocation;
+        private int _caretOffset;
                 
         #endregion
 
@@ -41,7 +41,6 @@ namespace JadeControls.EditorControl.ViewModel
             _model = doc;
             _model.OnSaved += delegate { OnPropertyChanged("Modified"); };
             _selected = false;
-            _caretLocation = new JadeCore.Editor.CodeLocation(0, 0, 0);
         }
 
         public virtual void SetView(CodeEditor view)
@@ -56,7 +55,7 @@ namespace JadeControls.EditorControl.ViewModel
             _avDoc.TextChanged += _avDoc_TextChanged;
             
             //Initialise the view's caret location in case CaretLocation has already been set.
-            _view.CaretOffset = _caretLocation.Offset;
+            _view.CaretOffset = _caretOffset;
             //Track changes in the caret location
             _view.TextArea.Caret.PositionChanged += Caret_PositionChanged;
 
@@ -100,17 +99,17 @@ namespace JadeControls.EditorControl.ViewModel
             } 
         }
 
-        public JadeCore.Editor.CodeLocation CaretLocation
+        public int CaretOffset
         {
-            get { return _caretLocation;}
+            get { return _caretOffset; }
             set
             {
-                if (_caretLocation.Offset != value.Offset)
+                if (_caretOffset != value)
                 {
-                    _caretLocation = value;
-                    if(_view != null)
-                        _view.CaretOffset = value.Offset;
-                    OnPropertyChanged("CaretLocation");
+                    _caretOffset = value;
+                    if (_view != null)
+                        _view.CaretOffset = _caretOffset;
+                    OnPropertyChanged("CaretOffset");
                 }
             }
         }
@@ -133,10 +132,11 @@ namespace JadeControls.EditorControl.ViewModel
         /// Display the specified location
         /// </summary>
         /// <param name="loc"></param>
-        public void DisplayLocation(JadeCore.Editor.CodeLocation loc)
+        public void DisplayLocation(int offset, bool setFocus)
         {
-            CaretLocation = loc;
-           // _view.TextArea.Focus();           
+            CaretOffset = offset;
+            if (_view != null && setFocus)
+                _view.TextArea.Focus();
         }
 
         public void HighlightRange(int startOffset, int endOffset)
@@ -162,16 +162,14 @@ namespace JadeControls.EditorControl.ViewModel
 
         void Caret_PositionChanged(object sender, EventArgs e)
         {
-            if (_caretLocation.Offset != _view.TextArea.Caret.Offset)
+            if (_caretOffset != _view.TextArea.Caret.Offset)
             {
                 System.Diagnostics.Debug.WriteLine(string.Format("Line {0} Col {1} Offset{2}",
                                                 _view.TextArea.Caret.Line,
                                                 _view.TextArea.Caret.Column,
                                                 _view.TextArea.Caret.Offset));
-                _caretLocation.Line = _view.TextArea.Caret.Line;
-                _caretLocation.Column = _view.TextArea.Caret.Column;
-                _caretLocation.Offset = _view.TextArea.Caret.Offset;
-                OnPropertyChanged("CaretLocation");
+                _caretOffset = _view.TextArea.Caret.Offset;
+                OnPropertyChanged("CaretOffset");
             }
         }
 

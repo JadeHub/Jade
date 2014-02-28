@@ -28,6 +28,27 @@ namespace JadeCore
         }
     }
 
+    public class DisplayCodeLocationParams
+    {
+        public CppCodeBrowser.ICodeLocation Location
+        {
+            get;
+            private set;
+        }
+
+        public bool SetFocus
+        {
+            get;
+            private set;
+        }
+
+        public DisplayCodeLocationParams(CppCodeBrowser.ICodeLocation location, bool setFocus)
+        {
+            Location = location;
+            SetFocus = setFocus;
+        }
+    }
+
     public interface IJadeCommandHandler
     {
         #region Commands
@@ -101,7 +122,7 @@ namespace JadeCore
         void OnCloseAllDocuments();
         bool CanCloseAllDocuments();
 
-        void OnDisplayCodeLocation(object param);
+        void OnDisplayCodeLocation(DisplayCodeLocationParams param);
 
         #endregion
     }

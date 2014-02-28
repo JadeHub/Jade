@@ -134,8 +134,7 @@ namespace JadeGui.ViewModels
         }
 
         #endregion
-
-        
+          
 
         public JadeCommandAdaptor Commands { get { return _commands; } }
 
@@ -449,13 +448,13 @@ namespace JadeGui.ViewModels
             return _editorController.HasOpenDocuments;
         }
 
-        public void OnDisplayCodeLocation(object param)
+        public void OnDisplayCodeLocation(JadeCore.DisplayCodeLocationParams param)
         {
-            CppCodeBrowser.ICodeLocation loc = (CppCodeBrowser.ICodeLocation)param;            
+            CppCodeBrowser.ICodeLocation loc = param.Location;// (CppCodeBrowser.ICodeLocation)param;            
             IFileHandle f = JadeCore.Services.Provider.FileService.MakeFileHandle(loc.Path);
             OnOpenDocument(f);
             if (_editorViewModel.SelectedDocument != null)
-                _editorViewModel.SelectedDocument.DisplayLocation(new JadeCore.Editor.CodeLocation(0, 0, loc.Offset));            
+                _editorViewModel.SelectedDocument.DisplayLocation(loc.Offset, param.SetFocus);            
         }
         /*
         public void OnHighlightCodeLocation(JadeUtils.IO.FilePath path, int startOffset, int endOffset)

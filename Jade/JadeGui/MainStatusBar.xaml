@@ -6,7 +6,7 @@
     <StatusBarItem DockPanel.Dock="Right" Width="100">
         <StackPanel Orientation="Horizontal">
             <TextBlock Text="Offset "/>
-            <TextBlock Text="{Binding Editor.SelectedDocument.CaretLocation.Offset}"/>
+            <TextBlock Text="{Binding Editor.SelectedDocument.CaretOffset}"/>
         </StackPanel>
     </StatusBarItem>
     <StatusBarItem DockPanel.Dock="Right" Width="100">

@@ -10,11 +10,16 @@
             <ComboBox>                
             </ComboBox>
         </ToolBar>
+        <!--
         <ScrollViewer>
         <TextBox
             FontFamily="Consolas"
             FontSize="10pt"            
             Text="{Binding Text}" Margin="3"  />
         </ScrollViewer>
+        -->
+        <ListBox ItemsSource="{Binding Items}"
+                 SelectedItem="{Binding SelectedItem}"
+                 MouseDoubleClick="ListBox_MouseDoubleClick"/>
     </DockPanel>
 </UserControl>

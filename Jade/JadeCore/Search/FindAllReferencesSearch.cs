@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using JadeUtils.IO;
 
 namespace JadeCore.Search
 {
@@ -51,7 +52,7 @@ namespace JadeCore.Search
             if (_searching)
                 throw new Exception("Attempt to perform reentrant search in FindAllReferencesSearch.");
 
-            HashSet<ICodeLocation> uniqueLocations = new HashSet<ICodeLocation>();
+            HashSet<LibClang.SourceLocation> uniqueLocations = new HashSet<LibClang.SourceLocation>();
             _searching = true;
             foreach (LibClang.TranslationUnit tu in _projectIndex.TranslationUnits)
             {
@@ -60,16 +61,17 @@ namespace JadeCore.Search
                 {                    
                     tu.FindAllReferences(c,
                                         delegate(Cursor cursor, SourceRange range)
-                                        {
-                                            ICodeLocation loc = new CodeLocation(cursor.Location);
-                                            if (uniqueLocations.Add(loc))
+                                        {                                            
+                                            if (uniqueLocations.Add(cursor.Location))
                                             {
-                                                ISearchResult result = new CodeSearchResult(10, loc.Path, loc.Offset);
+                                                ICodeLocation location = new CodeLocation(cursor.Location);
+                                                ISearchResult result = new CodeSearchResult(10, location, cursor.Extent.Length);
                                                 _results.Add(result);
                                                 Debug.WriteLine(result);
                                             }
                                             return true;
                                         });
+                    
                 }
             }
             _searching = false;

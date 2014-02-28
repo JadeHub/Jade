@@ -29,12 +29,12 @@ namespace JadeControls.EditorControl.ViewModel
             commandBindings.Add(new CommandBinding(EditorCommands.JumpTo,
                                         delegate(object target, ExecutedRoutedEventArgs a)
                                         {
-                                            OnJumpTo(this.CaretLocation);
+                                            OnJumpTo(this.CaretOffset);
                                             a.Handled = true;
                                         },
                                         delegate(object target, CanExecuteRoutedEventArgs a)
                                         {
-                                            a.CanExecute = CanJumpTo(this.CaretLocation);
+                                            a.CanExecute = CanJumpTo(this.CaretOffset);
                                             a.Handled = true;
                                         }));
 
@@ -42,43 +42,45 @@ namespace JadeControls.EditorControl.ViewModel
             commandBindings.Add(new CommandBinding(EditorCommands.FindAllReferences,
                                         delegate(object target, ExecutedRoutedEventArgs a)
                                         {
-                                            OnFindAllReferences(this.CaretLocation);
+                                            OnFindAllReferences(this.CaretOffset);
                                             a.Handled = true;
                                         },
                                         delegate(object target, CanExecuteRoutedEventArgs a)
                                         {
-                                            a.CanExecute = CanFindAllReferences(this.CaretLocation);
+                                            a.CanExecute = CanFindAllReferences(this.CaretOffset);
                                             a.Handled = true;
                                         }));
         }
 
-        private void OnJumpTo(JadeCore.Editor.CodeLocation loc)
+        private void OnJumpTo(int offset)
         {
-            CppCodeBrowser.ICodeLocation location = new CppCodeBrowser.CodeLocation(Document.File.Path.Str, loc.Offset);
+            CppCodeBrowser.ICodeLocation location = new CppCodeBrowser.CodeLocation(Document.File.Path.Str, offset);
             List<LibClang.Cursor> cursors = new List<LibClang.Cursor>(CppCodeBrowser.ProjectIndex.GetCursors(_sourceFileProjectItem.TranslationUnits, location));
 
             HashSet<CppCodeBrowser.ICodeLocation> results = new HashSet<CppCodeBrowser.ICodeLocation>();
+
             _jumpToBrowser.BrowseFrom(cursors,
                 delegate(CppCodeBrowser.ICodeLocation result)
                                         {
                                             results.Add(result);
                                             return true;
                                         });
+
             if (results.Count() > 0)
             {
                 JadeCore.IJadeCommandHandler cmdHandler = JadeCore.Services.Provider.CommandHandler;
-                cmdHandler.OnDisplayCodeLocation(results.First());
+                cmdHandler.OnDisplayCodeLocation(new JadeCore.DisplayCodeLocationParams(results.First(), true));
             }
         }
 
-        private bool CanJumpTo(JadeCore.Editor.CodeLocation loc)
+        private bool CanJumpTo(int offset)
         {
             return true;
         }
 
-        private void OnFindAllReferences(JadeCore.Editor.CodeLocation l)
+        private void OnFindAllReferences(int offset)
         {
-            CppCodeBrowser.CodeLocation location = new CppCodeBrowser.CodeLocation(Document.File.Path.Str, l.Offset);
+            CppCodeBrowser.CodeLocation location = new CppCodeBrowser.CodeLocation(Document.File.Path.Str, offset);
 
             List<LibClang.Cursor> cursors = new List<LibClang.Cursor>(CppCodeBrowser.ProjectIndex.GetCursors(_projectIndex.TranslationUnits, location));
 
@@ -87,7 +89,7 @@ namespace JadeControls.EditorControl.ViewModel
             search.Start();
         }
 
-        private bool CanFindAllReferences(JadeCore.Editor.CodeLocation loc)
+        private bool CanFindAllReferences(int offset)
         {
             return true;
         }

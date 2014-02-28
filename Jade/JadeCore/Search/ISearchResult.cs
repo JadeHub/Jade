@@ -11,7 +11,8 @@ namespace JadeCore.Search
     {
         uint Rank { get; }
         string Summary { get; }
-        FilePath Path { get; }
-        int FileOffset { get; }
+
+        CppCodeBrowser.ICodeLocation Location { get; }
+        int Extent { get; }
     }
 }

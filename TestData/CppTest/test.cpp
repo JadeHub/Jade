@@ -6,6 +6,8 @@ void GlobalFn()
 
 namespace Test {
 
+int SomeClass::j = 0;
+
 SomeClass::SomeClass()
 : ii(0)
 {
@@ -45,27 +47,4 @@ int ReturnInt(int i)
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

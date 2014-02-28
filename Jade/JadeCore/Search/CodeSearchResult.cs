@@ -1,25 +1,27 @@
 ﻿using JadeUtils.IO;
+using CppCodeBrowser;
 
 namespace JadeCore.Search
 {
     public class CodeSearchResult : ISearchResult
     {
-        public CodeSearchResult(uint rank, FilePath path, int fileOffset)
+        public CodeSearchResult(uint rank, ICodeLocation location, int extent)
         {
             Rank = rank;
             Summary = Summary;
-            Path = path;
-            FileOffset = fileOffset;
+            Location = location;
+            Extent = extent;
         }
 
         public uint Rank { get; private set; }
         public string Summary { get; private set; }
-        public FilePath Path { get; private set; }
-        public int FileOffset { get; private set; }
+
+        public CppCodeBrowser.ICodeLocation Location { get; private set; }
+        public int Extent { get; private set; }
 
         public override string ToString()
         {
-            return Path.Str + "(" + FileOffset + ")";
+            return Location.Path.Str + "(" + Location.Offset + ":" + (Location.Offset + Extent) + ")";
         }
     }
 }

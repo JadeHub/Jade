@@ -11,5 +11,11 @@ namespace JadeControls.SearchResultsControl
         {
             InitializeComponent();
         }
+
+        private void ListBox_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            ViewModel.SearchResultsViewModel vm = (ViewModel.SearchResultsViewModel)DataContext;
+            vm.OnDoubleClick();
+        }
     }
 }
