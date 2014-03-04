@@ -54,7 +54,7 @@ namespace JadeControls.EditorControl.ViewModel
             _avDoc.Text = _model.Content;
             _avDoc.TextChanged += _avDoc_TextChanged;
             
-            //Initialise the view's caret location in case CaretLocation has already been set.
+            //Initialise the view's caret location in case CaretOffset has already been set.
             _view.CaretOffset = _caretOffset;
             //Track changes in the caret location
             _view.TextArea.Caret.PositionChanged += Caret_PositionChanged;

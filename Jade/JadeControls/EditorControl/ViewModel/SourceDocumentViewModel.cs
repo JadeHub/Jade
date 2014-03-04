@@ -12,6 +12,7 @@ namespace JadeControls.EditorControl.ViewModel
     {
         private CppCodeBrowser.ICodeBrowser _jumpToBrowser;
         private DiagnosticHighlighter _diagnosticHighlighter;
+        private SearchHighlighter _searchHighlighter;
         private CppCodeBrowser.IProjectItem _sourceFileProjectItem;
         private CppCodeBrowser.IProjectIndex _projectIndex;
 
@@ -103,6 +104,7 @@ namespace JadeControls.EditorControl.ViewModel
             {
              //   ASTHighlighter _astHighlighter = new ASTHighlighter(_fileBrowser.TranslationUnits.First().Cursor, underliner, _fileBrowser.Path.Str);
                 _diagnosticHighlighter = new DiagnosticHighlighter(_sourceFileProjectItem, underliner);
+                _searchHighlighter = new SearchHighlighter(_sourceFileProjectItem, underliner);
             }            
         }
     }

@@ -13,6 +13,7 @@ namespace JadeCore.Search
         void RemoveSearch(ISearch search);
 
         ReadOnlyObservableCollection<ISearch> Searches { get; }
+        ISearch Current { get; }
     }
 
     public class SearchController : ISearchController
@@ -21,6 +22,7 @@ namespace JadeCore.Search
 
         private ObservableCollection<ISearch> _searches;
         private ReadOnlyObservableCollection<ISearch> _readonlySearches;
+        private ISearch _currentSearch;
 
         #endregion
 
@@ -37,6 +39,11 @@ namespace JadeCore.Search
             get { return _readonlySearches; }
         }
 
+        public ISearch Current 
+        {
+            get { return _currentSearch; }
+        }
+
         #endregion
 
         #region Public Methods
@@ -44,6 +51,7 @@ namespace JadeCore.Search
         public void RegisterSearch(ISearch search)
         {
             _searches.Add(search);
+            _currentSearch = search;
         }
 
         public void RemoveSearch(ISearch search)

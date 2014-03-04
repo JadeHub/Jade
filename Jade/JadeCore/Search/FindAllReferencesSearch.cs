@@ -64,8 +64,8 @@ namespace JadeCore.Search
                                         {                                            
                                             if (uniqueLocations.Add(cursor.Location))
                                             {
-                                                ICodeLocation location = new CodeLocation(cursor.Location);
-                                                ISearchResult result = new CodeSearchResult(10, location, cursor.Extent.Length);
+                                                ICodeLocation location = new CodeLocation(range.Start);
+                                                ISearchResult result = new CodeSearchResult(10, location, range.Length);
                                                 _results.Add(result);
                                                 Debug.WriteLine(result);
                                             }
