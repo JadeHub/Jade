@@ -68,7 +68,9 @@
     <Compile Include="Search\SearchResultControl.xaml.cs">
       <DependentUpon>SearchResultControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Search\SearchResultControlViewModel.cs" />
+    <Compile Include="Search\SearchResultsPaneViewModel.cs" />
+    <Compile Include="Search\SearchResultViewModel.cs" />
+    <Compile Include="Search\SearchViewModel.cs" />
     <Compile Include="Workspace Explorer\AddProjectFileWindow\AddProjectFileViewModel.cs" />
     <Compile Include="Workspace Explorer\AddProjectFileWindow\AddProjectFileWindow.xaml.cs">
       <DependentUpon>AddProjectFileWindow.xaml</DependentUpon>

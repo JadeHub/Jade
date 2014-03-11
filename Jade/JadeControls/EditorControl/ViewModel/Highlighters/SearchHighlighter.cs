@@ -62,7 +62,8 @@ namespace JadeControls.EditorControl.ViewModel
             if (result.Location.Path == _projectItem.Path)
             {
                 Highlighting.IHighlightedRange hr = _highlighter.AddRange(result.Location.Offset, result.Extent);
-                hr.ForegroundColour = System.Windows.Media.Colors.Blue;
+
+                hr.BackgroundColour = System.Windows.Media.Colors.LemonChiffon;
                 _ranges.Add(hr);
             }
         }

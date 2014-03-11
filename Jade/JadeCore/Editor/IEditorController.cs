@@ -18,6 +18,11 @@ namespace JadeCore
         void OpenDocument(IFileHandle file);
         void SaveActiveDocument();
         void CloseAllDocuments();
-        void CloseActiveDocument();        
+        void CloseActiveDocument();
+        
+        /// <summary>
+        /// Close all documents, clear cache etc
+        /// </summary>
+        void Reset();
     }
 }

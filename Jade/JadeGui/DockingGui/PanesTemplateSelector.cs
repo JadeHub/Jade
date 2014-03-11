@@ -56,7 +56,7 @@ namespace JadeGui.DockingGui
             if (item is OutputViewModel)
                 return OutputViewTemplate;
 
-            if (item is SearchResultsViewModel)
+            if (item is SearchResultsPaneViewModel)
                 return SearchResultsViewTemplate;
             
             return base.SelectTemplate(item, container);

@@ -91,11 +91,31 @@ namespace JadeControls.EditorControl.Highlighting
         {
             if (textView.VisualLines.Count == 0)
                 return;
+            
             int viewStart = textView.VisualLines.First().FirstDocumentLine.Offset;
             int viewEnd = textView.VisualLines.Last().LastDocumentLine.EndOffset;
-            foreach (HighlightedRange hl in _highlights.FindOverlappingSegments(viewStart, viewEnd - viewStart))
+            foreach (IHighlightedRange hl in _highlights.FindOverlappingSegments(viewStart, viewEnd - viewStart))
             {
-                DrawUnderline(textView, drawingContext, hl, hl.ForegroundColour.Value);
+                if (hl.BackgroundColour != null)
+                {
+                    BackgroundGeometryBuilder geoBuilder = new BackgroundGeometryBuilder();
+                    geoBuilder.AlignToWholePixels = true;
+                    geoBuilder.CornerRadius = 3;
+                    geoBuilder.AddSegment(textView, hl);
+                    Geometry geometry = geoBuilder.CreateGeometry();
+                    if (geometry != null)
+                    {
+                        Color color = hl.BackgroundColour.Value;
+                        SolidColorBrush brush = new SolidColorBrush(color);
+                        brush.Freeze();
+                        drawingContext.DrawGeometry(brush, null, geometry);
+                    }
+                }
+
+                if (hl.ForegroundColour != null)
+                {
+                    DrawUnderline(textView, drawingContext, hl, hl.ForegroundColour.Value);
+                }
             }
         }
 

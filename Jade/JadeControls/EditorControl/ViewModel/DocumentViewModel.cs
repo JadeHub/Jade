@@ -36,7 +36,7 @@ namespace JadeControls.EditorControl.ViewModel
         protected DocumentViewModel(IEditorDoc doc)
         {
             Title = doc.Name;
-            ContentId = doc.Path.Str;
+            ContentId = doc.File.ToString();
             IconSource = ISC.ConvertFromInvariantString("pack://application:,,,/Images/File.png") as ImageSource;
             _model = doc;
             _model.OnSaved += delegate { OnPropertyChanged("Modified"); };
@@ -71,7 +71,7 @@ namespace JadeControls.EditorControl.ViewModel
 
         #region Public Properties
 
-        public string Path { get { return _model.Path.Str; } }
+        public string Path { get { return _model.File.ToString(); } }
 
         public bool Modified
         {

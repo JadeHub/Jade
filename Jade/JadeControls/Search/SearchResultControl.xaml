@@ -7,19 +7,11 @@
              d:DesignHeight="150" d:DesignWidth="800">
     <DockPanel Margin="0">
         <ToolBar DockPanel.Dock="Top">
-            <ComboBox>                
+            <ComboBox ItemsSource="{Binding Searches}">
             </ComboBox>
-        </ToolBar>
-        <!--
-        <ScrollViewer>
-        <TextBox
-            FontFamily="Consolas"
-            FontSize="10pt"            
-            Text="{Binding Text}" Margin="3"  />
-        </ScrollViewer>
-        -->
-        <ListBox ItemsSource="{Binding Items}"
-                 SelectedItem="{Binding SelectedItem}"
+        </ToolBar>        
+        <ListBox ItemsSource="{Binding CurrentSearch.Items}"
+                 SelectedItem="{Binding CurrentSearch.SelectedItem}"
                  MouseDoubleClick="ListBox_MouseDoubleClick"/>
     </DockPanel>
 </UserControl>

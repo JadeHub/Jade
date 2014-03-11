@@ -8,7 +8,7 @@ namespace JadeCore.Editor
     {
         #region Data
 
-        private IFileHandle _file;
+        private ITextDocument _document;        
         private string _content;
         private bool _modified;
 
@@ -16,9 +16,9 @@ namespace JadeCore.Editor
 
         #region Constructor
 
-        public EditorSourceDocument(IFileHandle file)
+        public EditorSourceDocument(ITextDocument document)
         {
-            _file = file;
+            _document = document;
         }
 
         #endregion
@@ -53,12 +53,12 @@ namespace JadeCore.Editor
 
         public void Save()
         {
-            using (FileStream fs = new FileStream(Path.Str, FileMode.Create, FileAccess.Write, FileShare.Write))
+            using (FileStream fs = new FileStream(File.Path.Str, FileMode.Create, FileAccess.Write, FileShare.Write))
             {
                 using (StreamWriter writer = new StreamWriter(fs, System.Text.Encoding.ASCII))
                 {
-                    System.Diagnostics.Debug.Write(_content);
-                    writer.Write(_content);                    
+                    System.Diagnostics.Debug.Write(Content);
+                    writer.Write(Content);
                     Modified = false;
                     RaiseOnSaved();
                 }
@@ -71,17 +71,12 @@ namespace JadeCore.Editor
 
         public string Name
         {
-            get { return _file.Name; }
-        }
-
-        public FilePath Path
-        {
-            get { return _file.Path; }
+            get { return _document.Name; }
         }
 
         public IFileHandle File
         {
-            get { return _file; }
+            get { return _document.File; }
         }
 
         public bool Modified
@@ -100,11 +95,7 @@ namespace JadeCore.Editor
         {
             get
             {
-                if (_content == null)
-                {
-                    Load();
-                }
-                return _content;
+                return Modified ? _content : _document.Content;
             }
 
             set
@@ -116,19 +107,7 @@ namespace JadeCore.Editor
 
         #endregion
 
-        #region Private Methods
-
-        private void Load()
-        {
-            using (FileStream fs = new FileStream(Path.Str, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                using (StreamReader reader = new StreamReader(fs, System.Text.Encoding.ASCII, false))
-                { 
-                    _content = reader.ReadToEnd();
-                }
-            }
-        }
-
-        #endregion
+        public void AddFileObserver(IFileObserver observer) { }
+        public void RemoveFileObserver(IFileObserver observer) { }
     }
 }

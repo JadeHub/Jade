@@ -9,16 +9,18 @@ namespace JadeCore.Editor
     {
         #region Data
 
-        private Dictionary<FilePath, IEditorDoc> _openDocuments;
+        private Dictionary<IFileHandle, IEditorDoc> _allDocuments;
+        private Dictionary<IFileHandle, IEditorDoc> _openDocuments;
         private IEditorDoc _activeDocument;
-
+                
         #endregion
 
         #region Constructor
 
         public EditorController()
         {
-            _openDocuments = new Dictionary<FilePath, IEditorDoc>();
+            _openDocuments = new Dictionary<IFileHandle, IEditorDoc>();
+            _allDocuments = new Dictionary<IFileHandle, IEditorDoc>();
         }
 
         #endregion
@@ -62,18 +64,17 @@ namespace JadeCore.Editor
 
         public void OpenDocument(IFileHandle file)
         {
-            if (_openDocuments.ContainsKey(file.Path) == false)
+            if (_openDocuments.ContainsKey(file) == false)
             {
-                //A new document
-                IEditorDoc doc = new EditorSourceDocument(file);
-                _openDocuments.Add(file.Path, doc);
+                IEditorDoc doc = FindOrAddDocument(file);
+                _openDocuments.Add(file, doc);
                 OnDocumentOpen(doc);
                 ActiveDocument = doc;                
             }
             //this doc is already open, if it's not the active document, activate it
             else if(ActiveDocument == null || ActiveDocument.File != file)
             {
-                ActiveDocument = _openDocuments[file.Path];
+                ActiveDocument = _openDocuments[ActiveDocument.File];
             }
          }
 
@@ -99,20 +100,36 @@ namespace JadeCore.Editor
             }
         }
 
-        public void CloseDocument(IEditorDoc doc)
+        private void CloseDocument(IEditorDoc doc)
         {
-            if (_openDocuments.ContainsKey(doc.Path) == false)
-                return;
-
-            _openDocuments.Remove(doc.Path);
+            _openDocuments.Remove(doc.File);
             if (ActiveDocument != null && ActiveDocument.Equals(doc))
                 ActiveDocument = null;
             doc.Close();
         }
 
+        public void Reset()
+        {
+            CloseAllDocuments();
+            _allDocuments.Clear();
+        }
+
         #endregion
 
         #region Private Methods
+
+        private IEditorDoc FindOrAddDocument(IFileHandle file)
+        {
+            IEditorDoc result;
+
+            if(!_allDocuments.TryGetValue(file, out result))
+            {
+                ITextDocument doc = Services.Provider.ContentProvider.OpenTextDocument(file);
+                result = new EditorSourceDocument(doc);
+                _allDocuments.Add(file, result);
+            }
+            return result;
+        }
 
         private void OnDocumentOpen(IEditorDoc doc)
         {

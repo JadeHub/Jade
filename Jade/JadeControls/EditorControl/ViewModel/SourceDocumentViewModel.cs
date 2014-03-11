@@ -20,7 +20,7 @@ namespace JadeControls.EditorControl.ViewModel
             : base(doc)
         {
             _jumpToBrowser = new CppCodeBrowser.JumpToBrowser(index);
-            _sourceFileProjectItem = index.FindProjectItem(doc.Path);
+            _sourceFileProjectItem = index.FindProjectItem(doc.File.Path);
             _projectIndex = index;
         }
 

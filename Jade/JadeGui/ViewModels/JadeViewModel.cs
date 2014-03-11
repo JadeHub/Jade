@@ -32,7 +32,7 @@ namespace JadeGui.ViewModels
         private OutputViewModel _outputViewModel;
 
         private JadeCore.Search.ISearchController _searchController;
-        private SearchResultsViewModel _seachResultsViewModel;
+        private SearchResultsPaneViewModel _seachResultsViewModel;
 
         private Window _view;
 
@@ -54,7 +54,7 @@ namespace JadeGui.ViewModels
             _outputViewModel = new OutputViewModel(_outputController);
 
             _searchController = JadeCore.Services.Provider.SearchController;
-            _seachResultsViewModel = new SearchResultsViewModel(_searchController);
+            _seachResultsViewModel = new SearchResultsPaneViewModel(_searchController);
 
             _commands = new JadeCommandAdaptor(this);
             _view = view;
@@ -174,7 +174,7 @@ namespace JadeGui.ViewModels
 
         public OutputViewModel Output { get { return _outputViewModel; } }
 
-        public SearchResultsViewModel SearchResults { get { return _seachResultsViewModel; } }
+        public SearchResultsPaneViewModel SearchResults { get { return _seachResultsViewModel; } }
 
         #endregion
 
@@ -195,19 +195,19 @@ namespace JadeGui.ViewModels
         #endregion // RequestClose [event]
 
         #region Workspace
-
+        /*
         public WorkspaceViewModel Workspace
         {
             get { return _currentWorkspace; }
-        }
-
-        public JadeCore.Workspace.IWorkspaceController WorkspaceController
+        }*/
+        /*
+        private JadeCore.Workspace.IWorkspaceController WorkspaceController
         {
             get
             {
                 return _workspaceController;
             }
-        }
+        }*/
         
         #endregion
 
@@ -234,7 +234,7 @@ namespace JadeGui.ViewModels
             {
                 try
                 {
-                    WorkspaceController.NewWorkspace(name);
+                    _workspaceController.NewWorkspace(name);
                 }
                 catch (Exception e)
                 {
@@ -245,12 +245,13 @@ namespace JadeGui.ViewModels
 
         public void OnCloseWorkspace()
         {
-            WorkspaceController.CloseWorkspace();
+            _workspaceController.CloseWorkspace();
+            //_editorController.Reset();
         }
 
         public bool CanCloseWorkspace()
         {
-            return WorkspaceController.WorkspaceOpen;
+            return _workspaceController.WorkspaceOpen;
         }
 
         public void OnPromptOpenWorkspace()
@@ -263,7 +264,7 @@ namespace JadeGui.ViewModels
 
             try
             {
-                WorkspaceController.OpenWorkspace(handle);
+                _workspaceController.OpenWorkspace(handle);
             }
             catch (Exception e)
             {
@@ -281,7 +282,7 @@ namespace JadeGui.ViewModels
             try
             {
                 IFileHandle handle = JadeCore.Services.Provider.FileService.MakeFileHandle(path);
-                WorkspaceController.OpenWorkspace(handle);
+                _workspaceController.OpenWorkspace(handle);
 
             }
             catch (Exception e)
@@ -303,12 +304,12 @@ namespace JadeGui.ViewModels
                 if (JadeCore.GuiUtils.PromptSaveFile(".jws", "Jade Workspace files (.jws)|*.jws", "", out path) == false)
                     return;
             }
-            WorkspaceController.SaveWorkspace(path);
+            _workspaceController.SaveWorkspace(path);
         }
 
         public bool CanSaveWorkspace()
         {
-            return WorkspaceController.RequiresSave;
+            return _workspaceController.RequiresSave;
         }
 
         public void OnSaveAsWorkspace()
@@ -316,13 +317,13 @@ namespace JadeGui.ViewModels
             string path;
             if (JadeCore.GuiUtils.PromptSaveFile(".jws", "Jade Workspace files (.jws)|*.jws", "", out path))
             {
-                WorkspaceController.SaveWorkspace(path);
+                _workspaceController.SaveWorkspace(path);
             }
         }
 
         public bool CanSaveAsWorkspace()
         {
-            return WorkspaceController.WorkspaceOpen;
+            return _workspaceController.WorkspaceOpen;
         }
 
         public void OnViewLineNumbers()
@@ -363,7 +364,7 @@ namespace JadeGui.ViewModels
 
             try
             {
-                _editorController.OpenDocument(handle);
+                OnOpenDocument(handle);
             }
             catch (Exception e)
             {
@@ -391,7 +392,7 @@ namespace JadeGui.ViewModels
             string path;
             if (JadeCore.GuiUtils.PromptSaveFile(".c#", "C# Source files (.cs)|*.cs", "", out path))
             {
-                //WorkspaceController.SaveWorkspaceAs(path);
+                _workspaceController.SaveWorkspace(path);
             }
         }
 
@@ -428,7 +429,7 @@ namespace JadeGui.ViewModels
             if (_editorController.ActiveDocument.Modified)
             { 
                 List<string> files = new List<string>();
-                files.Add(_editorController.ActiveDocument.Path.Str);
+                files.Add(_editorController.ActiveDocument.File.ToString());
 
                 bool? result = PromptSaveFiles(files);
 
@@ -450,7 +451,7 @@ namespace JadeGui.ViewModels
 
         public void OnDisplayCodeLocation(JadeCore.DisplayCodeLocationParams param)
         {
-            CppCodeBrowser.ICodeLocation loc = param.Location;// (CppCodeBrowser.ICodeLocation)param;            
+            CppCodeBrowser.ICodeLocation loc = param.Location;
             IFileHandle f = JadeCore.Services.Provider.FileService.MakeFileHandle(loc.Path);
             OnOpenDocument(f);
             if (_editorViewModel.SelectedDocument != null)
@@ -478,7 +479,7 @@ namespace JadeGui.ViewModels
         {
             if (_editorController.ModifiedDocuments.Any())
             {
-                bool? result = PromptSaveFiles(_editorController.ModifiedDocuments.Select(doc => doc.Path.Str));
+                bool? result = PromptSaveFiles(_editorController.ModifiedDocuments.Select(doc => doc.File.ToString()));
                 if (result == true)
                 {
                     //User asked to save files

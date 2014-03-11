@@ -66,6 +66,15 @@
     <Compile Include="Search\ISearchProvider.cs" />
     <Compile Include="Search\ISearchResult.cs" />
     <Compile Include="Search\SearchService.cs" />
+    <Compile Include="ContentProvider\IContentProvider.cs" />
+    <Compile Include="TextDocument\ITextDocument.cs" />
+    <Compile Include="TextDocument\ITextDocumentCache.cs" />
+    <Compile Include="TextDocument\TextDocument.cs" />
+    <Compile Include="TextDocument\TextDocumentCache.cs" />
+    <Compile Include="Workspace\Folder.cs" />
+    <Compile Include="Workspace\IFolder.cs" />
+    <Compile Include="Workspace\IItem.cs" />
+    <Compile Include="Workspace\IWorkspace.cs" />
     <Compile Include="Workspace\IWorkspaceController.cs" />
     <Compile Include="Output\Output.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -79,6 +88,7 @@
     <Compile Include="UserInput.xaml.cs">
       <DependentUpon>UserInput.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Workspace\ProjectItem.cs" />
     <Compile Include="Workspace\Workspace.cs" />
     <Compile Include="Workspace\WorkspaceController.cs" />
   </ItemGroup>
@@ -100,6 +110,10 @@
     <ProjectReference Include="..\Clang\CppCodeBrowser\CppCodeBrowser.csproj">
       <Project>{4713d6fa-4b9d-4057-8f34-7f79d51258ea}</Project>
       <Name>CppCodeBrowser</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\libraries\AvalonEdit\ICSharpCode.AvalonEdit\ICSharpCode.AvalonEdit.csproj">
+      <Project>{6c55b776-26d4-4db3-a6ab-87e783b2f3d1}</Project>
+      <Name>ICSharpCode.AvalonEdit</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

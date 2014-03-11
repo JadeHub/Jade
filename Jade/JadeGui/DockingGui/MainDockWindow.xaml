@@ -12,7 +12,7 @@
         xmlns:JadeCtrlsEditor="clr-namespace:JadeControls.EditorControl;assembly=JadeControls"
         xmlns:JadeCtrlsConv="clr-namespace:JadeControls.Converters;assembly=JadeControls"
         xmlns:JadeCore="clr-namespace:JadeCore;assembly=JadeCore"
-        Title="MainDockWindow" Height="300" Width="300">
+        Title="{Binding MainWindowTitle}" Height="300" Width="300">
     <Window.Resources>
         <BitmapImage x:Key="DeleteIconSource" UriSource="pack://application:,,,/Images/RightArrow.png" />
         <avalonDock:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
