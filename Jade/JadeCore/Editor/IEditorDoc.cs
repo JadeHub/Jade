@@ -8,14 +8,16 @@ namespace JadeCore
     /// The file representation used by the EditorController
     /// EditorSourceDocument is implementation for source files
     /// </summary>
-    public interface IEditorDoc : ITextDocument
+    public interface IEditorDoc
     {
         event EventHandler OnClosing;
-        event EventHandler OnSaved;
+        
+        string Name { get; }
+        bool Modified { get; }
+        IFileHandle File { get; }
 
-        bool Modified { get; set; }
-        new string Content { get; set; }
-
+        ITextDocument TextDocument { get; }
+     
         void Close();
         void Save();
     }

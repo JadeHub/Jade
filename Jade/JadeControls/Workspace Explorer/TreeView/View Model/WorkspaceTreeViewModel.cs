@@ -205,7 +205,7 @@ namespace JadeControls.Workspace.ViewModel
             if (node != null && node is File)
             {
                 File f = node as File;
-                JadeCore.Commands.OpenDocument.Execute(f.Handle, null);
+                ApplicationCommands.Open.Execute(f.Handle, null);
             }
         }
     }

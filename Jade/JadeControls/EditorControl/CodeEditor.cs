@@ -10,14 +10,10 @@ namespace JadeControls.EditorControl
     /// </summary>
     public class CodeEditor : TextEditor
     {
-        private bool _firstLoad = true;
-
         public CodeEditor()
         {
             ShowLineNumbers = true;            
             TextArea.MouseRightButtonDown += TextArea_MouseRightButtonDown;
-            this.Loaded += CodeEditor_Loaded;
-
             this.DataContextChanged += CodeEditor_DataContextChanged;
         }
 
@@ -41,13 +37,5 @@ namespace JadeControls.EditorControl
             }
         }
 
-        private void CodeEditor_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (_firstLoad)
-            {
-                Keyboard.Focus(TextArea);
-                _firstLoad = false;
-            }
-        }
     }
 }

@@ -3,12 +3,78 @@ using System;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
+using ICSharpCode.AvalonEdit.Document;
 
 namespace JadeControls.EditorControl.ViewModel
-{    
+{
+    
+
     //wrapps an IEditorDoc and associated CodeEditor view 
     public abstract class DocumentViewModel : Docking.PaneViewModel
     {
+        private class CaretLocation
+        {
+            private readonly ITextDocument _doc;
+            private int _offset;
+            private int _line;
+            private int _column;
+
+            public CaretLocation(ITextDocument doc)
+            {
+                _doc = doc;
+                _offset = _line = _column = -1;
+            }
+
+            public int Offset
+            {
+                get
+                {
+                    return _offset;
+                }
+
+                set
+                {
+                    if (_offset != value)
+                    {
+                        _offset = value;
+                        _column = -1;
+                        _line = -1;
+                    }
+                }
+            }
+
+            public int Column
+            {
+                get
+                {
+                    if (_column == -1)
+                        Calculate();
+                    return _column;
+                }
+
+            }
+
+            public int Line
+            {
+                get
+                {
+                    if (_line == -1)
+                        Calculate();
+                    return _line;
+                }
+
+            }
+
+            private void Calculate()
+            {
+                if (_offset == -1)
+                    return;
+                _line = _doc.GetLineNumForOffset(_offset);
+                ISegment lineSeg = _doc.GetLineForOffset(_offset);
+                _column = _offset - lineSeg.Offset + 1;
+            }
+        }
+
         #region Data
 
         static ImageSourceConverter ISC = new ImageSourceConverter();
@@ -21,13 +87,12 @@ namespace JadeControls.EditorControl.ViewModel
         private IEditorDoc _model;
         private CodeEditor _view;
 
-        //The view's view of the content
-        private ICSharpCode.AvalonEdit.Document.TextDocument _avDoc;
-
         /// <summary>
         /// Current location of cursor
         /// </summary>
-        private int _caretOffset;
+        private CaretLocation _caretLocation;
+
+        private bool _wantInitialFocus;
                 
         #endregion
 
@@ -39,30 +104,42 @@ namespace JadeControls.EditorControl.ViewModel
             ContentId = doc.File.ToString();
             IconSource = ISC.ConvertFromInvariantString("pack://application:,,,/Images/File.png") as ImageSource;
             _model = doc;
-            _model.OnSaved += delegate { OnPropertyChanged("Modified"); };
+            _model.TextDocument.ModifiedChanged += OnTextDocumentModifiedChanged;
             _selected = false;
+            _caretLocation = new CaretLocation(_model.TextDocument);
+            CaretOffset = 0;
+            _wantInitialFocus = true;
+        }
+
+        void OnTextDocumentModifiedChanged(object sender, EventArgs e)
+        {
+            OnPropertyChanged("Modified");
         }
 
         public virtual void SetView(CodeEditor view)
         {
             _view = view;
-            _avDoc = _view.Document;
+            _view.Document = _model.TextDocument.AvDoc;
 
             RegisterCommands(_view.CommandBindings);
 
-            //Load the document
-            _avDoc.Text = _model.Content;
-            _avDoc.TextChanged += _avDoc_TextChanged;
-            
             //Initialise the view's caret location in case CaretOffset has already been set.
-            _view.CaretOffset = _caretOffset;
+            _view.CaretOffset = _caretLocation.Offset;
             //Track changes in the caret location
             _view.TextArea.Caret.PositionChanged += Caret_PositionChanged;
 
+            _view.Loaded += OnViewLoaded;
+
             //Let any derived class initialise
-            OnSetView(_view);
+            OnSetView(_view);            
         }
 
+        void OnViewLoaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (_wantInitialFocus)
+                Keyboard.Focus(_view.TextArea);
+        }
+        
         protected virtual void OnSetView(CodeEditor view)
         {
         }
@@ -71,19 +148,9 @@ namespace JadeControls.EditorControl.ViewModel
 
         #region Public Properties
 
-        public string Path { get { return _model.File.ToString(); } }
-
         public bool Modified
         {
-            get { return _model.Modified; }
-            set
-            {
-                if (_model.Modified != value)
-                {
-                    _model.Modified = value;
-                    OnPropertyChanged("Modified");
-                }
-            }
+            get { return _model.Modified; }           
         }
 
         public bool Selected 
@@ -101,27 +168,39 @@ namespace JadeControls.EditorControl.ViewModel
 
         public int CaretOffset
         {
-            get { return _caretOffset; }
+            get { return _caretLocation.Offset; }
             set
             {
-                if (_caretOffset != value)
+                if(_caretLocation.Offset != value)
                 {
-                    _caretOffset = value;
+                    _caretLocation.Offset = value;
                     if (_view != null)
-                        _view.CaretOffset = _caretOffset;
+                        _view.CaretOffset = _caretLocation.Offset;
                     OnPropertyChanged("CaretOffset");
+                    OnPropertyChanged("CaretLine");
+                    OnPropertyChanged("CaretColumn");
                 }
             }
         }
-       
-        public ICSharpCode.AvalonEdit.Document.TextDocument TextDocument
+
+        public int CaretLine
         {
-            get { return _avDoc; }
+            get { return _caretLocation.Line; }
         }
 
+        public int CaretColumn
+        {
+            get { return _caretLocation.Column; }
+        }
+       
         public IEditorDoc Document
         {
             get { return _model; }
+        }
+
+        public ITextDocument TextDocument
+        {
+            get { return _model.TextDocument; }
         }
 
         #endregion
@@ -132,11 +211,24 @@ namespace JadeControls.EditorControl.ViewModel
         /// Display the specified location
         /// </summary>
         /// <param name="loc"></param>
-        public void DisplayLocation(int offset, bool setFocus)
+        public void DisplayLocation(int offset, bool setFocus, bool scroll)
         {
             CaretOffset = offset;
-            if (_view != null && setFocus)
-                _view.TextArea.Focus();
+            if (_view != null)
+            {
+                if (setFocus)
+                    _view.TextArea.Focus();
+                if(scroll)
+                {
+                    int line = TextDocument.GetLineNumForOffset(offset);
+                    double visualTop = _view.TextArea.TextView.GetVisualTopByDocumentLine(line);
+                    _view.ScrollToVerticalOffset(visualTop);
+                }
+            }
+            else
+            {
+                _wantInitialFocus = setFocus;
+            }
         }
 
         public void HighlightRange(int startOffset, int endOffset)
@@ -148,28 +240,22 @@ namespace JadeControls.EditorControl.ViewModel
 
         #region Document Event Handlers
 
-        private void _avDoc_TextChanged(object sender, EventArgs e)
-        {
-            bool m = Modified;
-            _model.Content = _avDoc.Text;
-            if (!m)
-                OnPropertyChanged("Modified");
-        }
-
         #endregion
 
         #region View Event Handlers
 
         void Caret_PositionChanged(object sender, EventArgs e)
         {
-            if (_caretOffset != _view.TextArea.Caret.Offset)
+            if (_caretLocation.Offset != _view.TextArea.Caret.Offset)
             {
                 System.Diagnostics.Debug.WriteLine(string.Format("Line {0} Col {1} Offset{2}",
                                                 _view.TextArea.Caret.Line,
                                                 _view.TextArea.Caret.Column,
                                                 _view.TextArea.Caret.Offset));
-                _caretOffset = _view.TextArea.Caret.Offset;
+                _caretLocation.Offset = _view.TextArea.Caret.Offset;
                 OnPropertyChanged("CaretOffset");
+                OnPropertyChanged("CaretLine");
+                OnPropertyChanged("CaretColumn");
             }
         }
 

@@ -5,6 +5,8 @@ namespace JadeCore.Search
 {
     public class CodeSearchResult : ISearchResult
     {
+        private IFileHandle _file;
+
         public CodeSearchResult(uint rank, ICodeLocation location, int extent)
         {
             Rank = rank;
@@ -22,6 +24,14 @@ namespace JadeCore.Search
         public override string ToString()
         {
             return Location.Path.Str + "(" + Location.Offset + ":" + (Location.Offset + Extent) + ")";
+        }
+
+        public IFileHandle File
+        {
+            get
+            {
+                return (_file ?? (_file = Services.Provider.FileService.MakeFileHandle(Location.Path)));
+            }
         }
     }
 }

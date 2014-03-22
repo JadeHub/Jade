@@ -48,6 +48,7 @@ namespace JadeGui
             //bind commands
             viewModel.Commands.Bind(dockWindow.CommandBindings);
             
+            
             JadeCore.Services.Provider.OutputController.Create(JadeCore.Output.Source.JadeDebug, JadeCore.Output.Level.Info, "Hello world");
             
             JadeCore.Properties.Settings settings = JadeCore.Services.Provider.Settings;

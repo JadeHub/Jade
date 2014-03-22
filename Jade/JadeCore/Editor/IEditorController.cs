@@ -19,6 +19,7 @@ namespace JadeCore
         void SaveActiveDocument();
         void CloseAllDocuments();
         void CloseActiveDocument();
+        void DiscardChangesToActiveDocument();
         
         /// <summary>
         /// Close all documents, clear cache etc

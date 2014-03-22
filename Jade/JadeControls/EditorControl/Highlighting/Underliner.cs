@@ -14,14 +14,14 @@ namespace JadeControls.EditorControl.Highlighting
         #region Data
 
         private TextSegmentCollection<HighlightedRange> _highlights;
-        private TextDocument _document;
+        private JadeCore.ITextDocument _document;
         private readonly List<TextView> _textViews;
 
         #endregion
 
         #region Constructor
 
-        public Underliner(TextDocument doc)
+        public Underliner(JadeCore.ITextDocument doc)
         {
             if (doc == null)
                 throw new ArgumentNullException("doc");

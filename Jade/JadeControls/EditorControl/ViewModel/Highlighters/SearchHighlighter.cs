@@ -1,5 +1,6 @@
 ﻿using JadeCore.Search;
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -14,7 +15,9 @@ namespace JadeControls.EditorControl.ViewModel
         private CppCodeBrowser.IProjectItem _projectItem;
         private ISearchController _searchController;
         private HashSet<Highlighting.IHighlightedRange> _ranges;
-        
+        private ISearch _currentSearch;
+        private Highlighting.IHighlightedRange _currentResultRange;
+                
         public SearchHighlighter(CppCodeBrowser.IProjectItem projectItem, Highlighting.IHighlighter highlighter)
         {
             _highlighter = highlighter;
@@ -23,7 +26,7 @@ namespace JadeControls.EditorControl.ViewModel
 
             ((INotifyCollectionChanged)_searchController.Searches).CollectionChanged += Searchs_CollectionChanged;
             _ranges = new HashSet<Highlighting.IHighlightedRange>();
-
+            
             if(_searchController.Current != null)
             {
                 OnNewSearch(_searchController.Current);
@@ -41,10 +44,60 @@ namespace JadeControls.EditorControl.ViewModel
         private void OnNewSearch(ISearch search)
         {
             RemoveAllRanges();
-            ((INotifyCollectionChanged)search.Results).CollectionChanged += Results_CollectionChanged;
-            foreach(ISearchResult result in search.Results)
+            if(_currentSearch != null)
+            {
+                ((INotifyCollectionChanged)_currentSearch.Results).CollectionChanged -= Results_CollectionChanged;
+                _currentSearch.CurrentResultChanged -= SearchCurrentResultChanged;
+            }
+
+            _currentSearch = search;
+            ((INotifyCollectionChanged)_currentSearch.Results).CollectionChanged += Results_CollectionChanged;
+            _currentSearch.CurrentResultChanged += SearchCurrentResultChanged;
+            foreach (ISearchResult result in _currentSearch.Results)
             {
                 OnNewResult(result);
+            }
+            SearchCurrentResultChanged(this, EventArgs.Empty);
+        }
+
+        private void RemoveCurrentResultHighlight()
+        {
+            if (_currentResultRange != null)
+            {
+                Debug.WriteLine("HIGHLIGHTER for " + _projectItem.Path.FileName + " removing highlight");
+                _currentResultRange.BackgroundColour = System.Windows.Media.Colors.LemonChiffon;
+                _highlighter.Redraw(_currentResultRange);
+                _currentResultRange = null;
+                Debug.WriteLine("HIGHLIGHTER " + _projectItem.Path.FileName + " Redrawing for remove");
+            }
+        }
+
+        private void AddCurrentResultHighlight()
+        {
+            if (_currentResultRange == null)
+            {
+                Debug.WriteLine("HIGHLIGHTER for " + _projectItem.Path.FileName + " Adding highlight from " + _currentSearch.CurrentResult.File.Path);
+                _currentResultRange = FindRange(_currentSearch.CurrentResult);
+                if (_currentResultRange == null)
+                    _currentResultRange = _highlighter.AddRange(_currentSearch.CurrentResult.Location.Offset, _currentSearch.CurrentResult.Extent);
+                _currentResultRange.BackgroundColour = System.Windows.Media.Colors.Cyan;
+                _highlighter.Redraw(_currentResultRange);
+                Debug.WriteLine("HIGHLIGHTER " + _projectItem.Path.FileName + " Redrawing for add");
+            }
+        }
+
+        private bool HighlighCurrentResult()
+        {
+            return _currentSearch.CurrentResult != null && _currentSearch.CurrentResult.Location.Path == _projectItem.Path;
+        }
+
+        private void SearchCurrentResultChanged(object sender, EventArgs e)
+        {
+            RemoveCurrentResultHighlight();
+                        
+            if (HighlighCurrentResult())
+            {                
+                AddCurrentResultHighlight();
             }
         }
 
@@ -61,20 +114,40 @@ namespace JadeControls.EditorControl.ViewModel
         {
             if (result.Location.Path == _projectItem.Path)
             {
-                Highlighting.IHighlightedRange hr = _highlighter.AddRange(result.Location.Offset, result.Extent);
-
+                Highlighting.IHighlightedRange hr = _currentResultRange = FindRange(result);
+                if(hr == null)
+                    hr = _highlighter.AddRange(result.Location.Offset, result.Extent);
                 hr.BackgroundColour = System.Windows.Media.Colors.LemonChiffon;
                 _ranges.Add(hr);
             }
         }
         
         private void RemoveAllRanges()
-        { 
+        {
+            Debug.WriteLine("HIGHLIGHTER " + _projectItem.Path.FileName + " Removing all");
+            RemoveCurrentResultHighlight();
             foreach(Highlighting.IHighlightedRange range in _ranges)
             {
                 _highlighter.RemoveRange(range);
+                _highlighter.Redraw(range);                
             }
             _ranges.Clear();
+            
+        }
+
+        public void Clear()
+        {
+            RemoveAllRanges();
+        }
+
+        private Highlighting.IHighlightedRange FindRange(ISearchResult result)
+        {
+            foreach(Highlighting.IHighlightedRange range in _ranges)
+            {
+                if (range.Offset == result.Location.Offset && range.Length == result.Extent)
+                    return range;
+            }
+            return null;
         }
     }
 }

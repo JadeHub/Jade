@@ -65,11 +65,14 @@
       <DependentUpon>OutputControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Output Control\OutputControlViewModel.cs" />
-    <Compile Include="Search\SearchResultControl.xaml.cs">
+    <Compile Include="Search\Results Pane\SearchResultControl.xaml.cs">
       <DependentUpon>SearchResultControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Search\SearchResultsPaneViewModel.cs" />
-    <Compile Include="Search\SearchResultViewModel.cs" />
+    <Compile Include="Search\Results Pane\SearchResultsPaneViewModel.cs" />
+    <Compile Include="Search\Results Pane\SearchResultViewModel.cs" />
+    <Compile Include="Search\SearchCurrentFile\SearchCurrentFileDialog.xaml.cs">
+      <DependentUpon>SearchCurrentFileDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Search\SearchViewModel.cs" />
     <Compile Include="Workspace Explorer\AddProjectFileWindow\AddProjectFileViewModel.cs" />
     <Compile Include="Workspace Explorer\AddProjectFileWindow\AddProjectFileWindow.xaml.cs">
@@ -107,7 +110,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Search\SearchResultControl.xaml">
+    <Page Include="Search\Results Pane\SearchResultControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Search\SearchCurrentFile\SearchCurrentFileDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

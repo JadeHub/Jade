@@ -12,13 +12,13 @@
     <StatusBarItem DockPanel.Dock="Right" Width="100">
         <StackPanel Orientation="Horizontal">
         <TextBlock Text="Character "/>
-        <TextBlock Text="{Binding Editor.SelectedDocument.CaretLocation.Column}"/>
+        <TextBlock Text="{Binding Editor.SelectedDocument.CaretColumn}"/>
         </StackPanel>
     </StatusBarItem>
     <StatusBarItem DockPanel.Dock="Right" Width="100">
         <StackPanel Orientation="Horizontal">
         <TextBlock Text="Line "/>
-        <TextBlock Text="{Binding Editor.SelectedDocument.CaretLocation.Line}"/>
+        <TextBlock Text="{Binding Editor.SelectedDocument.CaretLine}"/>
         </StackPanel>
     </StatusBarItem>
     <StatusBarItem>

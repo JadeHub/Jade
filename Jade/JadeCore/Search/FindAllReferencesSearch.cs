@@ -7,16 +7,14 @@ using System.Diagnostics;
 using JadeUtils.IO;
 
 namespace JadeCore.Search
-{
-    public class FindAllReferencesSearch : ISearch
+{    
+    public class FindAllReferencesSearch : SearchBase
     {
         #region Data
                 
         private IProjectIndex _projectIndex;
         private ICodeLocation _location;
-        private bool _searching;
-        private ObservableCollection<ISearchResult> _results;
-
+        
         #endregion
 
         #region Constructor
@@ -28,53 +26,42 @@ namespace JadeCore.Search
 
             _projectIndex = index;
             _location = location;
-            _searching = false;
-            _results = new ObservableCollection<ISearchResult>();
-            Results = new ReadOnlyObservableCollection<ISearchResult>(_results);
         }
 
         #endregion
 
         #region ISearch implementation
-
-        public string Summary { get; private set; }
                 
-        public void Cancel() { }
-
-        public void Rerun() {}
-
-        public ReadOnlyObservableCollection<ISearchResult> Results { get; private set; }
-        
         #endregion
 
-        public void Start()
+        protected override void DoSearch()
         {
-            if (_searching)
-                throw new Exception("Attempt to perform reentrant search in FindAllReferencesSearch.");
-
             HashSet<LibClang.SourceLocation> uniqueLocations = new HashSet<LibClang.SourceLocation>();
-            _searching = true;
+            
             foreach (LibClang.TranslationUnit tu in _projectIndex.TranslationUnits)
             {
                 Cursor c = tu.GetCursorAt(_location.Path.Str, _location.Offset);
                 if (c != null)
-                {                    
+                {
+                    if (Summary == null)
+                    {
+                        Summary = "Find all references to: " + c.Spelling;
+                    }
                     tu.FindAllReferences(c,
                                         delegate(Cursor cursor, SourceRange range)
-                                        {                                            
+                                        {
                                             if (uniqueLocations.Add(cursor.Location))
                                             {
                                                 ICodeLocation location = new CodeLocation(range.Start);
                                                 ISearchResult result = new CodeSearchResult(10, location, range.Length);
-                                                _results.Add(result);
+                                                AddResult(result);
                                                 Debug.WriteLine(result);
                                             }
                                             return true;
                                         });
-                    
+
                 }
             }
-            _searching = false;
         }
     }
 }

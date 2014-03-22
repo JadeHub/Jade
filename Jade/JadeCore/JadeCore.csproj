@@ -65,6 +65,7 @@
     <Compile Include="Search\ISearch.cs" />
     <Compile Include="Search\ISearchProvider.cs" />
     <Compile Include="Search\ISearchResult.cs" />
+    <Compile Include="Search\SearchBase.cs" />
     <Compile Include="Search\SearchService.cs" />
     <Compile Include="ContentProvider\IContentProvider.cs" />
     <Compile Include="TextDocument\ITextDocument.cs" />

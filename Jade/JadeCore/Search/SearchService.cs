@@ -13,7 +13,9 @@ namespace JadeCore.Search
         void RemoveSearch(ISearch search);
 
         ReadOnlyObservableCollection<ISearch> Searches { get; }
-        ISearch Current { get; }
+        ISearch Current { get; set; }
+
+        void StartCurrentFileSearch();
     }
 
     public class SearchController : ISearchController
@@ -42,6 +44,13 @@ namespace JadeCore.Search
         public ISearch Current 
         {
             get { return _currentSearch; }
+            set
+            {
+                if(value != _currentSearch)
+                {
+                    _currentSearch = value;
+                }
+            }
         }
 
         #endregion
@@ -57,6 +66,11 @@ namespace JadeCore.Search
         public void RemoveSearch(ISearch search)
         {
             _searches.Remove(search);
+        }
+
+        public void StartCurrentFileSearch()
+        {
+
         }
 
         #endregion

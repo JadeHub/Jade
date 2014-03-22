@@ -15,6 +15,6 @@ namespace JadeCore.Search
         CppCodeBrowser.ICodeLocation Location { get; }
         int Extent { get; }
 
-        //add IFileHandle
+        IFileHandle File { get; }
     }
 }

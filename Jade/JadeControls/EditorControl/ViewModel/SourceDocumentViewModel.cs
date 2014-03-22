@@ -70,7 +70,7 @@ namespace JadeControls.EditorControl.ViewModel
             if (results.Count() > 0)
             {
                 JadeCore.IJadeCommandHandler cmdHandler = JadeCore.Services.Provider.CommandHandler;
-                cmdHandler.OnDisplayCodeLocation(new JadeCore.DisplayCodeLocationParams(results.First(), true));
+                cmdHandler.OnDisplayCodeLocation(new JadeCore.DisplayCodeLocationCommandParams(results.First(), true, true));
             }
         }
 
@@ -105,7 +105,17 @@ namespace JadeControls.EditorControl.ViewModel
              //   ASTHighlighter _astHighlighter = new ASTHighlighter(_fileBrowser.TranslationUnits.First().Cursor, underliner, _fileBrowser.Path.Str);
                 _diagnosticHighlighter = new DiagnosticHighlighter(_sourceFileProjectItem, underliner);
                 _searchHighlighter = new SearchHighlighter(_sourceFileProjectItem, underliner);
-            }            
+            }
+
+            view.KeyDown += OnViewKeyDown;
+        }
+
+        void OnViewKeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Escape)
+            {
+                _searchHighlighter.Clear();
+            }
         }
     }
 }

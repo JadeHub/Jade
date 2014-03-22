@@ -15,30 +15,40 @@ namespace JadeGui.ViewModels
             _handler = handler;
         }
 
-        public void Bind(CommandBindingCollection bindings)
+        public void Bind(CommandBindingCollection commandBindings)
         {
-            Register(bindings, Commands.OpenDocument,       delegate(object param) { _handler.OnOpenDocument(param as JadeUtils.IO.IFileHandle); });
+            Register(commandBindings, Commands.OpenDocument,       delegate(object param) 
+                                                                            { 
+                                                                                _handler.OnOpenDocument(param as JadeCore.OpenFileCommandParams); 
+                                                                            });
 
-            Register(bindings, ApplicationCommands.New,     delegate { _handler.OnNewFile(); },         delegate { return _handler.CanNewFile(); });
-            Register(bindings, ApplicationCommands.Open,    delegate { _handler.OnOpenFile(); },        delegate { return _handler.CanOpenFile(); });
-            Register(bindings, ApplicationCommands.Save,    delegate { _handler.OnSaveFile(); },        delegate { return _handler.CanSaveFile(); });
-            Register(bindings, ApplicationCommands.SaveAs,  delegate { _handler.OnSaveAsFile(); },      delegate { return _handler.CanSaveAsFile(); });
-            Register(bindings, Commands.SaveAllFiles,       delegate { _handler.OnSaveAllFiles(); },    delegate { return _handler.CanSaveAllFiles(); });
-            Register(bindings, Commands.CloseFile,          delegate { _handler.OnCloseFile(); },       delegate { return _handler.CanCloseFile(); });
+            Register(commandBindings, ApplicationCommands.New,     delegate { _handler.OnNewFile(); },         delegate { return _handler.CanNewFile(); });
+            Register(commandBindings, ApplicationCommands.Open,    delegate(object param)
+                                                                            { 
+                                                                                _handler.OnOpenFile(param as JadeUtils.IO.IFileHandle); 
+                                                                            },        delegate { return _handler.CanOpenFile(); });
 
-            Register(bindings, Commands.Exit,               delegate { _handler.OnExit(); });
-            Register(bindings, Commands.NewWorkspace,       delegate { _handler.OnNewWorkspace(); });
-            Register(bindings, Commands.CloseWorkspace,     delegate { _handler.OnCloseWorkspace(); },  delegate { return _handler.CanCloseWorkspace(); });
-            Register(bindings, Commands.PromptOpenWorkspace, delegate { _handler.OnPromptOpenWorkspace(); }, delegate { return _handler.CanPromptOpenWorkspace(); });
-            Register(bindings, Commands.OpenWorkspace,      delegate(object param) { _handler.OnOpenWorkspace(param as string); },   delegate { return _handler.CanOpenWorkspace(); });
-            Register(bindings, Commands.SaveWorkspace,      delegate { _handler.OnSaveWorkspace(); },   delegate { return _handler.CanSaveWorkspace(); });
-            Register(bindings, Commands.SaveAsWorkspace,    delegate { _handler.OnSaveAsWorkspace(); }, delegate { return _handler.CanSaveAsWorkspace(); });
+            Register(commandBindings, ApplicationCommands.Save,    delegate { _handler.OnSaveFile(); },        delegate { return _handler.CanSaveFile(); });
+            Register(commandBindings, ApplicationCommands.SaveAs,  delegate { _handler.OnSaveAsFile(); },      delegate { return _handler.CanSaveAsFile(); });
+            Register(commandBindings, Commands.SaveAllFiles,       delegate { _handler.OnSaveAllFiles(); },    delegate { return _handler.CanSaveAllFiles(); });
+            Register(commandBindings, Commands.CloseFile,          delegate { _handler.OnCloseFile(); },       delegate { return _handler.CanCloseFile(); });
 
-            Register(bindings, Commands.ViewLineNumbers,    delegate { _handler.OnViewLineNumbers(); }, delegate { return _handler.CanViewLineNumbers(); });
+            Register(commandBindings, Commands.Exit,               delegate { _handler.OnExit(); });
+            Register(commandBindings, Commands.NewWorkspace,       delegate { _handler.OnNewWorkspace(); });
+            Register(commandBindings, Commands.CloseWorkspace,     delegate { _handler.OnCloseWorkspace(); },  delegate { return _handler.CanCloseWorkspace(); });
+            Register(commandBindings, Commands.PromptOpenWorkspace, delegate { _handler.OnPromptOpenWorkspace(); }, delegate { return _handler.CanPromptOpenWorkspace(); });
+            Register(commandBindings, Commands.OpenWorkspace,      delegate(object param) { _handler.OnOpenWorkspace(param as string); },   delegate { return _handler.CanOpenWorkspace(); });
+            Register(commandBindings, Commands.SaveWorkspace,      delegate { _handler.OnSaveWorkspace(); },   delegate { return _handler.CanSaveWorkspace(); });
+            Register(commandBindings, Commands.SaveAsWorkspace,    delegate { _handler.OnSaveAsWorkspace(); }, delegate { return _handler.CanSaveAsWorkspace(); });
 
-            Register(bindings, Commands.CloseAllDocuments,  delegate { _handler.OnCloseAllDocuments(); }, delegate { return _handler.CanCloseAllDocuments(); });
+            Register(commandBindings, Commands.ViewLineNumbers,    delegate { _handler.OnViewLineNumbers(); }, delegate { return _handler.CanViewLineNumbers(); });
 
-            Register(bindings, Commands.DisplayCodeLocation,  delegate { _handler.OnDisplayCodeLocation(null); }, delegate { return true; });
+            Register(commandBindings, Commands.CloseAllDocuments,  delegate { _handler.OnCloseAllDocuments(); }, delegate { return _handler.CanCloseAllDocuments(); });
+
+            Register(commandBindings, Commands.SearchFile, delegate { _handler.OnSearchFile(); }, delegate { return _handler.CanSearchFile(); });
+            Register(commandBindings, Commands.SearchInFiles, delegate { _handler.OnSearchInFiles(); }, delegate { return _handler.CanSearchInFiles(); });
+            Register(commandBindings, Commands.SearchDisplayNext, delegate { _handler.OnDisplayNextSearchResult(); }, delegate { return _handler.CanDisplayNextSearchResult(); });
+            Register(commandBindings, Commands.SearchDisplayPrev, delegate { _handler.OnDisplayPrevSearchResult(); }, delegate { return _handler.CanDisplayPrevSearchResult(); });
         }
 
         private void Register(CommandBindingCollection bindings, ICommand command, OnCommandDel onCmd, CanDoCommandDel canDoCmd)

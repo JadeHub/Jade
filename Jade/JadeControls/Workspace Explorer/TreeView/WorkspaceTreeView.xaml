@@ -90,7 +90,7 @@
                 </MenuItem>
             </ContextMenu>
             <ContextMenu x:Key="FileContextMenu" x:Shared ="true" >
-                <MenuItem Header="Open" Command="JadeCore:Commands.OpenDocument" CommandParameter="{Binding Handle}" >
+                <MenuItem Header="Open" Command="ApplicationCommands.Open" CommandParameter="{Binding Handle}" >
                     <MenuItem.Icon>
                         <Image HorizontalAlignment="Left" Width="16" Height="16" Margin="3,0" Source="{StaticResource FileIconSource}" />
                     </MenuItem.Icon>

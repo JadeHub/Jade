@@ -9,9 +9,7 @@ namespace JadeCore.Editor
         #region Data
 
         private ITextDocument _document;        
-        private string _content;
-        private bool _modified;
-
+        
         #endregion
 
         #region Constructor
@@ -26,18 +24,10 @@ namespace JadeCore.Editor
         #region Events
 
         public event EventHandler OnClosing;
-        public event EventHandler OnSaved;
 
         private void RaiseOnClosing()
         {
             EventHandler handler = OnClosing;
-            if (handler != null)
-                handler(this, EventArgs.Empty);
-        }
-
-        private void RaiseOnSaved()
-        {
-            EventHandler handler = OnSaved;
             if (handler != null)
                 handler(this, EventArgs.Empty);
         }
@@ -53,22 +43,15 @@ namespace JadeCore.Editor
 
         public void Save()
         {
-            using (FileStream fs = new FileStream(File.Path.Str, FileMode.Create, FileAccess.Write, FileShare.Write))
-            {
-                using (StreamWriter writer = new StreamWriter(fs, System.Text.Encoding.ASCII))
-                {
-                    System.Diagnostics.Debug.Write(Content);
-                    writer.Write(Content);
-                    Modified = false;
-                    RaiseOnSaved();
-                }
-            }
+            _document.Save(_document.File);
         }
 
         #endregion
 
         #region Public Properties
 
+        public ITextDocument TextDocument { get { return _document; } }
+        
         public string Name
         {
             get { return _document.Name; }
@@ -83,31 +66,11 @@ namespace JadeCore.Editor
         {
             get
             {
-                return _modified;
+                return _document.Modified;
             }
-            set 
-            { 
-                _modified = value; 
-            }
-        }
-
-        public string Content
-        {
-            get
-            {
-                return Modified ? _content : _document.Content;
-            }
-
-            set
-            {
-                Modified = true;
-                _content = value;
-            }
+            
         }
 
         #endregion
-
-        public void AddFileObserver(IFileObserver observer) { }
-        public void RemoveFileObserver(IFileObserver observer) { }
     }
 }

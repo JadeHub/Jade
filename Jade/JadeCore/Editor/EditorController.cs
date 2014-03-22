@@ -69,12 +69,12 @@ namespace JadeCore.Editor
                 IEditorDoc doc = FindOrAddDocument(file);
                 _openDocuments.Add(file, doc);
                 OnDocumentOpen(doc);
-                ActiveDocument = doc;                
+                ActiveDocument = doc;        
             }
             //this doc is already open, if it's not the active document, activate it
             else if(ActiveDocument == null || ActiveDocument.File != file)
             {
-                ActiveDocument = _openDocuments[ActiveDocument.File];
+                ActiveDocument = _openDocuments[file];
             }
          }
 
@@ -88,6 +88,13 @@ namespace JadeCore.Editor
         {
             if(ActiveDocument != null)
                 CloseDocument(ActiveDocument);
+        }
+
+        public void DiscardChangesToActiveDocument()
+        {
+            if (ActiveDocument == null)
+                return;
+            ActiveDocument.TextDocument.DiscardChanges();
         }
 
         public void CloseAllDocuments()

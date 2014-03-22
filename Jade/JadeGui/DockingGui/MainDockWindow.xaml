@@ -22,8 +22,7 @@
         <JadeGui:MainMenu DockPanel.Dock="Top"/>
         <JadeGui:MainToolbar DockPanel.Dock="Top" />
         <JadeGui:MainStatusBar DockPanel.Dock="Bottom"/>
-        <Grid>
-            
+        <Grid>            
             <avalonDock:DockingManager x:Name="dockManager"
                                        DocumentsSource="{Binding Editor.Documents}"
                                        AnchorablesSource="{Binding ToolWindows}"

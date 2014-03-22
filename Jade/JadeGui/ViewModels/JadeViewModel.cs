@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 
 namespace JadeGui.ViewModels
 {
@@ -213,9 +214,19 @@ namespace JadeGui.ViewModels
 
         #region Commands
 
-        public void OnOpenDocument(JadeUtils.IO.IFileHandle file)
+        public void OnOpenDocument(JadeCore.OpenFileCommandParams param)
         {
-            _editorController.OpenDocument(file);
+            IInputElement focus = FocusManager.GetFocusedElement(_view);
+            
+            OnOpenFile(param.File);
+
+            //todo: if selected is now as requested...
+
+            if (_editorViewModel.SelectedDocument != null)
+                _editorViewModel.SelectedDocument.DisplayLocation(param.DisplayParams.Location.Offset, param.DisplayParams.SetFocus, param.DisplayParams.Scroll);
+
+            if (!param.DisplayParams.SetFocus)
+                FocusManager.SetFocusedElement(_view, focus);
         }
 
         #region Exit
@@ -354,17 +365,17 @@ namespace JadeGui.ViewModels
             return true;
         }
 
-        public void OnOpenFile()
+        public void OnOpenFile(IFileHandle handle)
         {
-            IFileHandle handle = JadeCore.GuiUtils.PromptOpenFile(".cs", "C# Source files (.cs)|*.cs", true);
+            if(handle == null)
+                handle = JadeCore.GuiUtils.PromptOpenFile(".cs", "C# Source files (.cs)|*.cs", true);
+
             if (handle == null)
-            {
                 return;
-            }
 
             try
             {
-                OnOpenDocument(handle);
+                _editorController.OpenDocument(handle);                
             }
             catch (Exception e)
             {
@@ -440,6 +451,10 @@ namespace JadeGui.ViewModels
                 {
                     _editorController.SaveActiveDocument();
                 }
+                else
+                {
+                    _editorController.DiscardChangesToActiveDocument();
+                }
             }
             _editorController.CloseActiveDocument();
         }
@@ -449,26 +464,42 @@ namespace JadeGui.ViewModels
             return _editorController.HasOpenDocuments;
         }
 
-        public void OnDisplayCodeLocation(JadeCore.DisplayCodeLocationParams param)
+        public void OnDisplayCodeLocation(JadeCore.DisplayCodeLocationCommandParams param)
         {
-            CppCodeBrowser.ICodeLocation loc = param.Location;
-            IFileHandle f = JadeCore.Services.Provider.FileService.MakeFileHandle(loc.Path);
-            OnOpenDocument(f);
+            IFileHandle f = JadeCore.Services.Provider.FileService.MakeFileHandle(param.Location.Path);            
+            
+            OnOpenDocument(new JadeCore.OpenFileCommandParams(f, param));
+            /*
             if (_editorViewModel.SelectedDocument != null)
-                _editorViewModel.SelectedDocument.DisplayLocation(loc.Offset, param.SetFocus);            
+                _editorViewModel.SelectedDocument.DisplayLocation(loc.Offset, param.SetFocus, param.Scroll);
+
+            if (!param.SetFocus)
+                FocusManager.SetFocusedElement(_view, focus);
+             */ 
         }
-        /*
-        public void OnHighlightCodeLocation(JadeUtils.IO.FilePath path, int startOffset, int endOffset)
-        {
-            IFileHandle f = JadeCore.Services.Provider.FileService.MakeFileHandle(path);
-            OnOpenDocument(f);
-            if (_editorViewModel.SelectedDocument != null)
-                _editorViewModel.SelectedDocument.HighlightRange(startOffset, endOffset);
-        }*/
 
         public bool CanViewSymbolsWindow()
         {
             return _workspaceController.CurrentWorkspace != null && _workspaceController.CurrentWorkspace.ActiveProject != null;
+        }
+
+        public void OnSearchFile()
+        {
+            _searchController.StartCurrentFileSearch();
+        }
+
+        public bool CanSearchFile()
+        {
+            return _editorController.ActiveDocument != null;
+        }
+
+        public void OnSearchInFiles()
+        {
+        }
+
+        public bool CanSearchInFiles()
+        {
+            return true;
         }
 
         #endregion
@@ -498,6 +529,37 @@ namespace JadeGui.ViewModels
                 return _workspaceController.SaveOrDiscardWorkspace();
             }
             return true;
+        }
+
+        public void OnDisplayNextSearchResult()
+        {
+            if (_searchController.Current != null)
+            {
+                JadeCore.Search.ISearch search = _searchController.Current;
+                search.MoveToNextResult();
+                if(search.CurrentResult != null)
+                    OnDisplayCodeLocation(new JadeCore.DisplayCodeLocationCommandParams(search.CurrentResult.Location, true, true));
+            }
+        }
+
+        public bool CanDisplayNextSearchResult()
+        {
+            return _searchController.Current != null && _searchController.Current.Results.Count > 1;
+        }
+
+        public void OnDisplayPrevSearchResult()
+        {
+            if (_searchController.Current != null)
+            {
+                JadeCore.Search.ISearch search = _searchController.Current;
+                search.MoveToPreviousResult();
+                if (search.CurrentResult != null)
+                    OnDisplayCodeLocation(new JadeCore.DisplayCodeLocationCommandParams(search.CurrentResult.Location, true, true));
+            }
+        }
+        public bool CanDisplayPrevSearchResult()
+        {
+            return _searchController.Current != null && _searchController.Current.Results.Count > 1;
         }
        
         #endregion

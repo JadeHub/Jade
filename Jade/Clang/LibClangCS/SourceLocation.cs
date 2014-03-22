@@ -84,7 +84,7 @@ namespace LibClang
                 return true;
             if ((object)left == null || (object)right == null)
                 return false;
-            return left.File == right.File && left.Offset == right.Offset;
+            return left.File.Name == right.File.Name && left.Offset == right.Offset;
         }
 
         public static bool operator !=(SourceLocation left, SourceLocation right)
@@ -93,7 +93,7 @@ namespace LibClang
                 return false;
             if ((object)left == null || (object)right == null)
                 return true;
-            return left.File != right.File || left.Offset != right.Offset;
+            return left.File.Name != right.File.Name || left.Offset != right.Offset;
         }
 
         public static bool operator <(SourceLocation first, SourceLocation second)

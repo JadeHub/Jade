@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 
 namespace JadeCore.Search
 {
@@ -11,6 +12,8 @@ namespace JadeCore.Search
 
     public interface ISearch
     {
+        event EventHandler CurrentResultChanged;
+
         /// <summary>
         /// Summary text to be used in display. eg 'Find "abcd" in test.cpp'
         /// </summary>
@@ -30,5 +33,13 @@ namespace JadeCore.Search
         /// Search operation result set.
         /// </summary>        
         ReadOnlyObservableCollection<ISearchResult> Results { get; }
+
+        /// <summary>
+        /// Currrent result, if any.
+        /// </summary>
+        ISearchResult CurrentResult { get; set; }
+
+        void MoveToNextResult();
+        void MoveToPreviousResult();
     }
 }
