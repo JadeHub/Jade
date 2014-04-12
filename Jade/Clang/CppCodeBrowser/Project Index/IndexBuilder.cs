@@ -18,9 +18,9 @@ namespace CppCodeBrowser
         public event ItemIndexedEvent ItemIndexed;
         public event ItemIndexingFailedEvent ItemIndexingFailed;
 
-        public IndexBuilder()
+        public IndexBuilder(string projectName)
         {
-            _index = new ProjectIndex();
+            _index = new ProjectIndex(projectName);
             _libClangIndex = new LibClang.Index(false, true);
             _allTus = new HashSet<TranslationUnit>();
         }

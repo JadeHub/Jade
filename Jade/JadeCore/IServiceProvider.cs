@@ -16,6 +16,7 @@ namespace JadeCore
         JadeCore.IJadeCommandHandler CommandHandler { get; set; }
         JadeCore.Search.ISearchController SearchController { get; set; }
         JadeCore.IContentProvider ContentProvider { get; set; }
+        System.Windows.Window MainWindow { get; set; }
     }
 
     public class Services
@@ -40,5 +41,6 @@ namespace JadeCore
         public JadeCore.IJadeCommandHandler CommandHandler { get; set; }
         public JadeCore.Search.ISearchController SearchController { get; set; }
         public JadeCore.IContentProvider ContentProvider { get; set; }
+        public System.Windows.Window MainWindow { get; set; }
     }
 }

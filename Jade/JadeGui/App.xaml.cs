@@ -25,42 +25,43 @@ namespace JadeGui
             JadeCore.Services.Provider.OutputController = new JadeCore.Output.OutputController();
             JadeCore.Services.Provider.SearchController = new JadeCore.Search.SearchController();
 
-            var dockWindow = new DockingGui.MainWindow();
-            _mainWindow = dockWindow;
+            _mainWindow = new DockingGui.MainWindow();
+
+            JadeCore.Services.Provider.MainWindow = _mainWindow;
 
             //Create the main view model object
-            var viewModel = new ViewModels.JadeViewModel(dockWindow);
+            var viewModel = new ViewModels.JadeViewModel(_mainWindow);
 
             //the view model is this service - todo fix dependancies
             JadeCore.Services.Provider.CommandHandler = viewModel;
 
             viewModel.RequestClose += delegate 
             {
-                dockWindow.Close(); 
+                _mainWindow.Close(); 
             };
-                    
-            // Allow all controls in the dockWindow to 
+
+            // Allow all controls in the _mainWindow to 
             // bind to the ViewModel by setting the 
             // DataContext, which propagates down 
             // the element tree.
-            dockWindow.DataContext = viewModel;
+            _mainWindow.DataContext = viewModel;
 
             //bind commands
-            viewModel.Commands.Bind(dockWindow.CommandBindings);
-            
+            viewModel.Commands.Bind(_mainWindow.CommandBindings);           
             
             JadeCore.Services.Provider.OutputController.Create(JadeCore.Output.Source.JadeDebug, JadeCore.Output.Level.Info, "Hello world");
             
             JadeCore.Properties.Settings settings = JadeCore.Services.Provider.Settings;
             if (settings.MainWindowPosition != null)
             {
-                dockWindow.RestoreWindowPosition(settings.MainWindowPosition);
+                _mainWindow.RestoreWindowPosition(settings.MainWindowPosition);
             }
 
-            dockWindow.Closed += _window_Closed;
-            dockWindow.Show();
+            _mainWindow.Closed += _window_Closed;
+            _mainWindow.Show();
 
-            viewModel.OnOpenWorkspace(@"C:\Code\GitHub\JadeMaster\TestData\CppTest\CppTest.jws");
+            //viewModel.OnOpenWorkspace(@"C:\Code\GitHub\JadeMaster\TestData\CppTest\CppTest.jws");
+            viewModel.OnOpenWorkspace(@"C:\Code\GitHub\JadeMaster\TestData\CppTest\CppTest\CppTest.sln");
         }
 
         protected override void OnExit(ExitEventArgs e)

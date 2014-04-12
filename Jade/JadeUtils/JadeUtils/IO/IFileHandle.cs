@@ -48,7 +48,7 @@ namespace JadeUtils.IO
         /// </summary>
         FilePath Path { get; }
                 
-        bool Exists { get; }
+     //   bool Exists { get; }
 
         void AddFileObserver(IFileObserver observer);
         void RemoveFileObserver(IFileObserver observer);

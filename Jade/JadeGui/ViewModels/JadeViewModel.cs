@@ -37,6 +37,8 @@ namespace JadeGui.ViewModels
 
         private Window _view;
 
+        private ObservableCollection<JadeControls.Docking.ToolPaneViewModel> _toolWindows;
+
         #endregion
 
         #region Contsructor
@@ -59,6 +61,12 @@ namespace JadeGui.ViewModels
 
             _commands = new JadeCommandAdaptor(this);
             _view = view;
+
+
+            _toolWindows = new ObservableCollection<JadeControls.Docking.ToolPaneViewModel>();                        
+            _toolWindows.Add(_seachResultsViewModel);
+            _toolWindows.Add(_outputViewModel);
+
             UpdateWindowTitle();
         }
 
@@ -98,13 +106,11 @@ namespace JadeGui.ViewModels
         {
             get
             {
-                ObservableCollection<JadeControls.Docking.ToolPaneViewModel> result = new ObservableCollection<JadeControls.Docking.ToolPaneViewModel>();
-                                
                 if (_currentWorkspace != null)
-                    result.Add(_currentWorkspace);
-                result.Add(_seachResultsViewModel);
-                result.Add(_outputViewModel);                
-                return result;
+                    _toolWindows.Add(_currentWorkspace);
+                else
+                    _toolWindows.Remove(_currentWorkspace);
+                return _toolWindows;
             }
         }
 
@@ -275,7 +281,7 @@ namespace JadeGui.ViewModels
 
             try
             {
-                _workspaceController.OpenWorkspace(handle);
+                _workspaceController.OpenWorkspace(handle.Path);
             }
             catch (Exception e)
             {
@@ -292,8 +298,7 @@ namespace JadeGui.ViewModels
         {
             try
             {
-                IFileHandle handle = JadeCore.Services.Provider.FileService.MakeFileHandle(path);
-                _workspaceController.OpenWorkspace(handle);
+                _workspaceController.OpenWorkspace(FilePath.Make(path));
 
             }
             catch (Exception e)
@@ -477,22 +482,7 @@ namespace JadeGui.ViewModels
                 FocusManager.SetFocusedElement(_view, focus);
              */ 
         }
-
-        public bool CanViewSymbolsWindow()
-        {
-            return _workspaceController.CurrentWorkspace != null && _workspaceController.CurrentWorkspace.ActiveProject != null;
-        }
-
-        public void OnSearchFile()
-        {
-            _searchController.StartCurrentFileSearch();
-        }
-
-        public bool CanSearchFile()
-        {
-            return _editorController.ActiveDocument != null;
-        }
-
+                
         public void OnSearchInFiles()
         {
         }

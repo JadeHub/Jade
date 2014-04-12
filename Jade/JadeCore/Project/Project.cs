@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CppCodeBrowser;
+using JadeUtils.IO;
 
 namespace JadeCore.Project
 {   
@@ -20,7 +21,7 @@ namespace JadeCore.Project
         #region Data
 
         private string _name;
-        private JadeUtils.IO.IFileHandle _file;
+        private FilePath _path;
         private Dictionary<string, IItem> _items;
         private List<IFolder> _folders;
         //maintain a list of all source files in all folders
@@ -32,15 +33,15 @@ namespace JadeCore.Project
 
         #region Constructor
 
-        public Project(string name, JadeUtils.IO.IFileHandle file)
+        public Project(string name, FilePath path)
         {
-            _file = file;
+            _path = path;
             _name = name;            
             _items = new Dictionary<string, IItem>();
             _folders = new List<IFolder>();
             _allSourceFiles = new List<IItem>();
 
-            _browserProject = new CppCodeBrowser.Project(_name, new CppCodeBrowser.IndexBuilder());            
+            _browserProject = new CppCodeBrowser.Project(_name, new CppCodeBrowser.IndexBuilder(_name));            
         }
 
         #endregion
@@ -54,8 +55,8 @@ namespace JadeCore.Project
 
         public IProjectIndex SourceIndex { get { return _browserProject.Index; } }
 
-        public string Path { get { return _file.Path.Str; } }
-        public string Directory { get { return _file.Path.Directory; } }
+        public string Path { get { return _path.Str; } }
+        public string Directory { get { return _path.Directory; } }
 
         public void AddItem(IItem item)
         {

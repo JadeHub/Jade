@@ -10,6 +10,15 @@ namespace JadeControls.SearchResultsControl
         public SearchResultsControl()
         {
             InitializeComponent();
+            this.DataContextChanged += SearchResultsControlDataContextChanged;
+        }
+
+        void SearchResultsControlDataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        {
+            if(DataContext != null && DataContext is ViewModel.SearchResultsPaneViewModel)
+            {
+                //((ViewModel.SearchResultsPaneViewModel)DataContext).SetView(this);
+            }
         }
 
         private void ListBox_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -17,5 +26,7 @@ namespace JadeControls.SearchResultsControl
             ViewModel.SearchResultsPaneViewModel vm = (ViewModel.SearchResultsPaneViewModel)DataContext;
             vm.OnDoubleClick();
         }
+
+        
     }
 }

@@ -1,7 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppTest", "CppTest.vcxproj", "{98CC9031-B16D-453E-8EF3-1CE197823AF9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder1", "NewFolder1", "{85D5EAC2-97DA-4D51-8CAB-4457701251AC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder2", "NewFolder2", "{1D05ACB0-A087-4689-B2D7-128EBDBDB03A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,5 +22,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{98CC9031-B16D-453E-8EF3-1CE197823AF9} = {85D5EAC2-97DA-4D51-8CAB-4457701251AC}
+		{1D05ACB0-A087-4689-B2D7-128EBDBDB03A} = {85D5EAC2-97DA-4D51-8CAB-4457701251AC}
 	EndGlobalSection
 EndGlobal

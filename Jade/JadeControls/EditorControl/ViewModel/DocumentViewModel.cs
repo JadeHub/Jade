@@ -7,8 +7,6 @@ using ICSharpCode.AvalonEdit.Document;
 
 namespace JadeControls.EditorControl.ViewModel
 {
-    
-
     //wrapps an IEditorDoc and associated CodeEditor view 
     public abstract class DocumentViewModel : Docking.PaneViewModel
     {
@@ -111,7 +109,9 @@ namespace JadeControls.EditorControl.ViewModel
             _wantInitialFocus = true;
         }
 
-        void OnTextDocumentModifiedChanged(object sender, EventArgs e)
+        #endregion
+
+        private void OnTextDocumentModifiedChanged(object sender, EventArgs e)
         {
             OnPropertyChanged("Modified");
         }
@@ -131,10 +131,10 @@ namespace JadeControls.EditorControl.ViewModel
             _view.Loaded += OnViewLoaded;
 
             //Let any derived class initialise
-            OnSetView(_view);            
+            OnSetView(_view);
         }
 
-        void OnViewLoaded(object sender, System.Windows.RoutedEventArgs e)
+        private void OnViewLoaded(object sender, System.Windows.RoutedEventArgs e)
         {
             if (_wantInitialFocus)
                 Keyboard.Focus(_view.TextArea);
@@ -144,7 +144,12 @@ namespace JadeControls.EditorControl.ViewModel
         {
         }
 
-        #endregion
+        private void OnSearchCommand()
+        {
+            SearchCurrentFile.SearchCurrentFileDialog dlg = new SearchCurrentFile.SearchCurrentFileDialog();
+
+            dlg.Show();
+        }
 
         #region Public Properties
 

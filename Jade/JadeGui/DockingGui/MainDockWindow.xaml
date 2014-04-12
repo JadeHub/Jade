@@ -75,18 +75,20 @@
                                 <JadeCtrlsWorkspace:WorkspaceCtrl />                                
                             </DataTemplate>
                         </local:PanesTemplateSelector.WorkspaceViewTemplate>
-                                                
-                        <local:PanesTemplateSelector.OutputViewTemplate>
-                            <DataTemplate> 
-                                <JadeCtrlsOutput:OutputControl/>                                
-                            </DataTemplate>
-                        </local:PanesTemplateSelector.OutputViewTemplate>
                         
                         <local:PanesTemplateSelector.SearchResultsViewTemplate>
                             <DataTemplate> 
                                 <JadeCtrlsSearchResults:SearchResultsControl/>                                
                             </DataTemplate>
                         </local:PanesTemplateSelector.SearchResultsViewTemplate>
+                        
+                        <local:PanesTemplateSelector.OutputViewTemplate>
+                            <DataTemplate> 
+                                <JadeCtrlsOutput:OutputControl/>                                
+                            </DataTemplate>
+                        </local:PanesTemplateSelector.OutputViewTemplate>
+                        
+                        
                         
                     </local:PanesTemplateSelector>
                 </avalonDock:DockingManager.LayoutItemTemplateSelector>
@@ -118,8 +120,6 @@
                                     </MultiBinding>
                                     </Setter.Value>
                                 </Setter>
-                                
-                                
                                 <Setter Property="ToolTip" Value="{Binding Model.Path}"/>
                                 <Setter Property="CloseCommand" Value="JadeCore:Commands.CloseFile"/>
                                 <Setter Property="IconSource" Value="{Binding Model.IconSource}"/>
@@ -141,11 +141,8 @@
                                 <avalonDock:LayoutDocumentPane/>
                                 <avalonDock:LayoutAnchorablePane Name="LowerToolPanel" DockHeight="150"/>
                             </avalonDock:LayoutPanel>
-                        </avalonDock:LayoutPanel>                  
-                    
-                    
-                </avalonDock:LayoutRoot>
-                    
+                        </avalonDock:LayoutPanel>
+                </avalonDock:LayoutRoot>                    
             </avalonDock:DockingManager>
         </Grid>
     </DockPanel>

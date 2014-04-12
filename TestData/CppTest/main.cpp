@@ -1,11 +1,16 @@
 #include "test.h"
 #include "test2.h"
+#include "template.h"
 
 namespace Test
 {
 
 ClassA::ClassA()
 {
+	Template<int> ti(5);
+
+	int test = ti;
+
 }
 
 void SomeClass::Fn()

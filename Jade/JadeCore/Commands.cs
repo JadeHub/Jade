@@ -75,7 +75,7 @@ namespace JadeCore
         public static readonly RoutedCommand ViewLineNumbers = new RoutedCommand("ViewLineNumbers", typeof(object));
         public static readonly RoutedCommand CloseAllDocuments = new RoutedCommand("CloseAllDocuments", typeof(object));
         
-        public static readonly RoutedCommand SearchFile = new RoutedCommand("SearchFile", typeof(object));
+        public static readonly RoutedCommand SearchCurrentFile = new RoutedCommand("SearchCurrentFile", typeof(object));
         public static readonly RoutedCommand SearchInFiles = new RoutedCommand("SearchInFiles", typeof(object));
         public static readonly RoutedCommand SearchDisplayNext = new RoutedCommand("SearchDisplayNext", typeof(object));
         public static readonly RoutedCommand SearchDisplayPrev = new RoutedCommand("SearchDisplayPrev", typeof(object));
@@ -84,8 +84,8 @@ namespace JadeCore
         {
             PromptOpenWorkspace.InputGestures.Add(new KeyGesture(Key.O, ModifierKeys.Shift | ModifierKeys.Control));
             NewWorkspace.InputGestures.Add(new KeyGesture(Key.N, ModifierKeys.Shift | ModifierKeys.Control));
-            SearchFile.InputGestures.Add(new KeyGesture(Key.F, ModifierKeys.Control));
-            SearchFile.InputGestures.Add(new KeyGesture(Key.F, ModifierKeys.Shift | ModifierKeys.Control));
+            SearchCurrentFile.InputGestures.Add(new KeyGesture(Key.F, ModifierKeys.Control));
+            SearchCurrentFile.InputGestures.Add(new KeyGesture(Key.F, ModifierKeys.Shift | ModifierKeys.Control));
         }
     }
 
@@ -165,9 +165,6 @@ namespace JadeCore
         bool CanCloseAllDocuments();
 
         void OnDisplayCodeLocation(DisplayCodeLocationCommandParams param);
-
-        void OnSearchFile();
-        bool CanSearchFile();
 
         void OnSearchInFiles();
         bool CanSearchInFiles();

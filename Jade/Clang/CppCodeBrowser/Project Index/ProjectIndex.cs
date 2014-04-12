@@ -15,9 +15,11 @@ namespace CppCodeBrowser
     public class ProjectIndex : IProjectIndex
     {        
         private readonly Dictionary<FilePath, IProjectItem> _items;
+        private readonly string _projectName;
                 
-        public ProjectIndex()
+        public ProjectIndex(string projectName)
         {
+            _projectName = projectName;
             _items = new Dictionary<FilePath, IProjectItem>();
         }
 

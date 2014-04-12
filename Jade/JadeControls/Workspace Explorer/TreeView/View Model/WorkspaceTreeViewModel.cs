@@ -135,8 +135,8 @@ namespace JadeControls.Workspace.ViewModel
                 return;
             }
 
-            JadeCore.Project.IProject project = new JadeCore.Project.Project(name, 
-                                                    Services.Provider.FileService.MakeFileHandle(".\\" + name + ".jpj"));
+            JadeCore.Project.IProject project = new JadeCore.Project.Project(name, FilePath.Make(".\\" + name + ".jpj"));
+                                                    //Services.Provider.FileService.MakeFileHandle(".\\" + name + ".jpj"));
             vm.AddNewProject(project);
             vm.Expanded = true;
             WorkspaceController.CurrentWorkspaceModified = true;

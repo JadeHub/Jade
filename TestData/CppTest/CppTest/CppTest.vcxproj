@@ -14,8 +14,10 @@
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\test.cpp" />
     <ClCompile Include="..\test2.cpp" />
+    <ClCompile Include="BLah.cc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\template.h" />
     <ClInclude Include="..\test.h" />
     <ClInclude Include="..\test2.h" />
   </ItemGroup>

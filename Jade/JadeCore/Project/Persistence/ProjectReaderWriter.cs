@@ -50,7 +50,7 @@ namespace JadeCore.Persistence.Project
                 tr.Dispose();
             }
 
-            JadeCore.Project.IProject result = new JadeCore.Project.Project(xml.Name, fileService.MakeFileHandle(path));
+            JadeCore.Project.IProject result = new JadeCore.Project.Project(xml.Name, FilePath.Make(path));
 
             foreach (FolderType f in xml.Folders)
             {

@@ -151,7 +151,7 @@ namespace JadeCore.Workspace
             {
                 IFileHandle file = JadeCore.Services.Provider.FileService.MakeFileHandle(FilePath.MakeTemporaryFilePath());
 
-                _workspace = new JadeCore.Workspace.Workspace(name, file);
+                _workspace = new JadeCore.Workspace.Workspace(name, file.Path);
                 CurrentWorkspaceModified = true;
                 OnWorkspaceChanged();
             }
@@ -162,7 +162,7 @@ namespace JadeCore.Workspace
             }
         }
 
-        public void OpenWorkspace(IFileHandle file)
+        public void OpenWorkspace(FilePath path)
         {
             if (CloseWorkspace() == false)
             {
@@ -171,8 +171,21 @@ namespace JadeCore.Workspace
 
             try
             {
-                _workspace = JadeCore.Persistence.Workspace.Reader.Read(file, JadeCore.Services.Provider.FileService);
-                _recentFiles.Add(file.Path.Str);
+                if(path.Exists == false)
+                {
+                    return;
+                }
+
+                string extention = path.Extention.ToLower();
+                if (extention == ".sln")
+                {
+                    _workspace = JadeCore.Persistence.Workspace.VisualStudioImport.Reader.Read(path, JadeCore.Services.Provider.FileService);
+                }
+                else if (extention == ".jws")
+                {
+                    _workspace = JadeCore.Persistence.Workspace.Reader.Read(path, JadeCore.Services.Provider.FileService);
+                }
+                _recentFiles.Add(path.Str);
                 OnWorkspaceChanged();
             }
             catch(Exception)

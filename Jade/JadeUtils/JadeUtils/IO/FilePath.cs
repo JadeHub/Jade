@@ -148,6 +148,14 @@ namespace JadeUtils.IO
             }
         }
 
+        public bool Exists
+        {
+            get
+            {
+                return System.IO.File.Exists(_path);
+            }
+        }
+
         #endregion
     }
 }

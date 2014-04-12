@@ -3,6 +3,8 @@ using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Text;
+using System.Windows.Input;
+
 
 namespace JadeControls.SearchResultsControl.ViewModel
 {
@@ -11,6 +13,7 @@ namespace JadeControls.SearchResultsControl.ViewModel
         private JadeCore.Search.ISearchController _controller;
         private ObservableCollection<SearchViewModel> _searches;
         private SearchViewModel _currentSearch;
+        private bool _seachCurrentDocVisible;
 
         public SearchResultsPaneViewModel(JadeCore.Search.ISearchController controller)
         {
@@ -26,6 +29,26 @@ namespace JadeControls.SearchResultsControl.ViewModel
                         OnNewSearch((ISearch)e.NewItems[0]);
                     }
                 };
+            _seachCurrentDocVisible = false;
+
+            JadeCore.Services.Provider.MainWindow.CommandBindings.Add(new CommandBinding(JadeCore.Commands.SearchCurrentFile,
+                                        delegate(object target, ExecutedRoutedEventArgs args)
+                                        {
+                                            SearchCurrentDocument();
+                                            args.Handled = true;
+                                        },
+                                        delegate(object target, CanExecuteRoutedEventArgs args)
+                                        {
+                                            args.CanExecute = JadeCore.Services.Provider.EditorController.ActiveDocument != null; ;
+                                            args.Handled = true;
+
+                                        }));
+        }
+
+        private void SearchCurrentDocument()
+        {
+            _seachCurrentDocVisible = true;
+            OnPropertyChanged("CurrentSearchVisibility");
         }
 
         private void OnNewSearch(ISearch search)
@@ -39,6 +62,12 @@ namespace JadeControls.SearchResultsControl.ViewModel
         {
             get { return _searches; }
             
+        }
+
+        public System.Windows.Visibility CurrentSearchVisibility
+        {
+            get { return _seachCurrentDocVisible ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed; }
+            set { }
         }
 
         public SearchViewModel CurrentSearch

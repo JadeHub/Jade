@@ -45,7 +45,6 @@ namespace JadeGui.ViewModels
 
             Register(commandBindings, Commands.CloseAllDocuments,  delegate { _handler.OnCloseAllDocuments(); }, delegate { return _handler.CanCloseAllDocuments(); });
 
-            Register(commandBindings, Commands.SearchFile, delegate { _handler.OnSearchFile(); }, delegate { return _handler.CanSearchFile(); });
             Register(commandBindings, Commands.SearchInFiles, delegate { _handler.OnSearchInFiles(); }, delegate { return _handler.CanSearchInFiles(); });
             Register(commandBindings, Commands.SearchDisplayNext, delegate { _handler.OnDisplayNextSearchResult(); }, delegate { return _handler.CanDisplayNextSearchResult(); });
             Register(commandBindings, Commands.SearchDisplayPrev, delegate { _handler.OnDisplayPrevSearchResult(); }, delegate { return _handler.CanDisplayPrevSearchResult(); });

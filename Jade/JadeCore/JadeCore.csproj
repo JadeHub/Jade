@@ -57,6 +57,8 @@
     <Compile Include="Project\Item.cs" />
     <Compile Include="Project\Persistence\Project.cs" />
     <Compile Include="Project\Persistence\ProjectReaderWriter.cs" />
+    <Compile Include="Project\Persistence\Visual Studio Import\ProjectReader.cs" />
+    <Compile Include="Project\Persistence\Visual Studio Import\WorkspaceReader.cs" />
     <Compile Include="Project\Persistence\Workspace.cs" />
     <Compile Include="Project\Persistence\WorkspaceReaderWriter.cs" />
     <Compile Include="Project\Project.cs" />
@@ -72,6 +74,7 @@
     <Compile Include="TextDocument\ITextDocumentCache.cs" />
     <Compile Include="TextDocument\TextDocument.cs" />
     <Compile Include="TextDocument\TextDocumentCache.cs" />
+    <Compile Include="Search\TextDocumentSearch.cs" />
     <Compile Include="Workspace\Folder.cs" />
     <Compile Include="Workspace\IFolder.cs" />
     <Compile Include="Workspace\IItem.cs" />

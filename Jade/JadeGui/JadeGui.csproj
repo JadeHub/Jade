@@ -195,7 +195,10 @@
     <Resource Include="Images\Rewind.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\FastForward.png" />
+    <Resource Include="Images\Next.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Prev.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

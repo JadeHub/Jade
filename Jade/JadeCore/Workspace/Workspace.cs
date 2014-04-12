@@ -8,25 +8,26 @@ namespace JadeCore.Workspace
         #region Data
         
         private string _name;
-        private IFileHandle _file;
+        private FilePath _path;
         private Folder _rootFolder;
         private ITextDocumentCache _textDocCache;
 
         #endregion  
 
-        public Workspace(string name, IFileHandle file)
+        //public Workspace(string name, IFileHandle file)
+        public Workspace(string name, FilePath path)
         {
             _name = name;
-            _file = file;
+            _path = path;
             _rootFolder = new Folder(_name);
             _textDocCache = new TextDocumentCache();
         }
 
         #region IWorkspace Implementation
 
-        public string Path { get { return _file.Path.Str; } set { } }
+        public string Path { get { return _path.Str; } set { } }
 
-        public string Directory { get { return _file.Path.Directory; } }
+        public string Directory { get { return _path.Directory; } }
 
         public JadeCore.Project.IProject ActiveProject 
         { 

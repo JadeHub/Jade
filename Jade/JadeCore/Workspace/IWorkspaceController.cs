@@ -33,9 +33,9 @@ namespace JadeCore.Workspace
         void NewWorkspace(string name);
 
         /// <summary>
-        /// Prompt the user for a name, close any open workspace and create a new, empty workspace.
+        /// 
         /// </summary>
-        void OpenWorkspace(IFileHandle file);
+        void OpenWorkspace(FilePath path);
 
         /// <summary>
         /// Prompt the use user to either Save, discard or cancel.

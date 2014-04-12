@@ -7,5 +7,6 @@
     <File Path="main.cpp" />
     <File Path="..\..\..\LibClangCS\LibClangCS\LibClangTest\TestCode\simple_class.cpp" />
     <File Path="..\..\..\LibClangCS\LibClangCS\LibClangTest\TestCode\string_include.cpp" />
+    <File Path="template.h" />
   </Files>
 </Project>

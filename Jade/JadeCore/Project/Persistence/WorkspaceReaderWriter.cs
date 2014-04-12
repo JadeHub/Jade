@@ -37,11 +37,11 @@ namespace JadeCore.Persistence.Workspace
             return result;
         }
 
-        static public JadeCore.Workspace.IWorkspace Read(IFileHandle file, IFileService fileService)
+        static public JadeCore.Workspace.IWorkspace Read(FilePath path, IFileService fileService)
         {
             WorkspaceType xml;
             XmlSerializer serializer = new XmlSerializer(typeof(WorkspaceType));
-            TextReader tr = new StreamReader(file.Path.Str);
+            TextReader tr = new StreamReader(path.Str);
             try
             {                
                 xml = (WorkspaceType)serializer.Deserialize(tr);                
@@ -52,7 +52,7 @@ namespace JadeCore.Persistence.Workspace
                 tr.Dispose();
             }
 
-            JadeCore.Workspace.IWorkspace result = new JadeCore.Workspace.Workspace(xml.Name, file);
+            JadeCore.Workspace.IWorkspace result = new JadeCore.Workspace.Workspace(xml.Name, path);
             foreach (FolderType f in xml.Folders)
             {
                 result.AddFolder(MakeFolder(result.Directory, f, fileService));
