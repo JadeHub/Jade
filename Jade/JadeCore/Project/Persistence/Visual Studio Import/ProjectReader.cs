@@ -27,7 +27,7 @@ namespace JadeCore.Persistence.Workspace.VisualStudioImport
                 {
                     string itemPath = match.Groups[1].Value;
                     itemPath = JadeUtils.IO.PathUtils.CombinePaths(path.Directory, itemPath);
-                    project.AddItem(new JadeCore.Project.File(fileService.MakeFileHandle(itemPath)));
+                    project.AddItem(new JadeCore.Project.FileItem(fileService.MakeFileHandle(itemPath)));
                     continue;
                 }
                 match = Regex.Match(line, _includeLineRegex);
@@ -35,7 +35,7 @@ namespace JadeCore.Persistence.Workspace.VisualStudioImport
                 {
                     string itemPath = match.Groups[1].Value;
                     itemPath = JadeUtils.IO.PathUtils.CombinePaths(path.Directory, itemPath);
-                    project.AddItem(new JadeCore.Project.File(fileService.MakeFileHandle(itemPath)));
+                    project.AddItem(new JadeCore.Project.FileItem(fileService.MakeFileHandle(itemPath)));
                     continue;
                 }
             }            

@@ -52,9 +52,12 @@
     <Compile Include="GuiUtils.cs" />
     <Compile Include="Editor\IEditorController.cs" />
     <Compile Include="IServiceProvider.cs" />
-    <Compile Include="Project\File.cs" />
+    <Compile Include="Project\FileItem.cs" />
     <Compile Include="Project\Folder.cs" />
-    <Compile Include="Project\Item.cs" />
+    <Compile Include="Project\IFileItem.cs" />
+    <Compile Include="Project\IFolder.cs" />
+    <Compile Include="Project\IItem.cs" />
+    <Compile Include="Project\IProject.cs" />
     <Compile Include="Project\Persistence\Project.cs" />
     <Compile Include="Project\Persistence\ProjectReaderWriter.cs" />
     <Compile Include="Project\Persistence\Visual Studio Import\ProjectReader.cs" />

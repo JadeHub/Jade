@@ -19,7 +19,7 @@ namespace JadeCore.Persistence.Project
                 //Convert from relative path stored in project xml file
                 path = System.IO.Path.Combine(projectDir, path);                
             }
-            return new JadeCore.Project.File(fileService.MakeFileHandle(path));
+            return new JadeCore.Project.FileItem(fileService.MakeFileHandle(path));
         }
 
         private static JadeCore.Project.IFolder MakeFolder(JadeCore.Project.IProject project, string projectDir, FolderType xml, IFileService fileService)
@@ -66,7 +66,7 @@ namespace JadeCore.Persistence.Project
 
     public static class Writer
     {
-        static private FileType MakeFile(JadeCore.Project.File file, string projectDir)
+        static private FileType MakeFile(JadeCore.Project.FileItem file, string projectDir)
         {
             FileType result = new FileType();
             //Convert to relative path for storage in workspace
@@ -79,11 +79,11 @@ namespace JadeCore.Persistence.Project
             FolderType result = new FolderType();
 
             result.Name = folder.Name;
-            result.Files = new FileType[folder.Items.OfType<JadeCore.Project.File>().Count()];
+            result.Files = new FileType[folder.Items.OfType<JadeCore.Project.FileItem>().Count()];
             result.Folders = new FolderType[folder.Folders.Count];
 
             int idx = 0;
-            foreach (JadeCore.Project.File f in folder.Items.OfType<JadeCore.Project.File>())
+            foreach (JadeCore.Project.FileItem f in folder.Items.OfType<JadeCore.Project.FileItem>())
             {
                 result.Files[idx] = MakeFile(f, projectDir);
                 idx++;
@@ -102,11 +102,11 @@ namespace JadeCore.Persistence.Project
             ProjectType result = new ProjectType();
 
             result.Name = project.Name;
-            result.Files = new FileType[project.Items.OfType<JadeCore.Project.File>().Count()];
+            result.Files = new FileType[project.Items.OfType<JadeCore.Project.FileItem>().Count()];
             result.Folders = new FolderType[project.Folders.Count];
 
             int idx = 0;
-            foreach (JadeCore.Project.File f in project.Items.OfType<JadeCore.Project.File>())
+            foreach (JadeCore.Project.FileItem f in project.Items.OfType<JadeCore.Project.FileItem>())
             {
                 result.Files[idx] = MakeFile(f, projectDir);
                 idx++;

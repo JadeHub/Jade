@@ -6,20 +6,6 @@ using System.Threading.Tasks;
 
 namespace JadeCore.Project
 {
-    public interface IFolder
-    {
-        string Name { get; }
-        IList<IFolder> Folders { get; }
-        IList<IItem> Items { get; }
-        void AddItem(IItem item);
-        bool RemoveItem(string name);
-        bool HasItem(string name);
-        void AddFolder(IFolder f);
-        bool RemoveFolder(string name);
-        bool HasFolder(string name);
-        IProject OwningProject { get; }
-    }
-
     public class Folder : IFolder
     {
         #region Data
@@ -53,18 +39,18 @@ namespace JadeCore.Project
 
         public void AddItem(IItem item)
         {
-            if (!HasItem(item.Name))
+            if (!HasItem(item.ItemName))
             {
                 _items.Add(item);
                 _project.OnItemAdded(item);
             }
         }
 
-        public bool RemoveItem(string name)
+        public bool RemoveItem(string itemName)
         {
             foreach (IItem item in _items)
             {
-                if (item.Name == name)
+                if (item.ItemName == itemName)
                 {
                     if (_items.Remove(item))
                     {
@@ -77,11 +63,11 @@ namespace JadeCore.Project
             return false;
         }
 
-        public bool HasItem(string name)
+        public bool HasItem(string itemName)
         {
             foreach (IItem item in _items)
             {
-                if (item.Name == name)
+                if (item.ItemName == itemName)
                 {
                     return true;
                 }

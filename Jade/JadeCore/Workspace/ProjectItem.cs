@@ -30,8 +30,8 @@ namespace JadeCore.Workspace
         public JadeCore.Project.IProject OwningProject { get { return _project.OwningProject; } }
 
         public void AddItem(JadeCore.Project.IItem item) { _project.AddItem(item); }
-        public bool RemoveItem(string file) { return _project.RemoveItem(file); }
-        public bool HasItem(string name) { return _project.HasItem(name); }
+        public bool RemoveItem(string itemName) { return _project.RemoveItem(itemName); }
+        public bool HasItem(string itemName) { return _project.HasItem(itemName); }
         public void AddFolder(JadeCore.Project.IFolder f) { _project.AddFolder(f); }
         public bool RemoveFolder(string name) { return _project.RemoveFolder(name); }
         public bool HasFolder(string name) { return _project.HasFolder(name); }
@@ -39,7 +39,7 @@ namespace JadeCore.Workspace
         public string Directory { get { return _project.Directory; } }
         public void OnItemAdded(JadeCore.Project.IItem item) { _project.OnItemAdded(item); }
         public void OnItemRemoved(JadeCore.Project.IItem item) { _project.OnItemRemoved(item); }
-        public Project.File FindFile(FilePath path) { return _project.FindFile(path); }
+        public Project.FileItem FindFile(FilePath path) { return _project.FindFile(path); }
 
         #endregion
     }

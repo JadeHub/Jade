@@ -33,9 +33,9 @@ namespace JadeControls.Workspace.ViewModel
 
             foreach (JadeCore.Project.IItem i in _data.Items)
             {
-                if (i is JadeCore.Project.File)
+                if (i is JadeCore.Project.FileItem)
                 {
-                    AddChildFile(new File(this, i as JadeCore.Project.File));
+                    AddChildFile(new File(this, i as JadeCore.Project.FileItem));
                 }
             }
         }
@@ -52,12 +52,12 @@ namespace JadeControls.Workspace.ViewModel
 
         public void AddNewFile(JadeUtils.IO.IFileHandle fileHandle)
         {
-            if (_data.HasItem(fileHandle.Name))
+            if (_data.HasItem(fileHandle.Path.Str))
             {
                 throw new Exception("Attempt to add duplicate file name to project.");
             }
 
-            JadeCore.Project.File data = new JadeCore.Project.File(fileHandle);
+            JadeCore.Project.FileItem data = new JadeCore.Project.FileItem(fileHandle);
             _data.AddItem(data);
             AddChildFile(new File(this, data));
             OnPropertyChanged("Children");
@@ -81,7 +81,7 @@ namespace JadeControls.Workspace.ViewModel
             }
             else if (child is File)
             {
-                return _data.RemoveItem(child.DisplayName);
+                return _data.RemoveItem((child as File).Path);
             }
             return false;
         }

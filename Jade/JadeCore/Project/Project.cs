@@ -5,19 +5,6 @@ using JadeUtils.IO;
 
 namespace JadeCore.Project
 {   
-    public interface IProject : IFolder
-    {
-        string Path { get; }
-        string Directory { get; }
-
-        CppCodeBrowser.IProjectIndex SourceIndex { get; }
-
-        File FindFile(FilePath path);
-
-        void OnItemAdded(IItem item);
-        void OnItemRemoved(IItem item);
-    }
-
     public class Project : IProject
     {
         #region Data
@@ -59,14 +46,14 @@ namespace JadeCore.Project
         public string Path { get { return _path.Str; } }
         public string Directory { get { return _path.Directory; } }
 
-        public File FindFile(FilePath path)
+        public FileItem FindFile(FilePath path)
         {
             foreach(IItem item in _items.Values)
             {
-                if(item is File)
+                if(item is FileItem)
                 {
-                    if ((item as File).Path == path)
-                        return item as File;
+                    if ((item as FileItem).Path == path)
+                        return item as FileItem;
                 }
             }
             return null;
@@ -74,28 +61,28 @@ namespace JadeCore.Project
 
         public void AddItem(IItem item)
         {
-            if (_items.ContainsKey(item.Name))
+            if (_items.ContainsKey(item.ItemName))
                 throw new System.Exception("Duplicate item in project.");
-            _items[item.Name] = item;
+            _items[item.ItemName] = item;
             OnItemAdded(item);
         }
 
-        public bool RemoveItem(string name)
+        public bool RemoveItem(string itemName)
         {
             IItem item;
 
-            if (_items.TryGetValue(name, out item))
+            if (_items.TryGetValue(itemName, out item))
             {
-                _items.Remove(name);
+                _items.Remove(itemName);
                 OnItemRemoved(item);
                 return true;
             }
             return false;
         }
 
-        public bool HasItem(string name)
+        public bool HasItem(string itemName)
         {
-            return _items.ContainsKey(name);
+            return _items.ContainsKey(itemName);
         }
 
         public void AddFolder(IFolder f)
@@ -129,9 +116,9 @@ namespace JadeCore.Project
 
         public void OnItemAdded(IItem item)
         {
-            if (item is File)
+            if (item is FileItem)
             {
-                File f = item as File;
+                FileItem f = item as FileItem;
                 if (f.Type == ItemType.CppSourceFile)
                 {
                     AddSourceFile(f);
@@ -141,9 +128,9 @@ namespace JadeCore.Project
 
         public void OnItemRemoved(IItem item)
         {
-            if (item is File)
+            if (item is FileItem)
             {
-                File f = item as File;
+                FileItem f = item as FileItem;
                 if (f.Type == ItemType.CppSourceFile)
                 {
                     
@@ -151,7 +138,7 @@ namespace JadeCore.Project
             }
         }
 
-        private void AddSourceFile(File f)
+        private void AddSourceFile(FileItem f)
         {
             _allSourceFiles.Add(f);
             _browserProject.AddSourceFile(f.Path, null);
@@ -159,7 +146,7 @@ namespace JadeCore.Project
             //_sourceIndex.Dump();
         }
 
-        private void RemoveSourceFile(File f)
+        private void RemoveSourceFile(FileItem f)
         {
             _allSourceFiles.Remove(f);
 
