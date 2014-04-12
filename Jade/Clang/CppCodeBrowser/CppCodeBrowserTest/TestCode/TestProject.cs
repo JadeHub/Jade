@@ -10,16 +10,16 @@ using LibClang;
 namespace CppCodeBrowserTest
 {
     static public class TestProject
-    {        
+    {        /*
         public static Project MakeProject()
         {
-            IIndexBuilder ib = new IndexBuilder();
-            Project proj = new Project("TestProject", ib);
+            //IIndexBuilder ib = new IndexBuilder();
+            //Project proj = new Project("TestProject", ib);
 
-            /*proj.AddSourceFile("TestCode\\main.cpp", null);
-            proj.AddSourceFile("TestCode\\class_a.cpp", null);*/
+            proj.AddSourceFile("TestCode\\main.cpp", null);
+            proj.AddSourceFile("TestCode\\class_a.cpp", null);
 
             return proj;
-        }
+        }*/
     }
 }

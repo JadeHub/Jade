@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JadeUtils.IO;
 
 namespace JadeCore.Workspace
 {
@@ -28,7 +29,7 @@ namespace JadeCore.Workspace
         public string Name { get { return name; } }
         public IList<IFolder> Folders { get { return folders; } }
         public IList<IItem> Items { get { return items; } }
-
+        
         #endregion
 
         #region Public Methods
@@ -79,6 +80,28 @@ namespace JadeCore.Workspace
                 }
             }
             return false;
+        }
+
+        public JadeCore.Project.IProject FindProjectForFile(FilePath path)
+        {
+            JadeCore.Project.IProject result = null;
+            foreach (IItem item in Items)
+            {
+                if (item is Project.IProject)
+                {
+                    if((item as Project.IProject).FindFile(path) != null)
+                        return item as Project.IProject;
+                }
+            }
+
+            foreach(IFolder folder in Folders)
+            {
+                result = folder.FindProjectForFile(path);
+                if (result != null)
+                    return result;
+            }
+
+            return result;
         }
 
         #endregion

@@ -125,14 +125,26 @@ namespace JadeCore.Editor
 
         #region Private Methods
 
+        private CppCodeBrowser.IProjectIndex GetProjectIndexForFile(FilePath path)
+        {
+            if(Services.Provider.WorkspaceController.CurrentWorkspace != null)
+            {
+                Project.IProject project = Services.Provider.WorkspaceController.CurrentWorkspace.FindProjectForFile(path);
+                if (project != null)
+                    return project.SourceIndex;
+            }
+            return null;
+        }
+
         private IEditorDoc FindOrAddDocument(IFileHandle file)
         {
             IEditorDoc result;
 
             if(!_allDocuments.TryGetValue(file, out result))
             {
+                //find project?
                 ITextDocument doc = Services.Provider.ContentProvider.OpenTextDocument(file);
-                result = new EditorSourceDocument(doc);
+                result = new EditorSourceDocument(doc, GetProjectIndexForFile(file.Path));
                 _allDocuments.Add(file, result);
             }
             return result;

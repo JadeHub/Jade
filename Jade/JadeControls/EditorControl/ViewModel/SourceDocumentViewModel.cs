@@ -1,4 +1,6 @@
 ﻿using JadeCore;
+using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
@@ -10,19 +12,25 @@ namespace JadeControls.EditorControl.ViewModel
     /// </summary>
     public class SourceDocumentViewModel : DocumentViewModel
     {
+        private CppCodeBrowser.IProjectIndex _projectIndex;
         private CppCodeBrowser.ICodeBrowser _jumpToBrowser;
         private DiagnosticHighlighter _diagnosticHighlighter;
         private SearchHighlighter _searchHighlighter;
         private CppCodeBrowser.IProjectItem _sourceFileProjectItem;
-        private CppCodeBrowser.IProjectIndex _projectIndex;
-
-        public SourceDocumentViewModel(IEditorDoc doc, CppCodeBrowser.IProjectIndex index) 
+        
+        public SourceDocumentViewModel(IEditorDoc doc) 
             : base(doc)
         {
-            _jumpToBrowser = new CppCodeBrowser.JumpToBrowser(index);
-            _sourceFileProjectItem = index.FindProjectItem(doc.File.Path);
-            _projectIndex = index;
+            Debug.Assert(doc is JadeCore.Editor.EditorSourceDocument);
+            _projectIndex = (doc as JadeCore.Editor.EditorSourceDocument).ProjectIndex;
+            if (HasProjectIndex)
+            {
+                _jumpToBrowser = new CppCodeBrowser.JumpToBrowser(_projectIndex);
+                _sourceFileProjectItem = _projectIndex.FindProjectItem(doc.File.Path);
+            }
         }
+
+        private bool HasProjectIndex { get { return _projectIndex != null; } }
 
         public override void RegisterCommands(CommandBindingCollection commandBindings)
         {
@@ -55,6 +63,8 @@ namespace JadeControls.EditorControl.ViewModel
 
         private void OnJumpTo(int offset)
         {
+            if (!HasProjectIndex) return;
+
             CppCodeBrowser.ICodeLocation location = new CppCodeBrowser.CodeLocation(Document.File.Path.Str, offset);
             List<LibClang.Cursor> cursors = new List<LibClang.Cursor>(CppCodeBrowser.ProjectIndex.GetCursors(_sourceFileProjectItem.TranslationUnits, location));
 
@@ -76,11 +86,13 @@ namespace JadeControls.EditorControl.ViewModel
 
         private bool CanJumpTo(int offset)
         {
-            return true;
+            return HasProjectIndex;
         }
 
         private void OnFindAllReferences(int offset)
         {
+            if (!HasProjectIndex) return;
+
             CppCodeBrowser.CodeLocation location = new CppCodeBrowser.CodeLocation(Document.File.Path.Str, offset);
 
             List<LibClang.Cursor> cursors = new List<LibClang.Cursor>(CppCodeBrowser.ProjectIndex.GetCursors(_projectIndex.TranslationUnits, location));
@@ -92,7 +104,7 @@ namespace JadeControls.EditorControl.ViewModel
 
         private bool CanFindAllReferences(int offset)
         {
-            return true;
+            return HasProjectIndex;
         }
 
         protected override void OnSetView(CodeEditor view)

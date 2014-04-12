@@ -8,15 +8,17 @@ namespace JadeCore.Editor
     {
         #region Data
 
-        private ITextDocument _document;        
+        private ITextDocument _document;
+        private CppCodeBrowser.IProjectIndex _projectIndex;
         
         #endregion
 
         #region Constructor
 
-        public EditorSourceDocument(ITextDocument document)
+        public EditorSourceDocument(ITextDocument document, CppCodeBrowser.IProjectIndex projectIndex)
         {
             _document = document;
+            _projectIndex = projectIndex;
         }
 
         #endregion
@@ -67,8 +69,12 @@ namespace JadeCore.Editor
             get
             {
                 return _document.Modified;
-            }
-            
+            }            
+        }
+
+        public CppCodeBrowser.IProjectIndex ProjectIndex
+        {
+            get { return _projectIndex; }
         }
 
         #endregion

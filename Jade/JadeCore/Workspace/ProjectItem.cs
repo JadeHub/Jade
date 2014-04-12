@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JadeUtils.IO;
 
 namespace JadeCore.Workspace
 {
@@ -38,6 +39,7 @@ namespace JadeCore.Workspace
         public string Directory { get { return _project.Directory; } }
         public void OnItemAdded(JadeCore.Project.IItem item) { _project.OnItemAdded(item); }
         public void OnItemRemoved(JadeCore.Project.IItem item) { _project.OnItemRemoved(item); }
+        public Project.File FindFile(FilePath path) { return _project.FindFile(path); }
 
         #endregion
     }

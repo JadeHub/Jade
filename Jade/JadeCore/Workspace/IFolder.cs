@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JadeUtils.IO;
 
 namespace JadeCore.Workspace
 {
@@ -16,5 +17,6 @@ namespace JadeCore.Workspace
         IFolder AddFolder(IFolder f);
         bool RemoveFolder(string name);
         bool HasFolder(string name);
+        JadeCore.Project.IProject FindProjectForFile(FilePath path);
     }
 }

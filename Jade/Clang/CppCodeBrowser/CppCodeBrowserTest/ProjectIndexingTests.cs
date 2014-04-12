@@ -10,10 +10,10 @@ namespace CppCodeBrowserTest
         [TestMethod]
         public void IndexProject()
         {
-            Project proj = TestProject.MakeProject();
-            ICodeBrowser b = new JumpToBrowser(proj.Index);
+            //Project proj = TestProject.MakeProject();
+            //ICodeBrowser b = new JumpToBrowser(proj.Index);
 
-            List<ICodeLocation> results = new List<ICodeLocation>();
+            //List<ICodeLocation> results = new List<ICodeLocation>();
             //results.AddRange(b.BrowseFrom(new CodeLocation("TestCode\\class_a.cpp", 53)));
 
             /*ICodeLocation loc = b.JumpTo(new CodeLocation("TestCode\\class_a.h", 67));

@@ -54,7 +54,7 @@ namespace JadeControls.EditorControl.ViewModel
 
         private void OnControllerDocumentOpened(JadeCore.EditorDocChangeEventArgs args)
         {
-            DocumentViewModel d = new SourceDocumentViewModel(args.Document, GetProjectSourceIndex());
+            DocumentViewModel d = new SourceDocumentViewModel(args.Document);
             _documents.Add(d);
             args.Document.OnClosing += delegate { OnDocumentClosing(d); };           
             SelectedDocument = d;           
@@ -112,16 +112,6 @@ namespace JadeControls.EditorControl.ViewModel
             {
                 if (vm.Document == doc)
                     return vm;
-            }
-            return null;
-        }
-        
-        private CppCodeBrowser.IProjectIndex GetProjectSourceIndex()
-        {
-            if (Services.Provider.WorkspaceController.CurrentWorkspace != null &&
-                Services.Provider.WorkspaceController.CurrentWorkspace.ActiveProject != null)
-            {
-                return Services.Provider.WorkspaceController.CurrentWorkspace.ActiveProject.SourceIndex;
             }
             return null;
         }

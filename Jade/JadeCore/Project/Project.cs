@@ -10,7 +10,9 @@ namespace JadeCore.Project
         string Path { get; }
         string Directory { get; }
 
-        IProjectIndex SourceIndex { get; }
+        CppCodeBrowser.IProjectIndex SourceIndex { get; }
+
+        File FindFile(FilePath path);
 
         void OnItemAdded(IItem item);
         void OnItemRemoved(IItem item);
@@ -40,7 +42,6 @@ namespace JadeCore.Project
             _items = new Dictionary<string, IItem>();
             _folders = new List<IFolder>();
             _allSourceFiles = new List<IItem>();
-
             _browserProject = new CppCodeBrowser.Project(_name, new CppCodeBrowser.IndexBuilder(_name));            
         }
 
@@ -57,6 +58,19 @@ namespace JadeCore.Project
 
         public string Path { get { return _path.Str; } }
         public string Directory { get { return _path.Directory; } }
+
+        public File FindFile(FilePath path)
+        {
+            foreach(IItem item in _items.Values)
+            {
+                if(item is File)
+                {
+                    if ((item as File).Path == path)
+                        return item as File;
+                }
+            }
+            return null;
+        }
 
         public void AddItem(IItem item)
         {

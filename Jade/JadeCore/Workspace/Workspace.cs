@@ -14,7 +14,8 @@ namespace JadeCore.Workspace
 
         #endregion  
 
-        //public Workspace(string name, IFileHandle file)
+        #region Constructor
+
         public Workspace(string name, FilePath path)
         {
             _name = name;
@@ -22,6 +23,8 @@ namespace JadeCore.Workspace
             _rootFolder = new Folder(_name);
             _textDocCache = new TextDocumentCache();
         }
+
+        #endregion
 
         #region IWorkspace Implementation
 
@@ -46,6 +49,11 @@ namespace JadeCore.Workspace
         public ITextDocumentCache DocumentCache 
         {
             get { return _textDocCache; }
+        }
+
+        public JadeCore.Project.IProject FindProjectForFile(FilePath path)
+        {
+            return _rootFolder.FindProjectForFile(path);
         }
 
         #endregion
