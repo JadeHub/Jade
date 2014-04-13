@@ -7,24 +7,7 @@ namespace JadeGui.DockingGui
     class LayoutInitializer : ILayoutUpdateStrategy
     {
         public bool BeforeInsertAnchorable(LayoutRoot layout, LayoutAnchorable anchorableToShow, ILayoutContainer destinationContainer)
-        {
-            /*//AD wants to add the anchorable into destinationContainer
-            //just for test provide a new anchorablepane 
-            //if the pane is floating let the manager go ahead
-            LayoutAnchorablePane destPane = destinationContainer as LayoutAnchorablePane;
-            if (destinationContainer != null &&
-                destinationContainer.FindParent<LayoutFloatingWindow>() != null)
-                return false;
-
-            var toolsPane = layout.Descendents().OfType<LayoutAnchorablePane>().FirstOrDefault(d => d.Name == "ToolsPane");
-            if (toolsPane != null)
-            {
-                toolsPane.Children.Add(anchorableToShow);
-                return true;
-            }
-
-            return false;*/
-
+        {           
             //Determine panel name for given view model type
             string destPaneName = string.Empty;
             if (anchorableToShow.Content is JadeControls.Workspace.ViewModel.WorkspaceViewModel)
@@ -48,22 +31,8 @@ namespace JadeGui.DockingGui
                 //Add
                 toolsPane.Children.Add(anchorableToShow);
                 return true;
-            }
-            else
-            {
-                if(destPaneName == "LeftToolPanel")
-                {
-                    IEnumerable<LayoutPanel> panels = layout.Descendents().OfType<LayoutPanel>();
-                    int i = panels.Count();
-                    int j = i;
-                    //LayoutPanel horizPanel = layout.Descendents().OfType<LayoutPanel>().FirstOrDefault(d => d.Orientation == System.Windows.Controls.Orientation.Horizontal);
-
-
-                }                
-            }
-            
-            return true;
-
+            } 
+            return false;
         }
 
 
