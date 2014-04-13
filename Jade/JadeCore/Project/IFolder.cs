@@ -16,7 +16,7 @@ namespace JadeCore.Project
         bool HasItem(string itemName);
         void AddFolder(IFolder f);
         bool RemoveFolder(string name);
-        bool HasFolder(string name);
+        IFolder FindFolder(string name);
         IProject OwningProject { get; }
     }
 }

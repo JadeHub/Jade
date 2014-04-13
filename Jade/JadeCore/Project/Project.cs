@@ -102,16 +102,16 @@ namespace JadeCore.Project
             return false;
         }
 
-        public bool HasFolder(string name)
+        public IFolder FindFolder(string name)
         {
             foreach (IFolder f in _folders)
             {
                 if (f.Name == name)
                 {
-                    return true;
+                    return f;
                 }
             }
-            return false;
+            return null;
         }
 
         public void OnItemAdded(IItem item)
@@ -141,9 +141,8 @@ namespace JadeCore.Project
         private void AddSourceFile(FileItem f)
         {
             _allSourceFiles.Add(f);
-            _browserProject.AddSourceFile(f.Path, null);
-            //_indexBuilder.AddSourceFile(f.Handle, CppView.IndexBuilderItemPriority.Immediate);
-            //_sourceIndex.Dump();
+            //_browserProject.AddSourceFile(f.Path, null);
+            
         }
 
         private void RemoveSourceFile(FileItem f)

@@ -30,7 +30,7 @@ namespace JadeControls.EditorControl.ViewModel
             }
         }
 
-        private bool HasProjectIndex { get { return _projectIndex != null; } }
+        private bool HasProjectIndex { get { return _projectIndex != null && _sourceFileProjectItem != null; } }
 
         public override void RegisterCommands(CommandBindingCollection commandBindings)
         {

@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\test.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test2.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="BLah.cc">
+      <Filter>Source\Blah</Filter>
+    </ClCompile>
+    <ClCompile Include="..\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\template.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{1a2da8c0-5f2c-4e2e-bd3f-3c94e4c7925b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Blah">
+      <UniqueIdentifier>{f898ab26-fe51-4b67-ab4c-a03d3246d576}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{b473bb8c-464a-4738-9d14-1c355e0614dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Empty">
+      <UniqueIdentifier>{ebbe0c7d-21e7-4fc8-b78c-59d722089572}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

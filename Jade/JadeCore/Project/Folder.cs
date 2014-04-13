@@ -92,16 +92,16 @@ namespace JadeCore.Project
             return false;
         }
 
-        public bool HasFolder(string name)
+        public IFolder FindFolder(string name)
         {
             foreach (IFolder f in _folders)
             {
                 if (f.Name == name)
                 {
-                    return true;
+                    return f;
                 }
             }
-            return false;
+            return null;
         }
 
         #endregion

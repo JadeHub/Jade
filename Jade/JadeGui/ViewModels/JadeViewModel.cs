@@ -296,14 +296,14 @@ namespace JadeGui.ViewModels
 
         public void OnOpenWorkspace(string path)
         {
-            try
+        //    try
             {
                 _workspaceController.OpenWorkspace(FilePath.Make(path));
 
             }
-            catch (Exception e)
+          //  catch (Exception e)
             {
-                JadeCore.GuiUtils.DisplayErrorAlert("Error opening workspace. " + e.ToString());
+          //      JadeCore.GuiUtils.DisplayErrorAlert("Error opening workspace. " + e.ToString());
             }
         }
 

@@ -60,6 +60,7 @@
     <Compile Include="Project\IProject.cs" />
     <Compile Include="Project\Persistence\Project.cs" />
     <Compile Include="Project\Persistence\ProjectReaderWriter.cs" />
+    <Compile Include="Project\Persistence\Visual Studio Import\ProjectFiltersFileReader.cs" />
     <Compile Include="Project\Persistence\Visual Studio Import\ProjectReader.cs" />
     <Compile Include="Project\Persistence\Visual Studio Import\WorkspaceReader.cs" />
     <Compile Include="Project\Persistence\Workspace.cs" />
