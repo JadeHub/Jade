@@ -25,7 +25,7 @@ namespace JadeGui.ViewModels
 
         private JadeCore.Workspace.IWorkspaceController _workspaceController;
         private WorkspaceViewModel _currentWorkspace;
-
+        
         private EditorControlViewModel _editorViewModel;
         private JadeCore.IEditorController _editorController;
 
@@ -48,7 +48,8 @@ namespace JadeGui.ViewModels
             _workspaceController = JadeCore.Services.Provider.WorkspaceController;
             //Todo - Workspace viewmodel to track WorkspaceController changes
             _workspaceController.WorkspaceChanged += delegate { OnWorkspaceChanged(); };
-
+            _currentWorkspace = new WorkspaceViewModel();
+            
             _editorController = JadeCore.Services.Provider.EditorController;
             _editorController.DocumentSelected += OnEditorControllerDocumentSelected;
             _editorViewModel = new JadeControls.EditorControl.ViewModel.EditorControlViewModel(_editorController);
@@ -62,10 +63,11 @@ namespace JadeGui.ViewModels
             _commands = new JadeCommandAdaptor(this);
             _view = view;
 
-
             _toolWindows = new ObservableCollection<JadeControls.Docking.ToolPaneViewModel>();                        
             _toolWindows.Add(_seachResultsViewModel);
             _toolWindows.Add(_outputViewModel);
+            _toolWindows.Add(_currentWorkspace);
+            _currentWorkspace.IsVisible = false;
 
             UpdateWindowTitle();
         }
@@ -81,18 +83,11 @@ namespace JadeGui.ViewModels
 
         private void OnWorkspaceChanged()
         {
-            if(_workspaceController.CurrentWorkspace != null)
-            {
-                _currentWorkspace = new WorkspaceViewModel(_workspaceController.CurrentWorkspace);
-                
-            }
-            else
-            {
-                _currentWorkspace = null;
-            }
-
+            _currentWorkspace.Data = _workspaceController.CurrentWorkspace;
+                        
+            OnPropertyChanged("Workspace");
             OnPropertyChanged("ToolWindows");
-            OnPropertyChanged("Workspace"); 
+            
             UpdateWindowTitle();
         }
 
@@ -106,10 +101,7 @@ namespace JadeGui.ViewModels
         {
             get
             {
-                if (_currentWorkspace != null)
-                    _toolWindows.Add(_currentWorkspace);
-                else
-                    _toolWindows.Remove(_currentWorkspace);
+                
                 return _toolWindows;
             }
         }
@@ -296,14 +288,14 @@ namespace JadeGui.ViewModels
 
         public void OnOpenWorkspace(string path)
         {
-        //    try
+            try
             {
                 _workspaceController.OpenWorkspace(FilePath.Make(path));
 
             }
-          //  catch (Exception e)
+            catch (Exception e)
             {
-          //      JadeCore.GuiUtils.DisplayErrorAlert("Error opening workspace. " + e.ToString());
+                JadeCore.GuiUtils.DisplayErrorAlert("Error opening workspace. " + e.ToString());
             }
         }
 

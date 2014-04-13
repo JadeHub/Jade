@@ -72,7 +72,7 @@
                                                 
                         <local:PanesTemplateSelector.WorkspaceViewTemplate>
                             <DataTemplate> 
-                                <JadeCtrlsWorkspace:WorkspaceCtrl />                                
+                                <JadeCtrlsWorkspace:WorkspaceCtrl />
                             </DataTemplate>
                         </local:PanesTemplateSelector.WorkspaceViewTemplate>
                         

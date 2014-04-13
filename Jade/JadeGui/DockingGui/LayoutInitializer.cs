@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Collections.Generic;
 using Xceed.Wpf.AvalonDock.Layout;
 
 namespace JadeGui.DockingGui
@@ -48,7 +49,20 @@ namespace JadeGui.DockingGui
                 toolsPane.Children.Add(anchorableToShow);
                 return true;
             }
-            return false;
+            else
+            {
+                if(destPaneName == "LeftToolPanel")
+                {
+                    IEnumerable<LayoutPanel> panels = layout.Descendents().OfType<LayoutPanel>();
+                    int i = panels.Count();
+                    int j = i;
+                    //LayoutPanel horizPanel = layout.Descendents().OfType<LayoutPanel>().FirstOrDefault(d => d.Orientation == System.Windows.Controls.Orientation.Horizontal);
+
+
+                }                
+            }
+            
+            return true;
 
         }
 

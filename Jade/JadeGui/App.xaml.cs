@@ -62,7 +62,7 @@ namespace JadeGui
 
             //viewModel.OnOpenWorkspace(@"C:\Code\GitHub\JadeMaster\TestData\CppTest\CppTest.jws");
             //viewModel.OnOpenWorkspace(@"C:\Code\GitHub\JadeMaster\TestData\CppTest\CppTest\CppTest.sln");
-            viewModel.OnOpenWorkspace(@"C:\Code\clang\build\llvm.sln");
+         //   viewModel.OnOpenWorkspace(@"C:\Code\clang\build\llvm.sln");
         }
 
         protected override void OnExit(ExitEventArgs e)

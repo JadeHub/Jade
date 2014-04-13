@@ -20,15 +20,27 @@ namespace JadeControls.Workspace.ViewModel
 
         #endregion
 
-        public WorkspaceViewModel(JadeCore.Workspace.IWorkspace data)
+        public WorkspaceViewModel()
         {
             Title = "Workspace";
             ContentId = "WorkspaceToolPane";            
-            _data = data;
-            _tree = new JadeControls.Workspace.ViewModel.WorkspaceTree(_data);
         }
 
         #region Public Properties
+
+        public JadeCore.Workspace.IWorkspace Data
+        {
+            set 
+            {
+                _data = value;
+                if (_data != null)
+                    _tree = new JadeControls.Workspace.ViewModel.WorkspaceTree(_data);
+                else
+                    _tree = null;
+                IsVisible = _data != null;
+                OnPropertyChanged("Tree");
+            }
+        }
 
         public WorkspaceTree Tree
         {
