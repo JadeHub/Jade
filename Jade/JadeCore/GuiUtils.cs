@@ -69,7 +69,7 @@ namespace JadeCore
         {
             // Configure open file dialog box
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-            dlg.DefaultExt = ext; // Default file extension
+            dlg.DefaultExt = ext;
             dlg.Filter = filter;
             dlg.CheckFileExists = mustExist;
             dlg.CheckPathExists = mustExist;

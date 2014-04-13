@@ -265,7 +265,9 @@ namespace JadeGui.ViewModels
 
         public void OnPromptOpenWorkspace()
         {
-            IFileHandle handle = JadeCore.GuiUtils.PromptOpenFile(".jws", "Jade Workspace files (.jws)|*.jws", true);
+            string filter = "Solution files types|*.sln;*.jws";
+
+            IFileHandle handle = JadeCore.GuiUtils.PromptOpenFile("", filter, true);
             if (handle == null)
             {
                 return;
