@@ -16,7 +16,8 @@ namespace JadeCore.Project
         //maintain a list of all source files in all folders
         private List<IItem> _allSourceFiles;
 
-        private CppCodeBrowser.IProject _browserProject;
+        private readonly IIndexBuilder _indexer;
+        private bool _indexerInitialised;
 
         #endregion
 
@@ -29,7 +30,8 @@ namespace JadeCore.Project
             _items = new Dictionary<string, IItem>();
             _folders = new List<IFolder>();
             _allSourceFiles = new List<IItem>();
-            _browserProject = new CppCodeBrowser.Project(_name, new CppCodeBrowser.IndexBuilder(_name));            
+            _indexer = new CppCodeBrowser.IndexBuilder(_name);
+            _indexerInitialised = false;
         }
 
         #endregion
@@ -41,14 +43,27 @@ namespace JadeCore.Project
         public IList<IFolder> Folders { get { return _folders; } }
         public IProject OwningProject { get { return this; } }
 
-        public IProjectIndex SourceIndex { get { return _browserProject.Index; } }
+        public IProjectIndex SourceIndex 
+        { 
+            get 
+            {
+                if (!_indexerInitialised)
+                    InitSourceIndex();
+                return _indexer.Index;            
+            } 
+        }
 
         public string Path { get { return _path.Str; } }
         public string Directory { get { return _path.Directory; } }
 
-        public FileItem FindFile(FilePath path)
+        public IFileItem FindFileItem(FilePath path)
         {
-            foreach(IItem item in _items.Values)
+            return FindFileItem(this, path);
+        }
+
+        private IFileItem FindFileItem(JadeCore.Project.IFolder folder, FilePath path)
+        {
+            foreach(IItem item in folder.Items)
             {
                 if(item is FileItem)
                 {
@@ -56,6 +71,14 @@ namespace JadeCore.Project
                         return item as FileItem;
                 }
             }
+
+            foreach(IFolder child in folder.Folders)
+            {
+                IFileItem result = FindFileItem(child, path);
+                if (result != null)
+                    return result;
+            }
+
             return null;
         }
 
@@ -141,15 +164,23 @@ namespace JadeCore.Project
         private void AddSourceFile(FileItem f)
         {
             _allSourceFiles.Add(f);
-            //_browserProject.AddSourceFile(f.Path, null);
             
         }
 
         private void RemoveSourceFile(FileItem f)
         {
-            _allSourceFiles.Remove(f);
+            _allSourceFiles.Remove(f);            
+        }
 
-            
+        private void InitSourceIndex()
+        {
+            if (_indexerInitialised) return;
+
+            foreach(IItem item in _allSourceFiles)
+            {
+                _indexer.AddFile((item as IFileItem).Path, null);
+            }
+            _indexerInitialised = true;
         }
 
         #endregion

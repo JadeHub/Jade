@@ -465,18 +465,10 @@ namespace JadeGui.ViewModels
 
         public void OnDisplayCodeLocation(JadeCore.DisplayCodeLocationCommandParams param)
         {
-            IFileHandle f = JadeCore.Services.Provider.FileService.MakeFileHandle(param.Location.Path);            
-            
+            IFileHandle f = JadeCore.Services.Provider.FileService.MakeFileHandle(param.Location.Path);
             OnOpenDocument(new JadeCore.OpenFileCommandParams(f, param));
-            /*
-            if (_editorViewModel.SelectedDocument != null)
-                _editorViewModel.SelectedDocument.DisplayLocation(loc.Offset, param.SetFocus, param.Scroll);
-
-            if (!param.SetFocus)
-                FocusManager.SetFocusedElement(_view, focus);
-             */ 
         }
-                
+         
         public void OnSearchInFiles()
         {
         }

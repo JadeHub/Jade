@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ICSharpCode.AvalonEdit.Document;
 using JadeUtils.IO;
+using System.Windows.Input;
 
 namespace JadeControls.SearchResultsControl.ViewModel
 {
@@ -13,7 +14,7 @@ namespace JadeControls.SearchResultsControl.ViewModel
         private JadeCore.Search.ISearchResult _result;
         private string _summary;
         private IFileHandle _file;
-
+        
         public SearchResultItemViewModel(JadeCore.Search.ISearchResult result)
         {
             _result = result;
@@ -68,6 +69,6 @@ namespace JadeControls.SearchResultsControl.ViewModel
         public IFileHandle File
         {
             get { return _file; }
-        }
+        }        
     }
 }

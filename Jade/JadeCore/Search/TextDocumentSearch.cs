@@ -8,19 +8,22 @@ using CppCodeBrowser;
 
 namespace JadeCore.Search
 {
-    class TextDocumentSearch : SearchBase
+    public class TextDocumentSearch : SearchBase
     {
         private ITextDocument _document;
         private string _pattern;
 
-        public TextDocumentSearch(ITextDocument document, string regex)
+        public TextDocumentSearch(ITextDocument document)
         {
             _document = document;
-            _pattern = regex;
+            _pattern = null;
         }
 
         protected override void DoSearch()
         {
+            if (_pattern == null)
+                return;
+
             Regex regex = new Regex(_pattern);
 
             MatchCollection matches = Regex.Matches(_document.AvDoc.Text, _pattern);
@@ -30,6 +33,29 @@ namespace JadeCore.Search
                 ISearchResult result = new CodeSearchResult(10, location, match.Length);
                 AddResult(result);
             }
+        }
+
+        public string Pattern
+        {
+            get
+            {
+                return _pattern;
+            }
+
+            set
+            {
+                if (_pattern != value)
+                {
+                    _pattern = value;
+                    Summary = _pattern;
+                    Rerun();
+                }
+            }
+        }
+
+        public ITextDocument Document
+        {
+            get { return _document; }
         }
     }
 }

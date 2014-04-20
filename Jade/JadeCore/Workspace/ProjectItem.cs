@@ -39,7 +39,7 @@ namespace JadeCore.Workspace
         public string Directory { get { return _project.Directory; } }
         public void OnItemAdded(JadeCore.Project.IItem item) { _project.OnItemAdded(item); }
         public void OnItemRemoved(JadeCore.Project.IItem item) { _project.OnItemRemoved(item); }
-        public Project.FileItem FindFile(FilePath path) { return _project.FindFile(path); }
+        public Project.IFileItem FindFileItem(FilePath path) { return _project.FindFileItem(path); }
 
         #endregion
     }

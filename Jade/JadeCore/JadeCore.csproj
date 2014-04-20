@@ -69,10 +69,12 @@
     <Compile Include="Search\FindAllReferencesSearch.cs" />
     <Compile Include="Search\CodeSearchResult.cs" />
     <Compile Include="Search\ISearch.cs" />
+    <Compile Include="Search\ISearchableDocument.cs" />
+    <Compile Include="Search\ISearchController.cs" />
     <Compile Include="Search\ISearchProvider.cs" />
     <Compile Include="Search\ISearchResult.cs" />
     <Compile Include="Search\SearchBase.cs" />
-    <Compile Include="Search\SearchService.cs" />
+    <Compile Include="Search\SearchController.cs" />
     <Compile Include="ContentProvider\IContentProvider.cs" />
     <Compile Include="TextDocument\ITextDocument.cs" />
     <Compile Include="TextDocument\ITextDocumentCache.cs" />

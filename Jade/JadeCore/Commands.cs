@@ -74,7 +74,7 @@ namespace JadeCore
 
         public static readonly RoutedCommand ViewLineNumbers = new RoutedCommand("ViewLineNumbers", typeof(object));
         public static readonly RoutedCommand CloseAllDocuments = new RoutedCommand("CloseAllDocuments", typeof(object));
-        
+
         public static readonly RoutedCommand SearchCurrentFile = new RoutedCommand("SearchCurrentFile", typeof(object));
         public static readonly RoutedCommand SearchInFiles = new RoutedCommand("SearchInFiles", typeof(object));
         public static readonly RoutedCommand SearchDisplayNext = new RoutedCommand("SearchDisplayNext", typeof(object));
@@ -88,9 +88,7 @@ namespace JadeCore
             SearchCurrentFile.InputGestures.Add(new KeyGesture(Key.F, ModifierKeys.Shift | ModifierKeys.Control));
         }
     }
-
     
-
     public interface IJadeCommandHandler
     {
         #region Commands

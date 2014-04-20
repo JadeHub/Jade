@@ -1,5 +1,6 @@
 ﻿using JadeCore.Search;
 using System;
+using System.Diagnostics;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Text;
@@ -14,6 +15,8 @@ namespace JadeControls.SearchResultsControl.ViewModel
         private ObservableCollection<SearchViewModel> _searches;
         private SearchViewModel _currentSearch;
         private bool _seachCurrentDocVisible;
+        private TextDocumentSearch _currentFileTextSearch;
+        private string _currenttFileTextSearchStr;
 
         public SearchResultsPaneViewModel(JadeCore.Search.ISearchController controller)
         {
@@ -49,6 +52,17 @@ namespace JadeControls.SearchResultsControl.ViewModel
         {
             _seachCurrentDocVisible = true;
             OnPropertyChanged("CurrentSearchVisibility");
+
+            JadeCore.IEditorDoc doc = JadeCore.Services.Provider.EditorController.ActiveDocument;
+            if (doc == null) return;
+
+            if (_currentFileTextSearch == null || _currentFileTextSearch.Document != doc.TextDocument)
+            {
+                _currentFileTextSearch = new JadeCore.Search.TextDocumentSearch(doc.TextDocument);
+                _controller.RegisterSearch(_currentFileTextSearch);
+                _currentFileTextSearch.Start();
+            }
+            _currentFileTextSearch.Pattern = _currenttFileTextSearchStr;
         }
 
         private void OnNewSearch(ISearch search)
@@ -80,6 +94,22 @@ namespace JadeControls.SearchResultsControl.ViewModel
                     _currentSearch = value;
                     _controller.Current = _currentSearch.Search;
                     OnPropertyChanged("CurrentSearch");
+                }
+            }
+        }
+
+        public string SearchString
+        {
+            get 
+            {
+                return _currenttFileTextSearchStr;
+            }
+            set
+            {
+                if(_currenttFileTextSearchStr != value)
+                {
+                    _currenttFileTextSearchStr = value;
+                    SearchCurrentDocument();
                 }
             }
         }

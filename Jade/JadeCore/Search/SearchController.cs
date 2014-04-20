@@ -6,18 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace JadeCore.Search
-{
-    public interface ISearchController
-    {
-        void RegisterSearch(ISearch search);
-        void RemoveSearch(ISearch search);
-
-        ReadOnlyObservableCollection<ISearch> Searches { get; }
-        ISearch Current { get; set; }
-
-        void StartCurrentFileSearch();
-    }
-
+{   
     public class SearchController : ISearchController
     {
         #region Data
@@ -66,11 +55,6 @@ namespace JadeCore.Search
         public void RemoveSearch(ISearch search)
         {
             _searches.Remove(search);
-        }
-
-        public void StartCurrentFileSearch()
-        {
-
         }
 
         #endregion

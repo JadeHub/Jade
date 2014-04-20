@@ -12,8 +12,6 @@ namespace JadeCore.Project
 
         CppCodeBrowser.IProjectIndex SourceIndex { get; }
 
-        FileItem FindFile(FilePath path);
-
         void OnItemAdded(IItem item);
         void OnItemRemoved(IItem item);
     }

@@ -62,7 +62,11 @@ namespace JadeCore.Search
 
         public void Cancel() { }
 
-        public void Rerun() { }
+        public void Rerun() 
+        {
+            ClearResults();
+            DoSearch(); 
+        }
 
         public void Start()
         {
@@ -109,6 +113,11 @@ namespace JadeCore.Search
         }
 
         #endregion
+
+        protected void ClearResults()
+        {
+            _results.Clear();
+        }
 
         protected void AddResult(ISearchResult result)
         {

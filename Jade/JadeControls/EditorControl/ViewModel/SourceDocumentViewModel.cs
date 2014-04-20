@@ -23,7 +23,7 @@ namespace JadeControls.EditorControl.ViewModel
         {
             Debug.Assert(doc is JadeCore.Editor.EditorSourceDocument);
             _projectIndex = (doc as JadeCore.Editor.EditorSourceDocument).ProjectIndex;
-            if (HasProjectIndex)
+            if (_projectIndex != null)
             {
                 _jumpToBrowser = new CppCodeBrowser.JumpToBrowser(_projectIndex);
                 _sourceFileProjectItem = _projectIndex.FindProjectItem(doc.File.Path);

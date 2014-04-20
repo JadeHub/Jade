@@ -12,25 +12,34 @@
             <BitmapImage x:Key="PrevIconSource" UriSource="pack://application:,,,/Images/Prev.png" />
         </DockPanel.Resources>
             
-        <StackPanel>
+        
             <Grid Margin="4,4,4,2">
-                <Grid.ColumnDefinitions>
-                    <!-- Search Current Document label -->
-                    <ColumnDefinition MaxWidth="150"></ColumnDefinition>
-                    <!-- Search Current Document EditBox -->
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <!-- Prev / Next buttons -->
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <!-- Filler -->
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                    <!-- Searches label -->
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <!-- Searches combo -->
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>                    
-                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <!-- Search Current Document label -->
+                        <ColumnDefinition MaxWidth="150"></ColumnDefinition>
+                        <!-- Search Current Document EditBox -->
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <!-- Prev / Next buttons -->
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <!-- Filler -->
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <!-- Searches label -->
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <!-- Searches combo -->
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>                    
+                    </Grid.ColumnDefinitions>
                     <Label Grid.Column="0" Content="Search Current Document:"/>
-                    <TextBox Grid.Column="1"  MinWidth="200"></TextBox>
+                    <TextBox Grid.Column="1"  MinWidth="200"
+                             Text="{Binding Path=SearchString, UpdateSourceTrigger=PropertyChanged}" >
+                        
+                        
+                    </TextBox>
                     <Button Grid.Column="2" Margin="4,0,1,0" Command="JadeCore:Commands.SearchDisplayPrev">
                         <Image Source="{StaticResource PrevIconSource}"/>
                     </Button>
@@ -39,10 +48,12 @@
                     </Button>
                     <Label Grid.Column="5" Content="Searches:"/>
                     <ComboBox Grid.Column="6" ItemsSource="{Binding Searches}" SelectedItem="{Binding CurrentSearch}" MinWidth="150"/>
-             </Grid>
-            <ListBox Margin="0,4,0,0" ItemsSource="{Binding CurrentSearch.Items}"
-                     SelectedItem="{Binding CurrentSearch.SelectedItem}"
-                     MouseDoubleClick="ListBox_MouseDoubleClick"/>
-        </StackPanel>
+                </Grid>                
+                <ListBox Margin="0,4,0,0" 
+                         Grid.Row="1"
+                         ItemsSource="{Binding CurrentSearch.Items}"
+                         SelectedItem="{Binding CurrentSearch.SelectedItem}"
+                         MouseDoubleClick="ListBox_MouseDoubleClick"/>
+            </Grid>
     </DockPanel>
 </UserControl>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JadeUtils.IO;
 
 namespace JadeCore.Project
 {
@@ -73,6 +74,18 @@ namespace JadeCore.Project
                 }
             }
             return false;
+        }
+
+        public IFileItem FindFileItem(FilePath path)
+        {
+            foreach (IItem item in _items)
+            {
+                if(item is IFileItem && (item as IFileItem).Path == path)
+                {
+                    return item as IFileItem;
+                }
+            }
+            return null;
         }
 
         public void AddFolder(IFolder folder)

@@ -89,7 +89,7 @@ namespace JadeCore.Workspace
             {
                 if (item is Project.IProject)
                 {
-                    if((item as Project.IProject).FindFile(path) != null)
+                    if((item as Project.IProject).FindFileItem(path) != null)
                         return item as Project.IProject;
                 }
             }

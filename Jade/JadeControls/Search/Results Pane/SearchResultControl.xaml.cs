@@ -17,7 +17,7 @@ namespace JadeControls.SearchResultsControl
         {
             if(DataContext != null && DataContext is ViewModel.SearchResultsPaneViewModel)
             {
-                //((ViewModel.SearchResultsPaneViewModel)DataContext).SetView(this);
+                //(DataContext as ViewModel.SearchResultsPaneViewModel).S
             }
         }
 
@@ -25,6 +25,11 @@ namespace JadeControls.SearchResultsControl
         {
             ViewModel.SearchResultsPaneViewModel vm = (ViewModel.SearchResultsPaneViewModel)DataContext;
             vm.OnDoubleClick();
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
 
         

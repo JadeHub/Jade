@@ -64,11 +64,9 @@ namespace JadeControls.EditorControl.ViewModel
         {
             if (_currentResultRange != null)
             {
-                Debug.WriteLine("HIGHLIGHTER for " + _projectItem.Path.FileName + " removing highlight");
                 _currentResultRange.BackgroundColour = System.Windows.Media.Colors.LemonChiffon;
                 _highlighter.Redraw(_currentResultRange);
                 _currentResultRange = null;
-                Debug.WriteLine("HIGHLIGHTER " + _projectItem.Path.FileName + " Redrawing for remove");
             }
         }
 
@@ -76,13 +74,11 @@ namespace JadeControls.EditorControl.ViewModel
         {
             if (_currentResultRange == null)
             {
-                Debug.WriteLine("HIGHLIGHTER for " + _projectItem.Path.FileName + " Adding highlight from " + _currentSearch.CurrentResult.File.Path);
                 _currentResultRange = FindRange(_currentSearch.CurrentResult);
                 if (_currentResultRange == null)
                     _currentResultRange = _highlighter.AddRange(_currentSearch.CurrentResult.Location.Offset, _currentSearch.CurrentResult.Extent);
                 _currentResultRange.BackgroundColour = System.Windows.Media.Colors.Cyan;
                 _highlighter.Redraw(_currentResultRange);
-                Debug.WriteLine("HIGHLIGHTER " + _projectItem.Path.FileName + " Redrawing for add");
             }
         }
 
@@ -108,6 +104,10 @@ namespace JadeControls.EditorControl.ViewModel
                 ISearchResult result = (ISearchResult)e.NewItems[0];
                 OnNewResult(result);
             }
+            else if(e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                RemoveAllRanges();
+            }
         }
 
         private void OnNewResult(ISearchResult result)
@@ -124,7 +124,6 @@ namespace JadeControls.EditorControl.ViewModel
         
         private void RemoveAllRanges()
         {
-            Debug.WriteLine("HIGHLIGHTER " + _projectItem.Path.FileName + " Removing all");
             RemoveCurrentResultHighlight();
             foreach(Highlighting.IHighlightedRange range in _ranges)
             {
@@ -132,7 +131,6 @@ namespace JadeControls.EditorControl.ViewModel
                 _highlighter.Redraw(range);                
             }
             _ranges.Clear();
-            
         }
 
         public void Clear()
