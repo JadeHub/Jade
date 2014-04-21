@@ -16,7 +16,8 @@ namespace LibClang
         internal delegate Cursor CreateCursorDel(Library.Cursor handle);
 
         #region Data
-        
+
+        private readonly TranslationUnit _translationUnit;
         private readonly ITranslationUnitItemFactory _itemFactory;
         private SourceLocation _location;
         private SourceRange _extent;
@@ -33,10 +34,11 @@ namespace LibClang
         /// </summary>
         /// <param name="handle">Handle to a non null cursor obect.</param>
         /// <param name="itemFactory">TranslationUnit's item factory / item cache.</param>
-        internal Cursor(Library.Cursor handle, ITranslationUnitItemFactory itemFactory)
+        internal Cursor(Library.Cursor handle, TranslationUnit tu, ITranslationUnitItemFactory itemFactory)
         {
             Debug.Assert(!handle.IsNull);
             Handle = handle;
+            _translationUnit = tu;
             _itemFactory = itemFactory;
             Kind = Library.clang_getCursorKind(Handle);
             Library.CXType typeHandle = Library.clang_getCursorType(Handle);
@@ -47,6 +49,11 @@ namespace LibClang
         #endregion
 
         #region Properties
+
+        public TranslationUnit TranslationUnit
+        {
+            get { return _translationUnit; }
+        }
 
         /// <summary>
         /// SourceRange object representing the extent of this cursor.

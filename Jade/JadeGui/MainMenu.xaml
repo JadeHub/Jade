@@ -42,6 +42,8 @@
     </MenuItem>
     
     <MenuItem Header="_View">
+        <MenuItem Header="View Workspace Window" Command="JadeCore:Commands.ViewWorkspaceWindow" />
+        <MenuItem Header="View Search Results Window" Command="JadeCore:Commands.ViewSearchResultsWindow" />
         <MenuItem Header="Line Numbers" Command="JadeCore:Commands.ViewLineNumbers" IsCheckable="True"/>
     </MenuItem>
     

@@ -42,6 +42,8 @@ namespace JadeGui.ViewModels
             Register(commandBindings, Commands.SaveAsWorkspace,    delegate { _handler.OnSaveAsWorkspace(); }, delegate { return _handler.CanSaveAsWorkspace(); });
 
             Register(commandBindings, Commands.ViewLineNumbers,    delegate { _handler.OnViewLineNumbers(); }, delegate { return _handler.CanViewLineNumbers(); });
+            Register(commandBindings, Commands.ViewWorkspaceWindow, delegate { _handler.OnViewWorkspaceWindow(); }, delegate { return _handler.CanViewWorkspaceWindow(); });
+            Register(commandBindings, Commands.ViewSearchResultsWindow, delegate { _handler.OnViewSearchResultsWindow(); }, delegate { return _handler.CanViewSearchResultsWindow(); });
 
             Register(commandBindings, Commands.CloseAllDocuments,  delegate { _handler.OnCloseAllDocuments(); }, delegate { return _handler.CanCloseAllDocuments(); });
 

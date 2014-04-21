@@ -71,13 +71,13 @@ namespace JadeControls.EditorControl.ViewModel
                 {
                     if (_selectedDocument != null)
                     {
-                        _selectedDocument.Selected = false;
+                        _selectedDocument.IsSelected = false;
                     }
                     _selectedDocument = value;
                     if (_selectedDocument != null)
                     {
                         _controller.ActiveDocument = _selectedDocument.Document;
-                        _selectedDocument.Selected = true;
+                        _selectedDocument.IsSelected = true;
                     }
                     OnPropertyChanged("SelectedDocument");
                 }

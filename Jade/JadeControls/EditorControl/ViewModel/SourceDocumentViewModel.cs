@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
+using LibClang;
 
 namespace JadeControls.EditorControl.ViewModel
 {
@@ -61,32 +62,51 @@ namespace JadeControls.EditorControl.ViewModel
                                         }));
         }
 
-        private void OnJumpTo(int offset)
+        private bool CanJumpTo(LibClang.Cursor cursor, int offset)
         {
-            if (!HasProjectIndex) return;
+            if (cursor.Extent == null) 
+                return false;
 
+            if (cursor.Extent.Tokens == null)
+                return false;
+
+            Token tok = cursor.Extent.Tokens.GetTokenAtOffset(offset);
+            return (tok != null && tok.Kind == TokenKind.Identifier);
+        }
+
+        private CppCodeBrowser.ICodeLocation JumpTo(int offset)
+        {
             CppCodeBrowser.ICodeLocation location = new CppCodeBrowser.CodeLocation(Document.File.Path.Str, offset);
             List<LibClang.Cursor> cursors = new List<LibClang.Cursor>(CppCodeBrowser.ProjectIndex.GetCursors(_sourceFileProjectItem.TranslationUnits, location));
 
             HashSet<CppCodeBrowser.ICodeLocation> results = new HashSet<CppCodeBrowser.ICodeLocation>();
 
-            _jumpToBrowser.BrowseFrom(cursors,
+            _jumpToBrowser.BrowseFrom(from c in cursors where CanJumpTo(c, offset) select c,
                 delegate(CppCodeBrowser.ICodeLocation result)
                                         {
                                             results.Add(result);
                                             return true;
                                         });
 
-            if (results.Count() > 0)
+            return results.Count() > 0 ? results.First() : null;
+        }
+
+        private void OnJumpTo(int offset)
+        {
+            if (!HasProjectIndex) return;
+
+            CppCodeBrowser.ICodeLocation result = JumpTo(offset);
+
+            if (result != null)
             {
-                JadeCore.IJadeCommandHandler cmdHandler = JadeCore.Services.Provider.CommandHandler;
-                cmdHandler.OnDisplayCodeLocation(new JadeCore.DisplayCodeLocationCommandParams(results.First(), true, true));
+                
+                JadeCore.Services.Provider.CommandHandler.OnDisplayCodeLocation(new JadeCore.DisplayCodeLocationCommandParams(result, true, true));
             }
         }
 
         private bool CanJumpTo(int offset)
         {
-            return HasProjectIndex;
+            return JumpTo(offset) != null;
         }
 
         private void OnFindAllReferences(int offset)

@@ -73,13 +73,16 @@ namespace JadeCore
         public static readonly RoutedCommand Exit = new RoutedCommand("Exit", typeof(object));
 
         public static readonly RoutedCommand ViewLineNumbers = new RoutedCommand("ViewLineNumbers", typeof(object));
+        public static readonly RoutedCommand ViewWorkspaceWindow = new RoutedCommand("ViewWorkspaceWindow", typeof(object));
+        public static readonly RoutedCommand ViewSearchResultsWindow = new RoutedCommand("ViewSearchResultsWindow", typeof(object));
+
         public static readonly RoutedCommand CloseAllDocuments = new RoutedCommand("CloseAllDocuments", typeof(object));
 
         public static readonly RoutedCommand SearchCurrentFile = new RoutedCommand("SearchCurrentFile", typeof(object));
         public static readonly RoutedCommand SearchInFiles = new RoutedCommand("SearchInFiles", typeof(object));
         public static readonly RoutedCommand SearchDisplayNext = new RoutedCommand("SearchDisplayNext", typeof(object));
         public static readonly RoutedCommand SearchDisplayPrev = new RoutedCommand("SearchDisplayPrev", typeof(object));
-               
+       
         static Commands()
         {
             PromptOpenWorkspace.InputGestures.Add(new KeyGesture(Key.O, ModifierKeys.Shift | ModifierKeys.Control));
@@ -140,6 +143,12 @@ namespace JadeCore
         /// </summary>
         void OnViewLineNumbers();
         bool CanViewLineNumbers();
+
+        void OnViewWorkspaceWindow();
+        bool CanViewWorkspaceWindow();
+
+        void OnViewSearchResultsWindow();
+        bool CanViewSearchResultsWindow();
 
         void OnNewFile();
         bool CanNewFile();

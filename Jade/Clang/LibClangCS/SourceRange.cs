@@ -7,15 +7,22 @@ namespace LibClang
     /// A SourceRange represents a start and end position within a code file.
     /// </summary>
     public sealed class SourceRange
-    {       
+    {
+        #region Data
+
+        private TokenSet _tokens;
+
+        #endregion
+
         #region Constructor
 
         internal delegate SourceRange CreateSourceRangeDel(Library.SourceRange handle);
 
-        internal SourceRange(Library.SourceRange handle, ITranslationUnitItemFactory itemFactory)
+        internal SourceRange(Library.SourceRange handle, TranslationUnit tu, ITranslationUnitItemFactory itemFactory)
         {
             Debug.Assert(!handle.IsNull);
             Handle = handle;
+            TranslationUnit = tu;
             Start = itemFactory.CreateSourceLocation(Library.clang_getRangeStart(Handle));
             End = itemFactory.CreateSourceLocation(Library.clang_getRangeEnd(Handle));
             Debug.Assert(Start <= End);
@@ -26,11 +33,24 @@ namespace LibClang
 
         #region Properties
 
+        internal TranslationUnit TranslationUnit { get; private set; }
         internal Library.SourceRange Handle { get; private set; }        
         public SourceLocation Start { get; private set; }
         public SourceLocation End { get; private set; }
         public bool Null { get { return Handle == Library.SourceRange.NullRange; } }
         public int Length { get { return End.Offset - Start.Offset; } }
+
+        public TokenSet Tokens
+        {
+            get
+            {
+                if(_tokens == null)
+                {
+                    _tokens = TokenSet.Create(TranslationUnit, this);
+                }
+                return _tokens;
+            }
+        }
 
         #endregion
 

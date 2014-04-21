@@ -28,12 +28,12 @@ namespace LibClang
         private SourceRangeStore _sourceRangeStore;
         private TypeStore _typeStore;
 
-        public TranslationUnitItemStore()
+        public TranslationUnitItemStore(TranslationUnit tu)
         {
-            _cursorStore = new CursorStore(this);
+            _cursorStore = new CursorStore(tu, this);
             _fileStore = new FileStore(this);
             _locationStore = new SourceLocationStore(this);
-            _sourceRangeStore = new SourceRangeStore(this);
+            _sourceRangeStore = new SourceRangeStore(tu, this);
             _typeStore = new TypeStore(this);
         }
 

@@ -71,7 +71,7 @@ namespace LibClang
         {
             _index = idx;
             _filename = filename;
-            _itemStore = new TranslationUnitItemStore();
+            _itemStore = new TranslationUnitItemStore(this);
             _headerFiles = new HashSet<HeaderInfo>();
         }
 

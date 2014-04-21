@@ -77,8 +77,6 @@ namespace JadeControls.EditorControl.ViewModel
 
         static ImageSourceConverter ISC = new ImageSourceConverter();
                
-        private bool _selected;
-
         /// <summary>
         /// The doc from the EditorController
         /// </summary>
@@ -103,7 +101,6 @@ namespace JadeControls.EditorControl.ViewModel
             IconSource = ISC.ConvertFromInvariantString("pack://application:,,,/Images/File.png") as ImageSource;
             _model = doc;
             _model.TextDocument.ModifiedChanged += OnTextDocumentModifiedChanged;
-            _selected = false;
             _caretLocation = new CaretLocation(_model.TextDocument);
             CaretOffset = 0;
             _wantInitialFocus = true;
@@ -156,19 +153,6 @@ namespace JadeControls.EditorControl.ViewModel
         public bool Modified
         {
             get { return _model.Modified; }           
-        }
-
-        public bool Selected 
-        { 
-            get { return _selected; } 
-            set 
-            {
-                if (value != _selected)
-                {
-                    _selected = value;
-                    OnPropertyChanged("Selected");
-                }
-            } 
         }
 
         public int CaretOffset

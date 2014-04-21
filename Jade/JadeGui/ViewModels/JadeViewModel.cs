@@ -345,6 +345,27 @@ namespace JadeGui.ViewModels
             return true;
         }
 
+        public void OnViewWorkspaceWindow()
+        {
+            _currentWorkspace.IsVisible = true;
+        }
+
+        public bool CanViewWorkspaceWindow()
+        {
+            return _currentWorkspace != null;
+        }
+
+        public void OnViewSearchResultsWindow()
+        {
+            _seachResultsViewModel.IsVisible = true;
+            _seachResultsViewModel.IsSelected = true;
+        }
+
+        public bool CanViewSearchResultsWindow()
+        {
+            return _seachResultsViewModel != null;
+        }
+
         public void OnCloseAllDocuments()
         {
             _editorController.CloseAllDocuments();            
