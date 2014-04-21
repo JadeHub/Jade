@@ -26,8 +26,7 @@ namespace JadeControls.EditorControl.ViewModel
         {
             //Bind to the Model
             _controller = controller;
-            _controller.DocumentOpened += OnControllerDocumentOpened;
-            _controller.DocumentSelected += OnControllerDocumentSelected;
+            _controller.ActiveDocumentChanged += OnControllerActiveDocumentChanged;
 
             _documents = new ObservableCollection<DocumentViewModel>();
         }
@@ -44,22 +43,19 @@ namespace JadeControls.EditorControl.ViewModel
             }
         }
 
-        private void OnControllerDocumentSelected(JadeCore.EditorDocChangeEventArgs args)
+        private void OnControllerActiveDocumentChanged(JadeCore.EditorDocChangeEventArgs args)
         {
             DocumentViewModel vm = GetViewModel(args.Document);
-            if (vm == null)
-                return;
+            if (vm == null && args.Document != null)
+            {
+                vm = new SourceDocumentViewModel(args.Document);
+                _documents.Add(vm);
+                args.Document.OnClosing += delegate { OnDocumentClosing(vm); };
+            }
             SelectedDocument = vm;
-        }
 
-        private void OnControllerDocumentOpened(JadeCore.EditorDocChangeEventArgs args)
-        {
-            DocumentViewModel d = new SourceDocumentViewModel(args.Document);
-            _documents.Add(d);
-            args.Document.OnClosing += delegate { OnDocumentClosing(d); };           
-            SelectedDocument = d;           
         }
-
+                
         #endregion
 
         #region Public Properties
@@ -78,8 +74,11 @@ namespace JadeControls.EditorControl.ViewModel
                         _selectedDocument.Selected = false;
                     }
                     _selectedDocument = value;
-                    _controller.ActiveDocument = _selectedDocument.Document;
-                    _selectedDocument.Selected = true;
+                    if (_selectedDocument != null)
+                    {
+                       // _controller.ActiveDocument = _selectedDocument.Document;
+                        _selectedDocument.Selected = true;
+                    }
                     OnPropertyChanged("SelectedDocument");
                 }
             }

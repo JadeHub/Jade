@@ -51,7 +51,7 @@ namespace JadeGui.ViewModels
             _currentWorkspace = new WorkspaceViewModel();
             
             _editorController = JadeCore.Services.Provider.EditorController;
-            _editorController.DocumentSelected += OnEditorControllerDocumentSelected;
+            _editorController.ActiveDocumentChanged += OnEditorControllerActiveDocumentChanged;
             _editorViewModel = new JadeControls.EditorControl.ViewModel.EditorControlViewModel(_editorController);
 
             _outputController = JadeCore.Services.Provider.OutputController;
@@ -72,7 +72,7 @@ namespace JadeGui.ViewModels
             UpdateWindowTitle();
         }
 
-        void OnEditorControllerDocumentSelected(JadeCore.EditorDocChangeEventArgs args)
+        void OnEditorControllerActiveDocumentChanged(JadeCore.EditorDocChangeEventArgs args)
         {
             DocumentViewModel doc = _editorViewModel.GetViewModel(args.Document);
             if (doc != null)

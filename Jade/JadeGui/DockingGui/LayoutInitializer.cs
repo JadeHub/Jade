@@ -34,8 +34,7 @@ namespace JadeGui.DockingGui
             } 
             return false;
         }
-
-
+        
         public void AfterInsertAnchorable(LayoutRoot layout, LayoutAnchorable anchorableShown)
         {
         }

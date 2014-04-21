@@ -27,8 +27,8 @@ namespace JadeCore.Editor
 
         #region Events
 
-        public event EditorDocChangeEvent DocumentOpened;
-        public event EditorDocChangeEvent DocumentSelected;
+
+        public event EditorDocChangeEvent ActiveDocumentChanged;
 
         #endregion
 
@@ -152,12 +152,12 @@ namespace JadeCore.Editor
 
         private void OnDocumentOpen(IEditorDoc doc)
         {
-            RaiseDocEvent(DocumentOpened, doc);
+            //RaiseDocEvent(ActiveDocumentChanged, doc);
         }
                 
         private void OnDocumentSelect(IEditorDoc doc)
         {
-            RaiseDocEvent(DocumentSelected, doc);
+            RaiseDocEvent(ActiveDocumentChanged, doc);
         }
 
         private void RaiseDocEvent(EditorDocChangeEvent ev, IEditorDoc doc)

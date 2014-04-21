@@ -13,6 +13,7 @@ namespace JadeCore.Search
     public interface ISearch
     {
         event EventHandler CurrentResultChanged;
+        event EventHandler FilterChanged;
 
         /// <summary>
         /// Summary text to be used in display. eg 'Find "abcd" in test.cpp'

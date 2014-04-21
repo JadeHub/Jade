@@ -22,12 +22,12 @@ namespace JadeControls.SearchResultsControl.ViewModel
         public SearchViewModel(ISearch search)
         {
             _search = search;
+            _search.FilterChanged += delegate { };
             _uniqueLocations = new HashSet<Tuple<int, int>>();
             ((INotifyCollectionChanged)_search.Results).CollectionChanged += OnResultsCollectionChanged;
             _search.CurrentResultChanged += Search_CurrentResultChanged;
             _items = new ObservableCollection<SearchResultItemViewModel>();
             OnPropertyChanged("Items");
-
         }
 
         void Search_CurrentResultChanged(object sender, EventArgs e)

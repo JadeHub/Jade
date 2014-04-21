@@ -136,8 +136,8 @@ namespace JadeControls.EditorControl.ViewModel
 
         private void OnViewLoaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (_wantInitialFocus)
-                Keyboard.Focus(_view.TextArea);
+     //       if (_wantInitialFocus)
+          //      Keyboard.Focus(_view.TextArea);
         }
         
         protected virtual void OnSetView(CodeEditor view)

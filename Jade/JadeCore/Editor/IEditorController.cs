@@ -8,8 +8,7 @@ namespace JadeCore
 
     public interface IEditorController
     {
-        event EditorDocChangeEvent DocumentOpened;
-        event EditorDocChangeEvent DocumentSelected;
+        event EditorDocChangeEvent ActiveDocumentChanged;
 
         IEditorDoc ActiveDocument { get; set; }
         bool HasOpenDocuments{ get; }

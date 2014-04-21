@@ -17,7 +17,10 @@ namespace JadeControls.SearchResultsControl
         {
             if(DataContext != null && DataContext is ViewModel.SearchResultsPaneViewModel)
             {
-                //(DataContext as ViewModel.SearchResultsPaneViewModel).S
+                (DataContext as ViewModel.SearchResultsPaneViewModel).StartNewCurrentFileSearch += delegate
+                {
+                    CurrentFileTestSearchEdit.Focus();
+                };
             }
         }
 
@@ -31,7 +34,5 @@ namespace JadeControls.SearchResultsControl
         {
 
         }
-
-        
     }
 }

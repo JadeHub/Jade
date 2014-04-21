@@ -23,6 +23,14 @@ namespace JadeCore.Search
         #region Events
 
         public event EventHandler CurrentResultChanged;
+        public event EventHandler FilterChanged;
+
+        protected void RaiseFilterChangedEvent()
+        {
+            EventHandler h = FilterChanged;
+            if (h != null)
+                h(this, EventArgs.Empty);
+        }
 
         private void RaiseCurrentResultChangedEvent()
         {
@@ -65,7 +73,9 @@ namespace JadeCore.Search
         public void Rerun() 
         {
             ClearResults();
-            DoSearch(); 
+            _searching = true;
+            DoSearch();
+            _searching = false;
         }
 
         public void Start()
