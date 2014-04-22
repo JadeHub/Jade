@@ -70,6 +70,9 @@ namespace JadeControls.EditorControl.ViewModel
             if (cursor.Extent.Tokens == null)
                 return false;
 
+            if (cursor.Kind == CursorKind.InclusionDirective)
+                return true;
+
             Token tok = cursor.Extent.Tokens.GetTokenAtOffset(offset);
             return (tok != null && tok.Kind == TokenKind.Identifier);
         }

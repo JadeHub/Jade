@@ -1,4 +1,4 @@
-#include "test.h"
+#include "../CppTest/test.h"
 #include "test2.h"
 #include "template.h"
 

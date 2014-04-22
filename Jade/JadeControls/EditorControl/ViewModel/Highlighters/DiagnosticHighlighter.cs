@@ -35,7 +35,7 @@ namespace JadeControls.EditorControl.ViewModel
             Cursor cursor = tu.GetCursorAt(diagnostic.Location);
             if (cursor == null || cursor.Extent == null) return null;
 
-            TokenSet tokens = TokenSet.Create(tu, cursor.Extent);
+            TokenSet tokens = cursor.Extent.Tokens;
             if (tokens == null)
                 return null;
 

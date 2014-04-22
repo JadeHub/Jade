@@ -17,62 +17,7 @@ namespace JadeCore.Persistence.Workspace.VisualStudioImport
         
         //<ClInclude Include="..\template.h" />
         static private string _includeLineRegex = @"\<ClInclude Include=\""(.*?)\""";
-
-        static private string _filterRegex = @"\<Filter\>(.*?)\<";
-
-        static private JadeCore.Project.IProject ReadFiltersFile(string name, StreamReader reader, FilePath projectPath, IFileService fileService)
-        {
-            Dictionary<string, List<JadeCore.Project.IFileItem>> filteredItems = new Dictionary<string, List<IFileItem>>();
-            IProject project = new JadeCore.Project.Project(name, projectPath);
-
-            bool expectingFilter = false;
-            JadeCore.Project.IFileItem lastItem = null;
-
-            while (!reader.EndOfStream)
-            {
-                string line = reader.ReadLine();
-                Match match;
-                if(expectingFilter)
-                {
-                    Debug.Assert(lastItem != null);
-                    match = Regex.Match(line, _filterRegex);
-                    string filter = "";
-                    if(match.Success)
-                    {
-                        filter = match.Groups[1].Value;
-                    }
-
-                    if (filteredItems.ContainsKey(filter) == false)
-                        filteredItems.Add(filter, new List<JadeCore.Project.IFileItem>());
-
-                    filteredItems[filter].Add(lastItem);
-                    expectingFilter = false;
-                }
-
-                match = Regex.Match(line, _compileLineRegex);
-                if (match.Success)
-                {
-                    string itemPath = match.Groups[1].Value;
-                    itemPath = JadeUtils.IO.PathUtils.CombinePaths(projectPath.Directory, itemPath);
-                    lastItem = new JadeCore.Project.FileItem(fileService.MakeFileHandle(itemPath));
-                    project.AddItem(lastItem);
-                    expectingFilter = true;
-                    continue;
-                }
-                match = Regex.Match(line, _includeLineRegex);
-                if (match.Success)
-                {
-                    string itemPath = match.Groups[1].Value;
-                    itemPath = JadeUtils.IO.PathUtils.CombinePaths(projectPath.Directory, itemPath);
-                    lastItem = new JadeCore.Project.FileItem(fileService.MakeFileHandle(itemPath));
-                    project.AddItem(lastItem);
-                    expectingFilter = true;
-                    continue;
-                }
-            }
-            return project;
-        }
-
+        
         static private JadeCore.Project.IProject Read(string name, StreamReader reader, FilePath projectPath, IFileService fileService)
         {
             IProject project = new JadeCore.Project.Project(name, projectPath);
@@ -85,7 +30,7 @@ namespace JadeCore.Persistence.Workspace.VisualStudioImport
                 {
                     string itemPath = match.Groups[1].Value;
                     itemPath = JadeUtils.IO.PathUtils.CombinePaths(projectPath.Directory, itemPath);
-                    project.AddItem(new JadeCore.Project.FileItem(fileService.MakeFileHandle(itemPath)));
+                    project.AddItem(null, new JadeCore.Project.FileItem(fileService.MakeFileHandle(itemPath)));
                     continue;
                 }
                 match = Regex.Match(line, _includeLineRegex);
@@ -93,7 +38,7 @@ namespace JadeCore.Persistence.Workspace.VisualStudioImport
                 {
                     string itemPath = match.Groups[1].Value;
                     itemPath = JadeUtils.IO.PathUtils.CombinePaths(projectPath.Directory, itemPath);
-                    project.AddItem(new JadeCore.Project.FileItem(fileService.MakeFileHandle(itemPath)));
+                    project.AddItem(null, new JadeCore.Project.FileItem(fileService.MakeFileHandle(itemPath)));
                     continue;
                 }
             }            
@@ -114,11 +59,6 @@ namespace JadeCore.Persistence.Workspace.VisualStudioImport
             {
                 ProjectFiltersFileReader reader = new ProjectFiltersFileReader(name, filterFilePath, path, fileService);
                 return reader.ReadFiltersFile();
-                /*
-                using (StreamReader reader = CreateFileReader(filterFilePath))
-                {
-                    return ReadFiltersFile(name, reader, path, fileService);
-                }*/
             }
             else
             {

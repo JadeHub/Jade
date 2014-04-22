@@ -21,13 +21,13 @@ namespace JadeCore.Workspace
 
         #region Events
 
-        public event EventHandler WorkspaceChanged;
+        public event WorkspaceChangeEventHandler WorkspaceChanged;
 
-        private void OnWorkspaceChanged()
+        private void OnWorkspaceChanged(WorkspaceChangeOperation op)
         {
-            EventHandler handler = WorkspaceChanged;
+            var handler = WorkspaceChanged;
             if (handler != null)
-                handler(this, EventArgs.Empty);
+                handler(op);
         }
 
         #endregion
@@ -92,7 +92,7 @@ namespace JadeCore.Workspace
             }
             _workspace = null;
             CurrentWorkspaceModified = false;
-            OnWorkspaceChanged();
+            OnWorkspaceChanged(WorkspaceChangeOperation.Closed);
             return true;
         }
 
@@ -110,7 +110,7 @@ namespace JadeCore.Workspace
                 {
                     //abandon changes
                     CurrentWorkspaceModified = false;
-                    OnWorkspaceChanged();
+                    OnWorkspaceChanged(WorkspaceChangeOperation.Saved);
                     return true;
                 }
                 if (result == MessageBoxResult.Cancel)
@@ -153,7 +153,7 @@ namespace JadeCore.Workspace
 
                 _workspace = new JadeCore.Workspace.Workspace(name, file.Path);
                 CurrentWorkspaceModified = true;
-                OnWorkspaceChanged();
+                OnWorkspaceChanged(WorkspaceChangeOperation.Created);
             }
             catch(Exception)
             {
@@ -186,7 +186,7 @@ namespace JadeCore.Workspace
                     _workspace = JadeCore.Persistence.Workspace.Reader.Read(path, JadeCore.Services.Provider.FileService);
                 }
                 _recentFiles.Add(path.Str);
-                OnWorkspaceChanged();
+                OnWorkspaceChanged(WorkspaceChangeOperation.Opened);
             }
             catch(Exception)
             {
@@ -206,7 +206,7 @@ namespace JadeCore.Workspace
                 JadeCore.Persistence.Workspace.Writer.Write(_workspace, path);
                 CurrentWorkspaceModified = false;
                 _workspace.Path = path;
-                OnWorkspaceChanged();
+                OnWorkspaceChanged(WorkspaceChangeOperation.Saved);
                 return true;
             }
             catch (Exception e)

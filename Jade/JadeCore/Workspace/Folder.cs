@@ -26,6 +26,21 @@ namespace JadeCore.Workspace
 
         #region Properties
 
+        public IEnumerable<Project.IProject> AllProjects 
+        {
+            get
+            {
+                foreach (IFolder f in folders)
+                    foreach (Project.IProject p in f.AllProjects)
+                        yield return p;
+
+                foreach(IItem item in items)
+                {
+                    if (item is Project.IProject)
+                        yield return item as Project.IProject;
+                }
+            }
+        }
         public string Name { get { return name; } }
         public IList<IFolder> Folders { get { return folders; } }
         public IList<IItem> Items { get { return items; } }

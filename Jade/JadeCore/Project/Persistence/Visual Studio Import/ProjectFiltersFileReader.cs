@@ -72,13 +72,12 @@ namespace JadeCore.Persistence.Workspace.VisualStudioImport
 
         private void AddFile(string path, string folderPath)
         {
-            JadeCore.Project.IFolder folder = folderPath != null ? FindProjectFolder(_project, folderPath) : _project;
-            if (folder == null)
-                throw new Exception("Can't find project folder");
-
+            JadeCore.Project.IFolder folder = folderPath != null ? FindProjectFolder(_project, folderPath) : null;
+            
             path = JadeUtils.IO.PathUtils.CombinePaths(_project.Directory, path);
 
-            folder.AddItem(new JadeCore.Project.FileItem(_fileService.MakeFileHandle(path)));
+            _project.AddItem(folder, new JadeCore.Project.FileItem(_fileService.MakeFileHandle(path)));
+            //folder.AddItem(new JadeCore.Project.FileItem(_fileService.MakeFileHandle(path)));
         }
 
         public JadeCore.Project.IProject ReadFiltersFile()

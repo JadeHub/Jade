@@ -73,8 +73,8 @@ namespace JadeCore.Persistence.Workspace
             ProjectType result = new ProjectType();
 
             //Convert to relative path for storage in workspace
-            result.Path = JadeUtils.IO.PathUtils.CalculateRelativePath(workspaceDir + @"\", proj.Path);
-            Persistence.Project.Writer.Write(proj, proj.Path);
+            result.Path = JadeUtils.IO.PathUtils.CalculateRelativePath(workspaceDir + @"\", proj.Path.Str);
+            Persistence.Project.Writer.Write(proj, proj.Path.Str);
             return result;
         }
 

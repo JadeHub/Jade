@@ -32,7 +32,6 @@ namespace JadeCore.Project
 
         #region IFolder Implementation
 
-        //  public IProject Project { get { return _project; } }
         public string Name { get { return _name; } }
         public IList<IItem> Items { get { return _items; } }
         public IList<IFolder> Folders { get { return _folders; } }
@@ -42,8 +41,7 @@ namespace JadeCore.Project
         {
             if (!HasItem(item.ItemName))
             {
-                _items.Add(item);
-                _project.OnItemAdded(item);
+                _items.Add(item);                
             }
         }
 

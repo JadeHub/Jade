@@ -57,9 +57,10 @@ namespace JadeControls.Workspace.ViewModel
                 throw new Exception("Attempt to add duplicate file name to project.");
             }
 
-            JadeCore.Project.FileItem data = new JadeCore.Project.FileItem(fileHandle);
-            _data.AddItem(data);
-            AddChildFile(new File(this, data));
+            JadeCore.Project.FileItem item = new JadeCore.Project.FileItem(fileHandle);
+
+            _data.OwningProject.AddItem(_data, item);
+            AddChildFile(new File(this, item));
             OnPropertyChanged("Children");
         }
 

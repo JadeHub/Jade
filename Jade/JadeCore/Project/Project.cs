@@ -14,9 +14,9 @@ namespace JadeCore.Project
         private Dictionary<string, IItem> _items;
         private List<IFolder> _folders;
         //maintain a list of all source files in all folders
-        private List<IItem> _allSourceFiles;
+        private Collections.Observable.List<IFileItem> _allSourceFiles;
 
-        private readonly IIndexBuilder _indexer;
+        private CppCodeBrowser.IProject _cppCodeBrowserProject;
         private bool _indexerInitialised;
 
         #endregion
@@ -29,8 +29,8 @@ namespace JadeCore.Project
             _name = name;            
             _items = new Dictionary<string, IItem>();
             _folders = new List<IFolder>();
-            _allSourceFiles = new List<IItem>();
-            _indexer = new CppCodeBrowser.IndexBuilder(_name);
+            _allSourceFiles = new Collections.Observable.List<IFileItem>();
+            _cppCodeBrowserProject = new CppCodeBrowser.Project(name, new CppCodeBrowser.IndexBuilder(name));
             _indexerInitialised = false;
         }
 
@@ -43,17 +43,19 @@ namespace JadeCore.Project
         public IList<IFolder> Folders { get { return _folders; } }
         public IProject OwningProject { get { return this; } }
 
+        public Collections.Observable.List<IFileItem> SourceFiles { get { return _allSourceFiles; } }
+
         public IProjectIndex SourceIndex 
         { 
             get 
             {
                 if (!_indexerInitialised)
                     InitSourceIndex();
-                return _indexer.Index;            
+                return _cppCodeBrowserProject.Index;
             } 
         }
 
-        public string Path { get { return _path.Str; } }
+        public FilePath Path { get { return _path; } }
         public string Directory { get { return _path.Directory; } }
 
         public IFileItem FindFileItem(FilePath path)
@@ -82,12 +84,38 @@ namespace JadeCore.Project
             return null;
         }
 
-        public void AddItem(IItem item)
+        public void AddItem(IFolder folder, IItem item)
         {
             if (_items.ContainsKey(item.ItemName))
                 throw new System.Exception("Duplicate item in project.");
+            
+            if (folder == null)
+            {
+                _items[item.ItemName] = item;
+            }
+            else
+            {
+                folder.AddItem(item);
+            }
+
+            if (item is FileItem)
+            {
+                FileItem f = item as FileItem;
+                if (f.Type == ItemType.CppSourceFile)
+                {
+                    AddSourceFile(f);
+                }
+            }
+        }
+
+        public void AddItem(IItem item)
+        {
+            System.Diagnostics.Debug.Assert(false);
+            /*
+            if (_items.ContainsKey(item.ItemName))
+                throw new System.Exception("Duplicate item in project.");
             _items[item.ItemName] = item;
-            OnItemAdded(item);
+            OnItemAdded(item);*/
         }
 
         public bool RemoveItem(string itemName)
@@ -136,19 +164,7 @@ namespace JadeCore.Project
             }
             return null;
         }
-
-        public void OnItemAdded(IItem item)
-        {
-            if (item is FileItem)
-            {
-                FileItem f = item as FileItem;
-                if (f.Type == ItemType.CppSourceFile)
-                {
-                    AddSourceFile(f);
-                }
-            }
-        }
-
+        
         public void OnItemRemoved(IItem item)
         {
             if (item is FileItem)
@@ -161,13 +177,12 @@ namespace JadeCore.Project
             }
         }
 
-        private void AddSourceFile(FileItem f)
+        private void AddSourceFile(IFileItem f)
         {
-            _allSourceFiles.Add(f);
-            
+            _allSourceFiles.Add(f);            
         }
 
-        private void RemoveSourceFile(FileItem f)
+        private void RemoveSourceFile(IFileItem f)
         {
             _allSourceFiles.Remove(f);            
         }
@@ -176,9 +191,9 @@ namespace JadeCore.Project
         {
             if (_indexerInitialised) return;
 
-            foreach(IItem item in _allSourceFiles)
+            foreach (IFileItem item in _allSourceFiles)
             {
-                _indexer.AddFile((item as IFileItem).Path, null);
+                _cppCodeBrowserProject.AddSourceFile(item.Path, null);
             }
             _indexerInitialised = true;
         }

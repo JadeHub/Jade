@@ -3,13 +3,75 @@ using System.Collections.Generic;
 
 namespace JadeCore.Workspace
 {
+    public class NewWorkspace : INewWorkspace
+    {
+        #region Data
+
+        private Collections.Observable.List<Project.IProject> _projects;
+        private Collections.Observable.List<string> _groups;
+
+        #endregion
+
+        public NewWorkspace(string name, FilePath path)
+        {
+            Name = name;
+            Path = path;
+            _projects = new Collections.Observable.List<Project.IProject>();
+            _groups = new Collections.Observable.List<string>();
+        }
+
+        #region INewWorkspace
+
+        public string Name { get; private set; }
+        public FilePath Path { get; private set; }
+
+        public Collections.Observable.List<Project.IProject> Projects 
+        { 
+            get 
+            { 
+                return _projects; 
+            } 
+        }
+
+        public Collections.Observable.List<string> Groups 
+        {
+            get { return _groups; }
+        }
+
+        public void AddProject(string group, Project.IProject p)
+        {
+            if (!HasGroup(group))
+                AddGroup(group);
+            _projects.Add(p);
+        }
+
+        public void AddGroup(string group)
+        {
+            if (!HasGroup(group))
+                _groups.Add(group);
+        }
+
+        private bool HasGroup(string group)
+        {
+            foreach(string g in _groups)
+            {
+                if (g == group)
+                    return true;
+            }
+            return false;
+
+        }
+
+        #endregion
+    }
+
     public class Workspace : IWorkspace
     {
         #region Data
         
         private string _name;
         private FilePath _path;
-        private Folder _rootFolder;
+        private IFolder _rootFolder;
         private ITextDocumentCache _textDocCache;
 
         #endregion  
@@ -28,28 +90,17 @@ namespace JadeCore.Workspace
 
         #region IWorkspace Implementation
 
-        public string Path { get { return _path.Str; } set { } }
-
-        public string Directory { get { return _path.Directory; } }
-
-        public JadeCore.Project.IProject ActiveProject 
-        { 
-            get 
+        public IEnumerable<Project.IProject> AllProjects
+        {
+            get
             {
-                //todo - just return first project for now
-                foreach (IItem item in _rootFolder.Items)
-                {
-                    if (item is Project.IProject)
-                        return item as Project.IProject;
-                }
-                return null;
+                return _rootFolder.AllProjects;
             }
         }
 
-        public ITextDocumentCache DocumentCache 
-        {
-            get { return _textDocCache; }
-        }
+        public string Path { get { return _path.Str; } set { } }
+
+        public string Directory { get { return _path.Directory; } }
 
         public JadeCore.Project.IProject FindProjectForFile(FilePath path)
         {

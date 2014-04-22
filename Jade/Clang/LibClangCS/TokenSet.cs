@@ -12,7 +12,7 @@ namespace LibClang
         private unsafe Library.Token* _tokens;
         private uint _count;
 
-        public static unsafe TokenSetHandle Create(TranslationUnit tu, SourceRange range)
+        internal static unsafe TokenSetHandle Create(TranslationUnit tu, SourceRange range)
         {
             Library.Token* tokens;
             uint count = 0;

@@ -3,12 +3,22 @@ using JadeUtils.IO;
 
 namespace JadeCore.Workspace 
 {
+    public enum WorkspaceChangeOperation
+    {
+        Created,
+        Opened,
+        Closed,
+        Saved
+    }
+
+    public delegate void WorkspaceChangeEventHandler(WorkspaceChangeOperation op);
+
     public interface IWorkspaceController
     {
         /// <summary>
         /// Raised when a workspace is created, opened, closed or saved.
         /// </summary>
-        event EventHandler WorkspaceChanged;
+        event WorkspaceChangeEventHandler WorkspaceChanged;
         
         void SaveSettings();
 
@@ -53,7 +63,7 @@ namespace JadeCore.Workspace
         /// <summary>
         /// Returns the current workspace
         /// </summary>
-        JadeCore.Workspace.IWorkspace CurrentWorkspace { get; }
+        IWorkspace CurrentWorkspace { get; }
                 
         /// <summary>
         /// True if the current workspace has beeb modified

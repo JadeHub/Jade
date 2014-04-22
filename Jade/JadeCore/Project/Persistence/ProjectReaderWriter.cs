@@ -27,10 +27,15 @@ namespace JadeCore.Persistence.Project
             JadeCore.Project.Folder folder = new JadeCore.Project.Folder(project, xml.Name);
 
             foreach (FileType f in xml.Files)
-                folder.AddItem(MakeFile(projectDir, f, fileService));
+            {
+                project.AddItem(folder, MakeFile(projectDir, f, fileService));
+                //folder.AddItem(MakeFile(projectDir, f, fileService));
+            }
 
             foreach (FolderType f in xml.Folders)
+            {
                 folder.AddFolder(MakeFolder(project, projectDir, f, fileService));
+            }
 
             return folder;
         }
@@ -58,7 +63,7 @@ namespace JadeCore.Persistence.Project
             }
             foreach (FileType f in xml.Files)
             {
-                result.AddItem(MakeFile(result.Directory, f, fileService));
+                result.AddItem(null, MakeFile(result.Directory, f, fileService));
             }
             return result;
         }

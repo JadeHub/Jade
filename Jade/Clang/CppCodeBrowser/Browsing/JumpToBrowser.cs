@@ -78,7 +78,7 @@ namespace CppCodeBrowser
         {
             Debug.Assert(c.Kind == CursorKind.InclusionDirective);
 
-            return null;
+            return new CodeLocation(c.Spelling, 0);
         }
 
         private static bool JumpToDeclaration(LibClang.Cursor c)

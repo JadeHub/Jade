@@ -33,5 +33,5 @@ namespace CppCodeBrowser
 
         void AddFile(FilePath path, string[] compilerArgs);
         IProjectIndex Index { get; }
-    }
+    }    
 }
