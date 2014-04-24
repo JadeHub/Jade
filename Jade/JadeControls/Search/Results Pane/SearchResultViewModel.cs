@@ -24,7 +24,7 @@ namespace JadeControls.SearchResultsControl.ViewModel
             sb.Append(result.Location.Path.Str);
             sb.Append(" - ");
             
-            JadeCore.ITextDocument doc = JadeCore.Services.Provider.ContentProvider.OpenTextDocument(result.File);
+            JadeCore.ITextDocument doc = JadeCore.Services.Provider.WorkspaceController.DocumentCache.FindOrAdd(result.File);
             _file = doc.File;
             LineNum = doc.GetLineNumForOffset(result.Location.Offset);
             ISegment line = doc.GetLineForOffset(result.Location.Offset);

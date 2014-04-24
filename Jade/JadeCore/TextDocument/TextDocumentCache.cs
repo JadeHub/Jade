@@ -7,7 +7,7 @@ using JadeUtils.IO;
 
 namespace JadeCore
 {
-    class TextDocumentCache : ITextDocumentCache
+    public class TextDocumentCache : ITextDocumentCache
     {
         private Dictionary<IFileHandle, ITextDocument> _cache;
 

@@ -1,6 +1,7 @@
 ﻿using JadeUtils.IO;
 using LibClang;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -8,6 +9,8 @@ namespace CppCodeBrowser
 {   
     public interface IProjectIndex
     {
+        bool ContainsProjectItem(FilePath path);
+        void RemoveProjectItem(FilePath path);
         IProjectItem FindProjectItem(FilePath path);
         IEnumerable<LibClang.TranslationUnit> TranslationUnits { get; }
     }
@@ -15,11 +18,9 @@ namespace CppCodeBrowser
     public class ProjectIndex : IProjectIndex
     {        
         private readonly Dictionary<FilePath, IProjectItem> _items;
-        private readonly string _projectName;
-                
-        public ProjectIndex(string projectName)
+                        
+        public ProjectIndex()
         {
-            _projectName = projectName;
             _items = new Dictionary<FilePath, IProjectItem>();
         }
 
@@ -31,6 +32,8 @@ namespace CppCodeBrowser
 
         public IProjectItem AddSourceFile(FilePath path, LibClang.TranslationUnit tu)
         {
+            Debug.Assert(_items.ContainsKey(path) == false);
+
             IProjectItem item = new SourceFile(path, tu);
             _items.Add(path, item);
             foreach (TranslationUnit.HeaderInfo header in tu.HeaderFiles)
@@ -38,6 +41,16 @@ namespace CppCodeBrowser
                 RecordHeader(header, tu);
             }
             return item;
+        }
+
+        public bool ContainsProjectItem(FilePath path)
+        {
+            return _items.ContainsKey(path);
+        }
+
+        public void RemoveProjectItem(FilePath path)
+        {
+            _items.Remove(path);
         }
 
         private void RecordHeader(TranslationUnit.HeaderInfo headerInfo, TranslationUnit tu)

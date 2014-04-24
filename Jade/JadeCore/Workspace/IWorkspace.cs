@@ -20,7 +20,8 @@ namespace JadeCore.Workspace
     public interface IWorkspace : IFolder
     {
         string Path { get; set; }
-        string Directory { get; }        
-    //    ITextDocumentCache DocumentCache { get; }
+        string Directory { get; }
+
+        Collections.Observable.List<Project.IProject> AllProjects { get; }
     }
 }

@@ -11,7 +11,13 @@ namespace JadeCore.Collections.Observable
 
     public class List<ItemT> : IEnumerable<ItemT>
     {
+        #region Data
+
         private IList<ItemT> _list;
+
+        #endregion
+
+        #region Events
 
         public ListItemAddedEventHandler<ItemT> ItemAdded;
         public ListItemRemovedEventHandler<ItemT> ItemRemoved;
@@ -29,6 +35,8 @@ namespace JadeCore.Collections.Observable
             if (h != null)
                 h(item);
         }
+
+        #endregion
 
         public List()
         {
@@ -51,17 +59,22 @@ namespace JadeCore.Collections.Observable
             return _list.Remove(item);
         }
 
-        //public IEnumerable<ItemT> Items { get { return _list; } }
-        #region IEnumerable<ItemT> Members
+        public void Observe(ListItemAddedEventHandler<ItemT> onAdded, ListItemRemovedEventHandler<ItemT> onRemoved)
+        {
+            foreach(ItemT item in _list)
+            {
+                onAdded(item);
+            }
+            ItemAdded += onAdded;
+            ItemRemoved += onRemoved;
+        }
+                
+        #region IEnumerable
 
         public IEnumerator<ItemT> GetEnumerator()
         {
             return _list.GetEnumerator();
         }
-
-        #endregion
-
-        #region IEnumerable Members
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {

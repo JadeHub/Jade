@@ -18,9 +18,9 @@ namespace CppCodeBrowser
         public event ItemIndexedEvent ItemIndexed;
         public event ItemIndexingFailedEvent ItemIndexingFailed;
 
-        public IndexBuilder(string projectName)
+        public IndexBuilder()
         {
-            _index = new ProjectIndex(projectName);
+            _index = new ProjectIndex();
             _libClangIndex = new LibClang.Index(false, true);
             _allTus = new HashSet<TranslationUnit>();
         }
@@ -51,7 +51,7 @@ namespace CppCodeBrowser
             }
             _allTus.Add(tu);
             IProjectItem item = _index.AddSourceFile(path, tu);
-            RaiseItemIndxedEvent(item);
+            RaiseItemIndexedEvent(item);
         }
 
         public IProjectIndex Index 
@@ -63,7 +63,7 @@ namespace CppCodeBrowser
             }
         }
 
-        private void RaiseItemIndxedEvent(IProjectItem item)
+        private void RaiseItemIndexedEvent(IProjectItem item)
         {
             if (_disposed) return;
             ItemIndexedEvent handler = ItemIndexed;

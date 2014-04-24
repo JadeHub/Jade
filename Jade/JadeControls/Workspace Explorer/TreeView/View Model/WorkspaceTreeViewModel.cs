@@ -89,7 +89,7 @@ namespace JadeControls.Workspace.ViewModel
             if (sel is WorkspaceFolder)
             {
                 WorkspaceFolder parentVm = sel as WorkspaceFolder;
-                JadeCore.Workspace.IFolder newFolderData = new JadeCore.Workspace.Folder(name);                
+                JadeCore.Workspace.IFolder newFolderData = new JadeCore.Workspace.Folder(name, _data);
                 parentVm.AddNewChildFolder(newFolderData);
                 
             }

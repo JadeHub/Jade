@@ -71,5 +71,9 @@ namespace JadeCore.Workspace
         bool CurrentWorkspaceModified { get; set; }
 
         RecentFileList RecentFiles { get; }
+
+        ITextDocumentCache DocumentCache { get; }
+
+        Parser.IWorkspaceIndexer Indexer { get; }
     }
 }

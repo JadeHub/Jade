@@ -22,13 +22,13 @@ namespace JadeCore.Persistence.Workspace
             return Persistence.Project.Reader.Read(path, fileService);
         }
 
-        private static JadeCore.Workspace.IFolder MakeFolder(string workspaceDir, FolderType xml, IFileService fileService)
+        private static JadeCore.Workspace.IFolder MakeFolder(JadeCore.Workspace.IWorkspace workspace, string workspaceDir, FolderType xml, IFileService fileService)
         {
-            JadeCore.Workspace.IFolder result = new JadeCore.Workspace.Folder(xml.Name);
+            JadeCore.Workspace.IFolder result = new JadeCore.Workspace.Folder(xml.Name, workspace);
 
             foreach (FolderType f in xml.Folders)
             {
-                result.AddFolder(MakeFolder(workspaceDir, f, fileService));
+                result.AddFolder(MakeFolder(workspace, workspaceDir, f, fileService));
             }
             foreach (ProjectType p in xml.Projects)
             {
@@ -55,7 +55,7 @@ namespace JadeCore.Persistence.Workspace
             JadeCore.Workspace.IWorkspace result = new JadeCore.Workspace.Workspace(xml.Name, path);
             foreach (FolderType f in xml.Folders)
             {
-                result.AddFolder(MakeFolder(result.Directory, f, fileService));
+                result.AddFolder(MakeFolder(result, result.Directory, f, fileService));
             }
             foreach (ProjectType p in xml.Projects)
             {

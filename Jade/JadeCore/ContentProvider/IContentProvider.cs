@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace JadeCore
 {
+
     public interface IContentProvider
     {
         ITextDocument OpenTextDocument(IFileHandle file);

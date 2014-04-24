@@ -59,7 +59,6 @@ namespace JadeCore.Workspace
                     return true;
             }
             return false;
-
         }
 
         #endregion
@@ -72,7 +71,7 @@ namespace JadeCore.Workspace
         private string _name;
         private FilePath _path;
         private IFolder _rootFolder;
-        private ITextDocumentCache _textDocCache;
+        private Collections.Observable.List<Project.IProject> _allProjects;
 
         #endregion  
 
@@ -82,32 +81,39 @@ namespace JadeCore.Workspace
         {
             _name = name;
             _path = path;
-            _rootFolder = new Folder(_name);
-            _textDocCache = new TextDocumentCache();
+            _rootFolder = new Folder(_name, this);
+            _allProjects = new Collections.Observable.List<Project.IProject>();
         }
 
         #endregion
 
         #region IWorkspace Implementation
 
-        public IEnumerable<Project.IProject> AllProjects
+        public Collections.Observable.List<Project.IProject> AllProjects
         {
-            get
-            {
-                return _rootFolder.AllProjects;
-            }
+            get { return _allProjects; }
         }
-
+                
         public string Path { get { return _path.Str; } set { } }
 
         public string Directory { get { return _path.Directory; } }
+                
+        #endregion
+
+        public void OnProjectRemovedFromSubFolder(Project.IProject project)
+        {
+            _allProjects.Remove(project);
+        }
+
+        public void OnProjectAddedToSubFolder(Project.IProject project)
+        {
+            _allProjects.Add(project);
+        }
 
         public JadeCore.Project.IProject FindProjectForFile(FilePath path)
         {
             return _rootFolder.FindProjectForFile(path);
         }
-
-        #endregion
 
         #region IFolder Implementation
 

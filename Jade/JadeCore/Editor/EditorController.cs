@@ -143,7 +143,7 @@ namespace JadeCore.Editor
             if(!_allDocuments.TryGetValue(file, out result))
             {
                 //find project?
-                ITextDocument doc = Services.Provider.ContentProvider.OpenTextDocument(file);
+                ITextDocument doc = JadeCore.Services.Provider.WorkspaceController.DocumentCache.FindOrAdd(file);
                 result = new EditorSourceDocument(doc, GetProjectIndexForFile(file.Path));
                 _allDocuments.Add(file, result);
             }

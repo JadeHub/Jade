@@ -44,6 +44,8 @@ namespace JadeCore.Persistence.Workspace.VisualStudioImport
 
             bool inNestedProjects = false;
 
+            JadeCore.Workspace.IWorkspace workspace = new JadeCore.Workspace.Workspace(path.FileName, path);
+
             while (!reader.EndOfStream)
             {
                 string line = reader.ReadLine();
@@ -65,7 +67,7 @@ namespace JadeCore.Persistence.Workspace.VisualStudioImport
                     }
                     else if (typeGuid == FolderProjectTypeGUID)
                     {
-                        JadeCore.Workspace.IFolder folder = new JadeCore.Workspace.Folder(name);
+                        JadeCore.Workspace.IFolder folder = new JadeCore.Workspace.Folder(name, workspace);
                         folders.Add(new Guid(match.Groups[4].Value), new TempItem<JadeCore.Workspace.IFolder>(folder));
                     }
                     continue;
@@ -124,7 +126,7 @@ namespace JadeCore.Persistence.Workspace.VisualStudioImport
             if (inNestedProjects)
                 throw new Exception("End of NestedProjectsGlobalSection missing from .sln file");
 
-            JadeCore.Workspace.IWorkspace workspace = new JadeCore.Workspace.Workspace(path.FileName, path);
+
 
             //Add the root level projects
             foreach(TempItem<IProject> project in projects.Values)

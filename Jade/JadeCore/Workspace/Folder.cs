@@ -14,33 +14,20 @@ namespace JadeCore.Workspace
         private readonly string name;
         private List<IFolder> folders;
         private List<IItem> items;
+        private Workspace _workspace;
 
         #endregion
 
-        public Folder(string name)
+        public Folder(string name, IWorkspace workspace)
         {
             this.name = name;
+            _workspace = workspace as Workspace;
             this.folders = new List<IFolder>();
             this.items = new List<IItem>();
         }
 
         #region Properties
 
-        public IEnumerable<Project.IProject> AllProjects 
-        {
-            get
-            {
-                foreach (IFolder f in folders)
-                    foreach (Project.IProject p in f.AllProjects)
-                        yield return p;
-
-                foreach(IItem item in items)
-                {
-                    if (item is Project.IProject)
-                        yield return item as Project.IProject;
-                }
-            }
-        }
         public string Name { get { return name; } }
         public IList<IFolder> Folders { get { return folders; } }
         public IList<IItem> Items { get { return items; } }
@@ -52,6 +39,7 @@ namespace JadeCore.Workspace
         public void AddProject(Project.IProject p)
         {
             items.Add(new ProjectItem(p));
+            _workspace.OnProjectAddedToSubFolder(p);
         }
 
         public bool RemoveProject(string name)
@@ -61,6 +49,7 @@ namespace JadeCore.Workspace
                 if (i is ProjectItem && i.Name == name)
                 {
                     items.Remove(i);
+                    _workspace.OnProjectRemovedFromSubFolder(i as ProjectItem);
                     return true;
                 }
             }

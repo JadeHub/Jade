@@ -18,7 +18,5 @@ namespace JadeCore.Workspace
         bool RemoveFolder(string name);
         bool HasFolder(string name);
         JadeCore.Project.IProject FindProjectForFile(FilePath path);
-
-        IEnumerable<Project.IProject> AllProjects { get; }
     }
 }

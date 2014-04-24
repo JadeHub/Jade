@@ -30,7 +30,7 @@ namespace JadeCore.Project
             _items = new Dictionary<string, IItem>();
             _folders = new List<IFolder>();
             _allSourceFiles = new Collections.Observable.List<IFileItem>();
-            _cppCodeBrowserProject = new CppCodeBrowser.Project(name, new CppCodeBrowser.IndexBuilder(name));
+            _cppCodeBrowserProject = new CppCodeBrowser.Project(name, new CppCodeBrowser.IndexBuilder());
             _indexerInitialised = false;
         }
 
