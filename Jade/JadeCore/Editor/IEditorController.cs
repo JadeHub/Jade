@@ -6,9 +6,11 @@ namespace JadeCore
 {
     public delegate void EditorDocChangeEvent(EditorDocChangeEventArgs args);
 
-    public interface IEditorController
+    public interface IEditorController : IDisposable
     {
         event EditorDocChangeEvent ActiveDocumentChanged;
+        event EditorDocChangeEvent DocumentOpened;
+        event EditorDocChangeEvent DocumentClosed;
 
         IEditorDoc ActiveDocument { get; set; }
         bool HasOpenDocuments{ get; }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,7 +10,8 @@ namespace JadeCore.Workspace.Parser
     {
         void QueueProject(ProjectTaskQueue proj);
         void Prioritise(ProjectTaskQueue proj);
-        FileIndexerTask DequeueNextTask();
-        void Wait();
+        void RemoveProject(ProjectTaskQueue proj);
+        FileIndexerTask DequeueTask();
+        WaitHandle WaitHandle { get; }
     }
 }

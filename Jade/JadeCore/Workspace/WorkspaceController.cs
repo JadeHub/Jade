@@ -17,7 +17,7 @@ namespace JadeCore.Workspace
         private bool _modified;
         private JadeCore.RecentFileList _recentFiles;
         private ITextDocumentCache _documentCache;
-        private Parser.IWorkspaceIndexer _indexer;
+        //private Parser.IWorkspaceIndexer _indexer;
 
         #endregion
 
@@ -41,7 +41,7 @@ namespace JadeCore.Workspace
             _modified = false;
             _recentFiles = new JadeCore.RecentFileList();
             _documentCache = new TextDocumentCache();
-            _indexer = new Parser.WorkspaceIndexer(this);
+            //_indexer = new Parser.WorkspaceIndexer(this);
             LoadSettings(JadeCore.Services.Provider.Settings);
         }
 
@@ -86,10 +86,10 @@ namespace JadeCore.Workspace
             get { return _documentCache; }
         }
 
-        public Parser.IWorkspaceIndexer Indexer 
+    /*    public Parser.IWorkspaceIndexer Indexer 
         {
             get { return _indexer; }
-        }
+        }*/
 
         #endregion
         

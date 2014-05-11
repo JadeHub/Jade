@@ -5,6 +5,7 @@
 namespace Test
 {
 
+
 ClassA::ClassA()
 {
 	Template<int> ti(5);

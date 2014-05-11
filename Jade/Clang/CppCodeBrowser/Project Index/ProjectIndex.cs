@@ -18,10 +18,12 @@ namespace CppCodeBrowser
     public class ProjectIndex : IProjectIndex
     {        
         private readonly Dictionary<FilePath, IProjectItem> _items;
+        private object _lock;
                         
         public ProjectIndex()
         {
             _items = new Dictionary<FilePath, IProjectItem>();
+            _lock = new object();
         }
 
         public IProjectItem FindProjectItem(FilePath path)
@@ -32,13 +34,17 @@ namespace CppCodeBrowser
 
         public IProjectItem AddSourceFile(FilePath path, LibClang.TranslationUnit tu)
         {
-            Debug.Assert(_items.ContainsKey(path) == false);
-
-            IProjectItem item = new SourceFile(path, tu);
-            _items.Add(path, item);
-            foreach (TranslationUnit.HeaderInfo header in tu.HeaderFiles)
+            IProjectItem item = null;
+            lock (_lock)
             {
-                RecordHeader(header, tu);
+                Debug.Assert(_items.ContainsKey(path) == false);
+
+                item = new SourceFile(path, tu);
+                _items.Add(path, item);
+                foreach (TranslationUnit.HeaderInfo header in tu.HeaderFiles)
+                {
+                    RecordHeader(header, tu);
+                }
             }
             return item;
         }
@@ -50,7 +56,10 @@ namespace CppCodeBrowser
 
         public void RemoveProjectItem(FilePath path)
         {
-            _items.Remove(path);
+            lock (_lock)
+            {
+                _items.Remove(path);
+            }
         }
 
         private void RecordHeader(TranslationUnit.HeaderInfo headerInfo, TranslationUnit tu)

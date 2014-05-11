@@ -9,9 +9,10 @@ namespace JadeCore.Editor
     {
         #region Data
 
-        private Dictionary<IFileHandle, IEditorDoc> _allDocuments;
+       // private Dictionary<IFileHandle, IEditorDoc> _allDocuments;
         private Dictionary<IFileHandle, IEditorDoc> _openDocuments;
         private IEditorDoc _activeDocument;
+        private IDictionary<Project.IProject, CppCodeBrowser.IIndexBuilder> _projectBuilders;
                 
         #endregion
 
@@ -20,15 +21,23 @@ namespace JadeCore.Editor
         public EditorController()
         {
             _openDocuments = new Dictionary<IFileHandle, IEditorDoc>();
-            _allDocuments = new Dictionary<IFileHandle, IEditorDoc>();
+         //   _allDocuments = new Dictionary<IFileHandle, IEditorDoc>();
+
+            _projectBuilders = new Dictionary<Project.IProject, CppCodeBrowser.IIndexBuilder>();
+        }
+
+        public void Dispose()
+        {
+            CloseAllDocuments();
         }
 
         #endregion
 
         #region Events
 
-
         public event EditorDocChangeEvent ActiveDocumentChanged;
+        public event EditorDocChangeEvent DocumentOpened;
+        public event EditorDocChangeEvent DocumentClosed;
 
         #endregion
 
@@ -66,9 +75,18 @@ namespace JadeCore.Editor
         {
             if (_openDocuments.ContainsKey(file) == false)
             {
-                IEditorDoc doc = FindOrAddDocument(file);
+                IEditorDoc doc;
+
+                //find project?
+                ITextDocument textDoc = JadeCore.Services.Provider.WorkspaceController.DocumentCache.FindOrAdd(file);
+                //result = new EditorSourceDocument(doc, GetProjectIndexForFile(file.Path));
+                CppCodeBrowser.IIndexBuilder ib = null;
+                Project.IProject p = GetProjectForFile(file.Path);
+                if (p != null)
+                    ib = GetProjectBuilder(p);
+                doc = new SourceDocument(this, textDoc, ib);
                 _openDocuments.Add(file, doc);
-                OnDocumentOpen(doc);
+                OnDocumentOpened(doc);
                 ActiveDocument = doc;        
             }
             //this doc is already open, if it's not the active document, activate it
@@ -87,7 +105,9 @@ namespace JadeCore.Editor
         public void CloseActiveDocument()
         {
             if(ActiveDocument != null)
+            {
                 CloseDocument(ActiveDocument);
+            }
         }
 
         public void DiscardChangesToActiveDocument()
@@ -113,12 +133,14 @@ namespace JadeCore.Editor
             if (ActiveDocument != null && ActiveDocument.Equals(doc))
                 ActiveDocument = null;
             doc.Close();
+            OnDocumentClosed(doc);
+            doc.Dispose();
         }
 
         public void Reset()
         {
             CloseAllDocuments();
-            _allDocuments.Clear();
+         //   _allDocuments.Clear();
         }
 
         #endregion
@@ -136,23 +158,42 @@ namespace JadeCore.Editor
             return null;
         }
 
+        private Project.IProject GetProjectForFile(FilePath path)
+        {
+            if (Services.Provider.WorkspaceController.CurrentWorkspace != null)
+            {
+                return Services.Provider.WorkspaceController.CurrentWorkspace.FindProjectForFile(path);
+            }
+            return null;
+        }
+
         private IEditorDoc FindOrAddDocument(IFileHandle file)
         {
             IEditorDoc result;
 
-            if(!_allDocuments.TryGetValue(file, out result))
+            if (!_openDocuments.TryGetValue(file, out result))
             {
                 //find project?
                 ITextDocument doc = JadeCore.Services.Provider.WorkspaceController.DocumentCache.FindOrAdd(file);
-                result = new EditorSourceDocument(doc, GetProjectIndexForFile(file.Path));
-                _allDocuments.Add(file, result);
+                //result = new EditorSourceDocument(doc, GetProjectIndexForFile(file.Path));
+                CppCodeBrowser.IIndexBuilder ib = null;
+                Project.IProject p = GetProjectForFile(file.Path);
+                if(p != null)
+                    ib = GetProjectBuilder(p);
+                result = new SourceDocument(this, doc, ib);
+                _openDocuments.Add(file, result);
             }
             return result;
         }
 
-        private void OnDocumentOpen(IEditorDoc doc)
+        private void OnDocumentClosed(IEditorDoc doc)
         {
-            //RaiseDocEvent(ActiveDocumentChanged, doc);
+            RaiseDocEvent(DocumentClosed, doc);
+        }
+
+        private void OnDocumentOpened(IEditorDoc doc)
+        {
+            RaiseDocEvent(DocumentOpened, doc);
         }
                 
         private void OnDocumentSelect(IEditorDoc doc)
@@ -165,6 +206,17 @@ namespace JadeCore.Editor
             EditorDocChangeEvent handler = ev;
             if (handler != null)
                 handler(new EditorDocChangeEventArgs(doc));
+        }
+
+        private CppCodeBrowser.IIndexBuilder GetProjectBuilder(Project.IProject project)
+        {
+            CppCodeBrowser.IIndexBuilder result = null;
+            if (_projectBuilders.TryGetValue(project, out result))
+                return result;
+            result = new CppCodeBrowser.IndexBuilder();
+            _projectBuilders.Add(project, result);
+        
+            return result;
         }
         
         #endregion

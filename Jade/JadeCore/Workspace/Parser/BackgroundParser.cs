@@ -12,64 +12,30 @@ namespace JadeCore.Workspace.Parser
     {
         private Project.IFileItem _file;
         private CppCodeBrowser.IIndexBuilder _indexBuilder;
-        private Task _task;
+        private TaskFactory _callbackTaskFactory;
+        private Action<bool> _callback;
         
-        public FileIndexerTask(Project.IFileItem file, CppCodeBrowser.IIndexBuilder indexBuilder, TaskFactory taskFactory)
+        public FileIndexerTask(Project.IFileItem file, CppCodeBrowser.IIndexBuilder indexBuilder, TaskFactory taskFactory, Action<bool> callback)
         {
             _file = file;
+            _callback = callback;
             _indexBuilder = indexBuilder;
-            CreateTask(taskFactory);
+            _callbackTaskFactory = taskFactory;
         }
 
-        #region IIndexer
-
-        public Task Task
-        {
-            get
-            {
-                return _task;
-            }
-        }
-
-        public FilePath Path { get { return _file.Path; } }
         public Project.IFileItem File { get { return _file; } }
-
-        public void Start()
+        
+        /// <summary>
+        /// Called from worker thread
+        /// </summary>
+        public void Parse()
         {
-            Task t = Task.Factory.StartNew(() => Parse());
-            t.ContinueWith(task => OnParseComplete(task), TaskScheduler.FromCurrentSynchronizationContext());
+            Debug.WriteLine("Parsing " + File.Path + " On thread " + System.Threading.Thread.CurrentThread.ManagedThreadId);
+            _indexBuilder.Index.RemoveProjectItem(File.Path);
+            bool result = _indexBuilder.ParseFile(File.Path, null);
+            _callbackTaskFactory.StartNew(() => _callback(result));
+            Debug.WriteLine("Finished parsing " + File.Path);
         }
-
-        public bool NeedsParse
-        {
-            get
-            {
-                //lock
-                return false;
-            }
-        }
-
-        private void CreateTask(TaskFactory taskFactory)
-        {
-            Debug.Assert(_task == null);
-            
-            _task = taskFactory.StartNew(() => Parse());
-            _task.ContinueWith(task => OnParseComplete(task), TaskScheduler.FromCurrentSynchronizationContext());
-        }
-
-        private void OnParseComplete(Task t)
-        { 
-        }
-
-        private void Parse()
-        {
-            _indexBuilder.Index.RemoveProjectItem(Path);
-            _indexBuilder.AddFile(Path, null);
-        }
-
-
-
-        #endregion
     }
 
     public class ProjectTaskQueue
@@ -78,16 +44,15 @@ namespace JadeCore.Workspace.Parser
         private IDictionary<Project.IFileItem, FileIndexerTask> _files;
 
         //accesed from multiple threads
-        private LinkedList<FileIndexerTask> _workList;
- 
-        private TaskFactory _taskFactory;
+        private LinkedList<FileIndexerTask> _workList; 
 
+        private TaskFactory _callbackTaskFactory;
         private CppCodeBrowser.IIndexBuilder _indexBuilder;
 
-        public ProjectTaskQueue(Project.IProject project, TaskFactory taskFactory)
+        public ProjectTaskQueue(Project.IProject project, TaskFactory callbackTaskFactory)
         {
             _project = project;
-            _taskFactory = taskFactory;
+            _callbackTaskFactory = callbackTaskFactory;
 
             _files = new Dictionary<Project.IFileItem, FileIndexerTask>();
             _workList = new LinkedList<FileIndexerTask>();
@@ -119,7 +84,8 @@ namespace JadeCore.Workspace.Parser
             ITextDocument document = JadeCore.Services.Provider.WorkspaceController.DocumentCache.FindOrAdd(file.Handle);
             if (document == null)
                 throw new Exception("Doc not in cache");
-            FileIndexerTask indexer = new FileIndexerTask(file, _indexBuilder, _taskFactory);
+
+            FileIndexerTask indexer = new FileIndexerTask(file, _indexBuilder, _callbackTaskFactory, delegate(bool b) { OnParseComplete(file, b); });
             document.ModifiedChanged += delegate { OnDocumentModified(indexer, document); };
 
             _files.Add(file, indexer);
@@ -127,6 +93,22 @@ namespace JadeCore.Workspace.Parser
             {
                 _workList.AddLast(indexer);
             }            
+        }
+
+        public void ParseNextFile()
+        {
+            FileIndexerTask task = DequeueWorkItem();
+            if (task == null) return;
+
+            _indexBuilder.Index.RemoveProjectItem(task.File.Path);
+            bool result = _indexBuilder.ParseFile(task.File.Path, null);
+
+            _callbackTaskFactory.StartNew(() => OnParseComplete(task.File, result));
+        }
+
+        private void OnParseComplete(Project.IFileItem file, bool success)
+        {
+
         }
 
         public FileIndexerTask DequeueWorkItem()
@@ -176,26 +158,28 @@ namespace JadeCore.Workspace.Parser
         private IWorkspaceController _controller;
         private IWorkspace _workspace;
         private IDictionary<Project.IProject, ProjectTaskQueue> _projects;
-
+        private TaskFactory _callbackTaskFactory;
         private Parser.IParseTaskQueue _parserTaskQueue;
-        private TaskFactory _taskFactory;
+        private ParseTaskScheduler _scheduler;
         
         public WorkspaceIndexer(IWorkspaceController controller)
         {
             _controller = controller;
+            _callbackTaskFactory = new TaskFactory(TaskScheduler.FromCurrentSynchronizationContext());
             _controller.WorkspaceChanged += OnControllerWorkspaceChanged;
             _projects = new Dictionary<Project.IProject, ProjectTaskQueue>();
 
             _parserTaskQueue = new Parser.ParseTaskQueue();
-            _taskFactory = new TaskFactory(new Parser.ParseTaskScheduler(4, _parserTaskQueue));
+            _scheduler = new ParseTaskScheduler(1, _parserTaskQueue, System.Threading.ThreadPriority.Normal);
         }
 
         public void SetActiveSource(Project.IProject project, Project.IFileItem file)
         {
-            ProjectTaskQueue projQueue = FindProjectTaskQueue(project);
-            Debug.Assert(projQueue != null);
+            ProjectTaskQueue proj = FindProjectTaskQueue(project);
+            Debug.Assert(proj != null);
 
-            projQueue.Prioritise(file);
+            proj.Prioritise(file);
+            _parserTaskQueue.Prioritise(proj);
         }
         
         #region Workspace and Project tracking
@@ -241,13 +225,14 @@ namespace JadeCore.Workspace.Parser
                     {
                         OnProjectAddedToWorkspace(p);
                     }
+                    //_scheduler.Go();
                 }
             }
         }
 
         private void OnProjectAddedToWorkspace(Project.IProject p)
         {
-            ProjectTaskQueue indexer = new ProjectTaskQueue(p, _taskFactory);
+            ProjectTaskQueue indexer = new ProjectTaskQueue(p, _callbackTaskFactory);
             _projects.Add(p, indexer);
             _parserTaskQueue.QueueProject(indexer);
         }
@@ -255,7 +240,7 @@ namespace JadeCore.Workspace.Parser
         private void OnProjectRemovedFromWorkspace(Project.IProject p)
         {
             _projects.Remove(p);
-            //remove from task queue
+            //_parserTaskQueue.RemoveProject()            
         }
 
         private ProjectTaskQueue FindProjectTaskQueue(Project.IProject p)

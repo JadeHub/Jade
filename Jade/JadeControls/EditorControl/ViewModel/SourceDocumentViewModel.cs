@@ -18,16 +18,30 @@ namespace JadeControls.EditorControl.ViewModel
         private DiagnosticHighlighter _diagnosticHighlighter;
         private SearchHighlighter _searchHighlighter;
         private CppCodeBrowser.IProjectItem _sourceFileProjectItem;
+        private Highlighting.Underliner _underliner;
         
         public SourceDocumentViewModel(IEditorDoc doc) 
             : base(doc)
         {
-            Debug.Assert(doc is JadeCore.Editor.EditorSourceDocument);
-            _projectIndex = (doc as JadeCore.Editor.EditorSourceDocument).ProjectIndex;
+            Debug.Assert(doc is JadeCore.Editor.SourceDocument);
+            JadeCore.Editor.SourceDocument sourceDoc = doc as JadeCore.Editor.SourceDocument;
+            _projectIndex = sourceDoc.ProjectIndex;
             if (_projectIndex != null)
             {
                 _jumpToBrowser = new CppCodeBrowser.JumpToBrowser(_projectIndex);
                 _sourceFileProjectItem = _projectIndex.FindProjectItem(doc.File.Path);
+            }
+            sourceDoc.OnIndexUpdated += sourceDoc_OnIndexUpdated;
+        }
+
+        void sourceDoc_OnIndexUpdated(object sender, EventArgs e)
+        {
+            _sourceFileProjectItem = _projectIndex.FindProjectItem(Document.File.Path);
+            if (_sourceFileProjectItem != null && _underliner != null)
+            {
+                //   ASTHighlighter _astHighlighter = new ASTHighlighter(_fileBrowser.TranslationUnits.First().Cursor, underliner, _fileBrowser.Path.Str);
+                _diagnosticHighlighter = new DiagnosticHighlighter(_sourceFileProjectItem, _underliner);
+                _searchHighlighter = new SearchHighlighter(_sourceFileProjectItem, _underliner);
             }
         }
 
@@ -132,14 +146,14 @@ namespace JadeControls.EditorControl.ViewModel
 
         protected override void OnSetView(CodeEditor view)
         {
-            Highlighting.Underliner underliner = new Highlighting.Underliner(TextDocument);
-            view.TextArea.TextView.BackgroundRenderers.Add(underliner);
+            _underliner = new Highlighting.Underliner(TextDocument);
+            view.TextArea.TextView.BackgroundRenderers.Add(_underliner);
 
             if (_sourceFileProjectItem != null)            
             {
              //   ASTHighlighter _astHighlighter = new ASTHighlighter(_fileBrowser.TranslationUnits.First().Cursor, underliner, _fileBrowser.Path.Str);
-                _diagnosticHighlighter = new DiagnosticHighlighter(_sourceFileProjectItem, underliner);
-                _searchHighlighter = new SearchHighlighter(_sourceFileProjectItem, underliner);
+                _diagnosticHighlighter = new DiagnosticHighlighter(_sourceFileProjectItem, _underliner);
+                _searchHighlighter = new SearchHighlighter(_sourceFileProjectItem, _underliner);
             }
 
             view.KeyDown += OnViewKeyDown;

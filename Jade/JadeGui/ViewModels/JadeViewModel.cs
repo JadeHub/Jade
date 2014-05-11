@@ -17,7 +17,7 @@ namespace JadeGui.ViewModels
     /// <summary>
     /// Main View Model class. Singleton instance that lives the life of the application
     /// </summary>
-    internal class JadeViewModel : JadeControls.NotifyPropertyChanged , JadeCore.IJadeCommandHandler
+    internal class JadeViewModel : JadeControls.NotifyPropertyChanged , JadeCore.IJadeCommandHandler, IDisposable
     {
         #region Data
 
@@ -70,6 +70,11 @@ namespace JadeGui.ViewModels
             _currentWorkspace.IsVisible = false;
 
             UpdateWindowTitle();
+        }
+
+        public void Dispose()
+        {
+            _editorController.Dispose();
         }
 
         void OnEditorControllerActiveDocumentChanged(JadeCore.EditorDocChangeEventArgs args)

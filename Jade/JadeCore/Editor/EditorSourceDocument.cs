@@ -1,29 +1,64 @@
 ﻿using JadeUtils.IO;
 using System;
+using System.Threading;
 using System.IO;
+
 
 namespace JadeCore.Editor
 {
-    public class EditorSourceDocument : JadeCore.IEditorDoc
+    public interface ISourceDocument : JadeCore.IEditorDoc
+    {
+        event EventHandler OnIndexUpdated;
+        CppCodeBrowser.IProjectIndex ProjectIndex { get; }
+    }
+        
+    public class SourceDocument : ISourceDocument
     {
         #region Data
 
+        private IEditorController _controller;
         private ITextDocument _document;
-        private CppCodeBrowser.IProjectIndex _projectIndex;
+        private CppCodeBrowser.IIndexBuilder _indexBuilder;
+        private SourceDocumentParseThread _parseThread;
         
         #endregion
 
         #region Constructor
 
-        public EditorSourceDocument(ITextDocument document, CppCodeBrowser.IProjectIndex projectIndex)
+        public SourceDocument(IEditorController controller, ITextDocument document, CppCodeBrowser.IIndexBuilder ib)
         {
+            _controller = controller;
             _document = document;
-            _projectIndex = projectIndex;
+            _indexBuilder = ib;
+            _parseThread = new SourceDocumentParseThread(this, _indexBuilder, (bool b) => { RaiseOnIndexUpdated(); });
+            _parseThread.HighPriority = controller.ActiveDocument == this;
+            _parseThread.Run = true;
+            _controller.ActiveDocumentChanged += OnActiveDocumentChanged;
+        }
+
+        void OnActiveDocumentChanged(EditorDocChangeEventArgs args)
+        {
+            _parseThread.HighPriority = args.Document == this;
+            _controller.ActiveDocumentChanged -= OnActiveDocumentChanged;
+        }
+
+        public void Dispose()
+        {
+            _parseThread.Dispose();
         }
 
         #endregion
 
-        #region Events
+        #region IEditorDoc implementation
+
+        public event EventHandler OnIndexUpdated;
+
+        private void RaiseOnIndexUpdated()
+        {
+            EventHandler handler = OnIndexUpdated;
+            if (handler != null)
+                handler(this, EventArgs.Empty);
+        }
 
         public event EventHandler OnClosing;
 
@@ -33,11 +68,7 @@ namespace JadeCore.Editor
             if (handler != null)
                 handler(this, EventArgs.Empty);
         }
-
-        #endregion
-
-        #region Public Methods
-
+                
         public void Close()
         {
             RaiseOnClosing();
@@ -47,11 +78,7 @@ namespace JadeCore.Editor
         {
             _document.Save(_document.File);
         }
-
-        #endregion
-
-        #region Public Properties
-
+                
         public ITextDocument TextDocument { get { return _document; } }
         
         public string Name
@@ -72,9 +99,13 @@ namespace JadeCore.Editor
             }            
         }
 
+        #endregion
+
+        #region IEditorSourceDocument implementation
+
         public CppCodeBrowser.IProjectIndex ProjectIndex
         {
-            get { return _projectIndex; }
+            get { return _indexBuilder.Index; }
         }
 
         #endregion

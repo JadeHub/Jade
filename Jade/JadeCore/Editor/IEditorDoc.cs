@@ -8,7 +8,7 @@ namespace JadeCore
     /// The file representation used by the EditorController
     /// EditorSourceDocument is implementation for source files
     /// </summary>
-    public interface IEditorDoc
+    public interface IEditorDoc : IDisposable
     {
         event EventHandler OnClosing;
         
@@ -17,7 +17,7 @@ namespace JadeCore
         IFileHandle File { get; }
 
         ITextDocument TextDocument { get; }
-     
+             
         void Close();
         void Save();
     }

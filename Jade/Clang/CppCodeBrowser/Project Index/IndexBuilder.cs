@@ -13,7 +13,11 @@ namespace CppCodeBrowser
         private bool _disposed = false;
         private readonly ProjectIndex _index;
         private readonly LibClang.Index _libClangIndex;
+
+        //Set of all parsed Tus for Disposal
         private readonly HashSet<TranslationUnit> _allTus;
+
+        private object _lock = new object();
 
         public event ItemIndexedEvent ItemIndexed;
         public event ItemIndexingFailedEvent ItemIndexingFailed;
@@ -37,21 +41,23 @@ namespace CppCodeBrowser
             _disposed = true;
         }
 
-        public void AddFile(FilePath path, string[] compilerArgs)
+        public bool ParseFile(FilePath path, string[] compilerArgs)
         {
-            if (_disposed) return;
+            if (_disposed) return false;
 
-            LibClang.TranslationUnit tu = new LibClang.TranslationUnit(_libClangIndex, path.Str);
-
-            if (tu.Parse(compilerArgs) == false)
+            lock (_lock)
             {
-                tu.Dispose();
-                RaiseItemIndexingFailedEvent(path);
-                return;
+                LibClang.TranslationUnit tu = new LibClang.TranslationUnit(_libClangIndex, path.Str);
+
+                if (tu.Parse(compilerArgs) == false)
+                {
+                    tu.Dispose();
+                    return false;
+                }
+                _allTus.Add(tu);
+                _index.AddSourceFile(path, tu);
             }
-            _allTus.Add(tu);
-            IProjectItem item = _index.AddSourceFile(path, tu);
-            RaiseItemIndexedEvent(item);
+            return true;
         }
 
         public IProjectIndex Index 

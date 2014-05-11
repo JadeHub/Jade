@@ -10,6 +10,7 @@ namespace JadeGui
     public partial class App : Application
     {
         private DockingGui.MainWindow _mainWindow;
+        private ViewModels.JadeViewModel _viewModel;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -29,12 +30,12 @@ namespace JadeGui
             JadeCore.Services.Provider.MainWindow = _mainWindow;
 
             //Create the main view model object
-            var viewModel = new ViewModels.JadeViewModel(_mainWindow);
+            _viewModel = new ViewModels.JadeViewModel(_mainWindow);
 
             //the view model is this service - todo fix dependancies
-            JadeCore.Services.Provider.CommandHandler = viewModel;
+            JadeCore.Services.Provider.CommandHandler = _viewModel;
 
-            viewModel.RequestClose += delegate 
+            _viewModel.RequestClose += delegate 
             {
                 _mainWindow.Close(); 
             };
@@ -43,10 +44,10 @@ namespace JadeGui
             // bind to the ViewModel by setting the 
             // DataContext, which propagates down 
             // the element tree.
-            _mainWindow.DataContext = viewModel;
+            _mainWindow.DataContext = _viewModel;
 
             //bind commands
-            viewModel.Commands.Bind(_mainWindow.CommandBindings);           
+            _viewModel.Commands.Bind(_mainWindow.CommandBindings);           
             
             JadeCore.Services.Provider.OutputController.Create(JadeCore.Output.Source.JadeDebug, JadeCore.Output.Level.Info, "Hello world");
             
@@ -60,13 +61,14 @@ namespace JadeGui
             _mainWindow.Show();
 
             //viewModel.OnOpenWorkspace(@"C:\Code\GitHub\JadeMaster\TestData\CppTest\CppTest.jws");
-            viewModel.OnOpenWorkspace(@"C:\Code\GitHub\JadeMaster\TestData\CppTest\CppTest\CppTest.sln");
+            _viewModel.OnOpenWorkspace(@"C:\Code\GitHub\JadeMaster\TestData\CppTest\CppTest\CppTest.sln");
             //viewModel.OnOpenWorkspace(@"C:\Code\clang\build\llvm.sln");
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
             JadeCore.Services.Provider.Settings.Save();
+            _viewModel.Dispose();
             base.OnExit(e);
         }
 

@@ -9,93 +9,73 @@ using System.Diagnostics;
 
 namespace JadeCore.Workspace.Parser
 {
-    public class ParseTaskScheduler : TaskScheduler, IDisposable
+    public class ParseTaskScheduler : IDisposable
     {
-        private ApartmentState apartmentState;
-        private ThreadPriority threadPriority;
-
-        private readonly List<Thread> threads;
-
-        //private BlockingCollection<Task> tasks;
+        private readonly List<Thread> _threads;
         private IParseTaskQueue _taskQueue;
+        private ManualResetEvent _exitEvent;
 
-        /// <summary>
-        /// An MTA, BelowNormal TaskScheduler with the appropriate number of threads
-        /// </summary>
-        public ParseTaskScheduler(int numberOfThreads, IParseTaskQueue taskQueue)
-            : this(numberOfThreads, taskQueue, ApartmentState.MTA, ThreadPriority.BelowNormal)
+        public ParseTaskScheduler(int numberOfThreads, IParseTaskQueue taskQueue, ThreadPriority threadPriority, ApartmentState apartmentState = ApartmentState.MTA)
         {
-        }
-
-        public ParseTaskScheduler(int numberOfThreads, IParseTaskQueue taskQueue, ApartmentState apartmentState, ThreadPriority threadPriority)
-        {
-            this._taskQueue = taskQueue;
-            this.apartmentState = apartmentState;
-            this.threadPriority = threadPriority;
+            _taskQueue = taskQueue;
+            _exitEvent = new ManualResetEvent(false);
 
             if (numberOfThreads < 1) throw new ArgumentOutOfRangeException("numberOfThreads");
-
-            threads = Enumerable.Range(0, numberOfThreads).Select(i =>
+            
+            _threads = new List<Thread>();
+            for (int i = 0; i < numberOfThreads; i++)
             {
-                var thread = new Thread(() =>
-                {
-                    FileIndexerTask task;
-
-                    do
-                    {
-                        task = _taskQueue.DequeueNextTask();
-                        if(task != null)
-                        {
-                            TryExecuteTask(task.Task);
-                        }
-                        else
-                        {
-                            _taskQueue.Wait();
-                        }
-                    } while (true);
-                });
-                thread.IsBackground = true;
-                thread.Priority = this.threadPriority;
-                thread.SetApartmentState(this.apartmentState);
-                return thread;
-            }).ToList();
-
-            threads.ForEach(t => t.Start());
-        }
-
-        protected override void QueueTask(Task task)
-        {
-            Debug.Assert(false);
-        }
-
-        protected override IEnumerable<Task> GetScheduledTasks()
-        {
-            return null;            
-        }
-
-        protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued)
-        {
-            // this is used to execute the Task on the thread that is waiting for it - i.e. INLINE
-            // it needs to check the Apartment state and any other requirements
-            if (Thread.CurrentThread.GetApartmentState() != this.apartmentState) return false;          // can't execute on wrong Appt state
-            if (Thread.CurrentThread.Priority != this.threadPriority) return false;                     // can't execute on wrong priority of thread either
-            return TryExecuteTask(task);
-        }
-                
-        protected override bool TryDequeue(Task task)
-        {
-            return false;
-        }
-
-
-        public override int MaximumConcurrencyLevel
-        {
-            get { return threads.Count; }
+                Thread t = new Thread(() => ThreadLoop());
+                t.IsBackground = true;
+                t.Priority = threadPriority;
+                t.SetApartmentState(apartmentState);
+                _threads.Add(t);
+            }
+            _threads.ForEach(t => t.Start());
         }
 
         public void Dispose()
         {
-            foreach (var thread in threads) thread.Join();
-        }        
+            _exitEvent.Set();
+            foreach (var thread in _threads) thread.Join();
+        }
+
+        private void ThreadLoop()
+        {
+          //  try
+            {
+                WaitHandle[] waitHandles = new WaitHandle[2] { _exitEvent, _taskQueue.WaitHandle };
+                while (true)
+                {
+                    int wait = WaitHandle.WaitAny(waitHandles);
+                    if (wait == 0)
+                        return;
+
+                    FileIndexerTask task = _taskQueue.DequeueTask();
+
+                    if (task != null)
+                    {
+                        task.Parse();
+                    }
+                }
+            }
+           /* catch(Exception e)
+            {
+                int i = 0;
+            }*/
+        }
+
+        public void Go()
+        {
+
+            while (true)
+            {
+                FileIndexerTask task = _taskQueue.DequeueTask();
+
+                if (task == null)
+                    break;
+                task.Parse();
+            }
+        }
     }
 }

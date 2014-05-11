@@ -31,7 +31,7 @@ namespace CppCodeBrowser
         event ItemIndexedEvent ItemIndexed;
         event ItemIndexingFailedEvent ItemIndexingFailed;
 
-        void AddFile(FilePath path, string[] compilerArgs);
+        bool ParseFile(FilePath path, string[] compilerArgs);
         IProjectIndex Index { get; }
     }    
 }

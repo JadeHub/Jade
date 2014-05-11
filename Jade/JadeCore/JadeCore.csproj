@@ -50,6 +50,7 @@
     <Compile Include="Editor\EditorController.cs" />
     <Compile Include="Editor\EditorSourceDocument.cs" />
     <Compile Include="Editor\IEditorDoc.cs" />
+    <Compile Include="Editor\SourceDocumentParseThread.cs" />
     <Compile Include="GuiUtils.cs" />
     <Compile Include="Editor\IEditorController.cs" />
     <Compile Include="IServiceProvider.cs" />

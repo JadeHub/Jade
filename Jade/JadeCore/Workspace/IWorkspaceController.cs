@@ -74,6 +74,6 @@ namespace JadeCore.Workspace
 
         ITextDocumentCache DocumentCache { get; }
 
-        Parser.IWorkspaceIndexer Indexer { get; }
+     //   Parser.IWorkspaceIndexer Indexer { get; }
     }
 }

@@ -50,6 +50,7 @@ namespace JadeControls.EditorControl.ViewModel
             {
                 vm = new SourceDocumentViewModel(args.Document);
                 _documents.Add(vm);
+                //change to IEditorController.DocumentClosed
                 args.Document.OnClosing += delegate { OnDocumentClosing(vm); };
             }
             SelectedDocument = vm;

@@ -44,7 +44,6 @@
     <Compile Include="Project Index\HeaderFile.cs" />
     <Compile Include="Project Index\IIndexBuilder.cs" />
     <Compile Include="Project Index\IProjectItem.cs" />
-    <Compile Include="Project Index\Project.cs" />
     <Compile Include="Browsing\ICodeBrowser.cs" />
     <Compile Include="Project Index\IndexBuilder.cs" />
     <Compile Include="Project Index\ProjectIndex.cs" />
