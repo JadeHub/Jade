@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -24,6 +25,7 @@ namespace JadeGui
             JadeCore.Services.Provider.EditorController = new JadeCore.Editor.EditorController();
             JadeCore.Services.Provider.OutputController = new JadeCore.Output.OutputController();
             JadeCore.Services.Provider.SearchController = new JadeCore.Search.SearchController();
+            JadeCore.Services.Provider.GuiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
             _mainWindow = new DockingGui.MainWindow();
 

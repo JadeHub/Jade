@@ -27,7 +27,6 @@ namespace JadeControls.EditorControl.ViewModel
             //Bind to the Model
             _controller = controller;
             _controller.ActiveDocumentChanged += OnControllerActiveDocumentChanged;
-
             _documents = new ObservableCollection<DocumentViewModel>();
         }
 
@@ -43,18 +42,19 @@ namespace JadeControls.EditorControl.ViewModel
             }
         }
 
-        private void OnControllerActiveDocumentChanged(JadeCore.EditorDocChangeEventArgs args)
+        private void OnControllerActiveDocumentChanged(IEditorDoc newValue, IEditorDoc oldValue)
         {
-            DocumentViewModel vm = GetViewModel(args.Document);
-            if (vm == null && args.Document != null)
+            DocumentViewModel vm = GetViewModel(newValue);
+            if (vm == null && newValue != null)
             {
-                vm = new SourceDocumentViewModel(args.Document);
+                vm = new SourceDocumentViewModel(newValue);
                 _documents.Add(vm);
                 //change to IEditorController.DocumentClosed
-                args.Document.OnClosing += delegate { OnDocumentClosing(vm); };
+
+                //todo should unsubscribe from old?
+                newValue.OnClosing += delegate { OnDocumentClosing(vm); };
             }
             SelectedDocument = vm;
-
         }
                 
         #endregion

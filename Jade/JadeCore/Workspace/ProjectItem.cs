@@ -26,10 +26,9 @@ namespace JadeCore.Workspace
 
         public IList<Project.IItem> Items { get { return _project.Items; } }
         public IList<Project.IFolder> Folders { get { return _project.Folders; } }
-        public CppCodeBrowser.IProjectIndex SourceIndex { get { return _project.SourceIndex; } }
+        
         public JadeCore.Project.IProject OwningProject { get { return _project.OwningProject; } }
         public Collections.Observable.List<JadeCore.Project.IFileItem> SourceFiles { get { return _project.SourceFiles; } }
-
         public void AddItem(Project.IFolder folder, JadeCore.Project.IItem item) { _project.AddItem(folder, item); }
         public void AddItem(JadeCore.Project.IItem item) { _project.AddItem(item); }
         public bool RemoveItem(string itemName) { return _project.RemoveItem(itemName); }

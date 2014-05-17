@@ -23,8 +23,6 @@ namespace JadeCore.Project
         /// </summary>        
         Collections.Observable.List<IFileItem> SourceFiles { get; }
         
-        CppCodeBrowser.IProjectIndex SourceIndex { get; }
-        
         /// <summary>
         /// Add an item to an optional subfolder
         /// </summary>

@@ -48,7 +48,7 @@
     <Compile Include="Collections\Observable.cs" />
     <Compile Include="Commands.cs" />
     <Compile Include="Editor\EditorController.cs" />
-    <Compile Include="Editor\EditorSourceDocument.cs" />
+    <Compile Include="Editor\SourceDocument.cs" />
     <Compile Include="Editor\IEditorDoc.cs" />
     <Compile Include="Editor\SourceDocumentParseThread.cs" />
     <Compile Include="GuiUtils.cs" />
@@ -100,11 +100,6 @@
     <Compile Include="UserInput.xaml.cs">
       <DependentUpon>UserInput.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Workspace\Parser\BackgroundParser.cs" />
-    <Compile Include="Workspace\Parser\IParseTaskQueue.cs" />
-    <Compile Include="Workspace\Parser\IParseTaskScheduler.cs" />
-    <Compile Include="Workspace\Parser\ParseTaskQueue.cs" />
-    <Compile Include="Workspace\Parser\ParseTaskScheduler.cs" />
     <Compile Include="Workspace\ProjectItem.cs" />
     <Compile Include="Workspace\Workspace.cs" />
     <Compile Include="Workspace\WorkspaceController.cs" />

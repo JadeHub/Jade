@@ -77,9 +77,9 @@ namespace JadeGui.ViewModels
             _editorController.Dispose();
         }
 
-        void OnEditorControllerActiveDocumentChanged(JadeCore.EditorDocChangeEventArgs args)
+        private void OnEditorControllerActiveDocumentChanged(JadeCore.IEditorDoc newValue, JadeCore.IEditorDoc oldValue)
         {
-            DocumentViewModel doc = _editorViewModel.GetViewModel(args.Document);
+            DocumentViewModel doc = _editorViewModel.GetViewModel(newValue);
             if (doc != null)
             {
                 ActiveDockContent = doc;

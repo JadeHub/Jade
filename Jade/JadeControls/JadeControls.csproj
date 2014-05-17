@@ -54,13 +54,14 @@
     <Compile Include="EditorControl\Highlighting\Underliner.cs" />
     <Compile Include="EditorControl\Highlighting\HighlightedRange.cs" />
     <Compile Include="EditorControl\Highlighting\IHighlighter.cs" />
+    <Compile Include="EditorControl\ViewModel\Documents\JumpToHelper.cs" />
     <Compile Include="EditorControl\ViewModel\Highlighters\AstHighlighter.cs" />
     <Compile Include="EditorControl\ViewModel\Highlighters\DiagnosticHighlighter.cs" />
-    <Compile Include="EditorControl\ViewModel\DocumentViewModel.cs" />
+    <Compile Include="EditorControl\ViewModel\Documents\DocumentViewModel.cs" />
     <Compile Include="EditorControl\ViewModel\EditorCommands.cs" />
-    <Compile Include="EditorControl\ViewModel\EditorControlViewModel.cs" />
+    <Compile Include="EditorControl\ViewModel\EditorTabControl\EditorControlViewModel.cs" />
     <Compile Include="EditorControl\ViewModel\Highlighters\SearchHighlighter.cs" />
-    <Compile Include="EditorControl\ViewModel\SourceDocumentViewModel.cs" />
+    <Compile Include="EditorControl\ViewModel\Documents\SourceDocumentViewModel.cs" />
     <Compile Include="Output Control\OutputControl.xaml.cs">
       <DependentUpon>OutputControl.xaml</DependentUpon>
     </Compile>

@@ -5,10 +5,11 @@ using System.Collections.Generic;
 namespace JadeCore
 {
     public delegate void EditorDocChangeEvent(EditorDocChangeEventArgs args);
+    public delegate void ActiveDocumentChangeEvent(IEditorDoc newValue, IEditorDoc oldValue);
 
     public interface IEditorController : IDisposable
     {
-        event EditorDocChangeEvent ActiveDocumentChanged;
+        event ActiveDocumentChangeEvent ActiveDocumentChanged;
         event EditorDocChangeEvent DocumentOpened;
         event EditorDocChangeEvent DocumentClosed;
 

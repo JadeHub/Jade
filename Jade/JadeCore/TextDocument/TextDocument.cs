@@ -10,6 +10,7 @@ namespace JadeCore
         private ICSharpCode.AvalonEdit.Document.TextDocument _avDoc;
         private bool _loaded;
         private bool _modified;
+        private UInt64 _version;
 
         public TextDocument(IFileHandle handle)
         {
@@ -18,6 +19,7 @@ namespace JadeCore
             _avDoc = new ICSharpCode.AvalonEdit.Document.TextDocument();
             _avDoc.TextChanged += OnAvDocTextChanged;
             _modified = false;
+            _version = 0;
         }
 
         public event EventHandler TextChanged
@@ -37,6 +39,7 @@ namespace JadeCore
 
         private void OnAvDocTextChanged(object sender, EventArgs e)
         {
+            _version++;
             Modified = true;
         }
 
@@ -79,6 +82,11 @@ namespace JadeCore
                     RaiseModifiedChangedEvent();
                 }
             }
+        }
+
+        public UInt64 Version 
+        {
+            get { return _version; }
         }
 
         #endregion

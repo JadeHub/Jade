@@ -16,9 +16,6 @@ namespace JadeCore.Project
         //maintain a list of all source files in all folders
         private Collections.Observable.List<IFileItem> _allSourceFiles;
 
-        private CppCodeBrowser.IndexBuilder _indexBuilder;
-        private bool _indexerInitialised;
-
         #endregion
 
         #region Constructor
@@ -30,8 +27,6 @@ namespace JadeCore.Project
             _items = new Dictionary<string, IItem>();
             _folders = new List<IFolder>();
             _allSourceFiles = new Collections.Observable.List<IFileItem>();
-            _indexBuilder = new CppCodeBrowser.IndexBuilder();
-            _indexerInitialised = false;
         }
 
         #endregion
@@ -44,16 +39,6 @@ namespace JadeCore.Project
         public IProject OwningProject { get { return this; } }
 
         public Collections.Observable.List<IFileItem> SourceFiles { get { return _allSourceFiles; } }
-
-        public IProjectIndex SourceIndex 
-        { 
-            get 
-            {
-                if (!_indexerInitialised)
-                    InitSourceIndex();
-                return _indexBuilder.Index;
-            } 
-        }
 
         public FilePath Path { get { return _path; } }
         public string Directory { get { return _path.Directory; } }
@@ -185,17 +170,6 @@ namespace JadeCore.Project
         private void RemoveSourceFile(IFileItem f)
         {
             _allSourceFiles.Remove(f);            
-        }
-
-        private void InitSourceIndex()
-        {
-            if (_indexerInitialised) return;
-
-            foreach (IFileItem item in _allSourceFiles)
-            {
-                _indexBuilder.ParseFile(item.Path, null);
-            }
-            _indexerInitialised = true;
         }
 
         #endregion

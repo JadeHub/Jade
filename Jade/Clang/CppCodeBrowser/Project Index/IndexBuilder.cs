@@ -2,6 +2,8 @@
 using LibClang;
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CppCodeBrowser
 {       
@@ -12,20 +14,21 @@ namespace CppCodeBrowser
     {
         private bool _disposed = false;
         private readonly ProjectIndex _index;
-        private readonly LibClang.Index _libClangIndex;
 
         //Set of all parsed Tus for Disposal
         private readonly HashSet<TranslationUnit> _allTus;
+
+        private TaskScheduler _callbackSCheduler;
 
         private object _lock = new object();
 
         public event ItemIndexedEvent ItemIndexed;
         public event ItemIndexingFailedEvent ItemIndexingFailed;
 
-        public IndexBuilder()
+        public IndexBuilder(TaskScheduler callbackSCheduler)
         {
+            _callbackSCheduler = callbackSCheduler;
             _index = new ProjectIndex();
-            _libClangIndex = new LibClang.Index(false, true);
             _allTus = new HashSet<TranslationUnit>();
         }
 
@@ -47,7 +50,7 @@ namespace CppCodeBrowser
 
             lock (_lock)
             {
-                LibClang.TranslationUnit tu = new LibClang.TranslationUnit(_libClangIndex, path.Str);
+                LibClang.TranslationUnit tu = new LibClang.TranslationUnit(_index.LibClangIndex, path.Str);
 
                 if (tu.Parse(compilerArgs) == false)
                 {
@@ -55,7 +58,11 @@ namespace CppCodeBrowser
                     return false;
                 }
                 _allTus.Add(tu);
-                _index.AddSourceFile(path, tu);
+                if(_index.UpdateSourceFile(path, tu))
+                {
+                    Task.Factory.StartNew(() => { _index.RaiseItemUpdatedEvent(path); },
+                                        CancellationToken.None, TaskCreationOptions.None, _callbackSCheduler);
+                }
             }
             return true;
         }

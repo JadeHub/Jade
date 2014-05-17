@@ -14,37 +14,44 @@ namespace JadeControls.EditorControl.ViewModel
     public class SourceDocumentViewModel : DocumentViewModel
     {
         private CppCodeBrowser.IProjectIndex _projectIndex;
-        private CppCodeBrowser.ICodeBrowser _jumpToBrowser;
         private DiagnosticHighlighter _diagnosticHighlighter;
         private SearchHighlighter _searchHighlighter;
         private CppCodeBrowser.IProjectItem _sourceFileProjectItem;
         private Highlighting.Underliner _underliner;
+        private JumpToHelper _jumpToHelper;
         
         public SourceDocumentViewModel(IEditorDoc doc) 
             : base(doc)
         {
             Debug.Assert(doc is JadeCore.Editor.SourceDocument);
+
+            //todo fix
             JadeCore.Editor.SourceDocument sourceDoc = doc as JadeCore.Editor.SourceDocument;
             _projectIndex = sourceDoc.ProjectIndex;
+                        
             if (_projectIndex != null)
             {
-                _jumpToBrowser = new CppCodeBrowser.JumpToBrowser(_projectIndex);
                 _sourceFileProjectItem = _projectIndex.FindProjectItem(doc.File.Path);
             }
-            sourceDoc.OnIndexUpdated += sourceDoc_OnIndexUpdated;
+            _projectIndex.ItemUpdated += ProjectIndexItemUpdated;
+
+            _jumpToHelper = new JumpToHelper(_projectIndex, doc);
+            _underliner = new Highlighting.Underliner(TextDocument);
         }
 
-        void sourceDoc_OnIndexUpdated(object sender, EventArgs e)
+        private void ProjectIndexItemUpdated(JadeUtils.IO.FilePath path)
         {
+            if (path != Document.File.Path) return;
+
             _sourceFileProjectItem = _projectIndex.FindProjectItem(Document.File.Path);
-            if (_sourceFileProjectItem != null && _underliner != null)
+            if (_sourceFileProjectItem != null)
             {
-                //   ASTHighlighter _astHighlighter = new ASTHighlighter(_fileBrowser.TranslationUnits.First().Cursor, underliner, _fileBrowser.Path.Str);
-                _diagnosticHighlighter = new DiagnosticHighlighter(_sourceFileProjectItem, _underliner);
-                _searchHighlighter = new SearchHighlighter(_sourceFileProjectItem, _underliner);
+                _jumpToHelper.ProjectItemIndex = _sourceFileProjectItem;
+
+                if (_underliner != null)
+                    _diagnosticHighlighter = new DiagnosticHighlighter(_sourceFileProjectItem, _underliner);
             }
         }
-
         private bool HasProjectIndex { get { return _projectIndex != null && _sourceFileProjectItem != null; } }
 
         public override void RegisterCommands(CommandBindingCollection commandBindings)
@@ -75,65 +82,28 @@ namespace JadeControls.EditorControl.ViewModel
                                             a.Handled = true;
                                         }));
         }
-
-        private bool CanJumpTo(LibClang.Cursor cursor, int offset)
-        {
-            if (cursor.Extent == null) 
-                return false;
-
-            if (cursor.Extent.Tokens == null)
-                return false;
-
-            if (cursor.Kind == CursorKind.InclusionDirective)
-                return true;
-
-            Token tok = cursor.Extent.Tokens.GetTokenAtOffset(offset);
-            return (tok != null && tok.Kind == TokenKind.Identifier);
-        }
-
-        private CppCodeBrowser.ICodeLocation JumpTo(int offset)
-        {
-            CppCodeBrowser.ICodeLocation location = new CppCodeBrowser.CodeLocation(Document.File.Path.Str, offset);
-            List<LibClang.Cursor> cursors = new List<LibClang.Cursor>(CppCodeBrowser.ProjectIndex.GetCursors(_sourceFileProjectItem.TranslationUnits, location));
-
-            HashSet<CppCodeBrowser.ICodeLocation> results = new HashSet<CppCodeBrowser.ICodeLocation>();
-
-            _jumpToBrowser.BrowseFrom(from c in cursors where CanJumpTo(c, offset) select c,
-                delegate(CppCodeBrowser.ICodeLocation result)
-                                        {
-                                            results.Add(result);
-                                            return true;
-                                        });
-
-            return results.Count() > 0 ? results.First() : null;
-        }
-
+        
         private void OnJumpTo(int offset)
         {
-            if (!HasProjectIndex) return;
-
-            CppCodeBrowser.ICodeLocation result = JumpTo(offset);
+            CppCodeBrowser.ICodeLocation result = _jumpToHelper.JumpTo(offset);
 
             if (result != null)
-            {
-                
+            {                
                 JadeCore.Services.Provider.CommandHandler.OnDisplayCodeLocation(new JadeCore.DisplayCodeLocationCommandParams(result, true, true));
             }
         }
 
         private bool CanJumpTo(int offset)
         {
-            return JumpTo(offset) != null;
+            return _jumpToHelper.CanJumpTo(offset);
         }
 
         private void OnFindAllReferences(int offset)
         {
-            if (!HasProjectIndex) return;
+            Debug.Assert(_projectIndex != null);
 
             CppCodeBrowser.CodeLocation location = new CppCodeBrowser.CodeLocation(Document.File.Path.Str, offset);
-
             List<LibClang.Cursor> cursors = new List<LibClang.Cursor>(CppCodeBrowser.ProjectIndex.GetCursors(_projectIndex.TranslationUnits, location));
-
             JadeCore.Search.ISearch search = new JadeCore.Search.FindAllReferencesSearch(_projectIndex, location);
             Services.Provider.SearchController.RegisterSearch(search);
             search.Start();
@@ -141,12 +111,12 @@ namespace JadeControls.EditorControl.ViewModel
 
         private bool CanFindAllReferences(int offset)
         {
-            return HasProjectIndex;
+            return _projectIndex != null;
         }
 
         protected override void OnSetView(CodeEditor view)
         {
-            _underliner = new Highlighting.Underliner(TextDocument);
+          //  _underliner = new Highlighting.Underliner(TextDocument);
             view.TextArea.TextView.BackgroundRenderers.Add(_underliner);
 
             if (_sourceFileProjectItem != null)            

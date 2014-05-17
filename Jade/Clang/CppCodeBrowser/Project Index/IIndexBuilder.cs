@@ -32,6 +32,7 @@ namespace CppCodeBrowser
         event ItemIndexingFailedEvent ItemIndexingFailed;
 
         bool ParseFile(FilePath path, string[] compilerArgs);
+
         IProjectIndex Index { get; }
     }    
 }

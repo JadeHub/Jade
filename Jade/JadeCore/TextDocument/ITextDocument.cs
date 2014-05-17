@@ -24,6 +24,8 @@ namespace JadeCore
         bool Modified { get; }
         int TextLength { get; }
 
+        UInt64 Version { get; }
+        
         ICSharpCode.AvalonEdit.Document.TextDocument AvDoc { get; }
 
         #endregion
