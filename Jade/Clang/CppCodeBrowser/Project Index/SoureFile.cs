@@ -7,14 +7,22 @@ using JadeUtils.IO;
 
 namespace CppCodeBrowser
 {
-    public class SourceFile : IProjectItem
+    public interface ISourceFile : IProjectFile
+    {
+        LibClang.TranslationUnit TranslationUnit { get; }
+        IEnumerable<IHeaderFile> Headers { get; }
+    }
+
+    public class SourceFile : ISourceFile
     {
         private LibClang.TranslationUnit _tu;
+        private HashSet<IHeaderFile> _headerFiles;
 
         internal SourceFile(FilePath path, LibClang.TranslationUnit tu)
         {
             Path = path;
             _tu = tu;
+            _headerFiles = new HashSet<IHeaderFile>();
         }
 
         #region Properties
@@ -33,17 +41,9 @@ namespace CppCodeBrowser
             private set;
         }
 
-        /// <summary>
-        /// TranslationUnit objects which referenced this file. 
-        /// 
-        /// For source files this will only contain the source file's TranslationUnit object. 
-        /// For header files it will contain all TranslationUnit objects which included the header.
-        /// </summary>
-        public IEnumerable<LibClang.TranslationUnit> TranslationUnits
-        {
-            get { yield return _tu; }
-        }
-
+        public LibClang.TranslationUnit TranslationUnit { get {return _tu;} }
+        public IEnumerable<IHeaderFile> Headers { get { return _headerFiles; } }
+                
         /// <summary>
         /// Diagnostic objects located in this file.
         /// </summary>
@@ -56,5 +56,10 @@ namespace CppCodeBrowser
         }
 
         #endregion
+
+        public void AddIncludedHeader(IHeaderFile headerFile)
+        {
+            _headerFiles.Add(headerFile);
+        }
     }
 }

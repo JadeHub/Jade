@@ -43,7 +43,7 @@ namespace JadeCore.Editor
         public void Parse(CppCodeBrowser.IIndexBuilder indexBuilder, TaskScheduler guiScheduler)
         {
             Debug.Assert(Parsing);
-            indexBuilder.Index.RemoveProjectItem(Path);
+            //indexBuilder.Index.RemoveProjectItem(Path);
             indexBuilder.ParseFile(Path, null);
             _parsed = true;
             _parsing = false;

@@ -12,24 +12,30 @@ namespace CppCodeBrowser
     public interface IProjectIndex
     {
         event ProjectItemEvent ItemUpdated;
-
-        bool ContainsProjectItem(FilePath path);
-        void RemoveProjectItem(FilePath path);
-        IProjectItem FindProjectItem(FilePath path);
+        
+        //bool ContainsProjectItem(FilePath path);
+        //void RemoveProjectItem(FilePath path);
+        IProjectFile FindProjectItem(FilePath path);
         bool UpdateSourceFile(FilePath path, LibClang.TranslationUnit tu);
         IEnumerable<LibClang.TranslationUnit> TranslationUnits { get; }
         LibClang.Index LibClangIndex { get; }
     }
 
     public class ProjectIndex : IProjectIndex
-    {        
-        private readonly Dictionary<FilePath, IProjectItem> _items;
+    {
+        private readonly Dictionary<FilePath, HeaderFile> _headers;
+        private readonly Dictionary<FilePath, ISourceFile> _sources;
+
+        //private readonly Dictionary<FilePath, IProjectFile> _items;
         private object _lock;
         private readonly LibClang.Index _libClangIndex;
                         
         public ProjectIndex()
         {
-            _items = new Dictionary<FilePath, IProjectItem>();
+            _headers = new Dictionary<FilePath, HeaderFile>();
+            _sources = new Dictionary<FilePath, ISourceFile>();
+
+            //_items = new Dictionary<FilePath, IProjectFile>();
             _lock = new object();
             _libClangIndex = new LibClang.Index(false, true);
         }
@@ -43,74 +49,63 @@ namespace CppCodeBrowser
                 handler(path);
         }
 
-        public IProjectItem FindProjectItem(FilePath path)
+        public IProjectFile FindProjectItem(FilePath path)
         {
-            IProjectItem item;
             lock (_lock)
             {
-                return _items.TryGetValue(path, out item) ? item : null;
+                if (_sources.ContainsKey(path))
+                    return _sources[path];
+
+                if (_headers.ContainsKey(path))
+                    return _headers[path];
             }
+            return null;
         }
 
         public bool UpdateSourceFile(FilePath path, LibClang.TranslationUnit tu)
         {
-            IProjectItem item = null;
             lock (_lock)
             {
-                if (_items.ContainsKey(path))
+                if (_sources.ContainsKey(path))
                 {
 
                 }
                 else
                 {
-                    item = new SourceFile(path, tu);
-                    _items.Add(path, item);
-                  //  RaiseItemUpdatedEvent(path);
-                    foreach (TranslationUnit.HeaderInfo header in tu.HeaderFiles)
-                    {
-                        RecordHeader(header, tu);
-                    }
+                    AddSourceFile(path, tu);
+                    RaiseItemUpdatedEvent(path);
                 }
             }
             return true;
         }
 
-        public bool ContainsProjectItem(FilePath path)
+        private void AddSourceFile(FilePath path, TranslationUnit tu)
         {
-            lock (_lock)
+            SourceFile sourceFile = new SourceFile(path, tu);
+            _sources.Add(path, sourceFile);
+
+            foreach (TranslationUnit.HeaderInfo headerInfo in tu.HeaderFiles)
             {
-                return _items.ContainsKey(path);
+                HeaderFile headerFile = FindOrCreateHeaderFile(headerInfo);
+
+                headerFile.SetReferencedBy(sourceFile);
+                sourceFile.AddIncludedHeader(headerFile);
             }
         }
 
-        public void RemoveProjectItem(FilePath path)
+        private HeaderFile FindOrCreateHeaderFile(TranslationUnit.HeaderInfo headerInfo)
         {
-            lock (_lock)
+            HeaderFile result;
+
+            FilePath path = FilePath.Make(System.IO.Path.GetFullPath(headerInfo.File.Name));
+
+            if (_headers.TryGetValue(path, out result) == false)
             {
-                _items.Remove(path);
+                result = new HeaderFile(path);
+                _headers.Add(path, result);
+                RaiseItemUpdatedEvent(path);
             }
-        }
-
-        private void RecordHeader(TranslationUnit.HeaderInfo headerInfo, TranslationUnit tu)
-        {
-            lock (_lock)
-            {
-                FilePath path = FilePath.Make(System.IO.Path.GetFullPath(headerInfo.File.Name));
-
-                IProjectItem item;
-                if (_items.TryGetValue(path, out item) == false)
-                {
-                    item = new HeaderFile(path);
-                    RaiseItemUpdatedEvent(path);
-                    _items.Add(path, item);
-                }
-
-                if (item.Type != ProjectItemType.HeaderFile || !(item is HeaderFile))
-                    throw new ApplicationException(headerInfo + " previously seen as a source file.");
-
-                HeaderFile header = item as HeaderFile;
-                header.AddTranslationUnit(tu);
-            }
+            return result;
         }
 
         public LibClang.Index LibClangIndex { get { return _libClangIndex; } }
@@ -119,12 +114,20 @@ namespace CppCodeBrowser
         {
             get
             {
+                lock(_lock)
+                {
+                    foreach(ISourceFile sf in _sources.Values)
+                    {
+                        yield return sf.TranslationUnit;
+                    }
+                }
+                /*
                 //todo locking??
-                foreach (IProjectItem item in _items.Values)
+                foreach (IProjectFile item in _items.Values)
                 {
                     if (item is SourceFile)
                         yield return (item as SourceFile).TranslationUnits.First();
-                }                 
+                }   */              
             }
         }
 

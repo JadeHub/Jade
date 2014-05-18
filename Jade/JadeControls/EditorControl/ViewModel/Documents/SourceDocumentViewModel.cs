@@ -16,7 +16,7 @@ namespace JadeControls.EditorControl.ViewModel
         private CppCodeBrowser.IProjectIndex _projectIndex;
         private DiagnosticHighlighter _diagnosticHighlighter;
         private SearchHighlighter _searchHighlighter;
-        private CppCodeBrowser.IProjectItem _sourceFileProjectItem;
+        private CppCodeBrowser.IProjectFile _sourceFileProjectItem;
         private Highlighting.Underliner _underliner;
         private JumpToHelper _jumpToHelper;
         
@@ -103,7 +103,6 @@ namespace JadeControls.EditorControl.ViewModel
             Debug.Assert(_projectIndex != null);
 
             CppCodeBrowser.CodeLocation location = new CppCodeBrowser.CodeLocation(Document.File.Path.Str, offset);
-            List<LibClang.Cursor> cursors = new List<LibClang.Cursor>(CppCodeBrowser.ProjectIndex.GetCursors(_projectIndex.TranslationUnits, location));
             JadeCore.Search.ISearch search = new JadeCore.Search.FindAllReferencesSearch(_projectIndex, location);
             Services.Provider.SearchController.RegisterSearch(search);
             search.Start();

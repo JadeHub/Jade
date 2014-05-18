@@ -1,4 +1,6 @@
 ﻿using LibClang;
+using System.Diagnostics;
+using System.Collections.Generic;
 using System.Windows.Media;
 
 namespace JadeControls.EditorControl.ViewModel
@@ -6,25 +8,41 @@ namespace JadeControls.EditorControl.ViewModel
     public class DiagnosticHighlighter
     {
         private Highlighting.IHighlighter _underliner;
-        private CppCodeBrowser.IProjectItem _projectItem;
+        private CppCodeBrowser.IProjectFile _projectItem;
 
-        public DiagnosticHighlighter(CppCodeBrowser.IProjectItem projectItem, Highlighting.IHighlighter underliner)
+        public DiagnosticHighlighter(CppCodeBrowser.IProjectFile projectItem, Highlighting.IHighlighter underliner)
         {
             _underliner = underliner;
             _projectItem = projectItem;
             HighlightDiagnostics();
         }
 
+        private IEnumerable<CppCodeBrowser.ISourceFile> GetSources()
+        {
+            if (_projectItem is CppCodeBrowser.ISourceFile)
+            {
+                List<CppCodeBrowser.ISourceFile> temp = new List<CppCodeBrowser.ISourceFile>();
+                temp.Add(_projectItem as CppCodeBrowser.ISourceFile);
+                return temp;
+            }
+            else if (_projectItem is CppCodeBrowser.IHeaderFile)
+            {
+                return (_projectItem as CppCodeBrowser.IHeaderFile).SourceFiles;
+            }
+            Debug.Assert(false);
+            return null;
+        }
+
         private void HighlightDiagnostics()
         {
-            _underliner.Clear();            
-            foreach (TranslationUnit tu in _projectItem.TranslationUnits)
+            _underliner.Clear();
+            foreach(CppCodeBrowser.ISourceFile sf in GetSources())
             {
-                foreach (Diagnostic d in tu.Diagnostics)
+                foreach (Diagnostic d in sf.TranslationUnit.Diagnostics)
                 {
                     if (System.IO.Path.GetFullPath(d.Location.File.Name) == _projectItem.Path.Str)
                     {
-                        HighlightDiagnostic(tu, d);
+                        HighlightDiagnostic(sf.TranslationUnit, d);
                     }
                 }
             }

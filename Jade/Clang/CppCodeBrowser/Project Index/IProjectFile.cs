@@ -12,7 +12,7 @@ namespace CppCodeBrowser
     /// <summary>
     /// Represents either a source or header file.
     /// </summary>
-    public interface IProjectItem
+    public interface IProjectFile
     {
         /// <summary>
         /// Type of this item.
@@ -23,14 +23,6 @@ namespace CppCodeBrowser
         /// File path.
         /// </summary>
         FilePath Path { get; }
-
-        /// <summary>
-        /// TranslationUnit objects which referenced this file. 
-        /// 
-        /// For source files this will only contain the source file's TranslationUnit object. 
-        /// For header files it will contain all TranslationUnit objects which included the header.
-        /// </summary>
-        IEnumerable<LibClang.TranslationUnit> TranslationUnits { get; }
 
         /// <summary>
         /// Diagnostic objects located in this file.

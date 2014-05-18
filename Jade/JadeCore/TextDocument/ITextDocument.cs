@@ -14,7 +14,6 @@ namespace JadeCore
     {
         #region Events
 
-
         event TextChangedEvent TextChanged; // pass version number
         event EventHandler ModifiedChanged;
 
@@ -26,6 +25,7 @@ namespace JadeCore
         IFileHandle File { get; }
         bool Modified { get; }
         int TextLength { get; }
+        string Text { get; }
 
         UInt64 Version { get; }
         

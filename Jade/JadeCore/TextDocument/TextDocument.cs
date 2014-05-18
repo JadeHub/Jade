@@ -74,6 +74,11 @@ namespace JadeCore
             get { return AvDoc.TextLength; }
         }
 
+        public string Text 
+        {
+            get { return AvDoc.Text; }
+        }
+
         public bool Modified 
         {
             get { return _modified; }

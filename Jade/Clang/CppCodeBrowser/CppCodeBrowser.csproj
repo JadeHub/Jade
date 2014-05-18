@@ -43,11 +43,10 @@
     <Compile Include="Project Index\CodeLocation.cs" />
     <Compile Include="Project Index\HeaderFile.cs" />
     <Compile Include="Project Index\IIndexBuilder.cs" />
-    <Compile Include="Project Index\IProjectItem.cs" />
+    <Compile Include="Project Index\IProjectFile.cs" />
     <Compile Include="Browsing\ICodeBrowser.cs" />
     <Compile Include="Project Index\IndexBuilder.cs" />
     <Compile Include="Project Index\ProjectIndex.cs" />
-    <Compile Include="Project Index\TranslationUnitSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Project Index\SoureFile.cs" />
   </ItemGroup>

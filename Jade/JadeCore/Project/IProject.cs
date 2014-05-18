@@ -22,15 +22,19 @@ namespace JadeCore.Project
         /// List of all source files in the project
         /// </summary>        
         Collections.Observable.List<IFileItem> SourceFiles { get; }
-        
+
+        /// <summary>
+        /// Index builder for this project
+        /// </summary>
+        CppCodeBrowser.IndexBuilder IndexBuilder { get; }
+
         /// <summary>
         /// Add an item to an optional subfolder
         /// </summary>
         /// <param name="folder">Folder to contain item. null to place in project root.</param>
         /// <param name="item">Item to add</param>
         void AddItem(IFolder folder, IItem item);
-
-
+        
         void OnItemRemoved(IItem item);
     }
 }

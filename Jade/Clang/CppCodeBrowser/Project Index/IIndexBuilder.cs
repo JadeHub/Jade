@@ -5,9 +5,9 @@ namespace CppCodeBrowser
 {
     public class ItemIndexedEventArgs : EventArgs
     {
-        public readonly IProjectItem Item;
+        public readonly IProjectFile Item;
 
-        public ItemIndexedEventArgs(IProjectItem item)
+        public ItemIndexedEventArgs(IProjectFile item)
         {
             Item = item;
         }
@@ -22,17 +22,10 @@ namespace CppCodeBrowser
             Path = path;
         }
     }
-
-    public delegate void ItemIndexedEvent(ItemIndexedEventArgs args);
-    public delegate void ItemIndexingFailedEvent(ItemIndexingFailedEventArgs args);
-
+    
     public interface IIndexBuilder : IDisposable
     {
-        event ItemIndexedEvent ItemIndexed;
-        event ItemIndexingFailedEvent ItemIndexingFailed;
-
         bool ParseFile(FilePath path, string[] compilerArgs);
-
         IProjectIndex Index { get; }
     }    
 }

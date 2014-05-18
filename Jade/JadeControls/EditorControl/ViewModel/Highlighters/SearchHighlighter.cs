@@ -12,13 +12,13 @@ namespace JadeControls.EditorControl.ViewModel
     public class SearchHighlighter
     {
         private Highlighting.IHighlighter _highlighter;
-        private CppCodeBrowser.IProjectItem _projectItem;
+        private CppCodeBrowser.IProjectFile _projectItem;
         private ISearchController _searchController;
         private HashSet<Highlighting.IHighlightedRange> _ranges;
         private ISearch _currentSearch;
         private Highlighting.IHighlightedRange _currentResultRange;
                 
-        public SearchHighlighter(CppCodeBrowser.IProjectItem projectItem, Highlighting.IHighlighter highlighter)
+        public SearchHighlighter(CppCodeBrowser.IProjectFile projectItem, Highlighting.IHighlighter highlighter)
         {
             _highlighter = highlighter;
             _projectItem = projectItem;

@@ -17,7 +17,7 @@ namespace JadeCore.Editor
         {
             _project = project;
             _editorController = editorController;
-            _indexBuilder = new CppCodeBrowser.IndexBuilder(JadeCore.Services.Provider.GuiScheduler);
+            _indexBuilder = project.IndexBuilder;
 
             _parserThreads = new ProjectParseThreads(_project, _indexBuilder, editorController, delegate(FilePath p) { OnParseComplete(p); });
             _parserThreads.Run = true;
@@ -111,12 +111,14 @@ namespace JadeCore.Editor
 
                 //find project?
                 ITextDocument textDoc = JadeCore.Services.Provider.WorkspaceController.DocumentCache.FindOrAdd(file);
-                //result = new EditorSourceDocument(doc, GetProjectIndexForFile(file.Path));
                 
                 Project.IProject p = GetProjectForFile(file.Path);
                 CppCodeBrowser.IProjectIndex index = null;
                 if (p != null)
-                    index = CreateProjectBuilder(p).Index;
+                {
+                    CreateProjectBuilder(p);
+                    index = p.IndexBuilder.Index;
+                }
                 doc = new SourceDocument(this, textDoc, index);
                 _openDocuments.Add(file.Path, doc);
                 OnDocumentOpened(doc);

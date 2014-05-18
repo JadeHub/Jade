@@ -1,4 +1,4 @@
-﻿using JadeUtils.IO;
+﻿    using JadeUtils.IO;
 using LibClang;
 using System;
 using System.Collections.Generic;
@@ -22,9 +22,6 @@ namespace CppCodeBrowser
 
         private object _lock = new object();
 
-        public event ItemIndexedEvent ItemIndexed;
-        public event ItemIndexingFailedEvent ItemIndexingFailed;
-
         public IndexBuilder(TaskScheduler callbackSCheduler)
         {
             _callbackSCheduler = callbackSCheduler;
@@ -36,12 +33,15 @@ namespace CppCodeBrowser
         {
             if(_disposed) return;
 
-            foreach (TranslationUnit tu in _allTus)
+            lock (_lock)
             {
-                tu.Dispose();
+                foreach (TranslationUnit tu in _allTus)
+                {
+                    tu.Dispose();
+                }
+                _allTus.Clear();
+                _disposed = true;
             }
-            _allTus.Clear();
-            _disposed = true;
         }
 
         public bool ParseFile(FilePath path, string[] compilerArgs)
@@ -74,22 +74,6 @@ namespace CppCodeBrowser
                 if (_disposed) return null;
                 return _index; 
             }
-        }
-
-        private void RaiseItemIndexedEvent(IProjectItem item)
-        {
-            if (_disposed) return;
-            ItemIndexedEvent handler = ItemIndexed;
-            if (handler != null)
-                handler(new ItemIndexedEventArgs(item));
-        }
-
-        private void RaiseItemIndexingFailedEvent(FilePath path)
-        {
-            if (_disposed) return;
-            ItemIndexingFailedEvent handler = ItemIndexingFailed;
-            if (handler != null)
-                handler(new ItemIndexingFailedEventArgs(path));
         }
     }
 }
