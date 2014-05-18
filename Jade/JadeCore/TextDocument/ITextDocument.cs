@@ -8,11 +8,14 @@ using JadeUtils.IO;
 
 namespace JadeCore
 {
+    public delegate void TextChangedEvent(UInt64 version);
+
     public interface ITextDocument
     {
         #region Events
 
-        event EventHandler TextChanged;
+
+        event TextChangedEvent TextChanged; // pass version number
         event EventHandler ModifiedChanged;
 
         #endregion

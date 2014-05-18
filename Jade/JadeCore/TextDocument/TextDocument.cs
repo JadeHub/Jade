@@ -22,11 +22,11 @@ namespace JadeCore
             _version = 0;
         }
 
-        public event EventHandler TextChanged
-        {
+        public event TextChangedEvent TextChanged;
+       /* {
             add {_avDoc.TextChanged += value;}
             remove { _avDoc.TextChanged -= value; }
-        }
+        }*/
 
         public event EventHandler ModifiedChanged;
 
@@ -41,6 +41,9 @@ namespace JadeCore
         {
             _version++;
             Modified = true;
+            TextChangedEvent handler = TextChanged;
+            if (handler != null)
+                handler(Version);
         }
 
         #region Properties

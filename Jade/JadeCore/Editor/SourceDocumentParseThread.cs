@@ -48,6 +48,11 @@ namespace JadeCore.Editor
             _parsed = true;
             _parsing = false;
         }
+
+        protected virtual UInt64 GetVersion()
+        {
+            return 0;
+        }
     }
 
     internal class ActiveParseFile : ParseFile
@@ -64,6 +69,10 @@ namespace JadeCore.Editor
             private set;
         }
 
+        protected override UInt64 GetVersion()
+        {
+            return Document.TextDocument.Version; ;
+        }
     }
 
     internal class ProjectParseThreads : IDisposable
@@ -119,7 +128,7 @@ namespace JadeCore.Editor
         {
             lock (_lock)
             {
-                if (doc == null) //becomming null
+                if (doc == null) //becoming null
                 {
                     if (_activeFile != null)
                     {
@@ -146,7 +155,7 @@ namespace JadeCore.Editor
             }
         }
 
-        private void ActiveDocumentModified(object sender, EventArgs e)
+        private void ActiveDocumentModified(UInt64 version)
         {
             lock (_lock)
             {
