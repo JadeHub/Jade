@@ -44,7 +44,7 @@ namespace JadeControls.EditorControl.ViewModel
 
         private void OnControllerActiveDocumentChanged(IEditorDoc newValue, IEditorDoc oldValue)
         {
-            DocumentViewModel vm = GetViewModel(newValue);
+            DocumentViewModel vm = FindViewModel(newValue);
             if (vm == null && newValue != null)
             {
                 vm = new SourceDocumentViewModel(newValue);
@@ -106,7 +106,7 @@ namespace JadeControls.EditorControl.ViewModel
 
         #region Private Methods
 
-        public DocumentViewModel GetViewModel(JadeCore.IEditorDoc doc)
+        public DocumentViewModel FindViewModel(JadeCore.IEditorDoc doc)
         {
             foreach (DocumentViewModel vm in _documents)
             {

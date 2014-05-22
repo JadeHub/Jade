@@ -37,6 +37,7 @@ namespace JadeControls.EditorControl.ViewModel
 
             _jumpToHelper = new JumpToHelper(_projectIndex, doc);
             _underliner = new Highlighting.Underliner(TextDocument);
+            _diagnosticHighlighter = new DiagnosticHighlighter(_underliner);
         }
 
         private void ProjectIndexItemUpdated(JadeUtils.IO.FilePath path)
@@ -47,9 +48,7 @@ namespace JadeControls.EditorControl.ViewModel
             if (_sourceFileProjectItem != null)
             {
                 _jumpToHelper.ProjectItemIndex = _sourceFileProjectItem;
-
-                if (_underliner != null)
-                    _diagnosticHighlighter = new DiagnosticHighlighter(_sourceFileProjectItem, _underliner);
+                _diagnosticHighlighter.ProjectItem = _sourceFileProjectItem;
             }
         }
         private bool HasProjectIndex { get { return _projectIndex != null && _sourceFileProjectItem != null; } }
@@ -115,13 +114,12 @@ namespace JadeControls.EditorControl.ViewModel
 
         protected override void OnSetView(CodeEditor view)
         {
-          //  _underliner = new Highlighting.Underliner(TextDocument);
             view.TextArea.TextView.BackgroundRenderers.Add(_underliner);
 
             if (_sourceFileProjectItem != null)            
             {
              //   ASTHighlighter _astHighlighter = new ASTHighlighter(_fileBrowser.TranslationUnits.First().Cursor, underliner, _fileBrowser.Path.Str);
-                _diagnosticHighlighter = new DiagnosticHighlighter(_sourceFileProjectItem, _underliner);
+                _diagnosticHighlighter.ProjectItem = _sourceFileProjectItem;
                 _searchHighlighter = new SearchHighlighter(_sourceFileProjectItem, _underliner);
             }
 
@@ -134,6 +132,11 @@ namespace JadeControls.EditorControl.ViewModel
             {
                 _searchHighlighter.Clear();
             }
+        }
+
+        public string Path
+        {
+            get { return Document.File.Path.Str; }
         }
     }
 }

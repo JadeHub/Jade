@@ -1,6 +1,7 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Rendering;
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -38,6 +39,7 @@ namespace JadeControls.EditorControl.Highlighting
 
         public IHighlightedRange AddRange(int offset, int length)
         {
+            Debug.WriteLine("Add Range " + offset + " : " + length);
             int textLength = _document.TextLength;
             if (offset < 0 || offset > textLength)
                 throw new ArgumentOutOfRangeException("startOffset", offset, "Value must be between 0 and " + textLength);
@@ -51,6 +53,7 @@ namespace JadeControls.EditorControl.Highlighting
 
         public void RemoveRange(IHighlightedRange range)
         {
+            Debug.WriteLine("Remove Range " + range.Offset + " : " + range.Length);
             if (!(range is HighlightedRange))
                 throw new ArgumentException("range is not of type HighlightedRange");
 
@@ -63,8 +66,11 @@ namespace JadeControls.EditorControl.Highlighting
 
         public void Clear()
         {
-            foreach (HighlightedRange hl in _highlights)
-                RemoveRange(hl);
+            _highlights.Clear();
+            foreach (var view in _textViews)
+            {
+                view.Redraw();
+            }                
         }
 
         public void Redraw(IHighlightedRange segment)

@@ -62,7 +62,7 @@ namespace LibClangTest
             {
                 using (TranslationUnit tu = new TranslationUnit(TestCode.TranslationUnits.Index, "BlahBlah"))
                 {
-                    tu.Parse(null);
+                    tu.Parse(null, null);
                 }                
             }
             catch (System.IO.FileNotFoundException)
@@ -78,7 +78,7 @@ namespace LibClangTest
             using (TranslationUnit tu = new TranslationUnit(TestCode.TranslationUnits.Index, TestCode.SimpleClassCppFile.Path))
             {
                 Assert.IsFalse(tu.Valid);
-                tu.Parse(null);
+                tu.Parse(null, null);
                 Assert.IsTrue(tu.Valid);
             }
         }
@@ -89,7 +89,7 @@ namespace LibClangTest
             using (TranslationUnit tu = TestCode.TranslationUnits.SimpleClassCpp)
             {
                 Assert.IsTrue(tu.Valid);
-                tu.Parse(null);
+                tu.Parse(null, null);
                 Assert.IsTrue(tu.Valid);
             }
         }

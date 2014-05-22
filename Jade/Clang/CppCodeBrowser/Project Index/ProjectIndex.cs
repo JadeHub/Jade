@@ -68,15 +68,18 @@ namespace CppCodeBrowser
             {
                 if (_sources.ContainsKey(path))
                 {
-
+                    RemoveSourceFile(path);
                 }
-                else
-                {
-                    AddSourceFile(path, tu);
-                    RaiseItemUpdatedEvent(path);
-                }
+                AddSourceFile(path, tu);
+                //RaiseItemUpdatedEvent(path);
             }
             return true;
+        }
+
+        private void RemoveSourceFile(FilePath path)
+        {
+            _sources.Remove(path);
+            //todo remove references from headers
         }
 
         private void AddSourceFile(FilePath path, TranslationUnit tu)
@@ -103,7 +106,7 @@ namespace CppCodeBrowser
             {
                 result = new HeaderFile(path);
                 _headers.Add(path, result);
-                RaiseItemUpdatedEvent(path);
+                //RaiseItemUpdatedEvent(path);
             }
             return result;
         }

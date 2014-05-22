@@ -42,7 +42,7 @@ namespace LibClangTest.TestCode
         static TranslationUnit CreateTranslationUnit(string path)
         {
             TranslationUnit tu = new TranslationUnit(Index, path);
-            tu.Parse(new string[] { "-Weverything" });
+            tu.Parse(new string[] { "-Weverything" }, null);
             return tu;
         }
         

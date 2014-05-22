@@ -7,6 +7,9 @@ using JadeUtils.IO;
 
 namespace JadeCore.Editor
 {   
+    /// <summary>
+    /// A c++ source file
+    /// </summary>
     internal class ParseFile
     {
         private bool _parsed; //parsed at least once?
@@ -38,12 +41,15 @@ namespace JadeCore.Editor
             {
                 return _parsed == false && _parsing == false;
             }
+            set
+            {
+                _parsed = false;
+            }
         }
 
         public void Parse(CppCodeBrowser.IIndexBuilder indexBuilder, TaskScheduler guiScheduler)
         {
             Debug.Assert(Parsing);
-            //indexBuilder.Index.RemoveProjectItem(Path);
             indexBuilder.ParseFile(Path, null);
             _parsed = true;
             _parsing = false;
@@ -97,7 +103,10 @@ namespace JadeCore.Editor
         private IList<ParseFile> _work;
         private ActiveParseFile _activeFile;
         
-        public ProjectParseThreads(Project.IProject project, CppCodeBrowser.IIndexBuilder indexBuilder, IEditorController controller, Action<FilePath> onParseComplete)
+        public ProjectParseThreads(Project.IProject project, 
+                                    CppCodeBrowser.IIndexBuilder indexBuilder, 
+                                    IEditorController controller, 
+                                    Action<FilePath> onParseComplete)
         {
             _disposed = false;
             _lock = new object();
@@ -159,8 +168,11 @@ namespace JadeCore.Editor
         {
             lock (_lock)
             {
-                Debug.Assert(_activeFile != null);
-                _activeDocParseEvent.Set();
+                if (_activeFile != null)
+                {
+                    _activeFile.RequiresParse = true;
+                    _activeDocParseEvent.Set();
+                }
             }
         }
 

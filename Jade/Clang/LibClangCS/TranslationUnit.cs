@@ -106,7 +106,7 @@ namespace LibClang
             DisposeDiagnosticSet();
         }
 
-        public bool Parse(string[] cmdLineParams)
+        public bool Parse(string[] cmdLineParams, IList<Tuple<string, string>> unsavedFiles)
         {
             ResetState();
             if (!System.IO.File.Exists(Filename))
@@ -114,17 +114,35 @@ namespace LibClang
                 throw new System.IO.FileNotFoundException("Couldn't find input file.", Filename);
             }
 
+            Library.UnsavedFile[] unsaved = new Library.UnsavedFile[unsavedFiles.Count];
+
+            if (unsavedFiles != null)
+            {
+                int i = 0;
+                foreach (Tuple<string, string> pathContent in unsavedFiles)
+                {
+                    Library.UnsavedFile usf = new Library.UnsavedFile();
+                    usf.Filename = pathContent.Item1;
+                    usf.Contents = pathContent.Item2;
+                    usf.Length = (ulong)pathContent.Item2.Length;
+                    unsaved[i] = usf;
+                    i++;
+                }
+            }
+
             if (Valid)
                 return Reparse();
 
             Handle = Library.clang_parseTranslationUnit(_index.Handle, Filename,
                                                     cmdLineParams, cmdLineParams != null ? cmdLineParams.Length : 0,
-                                                    null, 0,
+                                                    unsaved.Length > 0 ? unsaved : null,
+                                                    (uint)unsaved.Length,
                                                     (int)TranslationUnitFlags.DetailedPreprocessingRecord);
             if (!Valid)
             {
                 ResetState();
             }
+            int d = DiagSet.Count;
             return Valid;
         }
 
@@ -299,11 +317,19 @@ namespace LibClang
         {
             get
             {
+                return DiagSet.Diagnostics;
+            }
+        }
+
+        private DiagnosticSet DiagSet
+        {
+            get
+            {
                 if (_diagSet == null)
                 {
                     _diagSet = new DiagnosticSet(Library.clang_getDiagnosticSetFromTU(Handle), _itemStore);
                 }
-                return _diagSet.Diagnostics;
+                return _diagSet;
             }
         }
 

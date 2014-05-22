@@ -29,7 +29,7 @@ namespace JadeCore.Project
             _folders = new List<IFolder>();
             _allSourceFiles = new Collections.Observable.List<IFileItem>();
 
-            _indexBuilder = new CppCodeBrowser.IndexBuilder(JadeCore.Services.Provider.GuiScheduler);
+            _indexBuilder = new CppCodeBrowser.IndexBuilder(JadeCore.Services.Provider.GuiScheduler, JadeCore.Services.Provider.EditorController);
         }
 
         #endregion

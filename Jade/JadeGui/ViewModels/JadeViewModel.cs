@@ -79,7 +79,7 @@ namespace JadeGui.ViewModels
 
         private void OnEditorControllerActiveDocumentChanged(JadeCore.IEditorDoc newValue, JadeCore.IEditorDoc oldValue)
         {
-            DocumentViewModel doc = _editorViewModel.GetViewModel(newValue);
+            DocumentViewModel doc = _editorViewModel.FindViewModel(newValue);
             if (doc != null)
             {
                 ActiveDockContent = doc;
@@ -196,23 +196,6 @@ namespace JadeGui.ViewModels
                 handler(this, EventArgs.Empty);
         }
 
-        #endregion // RequestClose [event]
-
-        #region Workspace
-        /*
-        public WorkspaceViewModel Workspace
-        {
-            get { return _currentWorkspace; }
-        }*/
-        /*
-        private JadeCore.Workspace.IWorkspaceController WorkspaceController
-        {
-            get
-            {
-                return _workspaceController;
-            }
-        }*/
-        
         #endregion
 
         #region Commands
@@ -447,7 +430,7 @@ namespace JadeGui.ViewModels
 
         private bool? PromptSaveFiles(IEnumerable<string> files)
         {
-            System.Diagnostics.Debug.Assert(_editorController.ModifiedDocuments.Any());
+            System.Diagnostics.Debug.Assert(_editorController.HasModifiedDocuments);
             JadeControls.Dialogs.SaveFiles dlg = new JadeControls.Dialogs.SaveFiles();
             dlg.DataContext = files;
             return dlg.ShowDialog(_view);
@@ -455,7 +438,7 @@ namespace JadeGui.ViewModels
 
         public bool CanSaveAllFiles()
         {
-            return _editorController.ModifiedDocuments.Any();
+            return _editorController.HasModifiedDocuments;
         }
 
         public void OnCloseFile()
@@ -510,7 +493,7 @@ namespace JadeGui.ViewModels
 
         public bool RequestExit()
         {
-            if (_editorController.ModifiedDocuments.Any())
+            if (_editorController.HasModifiedDocuments)
             {
                 bool? result = PromptSaveFiles(_editorController.ModifiedDocuments.Select(doc => doc.File.ToString()));
                 if (result == true)

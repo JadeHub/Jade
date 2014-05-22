@@ -23,10 +23,6 @@ namespace JadeCore
         }
 
         public event TextChangedEvent TextChanged;
-       /* {
-            add {_avDoc.TextChanged += value;}
-            remove { _avDoc.TextChanged -= value; }
-        }*/
 
         public event EventHandler ModifiedChanged;
 
@@ -139,6 +135,14 @@ namespace JadeCore
         public string GetText(ISegment segment)
         {
             return AvDoc.GetText(segment);
+        }
+
+        public TextDocumentSnapshot CreateSnapshot()
+        {
+            //lock?
+            ICSharpCode.AvalonEdit.Document.ChangeTrackingCheckpoint checkPoint;
+            string text = AvDoc.CreateSnapshot(out checkPoint).Text;
+            return new TextDocumentSnapshot(this, Version, AvDoc.CreateSnapshot().Text);
         }
 
         #endregion

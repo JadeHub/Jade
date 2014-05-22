@@ -26,18 +26,20 @@ namespace JadeCore
         bool Modified { get; }
         int TextLength { get; }
         string Text { get; }
-
         UInt64 Version { get; }
-        
         ICSharpCode.AvalonEdit.Document.TextDocument AvDoc { get; }
 
         #endregion
 
+        #region Methods
+
         int GetLineNumForOffset(int offset);
         ISegment GetLineForOffset(int offset);
-        string GetText(ISegment segment);
-        
+        string GetText(ISegment segment);        
         bool Save(IFileHandle file);
         void DiscardChanges();
+        TextDocumentSnapshot CreateSnapshot();
+
+        #endregion
     }
 }

@@ -43,6 +43,7 @@ namespace JadeCore.Editor
         private Dictionary<FilePath, IEditorDoc> _openDocuments;
         private IEditorDoc _activeDocument;
         private IDictionary<Project.IProject, ProjectIndexBuilder> _projectBuilders;
+        private object _lockObject;
                 
         #endregion
 
@@ -52,6 +53,7 @@ namespace JadeCore.Editor
         {
             _openDocuments = new Dictionary<FilePath, IEditorDoc>();
             _projectBuilders = new Dictionary<Project.IProject, ProjectIndexBuilder>();
+            _lockObject = new object();
         }
 
         public void Dispose()
@@ -76,16 +78,42 @@ namespace JadeCore.Editor
 
         public JadeCore.IEditorDoc ActiveDocument
         {
-            get { return _activeDocument; }
+            get 
+            {
+                lock (_lockObject)
+                {
+                    return _activeDocument;
+                }
+            }
+
             set 
             {
-                if (_activeDocument != value)
+                lock (_lockObject)
                 {
-                    JadeCore.IEditorDoc oldValue = _activeDocument;
-                    //set view model current document
-                    _activeDocument = value;
-                    OnDocumentSelect(_activeDocument, oldValue);
+                    if (_activeDocument != value)
+                    {
+                        JadeCore.IEditorDoc oldValue = _activeDocument;
+                        //set view model current document
+                        _activeDocument = value;
+                        OnDocumentSelect(_activeDocument, oldValue);
+                    }
                 }
+            }
+        }
+
+        public bool HasModifiedDocuments
+        {
+            get
+            {
+                lock(_lockObject)
+                {
+                    foreach(IEditorDoc doc in _openDocuments.Values)
+                    {
+                        if (doc.Modified)
+                            return true;
+                    }
+                }
+                return false;
             }
         }
 
@@ -105,75 +133,123 @@ namespace JadeCore.Editor
 
         public void OpenDocument(IFileHandle file)
         {
-            if (_openDocuments.ContainsKey(file.Path) == false)
+            lock (_lockObject)
             {
-                IEditorDoc doc;
-
-                //find project?
-                ITextDocument textDoc = JadeCore.Services.Provider.WorkspaceController.DocumentCache.FindOrAdd(file);
-                
-                Project.IProject p = GetProjectForFile(file.Path);
-                CppCodeBrowser.IProjectIndex index = null;
-                if (p != null)
+                if (_openDocuments.ContainsKey(file.Path) == false)
                 {
-                    CreateProjectBuilder(p);
-                    index = p.IndexBuilder.Index;
+                    IEditorDoc doc;
+
+                    //find project?
+                    ITextDocument textDoc = JadeCore.Services.Provider.WorkspaceController.DocumentCache.FindOrAdd(file);
+
+                    Project.IProject p = GetProjectForFile(file.Path);
+                    CppCodeBrowser.IProjectIndex index = null;
+                    if (p != null)
+                    {
+                        CreateProjectBuilder(p);
+                        index = p.IndexBuilder.Index;
+                    }
+                    doc = new SourceDocument(this, textDoc, index);
+                    _openDocuments.Add(file.Path, doc);
+                    OnDocumentOpened(doc);
+                    ActiveDocument = doc;
                 }
-                doc = new SourceDocument(this, textDoc, index);
-                _openDocuments.Add(file.Path, doc);
-                OnDocumentOpened(doc);
-                ActiveDocument = doc;        
-            }
-            //this doc is already open, if it's not the active document, activate it
-            else if(ActiveDocument == null || ActiveDocument.File != file)
-            {
-                ActiveDocument = _openDocuments[file.Path];
+                //this doc is already open, if it's not the active document, activate it
+                else if (ActiveDocument == null || ActiveDocument.File != file)
+                {
+                    ActiveDocument = _openDocuments[file.Path];
+                }
             }
          }
 
         public void SaveActiveDocument()
         {
-            Debug.Assert(ActiveDocument != null);
-            ActiveDocument.Save();
+            lock (_lockObject)
+            {
+                if(ActiveDocument != null)
+                    ActiveDocument.Save();
+            }
         }
 
         public void CloseActiveDocument()
         {
-            if(ActiveDocument != null)
+            lock (_lockObject)
             {
-                CloseDocument(ActiveDocument);
+                if (ActiveDocument != null)
+                {
+                    CloseDocument(ActiveDocument);
+                }
             }
         }
 
         public void DiscardChangesToActiveDocument()
         {
-            if (ActiveDocument == null)
-                return;
-            ActiveDocument.TextDocument.DiscardChanges();
+            lock (_lockObject)
+            {
+                if (ActiveDocument != null)
+                {
+                    ActiveDocument.TextDocument.DiscardChanges();
+                }
+            }
         }
 
         public void CloseAllDocuments()
         {
-            List<IEditorDoc> docs = new List<IEditorDoc>(_openDocuments.Values);
-
-            foreach (IEditorDoc doc in docs)
+            lock (_lockObject)
             {
-                CloseDocument(doc);
+                List<IEditorDoc> docs = new List<IEditorDoc>(_openDocuments.Values);
+
+                foreach (IEditorDoc doc in docs)
+                {
+                    //todo - raises events while locked
+                    CloseDocument(doc);
+                }
             }
         }
 
         private void CloseDocument(IEditorDoc doc)
         {
-            _openDocuments.Remove(doc.File.Path);
-            if (ActiveDocument != null && ActiveDocument.Equals(doc))
-                ActiveDocument = null;
-            doc.Close();
+            lock (_lockObject)
+            {
+                _openDocuments.Remove(doc.File.Path);
+                if (ActiveDocument != null && ActiveDocument.Equals(doc))
+                    ActiveDocument = null;
+                doc.Close();                
+            }
             OnDocumentClosed(doc);
         }
 
         public void Reset()
         {
             CloseAllDocuments();
+        }
+
+        public IList<TextDocumentSnapshot> GetSnapshots()
+        {
+            lock (_lockObject)
+            {
+                List<TextDocumentSnapshot> result = new List<TextDocumentSnapshot>();
+                foreach (IEditorDoc doc in _openDocuments.Values)
+                {
+                    if (doc.Modified)
+                    {
+                        result.Add(doc.TextDocument.CreateSnapshot());
+                    }
+                }
+                return result;
+            }
+        }
+
+        public IList<Tuple<string, string>> GetUnsavedFiles()
+        {
+            List<Tuple<string, string>> result = new List<Tuple<string, string>>();
+
+            foreach(TextDocumentSnapshot doc in GetSnapshots())
+            {
+                result.Add(new Tuple<string, string>(doc.Document.File.Path.Str, doc.Text));
+            }
+
+            return result;
         }
 
         #endregion

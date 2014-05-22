@@ -6,7 +6,16 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace CppCodeBrowser
-{       
+{   
+    public interface IUnsavedFileProvider
+    {
+       /// <summary>
+       /// Return a list of Tuples containing path, content
+       /// </summary>
+       /// <returns></returns>
+        IList<Tuple<string, string>> GetUnsavedFiles();
+    }
+
     /// <summary>
     /// This is a simple synchronous implementation.
     /// </summary>
@@ -18,13 +27,14 @@ namespace CppCodeBrowser
         //Set of all parsed Tus for Disposal
         private readonly HashSet<TranslationUnit> _allTus;
 
-        private TaskScheduler _callbackSCheduler;
-
+        private TaskScheduler _callbackScheduler;
+        private IUnsavedFileProvider _unsavedFilesProvider;
         private object _lock = new object();
 
-        public IndexBuilder(TaskScheduler callbackSCheduler)
+        public IndexBuilder(TaskScheduler callbackSCheduler, IUnsavedFileProvider unsavedFiles)
         {
-            _callbackSCheduler = callbackSCheduler;
+            _callbackScheduler = callbackSCheduler;
+            _unsavedFilesProvider = unsavedFiles;
             _index = new ProjectIndex();
             _allTus = new HashSet<TranslationUnit>();
         }
@@ -52,7 +62,8 @@ namespace CppCodeBrowser
             {
                 LibClang.TranslationUnit tu = new LibClang.TranslationUnit(_index.LibClangIndex, path.Str);
 
-                if (tu.Parse(compilerArgs) == false)
+                //pass in unsaved files
+                if (tu.Parse(compilerArgs, _unsavedFilesProvider.GetUnsavedFiles()) == false)
                 {
                     tu.Dispose();
                     return false;
@@ -61,7 +72,7 @@ namespace CppCodeBrowser
                 if(_index.UpdateSourceFile(path, tu))
                 {
                     Task.Factory.StartNew(() => { _index.RaiseItemUpdatedEvent(path); },
-                                        CancellationToken.None, TaskCreationOptions.None, _callbackSCheduler);
+                                        CancellationToken.None, TaskCreationOptions.None, _callbackScheduler);
                 }
             }
             return true;

@@ -7,7 +7,7 @@ namespace JadeCore
     public delegate void EditorDocChangeEvent(EditorDocChangeEventArgs args);
     public delegate void ActiveDocumentChangeEvent(IEditorDoc newValue, IEditorDoc oldValue);
 
-    public interface IEditorController : IDisposable
+    public interface IEditorController : CppCodeBrowser.IUnsavedFileProvider, IDisposable
     {
         event ActiveDocumentChangeEvent ActiveDocumentChanged;
         event EditorDocChangeEvent DocumentOpened;
@@ -15,7 +15,10 @@ namespace JadeCore
 
         IEditorDoc ActiveDocument { get; set; }
         bool HasOpenDocuments{ get; }
+        bool HasModifiedDocuments { get; }
         IEnumerable<IEditorDoc> ModifiedDocuments { get; }
+
+        IList<TextDocumentSnapshot> GetSnapshots();
 
         void OpenDocument(IFileHandle file);
         void SaveActiveDocument();

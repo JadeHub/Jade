@@ -1,4 +1,5 @@
 ﻿using LibClang;
+using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Windows.Media;
@@ -10,11 +11,18 @@ namespace JadeControls.EditorControl.ViewModel
         private Highlighting.IHighlighter _underliner;
         private CppCodeBrowser.IProjectFile _projectItem;
 
-        public DiagnosticHighlighter(CppCodeBrowser.IProjectFile projectItem, Highlighting.IHighlighter underliner)
+        public DiagnosticHighlighter(Highlighting.IHighlighter underliner)
         {
             _underliner = underliner;
-            _projectItem = projectItem;
-            HighlightDiagnostics();
+        }
+
+        public CppCodeBrowser.IProjectFile ProjectItem
+        {
+            set
+            {
+                _projectItem = value;
+                HighlightDiagnostics();
+            }
         }
 
         private IEnumerable<CppCodeBrowser.ISourceFile> GetSources()

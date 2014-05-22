@@ -29,6 +29,13 @@ void SomeClass::Fn()
 
 }
 
+void SomeNewFucntion()
+{
+	for(int i = 0;i < 10;i++)
+	{
+		
+	}
+}
 
 int main()
 {

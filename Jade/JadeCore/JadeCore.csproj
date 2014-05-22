@@ -81,6 +81,7 @@
     <Compile Include="TextDocument\TextDocument.cs" />
     <Compile Include="TextDocument\TextDocumentCache.cs" />
     <Compile Include="Search\TextDocumentSearch.cs" />
+    <Compile Include="TextDocument\TextDocumentSnapshot.cs" />
     <Compile Include="Workspace\Folder.cs" />
     <Compile Include="Workspace\IFolder.cs" />
     <Compile Include="Workspace\IItem.cs" />
