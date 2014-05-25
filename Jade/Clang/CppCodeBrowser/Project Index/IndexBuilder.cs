@@ -16,9 +16,6 @@ namespace CppCodeBrowser
         IList<Tuple<string, string>> GetUnsavedFiles();
     }
 
-    /// <summary>
-    /// This is a simple synchronous implementation.
-    /// </summary>
     public class IndexBuilder : IIndexBuilder
     {
         private bool _disposed = false;

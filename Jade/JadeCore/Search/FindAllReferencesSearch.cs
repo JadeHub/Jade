@@ -41,7 +41,7 @@ namespace JadeCore.Search
             //foreach (LibClang.TranslationUnit tu in _projectIndex.TranslationUnits)
             foreach(CppCodeBrowser.ISourceFile sf in _projectIndex.SourceFiles)
             {
-                //Cursor c = tu.GetCursorAt(_location.Path.Str, _location.Offset);
+                Debug.WriteLine("sf " + sf.Path.FileName);
                 Cursor c = sf.TranslationUnit.GetCursorAt(_location.Path.Str, _location.Offset);
                 if (c != null)
                 {
@@ -57,7 +57,7 @@ namespace JadeCore.Search
                                                 ICodeLocation location = new CodeLocation(range.Start);
                                                 ISearchResult result = new CodeSearchResult(10, location, range.Length);
                                                 AddResult(result);
-                                                //Debug.WriteLine(result);
+                                                Debug.WriteLine(result);
                                             }
                                             return true;
                                         });

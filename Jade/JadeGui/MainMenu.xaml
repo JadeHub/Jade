@@ -9,27 +9,26 @@
         <MenuItem Header="_Save File" Command="ApplicationCommands.Save"/>
         <MenuItem Header="Save File _As..." Command="ApplicationCommands.SaveAs"/>
         <MenuItem Header="Save A_ll..." Command="JadeCore:Commands.SaveAllFiles"/>
+        <MenuItem Header="_Workspace">
+            <MenuItem Header="New Workspace..." Command="JadeCore:Commands.NewWorkspace" />
+            <MenuItem Header="Open Workspace..." Command="JadeCore:Commands.PromptOpenWorkspace"  />
+            <MenuItem Header="Save Workspace" Command="JadeCore:Commands.SaveWorkspace" />
+            <MenuItem Header="Save Workspace As..." Command="JadeCore:Commands.SaveAsWorkspace" />
+            <MenuItem Header="Close Workspace" Command="JadeCore:Commands.CloseWorkspace"  />
+            <Separator/>
+            <MenuItem Header="Recent Workspaces..." ItemsSource="{Binding WorkspaceController.RecentFiles.Files}"  >
+                <MenuItem.ItemContainerStyle>
+                    <Style TargetType="MenuItem">
+                        <Setter Property="Header" Value="{Binding}"/>
+                        <Setter Property="Command" Value="JadeCore:Commands.OpenWorkspace" />
+                        <Setter Property="CommandParameter" Value="{Binding}" />
+                    </Style>
+                </MenuItem.ItemContainerStyle>
+            </MenuItem>
+        </MenuItem>
         <MenuItem Header="_Close File" Command="JadeCore:Commands.CloseFile"/>
         <Separator/>
         <MenuItem Header="E_xit" Command="JadeCore:Commands.Exit" />
-    </MenuItem>
-    
-    <MenuItem Header="_Workspace">
-        <MenuItem Header="New Workspace..." Command="JadeCore:Commands.NewWorkspace" />
-        <MenuItem Header="Open Workspace..." Command="JadeCore:Commands.PromptOpenWorkspace"  />
-        <MenuItem Header="Save Workspace" Command="JadeCore:Commands.SaveWorkspace" />
-        <MenuItem Header="Save Workspace As..." Command="JadeCore:Commands.SaveAsWorkspace" />
-        <MenuItem Header="Close Workspace" Command="JadeCore:Commands.CloseWorkspace"  />
-        <Separator/>
-        <MenuItem Header="Recent Workspaces..." ItemsSource="{Binding WorkspaceController.RecentFiles.Files}"  >
-            <MenuItem.ItemContainerStyle>
-                <Style TargetType="MenuItem">
-                    <Setter Property="Header" Value="{Binding}"/>
-                    <Setter Property="Command" Value="JadeCore:Commands.OpenWorkspace" />
-                    <Setter Property="CommandParameter" Value="{Binding}" />
-                </Style>
-            </MenuItem.ItemContainerStyle>
-        </MenuItem>
     </MenuItem>
     
     <MenuItem Header="_Edit">

@@ -17,7 +17,7 @@ namespace JadeControls.DiagnosticsControl
         private void EditorControllerActiveDocumentChanged(JadeCore.IEditorDoc newValue, JadeCore.IEditorDoc oldValue)
         {
             ClearDiags();
-            if(newValue is JadeCore.Editor.ISourceDocument)
+//            if(newValue is JadeCore.Editor.ISourceDocument)
             {
 
             }

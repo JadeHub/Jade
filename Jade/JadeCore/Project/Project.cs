@@ -42,6 +42,7 @@ namespace JadeCore.Project
         public IProject OwningProject { get { return this; } }
         public Collections.Observable.List<IFileItem> SourceFiles { get { return _allSourceFiles; } }
         public CppCodeBrowser.IndexBuilder IndexBuilder { get { return _indexBuilder; } }
+        public CppCodeBrowser.IProjectIndex Index { get { return _indexBuilder.Index; } }
         public FilePath Path { get { return _path; } }
         public string Directory { get { return _path.Directory; } }
 

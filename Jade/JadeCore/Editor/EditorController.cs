@@ -10,16 +10,14 @@ namespace JadeCore.Editor
     {
         private Project.IProject _project;
         private ProjectParseThreads _parserThreads;
-        private CppCodeBrowser.IIndexBuilder _indexBuilder;
         private EditorController _editorController;
 
         public ProjectIndexBuilder(Project.IProject project, EditorController editorController)
         {
             _project = project;
             _editorController = editorController;
-            _indexBuilder = project.IndexBuilder;
 
-            _parserThreads = new ProjectParseThreads(_project, _indexBuilder, editorController, delegate(FilePath p) { OnParseComplete(p); });
+            _parserThreads = new ProjectParseThreads(_project, project.IndexBuilder, editorController, delegate(FilePath p) { OnParseComplete(p); });
             _parserThreads.Run = true;
         }
 
@@ -28,7 +26,7 @@ namespace JadeCore.Editor
             _parserThreads.Dispose();
         }
 
-        public CppCodeBrowser.IProjectIndex Index { get { return _indexBuilder.Index; } }
+        public CppCodeBrowser.IProjectIndex Index { get { return _project.Index; } }
 
         private void OnParseComplete(FilePath path)
         {
@@ -143,17 +141,14 @@ namespace JadeCore.Editor
                     ITextDocument textDoc = JadeCore.Services.Provider.WorkspaceController.DocumentCache.FindOrAdd(file);
 
                     Project.IProject p = GetProjectForFile(file.Path);
-                    CppCodeBrowser.IProjectIndex index = null;
                     if (p != null)
-                    {
                         CreateProjectBuilder(p);
-                        index = p.IndexBuilder.Index;
-                    }
-                    doc = new SourceDocument(this, textDoc, index);
+                    doc = new SourceDocument(this, textDoc, p);
                     _openDocuments.Add(file.Path, doc);
                     OnDocumentOpened(doc);
                     ActiveDocument = doc;
                 }
+
                 //this doc is already open, if it's not the active document, activate it
                 else if (ActiveDocument == null || ActiveDocument.File != file)
                 {
@@ -291,14 +286,11 @@ namespace JadeCore.Editor
                 handler(new EditorDocChangeEventArgs(doc));
         }
 
-        private ProjectIndexBuilder CreateProjectBuilder(Project.IProject project)
+        private void CreateProjectBuilder(Project.IProject project)
         {
-            ProjectIndexBuilder result = null;
-            if (_projectBuilders.TryGetValue(project, out result))
-                return result;
-            result = new ProjectIndexBuilder(project, this);
-            _projectBuilders.Add(project, result);        
-            return result;
+            if(!_projectBuilders.ContainsKey(project))
+                _projectBuilders.Add(project, new ProjectIndexBuilder(project, this));
+            return;
         }
         
         #endregion

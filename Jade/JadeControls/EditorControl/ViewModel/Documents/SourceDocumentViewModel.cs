@@ -25,15 +25,15 @@ namespace JadeControls.EditorControl.ViewModel
         {
             Debug.Assert(doc is JadeCore.Editor.SourceDocument);
 
-            //todo fix
-            JadeCore.Editor.SourceDocument sourceDoc = doc as JadeCore.Editor.SourceDocument;
-            _projectIndex = sourceDoc.ProjectIndex;
-                        
+            if(doc.Project != null)
+            {
+                _projectIndex = doc.Project.Index;
+            }                        
             if (_projectIndex != null)
             {
                 _sourceFileProjectItem = _projectIndex.FindProjectItem(doc.File.Path);
-            }
-            _projectIndex.ItemUpdated += ProjectIndexItemUpdated;
+                _projectIndex.ItemUpdated += ProjectIndexItemUpdated;
+            }            
 
             _jumpToHelper = new JumpToHelper(_projectIndex, doc);
             _underliner = new Highlighting.Underliner(TextDocument);

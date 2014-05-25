@@ -17,6 +17,11 @@ namespace JadeCore
         IFileHandle File { get; }
 
         ITextDocument TextDocument { get; }
+
+        /// <summary>
+        /// Project to which the document belongs. null if document not owned by project.
+        /// </summary>
+        Project.IProject Project { get; }
              
         void Close();
         void Save();

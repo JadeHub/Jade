@@ -52,7 +52,7 @@ namespace JadeGui.ViewModels
             
             _editorController = JadeCore.Services.Provider.EditorController;
             _editorController.ActiveDocumentChanged += OnEditorControllerActiveDocumentChanged;
-            _editorViewModel = new JadeControls.EditorControl.ViewModel.EditorControlViewModel(_editorController);
+            _editorViewModel = new JadeControls.EditorControl.ViewModel.EditorControlViewModel(_editorController, new JadeControls.EditorControl.ViewModel.DocumentViewModelFactory());
 
             _outputController = JadeCore.Services.Provider.OutputController;
             _outputViewModel = new OutputViewModel(_outputController);

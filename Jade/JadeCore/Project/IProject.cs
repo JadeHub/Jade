@@ -28,6 +28,8 @@ namespace JadeCore.Project
         /// </summary>
         CppCodeBrowser.IndexBuilder IndexBuilder { get; }
 
+        CppCodeBrowser.IProjectIndex Index { get; }
+
         /// <summary>
         /// Add an item to an optional subfolder
         /// </summary>

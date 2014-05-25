@@ -7,6 +7,45 @@ namespace JadeControls.EditorControl.ViewModel
 {
     using JadeCore;
 
+    public interface IDocumentViewModelFactory
+    {
+        DocumentViewModel Create(IEditorDoc doc);
+    }
+
+    public class DocumentViewModelFactory : IDocumentViewModelFactory 
+    {
+        public DocumentViewModelFactory() { }
+
+        public DocumentViewModel Create(IEditorDoc doc)
+        {
+            if(IsHeaderFile(doc))
+            {
+                return new HeaderDocumentViewModel(doc);
+            }
+            else if(IsSourceFile(doc))
+            {
+                return new SourceDocumentViewModel(doc);
+            }
+            else
+            {
+                System.Diagnostics.Debug.Assert(false);
+            }
+            return null;
+        }
+
+        static private bool IsHeaderFile(IEditorDoc doc)
+        {
+            return doc.File.Path.Extention.ToLower() == ".h";
+        }
+
+        static private bool IsSourceFile(IEditorDoc doc)
+        {
+            string ext = doc.File.Path.Extention.ToLower();
+            return ext == ".c" || ext == ".cc" || ext == ".cpp";
+        }
+
+    }
+
     /// <summary>
     /// View model for the entire Editor Control. Manages the collection of tabs and associated DocumentViewModels
     /// </summary>
@@ -17,17 +56,19 @@ namespace JadeControls.EditorControl.ViewModel
         private ObservableCollection<DocumentViewModel> _documents;
         private JadeCore.IEditorController _controller;
         private DocumentViewModel _selectedDocument;
+        private IDocumentViewModelFactory _docViewModelFactory;
 
         #endregion
 
         #region Constructor
 
-        public EditorControlViewModel(JadeCore.IEditorController controller)
+        public EditorControlViewModel(JadeCore.IEditorController controller, IDocumentViewModelFactory docViewModelFactory)
         {
             //Bind to the Model
             _controller = controller;
             _controller.ActiveDocumentChanged += OnControllerActiveDocumentChanged;
             _documents = new ObservableCollection<DocumentViewModel>();
+            _docViewModelFactory = docViewModelFactory;
         }
 
         #endregion
@@ -41,13 +82,13 @@ namespace JadeControls.EditorControl.ViewModel
                 _documents.Remove(vm);
             }
         }
-
+                
         private void OnControllerActiveDocumentChanged(IEditorDoc newValue, IEditorDoc oldValue)
         {
             DocumentViewModel vm = FindViewModel(newValue);
             if (vm == null && newValue != null)
             {
-                vm = new SourceDocumentViewModel(newValue);
+                vm = _docViewModelFactory.Create(newValue);
                 _documents.Add(vm);
                 //change to IEditorController.DocumentClosed
 
