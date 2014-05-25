@@ -61,11 +61,9 @@ namespace LibClang
     internal class CursorStore : WrapperObjectStore<Library.Cursor, Cursor> 
     {
         private ITranslationUnitItemFactory _itemFactory;
-        private TranslationUnit _translationUnit;
 
-        public CursorStore(TranslationUnit tu, ITranslationUnitItemFactory itemFactory) 
+        public CursorStore(ITranslationUnitItemFactory itemFactory) 
         {
-            _translationUnit = tu;
             _itemFactory = itemFactory;            
         }
 
@@ -73,7 +71,7 @@ namespace LibClang
         {
             if (handle == Library.Cursor.NullCursor)
                 throw new ArgumentException("Cursor Handle is a NullCursor");
-            return new Cursor(handle, _translationUnit, _itemFactory);
+            return new Cursor(handle, _itemFactory);
         }
     }
 
@@ -123,11 +121,9 @@ namespace LibClang
     internal class SourceRangeStore : WrapperObjectStore<Library.SourceRange, SourceRange>
     {
         private ITranslationUnitItemFactory _itemFactory;
-        private TranslationUnit _translationUnit;
 
-        public SourceRangeStore(TranslationUnit tu, ITranslationUnitItemFactory itemFactory)
+        public SourceRangeStore(ITranslationUnitItemFactory itemFactory)
         {
-            _translationUnit = tu;
             _itemFactory = itemFactory;
         }
 
@@ -135,7 +131,7 @@ namespace LibClang
         {
             if(handle.IsNull)
                 throw new ArgumentException("SourceRange Handle is null");
-            return new SourceRange(handle, _translationUnit, _itemFactory);
+            return new SourceRange(handle, _itemFactory);
         }
     }
 

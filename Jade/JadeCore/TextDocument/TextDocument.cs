@@ -113,7 +113,6 @@ namespace JadeCore
             {
                 using (StreamWriter writer = new StreamWriter(fs, System.Text.Encoding.ASCII))
                 {
-                    System.Diagnostics.Debug.Write(AvDoc.Text);
                     writer.Write(AvDoc.Text);
                     Modified = false;
                 }

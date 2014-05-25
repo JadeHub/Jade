@@ -38,16 +38,18 @@ namespace JadeCore.Search
         {
             HashSet<LibClang.SourceLocation> uniqueLocations = new HashSet<LibClang.SourceLocation>();
             
-            foreach (LibClang.TranslationUnit tu in _projectIndex.TranslationUnits)
+            //foreach (LibClang.TranslationUnit tu in _projectIndex.TranslationUnits)
+            foreach(CppCodeBrowser.ISourceFile sf in _projectIndex.SourceFiles)
             {
-                Cursor c = tu.GetCursorAt(_location.Path.Str, _location.Offset);
+                //Cursor c = tu.GetCursorAt(_location.Path.Str, _location.Offset);
+                Cursor c = sf.TranslationUnit.GetCursorAt(_location.Path.Str, _location.Offset);
                 if (c != null)
                 {
                     if (Summary == null)
                     {
                         Summary = "Find all references to: " + c.Spelling;
                     }
-                    tu.FindAllReferences(c,
+                    sf.TranslationUnit.FindAllReferences(c,
                                         delegate(Cursor cursor, SourceRange range)
                                         {
                                             if (uniqueLocations.Add(cursor.Location))
@@ -55,7 +57,7 @@ namespace JadeCore.Search
                                                 ICodeLocation location = new CodeLocation(range.Start);
                                                 ISearchResult result = new CodeSearchResult(10, location, range.Length);
                                                 AddResult(result);
-                                                Debug.WriteLine(result);
+                                                //Debug.WriteLine(result);
                                             }
                                             return true;
                                         });

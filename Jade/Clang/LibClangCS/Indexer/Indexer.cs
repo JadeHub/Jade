@@ -131,7 +131,7 @@ namespace LibClang.Indexer
         private IntPtr OnIndexerEnteredMainFile(IntPtr clientData, IntPtr mainFile, IntPtr reserved)
         {
             string name = Library.clang_getFileName(mainFile).ManagedString;
-            Debug.WriteLine("Enter main file " + name);
+            //Debug.WriteLine("Enter main file " + name);
             return IntPtr.Zero;
         }
 
@@ -148,7 +148,7 @@ namespace LibClang.Indexer
 
         private IntPtr OnIndexerStartTranslationUnit(IntPtr clientData, IntPtr reserved)
         {
-            Debug.WriteLine("StartTranslationUnit");
+            //Debug.WriteLine("StartTranslationUnit");
             return IntPtr.Zero;
         }
 

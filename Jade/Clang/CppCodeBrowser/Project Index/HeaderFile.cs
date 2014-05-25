@@ -8,6 +8,11 @@ namespace CppCodeBrowser
     public interface IHeaderFile : IProjectFile
     {
         IEnumerable<ISourceFile> SourceFiles { get; }
+        void SetReferencedBy(ISourceFile sourceFile);
+        bool IsReferencedBy(ISourceFile sourceFile);
+        void RemoveReferingSource(ISourceFile sourceFile);
+
+        bool IsReferenced();
     }
 
     public class HeaderFile : IHeaderFile
@@ -62,6 +67,21 @@ namespace CppCodeBrowser
         public void SetReferencedBy(ISourceFile sourceFile)
         {
             _sourceFiles.Add(sourceFile);
+        }
+
+        public bool IsReferencedBy(ISourceFile sourceFile)
+        {
+            return _sourceFiles.Contains(sourceFile);
+        }
+
+        public void RemoveReferingSource(ISourceFile sourceFile)
+        {
+            _sourceFiles.Remove(sourceFile);
+        }
+
+        public bool IsReferenced()
+        {
+            return _sourceFiles.Count > 0;
         }
 
         #endregion

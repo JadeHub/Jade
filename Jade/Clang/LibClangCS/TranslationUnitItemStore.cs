@@ -8,6 +8,7 @@ namespace LibClang
     /// </summary>
     internal interface ITranslationUnitItemFactory
     {
+        TranslationUnit TranslationUnit { get; }
         Cursor.CreateCursorDel CreateCursor { get; }
         File.CreateFileDel CreateFile { get; }
         SourceLocation.CreateSourceLocationDel CreateSourceLocation { get; }
@@ -22,19 +23,25 @@ namespace LibClang
 
     internal class TranslationUnitItemStore : ITranslationUnitItemStore
     {
+        private TranslationUnit _tu;
         private CursorStore _cursorStore;
         private FileStore _fileStore;
         private SourceLocationStore _locationStore;
         private SourceRangeStore _sourceRangeStore;
         private TypeStore _typeStore;
-
+        
         public TranslationUnitItemStore(TranslationUnit tu)
         {
-            _cursorStore = new CursorStore(tu, this);
+            _tu = tu;
+            _cursorStore = new CursorStore(this);
             _fileStore = new FileStore(this);
             _locationStore = new SourceLocationStore(this);
-            _sourceRangeStore = new SourceRangeStore(tu, this);
+            _sourceRangeStore = new SourceRangeStore(this);
             _typeStore = new TypeStore(this);
+        }
+        public TranslationUnit TranslationUnit 
+        {
+            get { return _tu; }
         }
 
         public Cursor.CreateCursorDel CreateCursor

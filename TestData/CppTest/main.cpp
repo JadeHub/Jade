@@ -9,15 +9,15 @@ namespace Test
 ClassA::ClassA()
 {
 	Template<int> ti(5);
-
 	int test = ti;
-
 }
 
 void SomeClass::Fn()
 {
+	SomeClass b(6);
 	SomeClass a(8);
 	SomeClass* sc = new SomeClass();
+	InlinedMethod();
 		
 	AStruct as;
 	AnEnum ae;
@@ -29,12 +29,15 @@ void SomeClass::Fn()
 
 }
 
-void SomeNewFucntion()
+Test::ClassA SomeNewFucntion()
 {
+	Test::ClassA a;
+	
 	for(int i = 0;i < 10;i++)
 	{
 		
 	}
+	return a;
 }
 
 int main()

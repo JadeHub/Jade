@@ -34,12 +34,12 @@ namespace LibClang
         /// </summary>
         /// <param name="handle">Handle to a non null cursor obect.</param>
         /// <param name="itemFactory">TranslationUnit's item factory / item cache.</param>
-        internal Cursor(Library.Cursor handle, TranslationUnit tu, ITranslationUnitItemFactory itemFactory)
+        internal Cursor(Library.Cursor handle, ITranslationUnitItemFactory itemFactory)
         {
             Debug.Assert(!handle.IsNull);
             Handle = handle;
-            _translationUnit = tu;
             _itemFactory = itemFactory;
+            _translationUnit = _itemFactory.TranslationUnit;
             Kind = Library.clang_getCursorKind(Handle);
             Library.CXType typeHandle = Library.clang_getCursorType(Handle);
             if (typeHandle.IsValid)

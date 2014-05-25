@@ -237,10 +237,10 @@ namespace JadeControls.EditorControl.ViewModel
         {
             if (_caretLocation.Offset != _view.TextArea.Caret.Offset)
             {
-                System.Diagnostics.Debug.WriteLine(string.Format("Line {0} Col {1} Offset{2}",
+                /*System.Diagnostics.Debug.WriteLine(string.Format("Line {0} Col {1} Offset{2}",
                                                 _view.TextArea.Caret.Line,
                                                 _view.TextArea.Caret.Column,
-                                                _view.TextArea.Caret.Offset));
+                                                _view.TextArea.Caret.Offset));*/
                 _caretLocation.Offset = _view.TextArea.Caret.Offset;
                 OnPropertyChanged("CaretOffset");
                 OnPropertyChanged("CaretLine");

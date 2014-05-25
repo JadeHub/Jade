@@ -206,7 +206,7 @@ namespace JadeCore.Editor
 
                 if(parse)
                 {
-                    Debug.WriteLine("Active doc parsing " + pf.Path.Str);
+                    //Debug.WriteLine("Active doc parsing " + pf.Path.Str);
                     Parse(pf);
                 }
             }                
@@ -243,7 +243,7 @@ namespace JadeCore.Editor
 
                 if (work != null)                
                 {
-                    Debug.WriteLine("Background parsing " + work.Path.Str);
+                    //Debug.WriteLine("Background parsing " + work.Path.Str);
                     Parse(work);
                 }
             }

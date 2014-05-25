@@ -357,7 +357,7 @@ namespace LibClang
         {
             if (obj != null && obj is TranslationUnit)
             {
-                return Handle.Equals(((File)obj).Handle);
+                return Handle.Equals(((TranslationUnit)obj).Handle);
             }
             return false;
         }

@@ -29,8 +29,6 @@ namespace JadeControls.EditorControl.Highlighting
             _document = doc;
             _highlights = new TextSegmentCollection<HighlightedRange>();
             _textViews = new List<TextView>();
-
-            //AddRange(10, 100).ForegroundColour = Colors.Blue;
         }
 
         #endregion
@@ -39,7 +37,7 @@ namespace JadeControls.EditorControl.Highlighting
 
         public IHighlightedRange AddRange(int offset, int length)
         {
-            Debug.WriteLine("Add Range " + offset + " : " + length);
+            //Debug.WriteLine("Add Range " + offset + " : " + length);
             int textLength = _document.TextLength;
             if (offset < 0 || offset > textLength)
                 throw new ArgumentOutOfRangeException("startOffset", offset, "Value must be between 0 and " + textLength);
@@ -53,7 +51,7 @@ namespace JadeControls.EditorControl.Highlighting
 
         public void RemoveRange(IHighlightedRange range)
         {
-            Debug.WriteLine("Remove Range " + range.Offset + " : " + range.Length);
+            //Debug.WriteLine("Remove Range " + range.Offset + " : " + range.Length);
             if (!(range is HighlightedRange))
                 throw new ArgumentException("range is not of type HighlightedRange");
 

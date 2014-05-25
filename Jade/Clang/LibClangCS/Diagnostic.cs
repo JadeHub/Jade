@@ -158,6 +158,11 @@ namespace LibClang
 
         #region Properties
 
+        private TranslationUnit TranslatonUnit
+        {
+            get { return _itemFactory.TranslationUnit; }
+        }
+
         /// <summary>
         /// Format the diagnostic using Clang's default display options.
         /// </summary>
@@ -188,6 +193,11 @@ namespace LibClang
         public SourceLocation Location
         {
             get { return _location ?? (_location = _itemFactory.CreateSourceLocation(Library.clang_getDiagnosticLocation(Handle))); }
+        }
+
+        public Cursor LocationCursor
+        {
+            get { return this.TranslatonUnit.GetCursorAt(Location); }
         }
 
         private unsafe Tuple<string, string> LoadOption()

@@ -44,21 +44,14 @@ namespace JadeControls.EditorControl.ViewModel
         private void HighlightDiagnostics()
         {
             _underliner.Clear();
-            foreach(CppCodeBrowser.ISourceFile sf in GetSources())
-            {
-                foreach (Diagnostic d in sf.TranslationUnit.Diagnostics)
-                {
-                    if (System.IO.Path.GetFullPath(d.Location.File.Name) == _projectItem.Path.Str)
-                    {
-                        HighlightDiagnostic(sf.TranslationUnit, d);
-                    }
-                }
-            }
+
+            foreach (Diagnostic d in _projectItem.Diagnostics)
+                HighlightDiagnostic(d);
         }
 
-        private SourceRange GetHighlightRange(TranslationUnit tu, Diagnostic diagnostic)
+        private SourceRange GetHighlightRange(Diagnostic diagnostic)
         {            
-            Cursor cursor = tu.GetCursorAt(diagnostic.Location);
+            Cursor cursor = diagnostic.LocationCursor;
             if (cursor == null || cursor.Extent == null) return null;
 
             TokenSet tokens = cursor.Extent.Tokens;
@@ -69,9 +62,9 @@ namespace JadeControls.EditorControl.ViewModel
             return tok == null ? null : tok.Extent;
         }                    
 
-        private void HighlightDiagnostic(TranslationUnit tu, Diagnostic diagnostic)
+        private void HighlightDiagnostic(Diagnostic diagnostic)
         {
-            SourceRange extent = GetHighlightRange(tu, diagnostic);
+            SourceRange extent = GetHighlightRange(diagnostic);
             if (extent == null)
                 return;
             if (diagnostic.DiagnosticSeverity == Diagnostic.Severity.Error ||

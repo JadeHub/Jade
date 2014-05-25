@@ -13,31 +13,26 @@ namespace CppCodeBrowser
     {
         event ProjectItemEvent ItemUpdated;
         
-        //bool ContainsProjectItem(FilePath path);
-        //void RemoveProjectItem(FilePath path);
         IProjectFile FindProjectItem(FilePath path);
         bool UpdateSourceFile(FilePath path, LibClang.TranslationUnit tu);
-        IEnumerable<LibClang.TranslationUnit> TranslationUnits { get; }
+        IEnumerable<ISourceFile> SourceFiles { get; }
         LibClang.Index LibClangIndex { get; }
     }
 
     public class ProjectIndex : IProjectIndex
     {
-        private readonly Dictionary<FilePath, HeaderFile> _headers;
+        private readonly Dictionary<FilePath, IHeaderFile> _headers;
         private readonly Dictionary<FilePath, ISourceFile> _sources;
 
-        //private readonly Dictionary<FilePath, IProjectFile> _items;
         private object _lock;
         private readonly LibClang.Index _libClangIndex;
                         
         public ProjectIndex()
         {
-            _headers = new Dictionary<FilePath, HeaderFile>();
-            _sources = new Dictionary<FilePath, ISourceFile>();
-
-            //_items = new Dictionary<FilePath, IProjectFile>();
             _lock = new object();
             _libClangIndex = new LibClang.Index(false, true);
+            _headers = new Dictionary<FilePath, IHeaderFile>();
+            _sources = new Dictionary<FilePath, ISourceFile>();            
         }
 
         public event ProjectItemEvent ItemUpdated;
@@ -71,15 +66,31 @@ namespace CppCodeBrowser
                     RemoveSourceFile(path);
                 }
                 AddSourceFile(path, tu);
-                //RaiseItemUpdatedEvent(path);
+                
             }
             return true;
         }
 
         private void RemoveSourceFile(FilePath path)
         {
+            if (_sources.ContainsKey(path) == false)
+                return;
+
+            ISourceFile sf = _sources[path];
+
+            List<FilePath> unrefedHeaders = new List<FilePath>();
+            foreach(IHeaderFile header in _headers.Values)
+            {
+                header.RemoveReferingSource(sf);
+                if (header.IsReferenced() == false)
+                    unrefedHeaders.Add(header.Path);
+            }
+            foreach(FilePath p in unrefedHeaders)
+            {
+                _headers.Remove(p);
+            }
             _sources.Remove(path);
-            //todo remove references from headers
+            sf.TranslationUnit.Dispose();
         }
 
         private void AddSourceFile(FilePath path, TranslationUnit tu)
@@ -89,16 +100,16 @@ namespace CppCodeBrowser
 
             foreach (TranslationUnit.HeaderInfo headerInfo in tu.HeaderFiles)
             {
-                HeaderFile headerFile = FindOrCreateHeaderFile(headerInfo);
+                IHeaderFile headerFile = FindOrCreateHeaderFile(headerInfo);
 
                 headerFile.SetReferencedBy(sourceFile);
                 sourceFile.AddIncludedHeader(headerFile);
             }
         }
 
-        private HeaderFile FindOrCreateHeaderFile(TranslationUnit.HeaderInfo headerInfo)
+        private IHeaderFile FindOrCreateHeaderFile(TranslationUnit.HeaderInfo headerInfo)
         {
-            HeaderFile result;
+            IHeaderFile result;
 
             FilePath path = FilePath.Make(System.IO.Path.GetFullPath(headerInfo.File.Name));
 
@@ -106,34 +117,17 @@ namespace CppCodeBrowser
             {
                 result = new HeaderFile(path);
                 _headers.Add(path, result);
-                //RaiseItemUpdatedEvent(path);
             }
             return result;
         }
 
         public LibClang.Index LibClangIndex { get { return _libClangIndex; } }
 
-        public IEnumerable<LibClang.TranslationUnit> TranslationUnits
+        public IEnumerable<ISourceFile> SourceFiles 
         {
-            get
-            {
-                lock(_lock)
-                {
-                    foreach(ISourceFile sf in _sources.Values)
-                    {
-                        yield return sf.TranslationUnit;
-                    }
-                }
-                /*
-                //todo locking??
-                foreach (IProjectFile item in _items.Values)
-                {
-                    if (item is SourceFile)
-                        yield return (item as SourceFile).TranslationUnits.First();
-                }   */              
-            }
+            get { return _sources.Values; }
         }
-
+/*
         /// <summary>
         /// Check each TranslationUnit in tus for a Cursor at location and return the unique set of Cursors found.
         /// If location is within a source file a maximum of one Cursor will be returned.
@@ -151,6 +145,6 @@ namespace CppCodeBrowser
                 if (cursor != null && set.Add(cursor))
                     yield return cursor;
             }
-        }
+        }*/
     }
 }

@@ -18,11 +18,11 @@ namespace LibClang
 
         internal delegate SourceRange CreateSourceRangeDel(Library.SourceRange handle);
 
-        internal SourceRange(Library.SourceRange handle, TranslationUnit tu, ITranslationUnitItemFactory itemFactory)
+        internal SourceRange(Library.SourceRange handle, ITranslationUnitItemFactory itemFactory)
         {
             Debug.Assert(!handle.IsNull);
             Handle = handle;
-            TranslationUnit = tu;
+            TranslationUnit = itemFactory.TranslationUnit;
             Start = itemFactory.CreateSourceLocation(Library.clang_getRangeStart(Handle));
             End = itemFactory.CreateSourceLocation(Library.clang_getRangeEnd(Handle));
             Debug.Assert(Start <= End);
