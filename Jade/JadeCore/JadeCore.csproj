@@ -48,8 +48,8 @@
     <Compile Include="Collections\Observable.cs" />
     <Compile Include="Commands.cs" />
     <Compile Include="Editor\EditorController.cs" />
-    <Compile Include="Editor\SourceDocument.cs" />
     <Compile Include="Editor\IEditorDoc.cs" />
+    <Compile Include="Editor\SourceDocument.cs" />
     <Compile Include="Editor\SourceDocumentParseThread.cs" />
     <Compile Include="GuiUtils.cs" />
     <Compile Include="Editor\IEditorController.cs" />

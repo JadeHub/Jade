@@ -60,7 +60,6 @@
     <Compile Include="EditorControl\Highlighting\HighlightedRange.cs" />
     <Compile Include="EditorControl\Highlighting\IHighlighter.cs" />
     <Compile Include="EditorControl\ViewModel\Documents\HeaderDocumentViewModel.cs" />
-    <Compile Include="EditorControl\ViewModel\Documents\JumpToHelper.cs" />
     <Compile Include="EditorControl\ViewModel\Highlighters\AstHighlighter.cs" />
     <Compile Include="EditorControl\ViewModel\Highlighters\DiagnosticHighlighter.cs" />
     <Compile Include="EditorControl\ViewModel\Documents\DocumentViewModel.cs" />

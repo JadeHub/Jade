@@ -135,7 +135,7 @@ namespace JadeCore.Editor
             {
                 if (_openDocuments.ContainsKey(file.Path) == false)
                 {
-                    IEditorDoc doc;
+                    IEditorDoc doc = null;
 
                     //find project?
                     ITextDocument textDoc = JadeCore.Services.Provider.WorkspaceController.DocumentCache.FindOrAdd(file);

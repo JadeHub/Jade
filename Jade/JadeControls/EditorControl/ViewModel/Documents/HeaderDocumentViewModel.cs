@@ -13,7 +13,7 @@ namespace JadeControls.EditorControl.ViewModel
         public HeaderDocumentViewModel(IEditorDoc doc) 
             : base(doc)
         {
-            Debug.Assert(doc is JadeCore.Editor.SourceDocument);
+           // Debug.Assert(doc is JadeCore.Editor.SourceDocument);
         }
 
         public override void RegisterCommands(CommandBindingCollection commandBindings)
