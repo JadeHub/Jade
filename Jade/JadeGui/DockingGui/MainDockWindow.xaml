@@ -51,24 +51,25 @@
                                 <JadeCtrlsEditor:CodeEditor
 				                        FontFamily="Consolas"
 				                        FontSize="10pt"                        
-				                        SyntaxHighlighting="C++"
+				                        
                                         Margin="5,0"
                                         Document="{Binding TextDocument}"
                                         FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}">
-                                                    <JadeCtrlsEditor:CodeEditor.ContextMenu>
-                                                        <ContextMenu>
-                                                            <MenuItem Header="Jump To" Command="JadeCtrlsEditor:EditorCommands.JumpTo" CommandParameter="{Binding .}" >
-                                                                <MenuItem.Icon>
-                                                                    <Image HorizontalAlignment="Left" Width="16" Height="16" Margin="3,0" Source="{StaticResource DeleteIconSource}" />
-                                                                </MenuItem.Icon>
-                                                            </MenuItem>
-                                                            <MenuItem Header="Find All References" Command="JadeCtrlsEditor:EditorCommands.FindAllReferences" CommandParameter="{Binding .}" >
-                                                                <MenuItem.Icon>
-                                                                    <Image HorizontalAlignment="Left" Width="16" Height="16" Margin="3,0" Source="{StaticResource DeleteIconSource}" />
-                                                                </MenuItem.Icon>
-                                                            </MenuItem>
-                                                        </ContextMenu>
-                                                    </JadeCtrlsEditor:CodeEditor.ContextMenu>
+                                                                        
+                                    <JadeCtrlsEditor:CodeEditor.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Jump To" Command="{Binding JumpToCommand}" CommandParameter="{Binding CaretOffset}">
+                                                <MenuItem.Icon>
+                                                    <Image HorizontalAlignment="Left" Width="16" Height="16" Margin="3,0" Source="{StaticResource DeleteIconSource}" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                            <MenuItem Header="Find All References" Command="JadeCtrlsEditor:EditorCommands.FindAllReferences" CommandParameter="{Binding .}" >
+                                                <MenuItem.Icon>
+                                                    <Image HorizontalAlignment="Left" Width="16" Height="16" Margin="3,0" Source="{StaticResource DeleteIconSource}" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                        </ContextMenu>
+                                    </JadeCtrlsEditor:CodeEditor.ContextMenu>
                                 </JadeCtrlsEditor:CodeEditor>
                             </DataTemplate>
                         </local:PanesTemplateSelector.DocumentViewTemplate>
@@ -90,8 +91,6 @@
                                 <JadeCtrlsOutput:OutputControl/>                                
                             </DataTemplate>
                         </local:PanesTemplateSelector.OutputViewTemplate>
-                        
-                        
                         
                     </local:PanesTemplateSelector>
                 </avalonDock:DockingManager.LayoutItemTemplateSelector>

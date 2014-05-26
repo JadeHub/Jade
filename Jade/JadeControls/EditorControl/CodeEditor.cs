@@ -1,5 +1,7 @@
 ﻿using ICSharpCode.AvalonEdit;
 using JadeControls.EditorControl.ViewModel;
+using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 
@@ -15,16 +17,16 @@ namespace JadeControls.EditorControl
             ShowLineNumbers = true;            
             TextArea.MouseRightButtonDown += TextArea_MouseRightButtonDown;
             this.DataContextChanged += CodeEditor_DataContextChanged;
+            SyntaxHighlighting = ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinition("C++");
         }
 
         private void CodeEditor_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (DataContext != null && DataContext is DocumentViewModel)
+            if (DataContext != null)
             {
+                Debug.Assert(DataContext is DocumentViewModel);
                 DocumentViewModel vm = DataContext as DocumentViewModel;
                 vm.SetView(this);
-                
-                TextArea.TextView.BackgroundRenderers.Add(new Highlighting.Underliner(vm.TextDocument));
             }
         }
 

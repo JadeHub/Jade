@@ -5,19 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using JadeCore;
+using JadeUtils.IO;
 
 namespace JadeControls.EditorControl.ViewModel
 {
     public class JumpToHelper
     {
-        private IEditorDoc _doc;
+        private FilePath _path;
         private CppCodeBrowser.JumpToBrowser _jumpToBrowser;
 
-        public JumpToHelper(IEditorDoc doc)
+        public JumpToHelper(FilePath path, CppCodeBrowser.IProjectIndex index)
         {
-            Debug.Assert(doc.Project != null && doc.Project.Index != null);
-            _doc = doc;
-            _jumpToBrowser = new CppCodeBrowser.JumpToBrowser(doc.Project.Index);
+            _path = path;
+            _jumpToBrowser = new CppCodeBrowser.JumpToBrowser(index);
         }
 
         public CppCodeBrowser.IProjectFile ProjectItemIndex
@@ -31,7 +31,7 @@ namespace JadeControls.EditorControl.ViewModel
             if (!(ProjectItemIndex is CppCodeBrowser.ISourceFile))
                 return null;
 
-            CppCodeBrowser.ICodeLocation location = new CppCodeBrowser.CodeLocation(_doc.File.Path.Str, offset);
+            CppCodeBrowser.ICodeLocation location = new CppCodeBrowser.CodeLocation(_path.Str, offset);
             CppCodeBrowser.ISourceFile sourceFile = ProjectItemIndex as CppCodeBrowser.ISourceFile;
 
             LibClang.Cursor cur = sourceFile.TranslationUnit.GetCursorAt(location.Path.Str, location.Offset);

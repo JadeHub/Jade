@@ -13,6 +13,8 @@ namespace JadeControls.EditorControl.ViewModel
     /// </summary>
     public abstract class DocumentViewModel : Docking.PaneViewModel
     {
+        #region CaretLocation
+
         private class CaretLocation
         {
             private readonly ITextDocument _doc;
@@ -75,6 +77,8 @@ namespace JadeControls.EditorControl.ViewModel
                 _column = _offset - lineSeg.Offset + 1;
             }
         }
+
+        #endregion
 
         #region Data
 
@@ -158,6 +162,15 @@ namespace JadeControls.EditorControl.ViewModel
             get { return _model.Modified; }           
         }
 
+        public event EventHandler CaretOffsetChanged;
+
+        private void RaiseCaretOffsetChangedEvent()
+        {
+            EventHandler handler = CaretOffsetChanged;
+            if (handler != null)
+                handler(this, EventArgs.Empty);
+        }
+
         public int CaretOffset
         {
             get { return _caretLocation.Offset; }
@@ -171,6 +184,8 @@ namespace JadeControls.EditorControl.ViewModel
                     OnPropertyChanged("CaretOffset");
                     OnPropertyChanged("CaretLine");
                     OnPropertyChanged("CaretColumn");
+
+                    RaiseCaretOffsetChangedEvent();
                 }
             }
         }
@@ -244,10 +259,7 @@ namespace JadeControls.EditorControl.ViewModel
                                                 _view.TextArea.Caret.Line,
                                                 _view.TextArea.Caret.Column,
                                                 _view.TextArea.Caret.Offset));*/
-                _caretLocation.Offset = _view.TextArea.Caret.Offset;
-                OnPropertyChanged("CaretOffset");
-                OnPropertyChanged("CaretLine");
-                OnPropertyChanged("CaretColumn");
+                CaretOffset = _view.TextArea.Caret.Offset;
             }
         }
 

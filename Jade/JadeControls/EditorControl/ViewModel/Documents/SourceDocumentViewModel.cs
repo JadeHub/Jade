@@ -13,7 +13,7 @@ namespace JadeControls.EditorControl.ViewModel
     /// </summary>
     public class SourceDocumentViewModel : CodeDocumentViewModelBase
     {        
-        private JumpToHelper _jumpToHelper;
+        private SourceFileJumpToCommand _jumpToCommand;
 
         public SourceDocumentViewModel(IEditorDoc doc) 
             : base(doc)
@@ -22,7 +22,7 @@ namespace JadeControls.EditorControl.ViewModel
 
             if (HasIndex)
             {
-                _jumpToHelper = new JumpToHelper(doc);
+                _jumpToCommand = new SourceFileJumpToCommand(this, doc.File.Path, doc.Project.Index);
                 SetIndexItem(Index.FindProjectItem(Document.File.Path));
                 Index.ItemUpdated += ProjectIndexItemUpdated;
             }
@@ -30,7 +30,6 @@ namespace JadeControls.EditorControl.ViewModel
 
         private void SetIndexItem(CppCodeBrowser.IProjectFile indexItem)
         {
-            _jumpToHelper.ProjectItemIndex = indexItem;
             DiagnosticHighlighter.ProjectItem = indexItem;
         }
 
@@ -43,19 +42,6 @@ namespace JadeControls.EditorControl.ViewModel
 
         public override void RegisterCommands(CommandBindingCollection commandBindings)
         {
-            //JumpTp
-            commandBindings.Add(new CommandBinding(EditorCommands.JumpTo,
-                                        delegate(object target, ExecutedRoutedEventArgs a)
-                                        {
-                                            OnJumpTo(this.CaretOffset);
-                                            a.Handled = true;
-                                        },
-                                        delegate(object target, CanExecuteRoutedEventArgs a)
-                                        {
-                                            a.CanExecute = CanJumpTo(this.CaretOffset);
-                                            a.Handled = true;
-                                        }));
-
             //FindAllReferences
             commandBindings.Add(new CommandBinding(EditorCommands.FindAllReferences,
                                         delegate(object target, ExecutedRoutedEventArgs a)
@@ -68,21 +54,6 @@ namespace JadeControls.EditorControl.ViewModel
                                             a.CanExecute = CanFindAllReferences(this.CaretOffset);
                                             a.Handled = true;
                                         }));
-        }
-        
-        private void OnJumpTo(int offset)
-        {
-            CppCodeBrowser.ICodeLocation result = _jumpToHelper.JumpTo(offset);
-
-            if (result != null)
-            {                
-                JadeCore.Services.Provider.CommandHandler.OnDisplayCodeLocation(new JadeCore.DisplayCodeLocationCommandParams(result, true, true));
-            }
-        }
-
-        private bool CanJumpTo(int offset)
-        {
-            return _jumpToHelper.CanJumpTo(offset);
         }
 
         private void OnFindAllReferences(int offset)
@@ -98,6 +69,11 @@ namespace JadeControls.EditorControl.ViewModel
         private bool CanFindAllReferences(int offset)
         {
             return HasIndex;
+        }
+
+        public ICommand JumpToCommand
+        {
+            get { return _jumpToCommand; }
         }
     }
 }
