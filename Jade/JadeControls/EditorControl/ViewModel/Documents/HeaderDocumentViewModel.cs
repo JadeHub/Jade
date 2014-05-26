@@ -8,7 +8,7 @@ using LibClang;
 
 namespace JadeControls.EditorControl.ViewModel
 {
-    public class HeaderDocumentViewModel : DocumentViewModel
+    public class HeaderDocumentViewModel : CodeDocumentViewModelBase
     {
         public HeaderDocumentViewModel(IEditorDoc doc) 
             : base(doc)

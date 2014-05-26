@@ -6,22 +6,23 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JadeUtils.IO;
 
 namespace JadeControls.EditorControl.ViewModel
 {
     public class SearchHighlighter
     {
         private Highlighting.IHighlighter _highlighter;
-        private CppCodeBrowser.IProjectFile _projectItem;
+        private FilePath _path;
         private ISearchController _searchController;
         private HashSet<Highlighting.IHighlightedRange> _ranges;
         private ISearch _currentSearch;
         private Highlighting.IHighlightedRange _currentResultRange;
                 
-        public SearchHighlighter(CppCodeBrowser.IProjectFile projectItem, Highlighting.IHighlighter highlighter)
+        public SearchHighlighter(FilePath path, Highlighting.IHighlighter highlighter)
         {
             _highlighter = highlighter;
-            _projectItem = projectItem;
+            _path = path;
             _searchController = JadeCore.Services.Provider.SearchController;
 
             ((INotifyCollectionChanged)_searchController.Searches).CollectionChanged += Searchs_CollectionChanged;
@@ -84,7 +85,7 @@ namespace JadeControls.EditorControl.ViewModel
 
         private bool HighlighCurrentResult()
         {
-            return _currentSearch.CurrentResult != null && _currentSearch.CurrentResult.Location.Path == _projectItem.Path;
+            return _currentSearch.CurrentResult != null && _currentSearch.CurrentResult.Location.Path == _path;
         }
 
         private void SearchCurrentResultChanged(object sender, EventArgs e)
@@ -112,7 +113,7 @@ namespace JadeControls.EditorControl.ViewModel
 
         private void OnNewResult(ISearchResult result)
         {
-            if (result.Location.Path == _projectItem.Path)
+            if (result.Location.Path == _path)
             {
                 Highlighting.IHighlightedRange hr = _currentResultRange = FindRange(result);
                 if(hr == null)

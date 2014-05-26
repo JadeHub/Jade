@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,20 +10,19 @@ namespace JadeControls.EditorControl.ViewModel
 {
     public class JumpToHelper
     {
-        private CppCodeBrowser.IProjectIndex _index;
         private IEditorDoc _doc;
-        private CppCodeBrowser.ICodeBrowser _jumpToBrowser;
+        private CppCodeBrowser.JumpToBrowser _jumpToBrowser;
 
-        public JumpToHelper(CppCodeBrowser.IProjectIndex index, IEditorDoc doc)
+        public JumpToHelper(IEditorDoc doc)
         {
-            _index = index;
+            Debug.Assert(doc.Project != null && doc.Project.Index != null);
             _doc = doc;
-            _jumpToBrowser = new CppCodeBrowser.JumpToBrowser(_index);
+            _jumpToBrowser = new CppCodeBrowser.JumpToBrowser(doc.Project.Index);
         }
 
         public CppCodeBrowser.IProjectFile ProjectItemIndex
         {
-            get;
+            private get;
             set;
         }
 

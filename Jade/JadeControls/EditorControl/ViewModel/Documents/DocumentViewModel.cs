@@ -8,6 +8,9 @@ using ICSharpCode.AvalonEdit.Document;
 namespace JadeControls.EditorControl.ViewModel
 {
     //wrapps an IEditorDoc and associated CodeEditor view 
+    /// <summary>
+    /// Handles Caret location & focus
+    /// </summary>
     public abstract class DocumentViewModel : Docking.PaneViewModel
     {
         private class CaretLocation

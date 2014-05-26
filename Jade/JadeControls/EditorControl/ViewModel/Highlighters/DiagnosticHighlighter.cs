@@ -45,6 +45,8 @@ namespace JadeControls.EditorControl.ViewModel
         {
             _underliner.Clear();
 
+            if (_projectItem == null) return;
+
             foreach (Diagnostic d in _projectItem.Diagnostics)
                 HighlightDiagnostic(d);
         }
