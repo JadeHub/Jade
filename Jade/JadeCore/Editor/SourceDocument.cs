@@ -18,7 +18,6 @@ namespace JadeCore.Editor
 	
 	    private IEditorController _controller;
 	    private ITextDocument _document;
-        private ProjectParseThreads _parseThread;
         private Project.IProject _project;
 	        
 	    #endregion
@@ -30,50 +29,12 @@ namespace JadeCore.Editor
 	        _controller = controller;
 	        _document = document;
             _project = proj;
-            _parseThread = new ProjectParseThreads(proj, proj.IndexBuilder, _controller, delegate(FilePath fp) { });
-	        _parseThread.Run = true;
-	        _controller.ActiveDocumentChanged += OnActiveDocumentChanged;
-	    }
-	
-	    void OnActiveDocumentChanged(IEditorDoc newValue, IEditorDoc oldValue)
-	    {
-
-	        //_parseThread.HighPriority = args.Document == this;
-	        //_controller.ActiveDocumentChanged = OnActiveDocumentChanged;
-	    }
-	
-	    public void Dispose()
-	    {
-	        _parseThread.Dispose();
 	    }
 	
 	    #endregion
 	
 	    #region IEditorDoc implementation
-	
-	    /*public event EventHandler OnIndexUpdated;
-	
-	    private void RaiseOnIndexUpdated()
-	    {
-	        EventHandler handler = OnIndexUpdated;
-	        if (handler != null)
-	            handler(this, EventArgs.Empty);
-	    }*/
-	
-	    public event EventHandler OnClosing;
-	
-	    private void RaiseOnClosing()
-	    {
-	        EventHandler handler = OnClosing;
-	        if (handler != null)
-	            handler(this, EventArgs.Empty);
-	    }
-	                
-	    public void Close()
-	    {
-	        RaiseOnClosing();
-	    }
-	
+		
 	    public void Save()
 	    {
 	        _document.Save(_document.File);

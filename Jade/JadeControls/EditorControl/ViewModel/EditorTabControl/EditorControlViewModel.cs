@@ -67,6 +67,7 @@ namespace JadeControls.EditorControl.ViewModel
             //Bind to the Model
             _controller = controller;
             _controller.ActiveDocumentChanged += OnControllerActiveDocumentChanged;
+            _controller.DocumentClosed += OnControllerDocumentClosed;
             _documents = new ObservableCollection<DocumentViewModel>();
             _docViewModelFactory = docViewModelFactory;
         }
@@ -90,12 +91,22 @@ namespace JadeControls.EditorControl.ViewModel
             {
                 vm = _docViewModelFactory.Create(newValue);
                 _documents.Add(vm);
-                //change to IEditorController.DocumentClosed
-
-                //todo should unsubscribe from old?
-                newValue.OnClosing += delegate { OnDocumentClosing(vm); };
             }
             SelectedDocument = vm;
+        }
+
+        private void OnControllerDocumentClosed(EditorDocChangeEventArgs args)
+        {
+            IEditorDoc doc = args.Document;
+
+            foreach(DocumentViewModel vm in _documents)
+            {
+                if(vm.Document == doc)
+                {
+                    _documents.Remove(vm);
+                    break;
+                }
+            }
         }
                 
         #endregion

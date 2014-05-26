@@ -1,0 +1,1 @@
+﻿* incorrect closing of background document tab. JadeViewModel calls _editorController.CloseActiveDocument(); which closes active window

@@ -10,8 +10,6 @@ namespace JadeCore
     /// </summary>
     public interface IEditorDoc
     {
-        event EventHandler OnClosing;
-        
         string Name { get; }
         bool Modified { get; }
         IFileHandle File { get; }
@@ -23,7 +21,6 @@ namespace JadeCore
         /// </summary>
         Project.IProject Project { get; }
              
-        void Close();
         void Save();
     }
 

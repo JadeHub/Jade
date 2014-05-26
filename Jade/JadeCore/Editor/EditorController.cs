@@ -209,7 +209,6 @@ namespace JadeCore.Editor
                 _openDocuments.Remove(doc.File.Path);
                 if (ActiveDocument != null && ActiveDocument.Equals(doc))
                     ActiveDocument = null;
-                doc.Close();                
             }
             OnDocumentClosed(doc);
         }

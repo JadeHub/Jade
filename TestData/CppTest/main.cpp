@@ -10,6 +10,7 @@ ClassA::ClassA()
 {
 	Template<int> ti(5);
 	int test = ti;
+	double d = 7.0;
 }
 
 void SomeClass::Fn()
