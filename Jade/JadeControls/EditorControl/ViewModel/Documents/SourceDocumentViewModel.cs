@@ -18,7 +18,7 @@ namespace JadeControls.EditorControl.ViewModel
         private SearchHighlighter _searchHighlighter;
         private CppCodeBrowser.IProjectFile _sourceFileProjectItem;
         private Highlighting.Underliner _underliner;
-       // private JumpToHelper _jumpToHelper;
+        private JumpToHelper _jumpToHelper;
         
         public SourceDocumentViewModel(IEditorDoc doc) 
             : base(doc)
@@ -35,7 +35,7 @@ namespace JadeControls.EditorControl.ViewModel
                 _projectIndex.ItemUpdated += ProjectIndexItemUpdated;
             }            
 
-            //_jumpToHelper = new JumpToHelper(_projectIndex, doc);
+            _jumpToHelper = new JumpToHelper(_projectIndex, doc);
             _underliner = new Highlighting.Underliner(TextDocument);
             _diagnosticHighlighter = new DiagnosticHighlighter(_underliner);
         }
@@ -47,7 +47,7 @@ namespace JadeControls.EditorControl.ViewModel
             _sourceFileProjectItem = _projectIndex.FindProjectItem(Document.File.Path);
             if (_sourceFileProjectItem != null)
             {
-              //  _jumpToHelper.ProjectItemIndex = _sourceFileProjectItem;
+                _jumpToHelper.ProjectItemIndex = _sourceFileProjectItem;
                 _diagnosticHighlighter.ProjectItem = _sourceFileProjectItem;
             }
         }
@@ -84,17 +84,17 @@ namespace JadeControls.EditorControl.ViewModel
         
         private void OnJumpTo(int offset)
         {
-            /*CppCodeBrowser.ICodeLocation result = _jumpToHelper.JumpTo(offset);
+            CppCodeBrowser.ICodeLocation result = _jumpToHelper.JumpTo(offset);
 
             if (result != null)
             {                
                 JadeCore.Services.Provider.CommandHandler.OnDisplayCodeLocation(new JadeCore.DisplayCodeLocationCommandParams(result, true, true));
-            }*/
+            }
         }
 
         private bool CanJumpTo(int offset)
         {
-            return false;// _jumpToHelper.CanJumpTo(offset);
+            return _jumpToHelper.CanJumpTo(offset);
         }
 
         private void OnFindAllReferences(int offset)
@@ -119,7 +119,7 @@ namespace JadeControls.EditorControl.ViewModel
             if (_sourceFileProjectItem != null)            
             {
              //   ASTHighlighter _astHighlighter = new ASTHighlighter(_fileBrowser.TranslationUnits.First().Cursor, underliner, _fileBrowser.Path.Str);
-                _diagnosticHighlighter.ProjectItem = _sourceFileProjectItem;
+                Debug.Assert(_searchHighlighter == null);
                 _searchHighlighter = new SearchHighlighter(_sourceFileProjectItem, _underliner);
             }
 
