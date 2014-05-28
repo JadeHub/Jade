@@ -14,6 +14,18 @@ namespace JadeControls.EditorControl.ViewModel
             Underliner = new Highlighting.Underliner(TextDocument);
             DiagnosticHighlighter = new DiagnosticHighlighter(Underliner);
             SearchHighlighter = new SearchHighlighter(Document.File.Path, Underliner);
+
+            if(HasIndex)
+            {
+                DiagnosticHighlighter.ProjectItem = Index.FindProjectItem(Document.File.Path);
+                Index.ItemUpdated += ProjectIndexItemUpdated;
+            }
+        }
+
+        private void ProjectIndexItemUpdated(JadeUtils.IO.FilePath path)
+        {
+            if (path != Document.File.Path) return;
+            DiagnosticHighlighter.ProjectItem = Index.FindProjectItem(Document.File.Path);
         }
 
         protected Highlighting.Underliner Underliner

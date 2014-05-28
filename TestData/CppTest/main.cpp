@@ -5,6 +5,7 @@
 namespace Test
 {
 
+Struct22::Struct22(){}
 
 ClassA::ClassA()
 {

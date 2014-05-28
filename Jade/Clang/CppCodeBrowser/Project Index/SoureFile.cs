@@ -11,6 +11,8 @@ namespace CppCodeBrowser
     {
         LibClang.TranslationUnit TranslationUnit { get; }
         IEnumerable<IHeaderFile> Headers { get; }
+
+        LibClang.Cursor GetCursorAt(FilePath path, int offset);
     }
 
     public class SourceFile : ISourceFile
@@ -39,6 +41,11 @@ namespace CppCodeBrowser
         {
             get;
             private set;
+        }
+
+        public LibClang.Cursor GetCursorAt(FilePath path, int offset)
+        {
+            return TranslationUnit.GetCursorAt(path.Str, offset);
         }
 
         public LibClang.TranslationUnit TranslationUnit { get {return _tu;} }

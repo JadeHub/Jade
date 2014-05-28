@@ -58,12 +58,12 @@
                                                                         
                                     <JadeCtrlsEditor:CodeEditor.ContextMenu>
                                         <ContextMenu>
-                                            <MenuItem Header="Jump To" Command="{Binding JumpToCommand}" CommandParameter="{Binding CaretOffset}">
+                                            <MenuItem Header="Jump To" Command="{Binding JumpToCommand}">
                                                 <MenuItem.Icon>
                                                     <Image HorizontalAlignment="Left" Width="16" Height="16" Margin="3,0" Source="{StaticResource DeleteIconSource}" />
                                                 </MenuItem.Icon>
                                             </MenuItem>
-                                            <MenuItem Header="Find All References" Command="JadeCtrlsEditor:EditorCommands.FindAllReferences" CommandParameter="{Binding .}" >
+                                            <MenuItem Header="Find All References" Command="{Binding FindAllReferencesCommand}">
                                                 <MenuItem.Icon>
                                                     <Image HorizontalAlignment="Left" Width="16" Height="16" Margin="3,0" Source="{StaticResource DeleteIconSource}" />
                                                 </MenuItem.Icon>

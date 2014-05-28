@@ -5,23 +5,25 @@ using System.Windows.Input;
 using System.Diagnostics;
 using JadeUtils.IO;
 
-namespace JadeControls.EditorControl.ViewModel
+namespace JadeControls.EditorControl.ViewModel.Commands
 {
-    public class SourceFileJumpToCommand : EditorCommand<int>
+    public class SourceFileJumpToCommand : EditorCommand
     {
         private FilePath _path;
         private CppCodeBrowser.JumpToBrowser _jumpToBrowser;
         private CppCodeBrowser.IProjectIndex _index;
         private CppCodeBrowser.IProjectFile _indexItem;
 
-        public SourceFileJumpToCommand(SourceDocumentViewModel vm, FilePath path, CppCodeBrowser.IProjectIndex index)
+        public SourceFileJumpToCommand(DocumentViewModel vm, FilePath path, CppCodeBrowser.IProjectIndex index)
+            : base(vm)
         {
-            vm.CaretOffsetChanged += ViewModelCaretOffsetChanged;
+            ViewModel.CaretOffsetChanged += ViewModelCaretOffsetChanged;
 
             _path = path;
             _index = index;
             _jumpToBrowser = new CppCodeBrowser.JumpToBrowser(_index);
-            index.ItemUpdated += OnIndexItemUpdated;
+            _index.ItemUpdated += OnIndexItemUpdated;
+            _indexItem = _index.FindProjectItem(_path);
             RaiseCanExecuteChangedEvent();
         }
 
@@ -32,19 +34,19 @@ namespace JadeControls.EditorControl.ViewModel
 
         private void OnIndexItemUpdated(JadeUtils.IO.FilePath path)
         {
-            if (path != _path)
-                return;
-            _indexItem = _index.FindProjectItem(path);
+       //     if (path != _path)
+           //     return;
+            _indexItem = _index.FindProjectItem(_path);
         }
 
-        protected override bool CanExecute(int offset)
+        protected override bool CanExecute()
         {
-            return JumpTo(offset) != null;
+            return JumpTo(ViewModel.CaretOffset) != null;
         }
 
-        protected override void Execute(int offset)
+        protected override void Execute()
         {
-            CppCodeBrowser.ICodeLocation result = JumpTo(offset);
+            CppCodeBrowser.ICodeLocation result = JumpTo(ViewModel.CaretOffset);
 
             if (result != null)
             {
@@ -52,22 +54,46 @@ namespace JadeControls.EditorControl.ViewModel
             }
         }
 
+        private IList<LibClang.Cursor> GetSourceCursors(int offset)
+        {
+            List<LibClang.Cursor> result = new List<LibClang.Cursor>();
+
+            if(_indexItem is CppCodeBrowser.ISourceFile)
+            {
+                LibClang.Cursor cur = (_indexItem as CppCodeBrowser.ISourceFile).GetCursorAt(_path, offset);
+                if (cur != null && CanJumpTo(cur, offset))
+                    result.Add(cur);
+            }
+            else if(_indexItem is CppCodeBrowser.IHeaderFile)
+            {
+                foreach(CppCodeBrowser.ISourceFile sf in ((_indexItem as CppCodeBrowser.IHeaderFile).SourceFiles))
+                {
+                    LibClang.Cursor cur = sf.GetCursorAt(_path, offset);
+                    if (cur != null && CanJumpTo(cur, offset))
+                        result.Add(cur);
+                }
+            }
+
+            return result;
+        }
+
         private CppCodeBrowser.ICodeLocation JumpTo(int offset)
         {
-            CppCodeBrowser.ICodeLocation location = new CppCodeBrowser.CodeLocation(_path.Str, offset);
-            CppCodeBrowser.ISourceFile sourceFile = _indexItem as CppCodeBrowser.ISourceFile;
+            if (_indexItem == null) return null;
 
-            LibClang.Cursor cur = sourceFile.TranslationUnit.GetCursorAt(location.Path.Str, location.Offset);
+            /*CppCodeBrowser.ICodeLocation location = new CppCodeBrowser.CodeLocation(_path.Str, offset);            
+            LibClang.Cursor cur = _indexItem.GetCursorAt(location.Path, location.Offset);
 
             if (cur == null)
                 return null;
 
             List<LibClang.Cursor> cursors = new List<LibClang.Cursor>();
             cursors.Add(cur);
-
+            */
             HashSet<CppCodeBrowser.ICodeLocation> results = new HashSet<CppCodeBrowser.ICodeLocation>();
+            IList<LibClang.Cursor> cursors = GetSourceCursors(offset);
 
-            _jumpToBrowser.BrowseFrom(from c in cursors where CanJumpTo(c, offset) select c,
+            _jumpToBrowser.BrowseFrom(cursors,
                 delegate(CppCodeBrowser.ICodeLocation result)
                 {
                     results.Add(result);

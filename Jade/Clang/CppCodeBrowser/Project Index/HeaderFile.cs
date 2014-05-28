@@ -40,6 +40,23 @@ namespace CppCodeBrowser
             get;
             private set;
         }
+        /*
+        public LibClang.Cursor GetCursorAt(FilePath path, int offset)
+        {
+            System.Diagnostics.Debug.Assert(false);
+            return null;
+            if (_sourceFiles.Count > 0)
+            {
+                foreach (ISourceFile sf in _sourceFiles)
+                {
+                    if(sf.Path.FileName.ToLower() == "test.cpp")
+                        return sf.GetCursorAt(path, offset);
+                }
+             //   return _sourceFiles.First().GetCursorAt(path, offset);
+            }
+
+            return null;
+        }*/
 
         public IEnumerable<ISourceFile> SourceFiles { get { return _sourceFiles; } }
         

@@ -125,7 +125,7 @@ namespace JadeControls.EditorControl.ViewModel
             _view = view;
             _view.Document = _model.TextDocument.AvDoc;
 
-            RegisterCommands(_view.CommandBindings);
+            //BindCommands(_view.CommandBindings);
 
             //Initialise the view's caret location in case CaretOffset has already been set.
             _view.CaretOffset = _caretLocation.Offset;
@@ -265,6 +265,6 @@ namespace JadeControls.EditorControl.ViewModel
 
         #endregion
 
-        public abstract void RegisterCommands(CommandBindingCollection commandBindings);
+        //public abstract void BindCommands(CommandBindingCollection commandBindings);
     }
 }

@@ -28,5 +28,7 @@ namespace CppCodeBrowser
         /// Diagnostic objects located in this file.
         /// </summary>
         IEnumerable<LibClang.Diagnostic> Diagnostics { get; }
+
+    //    LibClang.Cursor GetCursorAt(FilePath path, int offset);
     }
 }
