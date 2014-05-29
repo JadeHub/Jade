@@ -34,25 +34,47 @@ namespace JadeCore.Search
                 
         #endregion
 
+        private ICodeLocation FindSearchOrigin()
+        {
+            //starting location
+            CppCodeBrowser.ISourceFile fileIndex = _projectIndex.FindSourceFile(_location.Path);
+            if (fileIndex == null)
+                return null;
+            Cursor c = fileIndex.GetCursorAt(_location.Path, _location.Offset);
+
+            if (c != null && c.Definition != null)
+                c = c.Definition;
+
+            return new CodeLocation(c.Location);
+        }
+
         protected override void DoSearch()
         {
-            HashSet<LibClang.SourceLocation> uniqueLocations = new HashSet<LibClang.SourceLocation>();
+            HashSet<LibClang.SourceLocation> uniqueResults = new HashSet<LibClang.SourceLocation>();
+
+            ICodeLocation loc = FindSearchOrigin();
             
-            //foreach (LibClang.TranslationUnit tu in _projectIndex.TranslationUnits)
             foreach(CppCodeBrowser.ISourceFile sf in _projectIndex.SourceFiles)
             {
-                Debug.WriteLine("sf " + sf.Path.FileName);
-                Cursor c = sf.TranslationUnit.GetCursorAt(_location.Path.Str, _location.Offset);
+                
+                
+                Cursor c = null;
+                if(loc != null)
+                    c = sf.TranslationUnit.GetCursorAt(loc.Path.Str, loc.Offset);
+                else
+                    c = sf.TranslationUnit.GetCursorAt(_location.Path.Str, _location.Offset);
+
                 if (c != null)
                 {
                     if (Summary == null)
                     {
                         Summary = "Find all references to: " + c.Spelling;
                     }
+                    int before = uniqueResults.Count;
                     sf.TranslationUnit.FindAllReferences(c,
                                         delegate(Cursor cursor, SourceRange range)
                                         {
-                                            if (uniqueLocations.Add(cursor.Location))
+                                            if (uniqueResults.Add(cursor.Location))
                                             {
                                                 ICodeLocation location = new CodeLocation(range.Start);
                                                 ISearchResult result = new CodeSearchResult(10, location, range.Length);
@@ -61,9 +83,16 @@ namespace JadeCore.Search
                                             }
                                             return true;
                                         });
+                    int after = uniqueResults.Count;
 
+                    Debug.WriteLine(string.Format("sf {0} added {1}", sf.Path.FileName, after - before));
+                }
+                else
+                {
+                    Debug.WriteLine(string.Format("sf {0} added 0", sf.Path.FileName));
                 }
             }
+            Debug.WriteLine(string.Format("sf total {0} ", uniqueResults.Count));
         }
     }
 }

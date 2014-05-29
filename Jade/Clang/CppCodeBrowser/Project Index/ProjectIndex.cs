@@ -14,6 +14,7 @@ namespace CppCodeBrowser
         event ProjectItemEvent ItemUpdated;
         
         IProjectFile FindProjectItem(FilePath path);
+        ISourceFile FindSourceFile(FilePath path);
         bool UpdateSourceFile(FilePath path, LibClang.TranslationUnit tu);
         IEnumerable<ISourceFile> SourceFiles { get; }
         LibClang.Index LibClangIndex { get; }
@@ -42,6 +43,16 @@ namespace CppCodeBrowser
             ProjectItemEvent handler = ItemUpdated;
             if (handler != null)
                 handler(path);
+        }
+
+        public ISourceFile FindSourceFile(FilePath path)
+        {
+            lock (_lock)
+            {
+                if (_sources.ContainsKey(path))
+                    return _sources[path];
+            }
+            return null;
         }
 
         public IProjectFile FindProjectItem(FilePath path)

@@ -32,10 +32,23 @@ namespace JadeControls.EditorControl.ViewModel.Commands
             CppCodeBrowser.IProjectFile fileIndex = _index.FindProjectItem(_path);
             if (fileIndex == null) return false;
 
+            if(fileIndex is CppCodeBrowser.ISourceFile)
+            {
+                LibClang.Cursor c = (fileIndex as CppCodeBrowser.ISourceFile).GetCursorAt(_path, ViewModel.CaretOffset);
+                return c != null && c.Kind != CursorKind.NoDeclFound;
+            }
+
+            if(fileIndex is CppCodeBrowser.IHeaderFile)
+            {
+                CppCodeBrowser.IHeaderFile header = fileIndex as CppCodeBrowser.IHeaderFile;
+                foreach(CppCodeBrowser.ISourceFile sf in header.SourceFiles)
+                {
+                    LibClang.Cursor c = sf.GetCursorAt(_path, ViewModel.CaretOffset);
+                    return c != null && c.Kind != CursorKind.NoDeclFound;
+                }
+            }
+            Debug.Assert(false);
             return true;
-            /*
-            LibClang.Cursor c = fileIndex.GetCursorAt(_path, ViewModel.CaretOffset);
-            return c != null && c.Kind != CursorKind.NoDeclFound;*/
         }
 
         protected override void Execute()
