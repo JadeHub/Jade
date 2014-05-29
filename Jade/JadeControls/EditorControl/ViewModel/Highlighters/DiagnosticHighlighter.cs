@@ -8,12 +8,12 @@ namespace JadeControls.EditorControl.ViewModel
 {
     public class DiagnosticHighlighter
     {
-        private Highlighting.IHighlighter _underliner;
+        private Highlighting.Highlighter _highlighter;
         private CppCodeBrowser.IProjectFile _projectItem;
 
-        public DiagnosticHighlighter(Highlighting.IHighlighter underliner)
+        public DiagnosticHighlighter(Highlighting.Highlighter highlighter)
         {
-            _underliner = underliner;
+            _highlighter = highlighter;
         }
 
         public CppCodeBrowser.IProjectFile ProjectItem
@@ -23,6 +23,11 @@ namespace JadeControls.EditorControl.ViewModel
                 _projectItem = value;
                 HighlightDiagnostics();
             }
+        }
+
+        public ICSharpCode.AvalonEdit.Rendering.IBackgroundRenderer Renderer
+        {
+            get { return _highlighter; }
         }
 
         private IEnumerable<CppCodeBrowser.ISourceFile> GetSources()
@@ -43,7 +48,7 @@ namespace JadeControls.EditorControl.ViewModel
 
         private void HighlightDiagnostics()
         {
-            _underliner.Clear();
+            _highlighter.Clear();
 
             if (_projectItem == null) return;
 
@@ -72,7 +77,7 @@ namespace JadeControls.EditorControl.ViewModel
             if (diagnostic.DiagnosticSeverity == Diagnostic.Severity.Error ||
                 diagnostic.DiagnosticSeverity == Diagnostic.Severity.Warning)
             {
-                Highlighting.IHighlightedRange hr = _underliner.AddRange(extent.Start.Offset, extent.Length);
+                Highlighting.IHighlightedRange hr = _highlighter.AddRange(extent.Start.Offset, extent.Length);
                 hr.ForegroundColour = diagnostic.DiagnosticSeverity == Diagnostic.Severity.Error ? Colors.Red : Colors.Blue;
             }
         }

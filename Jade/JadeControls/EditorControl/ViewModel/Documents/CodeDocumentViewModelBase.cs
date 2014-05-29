@@ -11,9 +11,8 @@ namespace JadeControls.EditorControl.ViewModel
         internal CodeDocumentViewModelBase(IEditorDoc doc)
             : base(doc)
         {
-            Underliner = new Highlighting.Underliner(TextDocument);
-            DiagnosticHighlighter = new DiagnosticHighlighter(Underliner);
-            SearchHighlighter = new SearchHighlighter(Document.File.Path, Underliner);
+            DiagnosticHighlighter = new DiagnosticHighlighter(new Highlighting.Highlighter(TextDocument));
+            SearchHighlighter = new SearchHighlighter(Document.File.Path, new Highlighting.Highlighter(TextDocument));
 
             if(HasIndex)
             {
@@ -26,12 +25,6 @@ namespace JadeControls.EditorControl.ViewModel
         {
             if (path != Document.File.Path) return;
             DiagnosticHighlighter.ProjectItem = Index.FindProjectItem(Document.File.Path);
-        }
-
-        protected Highlighting.Underliner Underliner
-        {
-            get;
-            private set;
         }
 
         protected DiagnosticHighlighter DiagnosticHighlighter
@@ -65,8 +58,10 @@ namespace JadeControls.EditorControl.ViewModel
 
         protected override void OnSetView(CodeEditor view)
         {
-            view.TextArea.TextView.BackgroundRenderers.Add(Underliner);
+            view.TextArea.TextView.BackgroundRenderers.Add(DiagnosticHighlighter.Renderer);
+            view.TextArea.TextView.BackgroundRenderers.Add(SearchHighlighter.Renderer);
             view.KeyDown += OnViewKeyDown;
+            //Underliner.Redraw();
         }
 
         void OnViewKeyDown(object sender, KeyEventArgs e)

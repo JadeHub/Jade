@@ -12,14 +12,14 @@ namespace JadeControls.EditorControl.ViewModel
 {
     public class SearchHighlighter
     {
-        private Highlighting.IHighlighter _highlighter;
+        private Highlighting.Highlighter _highlighter;
         private FilePath _path;
         private ISearchController _searchController;
         private HashSet<Highlighting.IHighlightedRange> _ranges;
         private ISearch _currentSearch;
         private Highlighting.IHighlightedRange _currentResultRange;
-                
-        public SearchHighlighter(FilePath path, Highlighting.IHighlighter highlighter)
+
+        public SearchHighlighter(FilePath path, Highlighting.Highlighter highlighter)
         {
             _highlighter = highlighter;
             _path = path;
@@ -32,6 +32,11 @@ namespace JadeControls.EditorControl.ViewModel
             {
                 OnNewSearch(_searchController.Current);
             }
+        }
+
+        public ICSharpCode.AvalonEdit.Rendering.IBackgroundRenderer Renderer
+        {
+            get { return _highlighter; }
         }
 
         private void Searchs_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

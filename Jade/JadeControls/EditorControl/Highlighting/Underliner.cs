@@ -10,7 +10,7 @@ using System.Windows.Threading;
 
 namespace JadeControls.EditorControl.Highlighting
 {
-    public class Underliner : IHighlighter, IBackgroundRenderer, ITextViewConnect
+    public class Highlighter : IHighlighter, IBackgroundRenderer, ITextViewConnect
     {        
         #region Data
 
@@ -22,7 +22,7 @@ namespace JadeControls.EditorControl.Highlighting
 
         #region Constructor
 
-        public Underliner(JadeCore.ITextDocument doc)
+        public Highlighter(JadeCore.ITextDocument doc)
         {
             if (doc == null)
                 throw new ArgumentNullException("doc");
