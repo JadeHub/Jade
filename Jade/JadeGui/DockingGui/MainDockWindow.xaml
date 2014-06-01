@@ -50,14 +50,20 @@
                             <DataTemplate>
                                 <JadeCtrlsEditor:CodeEditor
 				                        FontFamily="Consolas"
-				                        FontSize="10pt"                        
-				                        
+				                        FontSize="10pt"				                        
                                         Margin="5,0"
                                         Document="{Binding TextDocument}"
                                         FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}">
                                                                         
                                     <JadeCtrlsEditor:CodeEditor.ContextMenu>
                                         <ContextMenu>
+                                            <MenuItem Header="Undo" Command="Undo"/>
+                                            <MenuItem Header="Redo" Command="Redo"/>
+                                            <Separator/>
+                                            <MenuItem Header="Cut" Command="Cut" />
+                                            <MenuItem Header="Copy" Command="Copy" />
+                                            <MenuItem Header="Paste" Command="Paste" />
+                                            <Separator/>
                                             <MenuItem Header="Jump To" Command="{Binding JumpToCommand}">
                                                 <MenuItem.Icon>
                                                     <Image HorizontalAlignment="Left" Width="16" Height="16" Margin="3,0" Source="{StaticResource DeleteIconSource}" />

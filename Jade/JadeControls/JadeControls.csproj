@@ -44,11 +44,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Diagnostics Control\DiagsControl.xaml.cs">
-      <DependentUpon>DiagsControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Diagnostics Control\DiagsControlViewModel.cs" />
-    <Compile Include="Diagnostics Control\DiagViewMode.cs" />
     <Compile Include="Docking\PaneViewModel.cs" />
     <Compile Include="Docking\ToolPaneViewModel.cs" />
     <Compile Include="EditorControl\CodeEditor.cs" />
@@ -64,6 +59,7 @@
     <Compile Include="EditorControl\ViewModel\Documents\Commands\FindAllReferencesCommand.cs" />
     <Compile Include="EditorControl\ViewModel\Documents\HeaderDocumentViewModel.cs" />
     <Compile Include="EditorControl\ViewModel\Documents\Commands\SourceJumpToCommand.cs" />
+    <Compile Include="EditorControl\ViewModel\EditorTabControl\DocViewModelFactory.cs" />
     <Compile Include="EditorControl\ViewModel\Highlighters\AstHighlighter.cs" />
     <Compile Include="EditorControl\ViewModel\Highlighters\DiagnosticHighlighter.cs" />
     <Compile Include="EditorControl\ViewModel\Documents\DocumentViewModel.cs" />
@@ -108,10 +104,6 @@
     <Compile Include="Workspace Explorer\WorkspaceViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Diagnostics Control\DiagsControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Dialogs\SaveFiles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -175,7 +167,9 @@
       <Name>ICSharpCode.AvalonEdit</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="EditorControl\cpp_rules.xshd" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

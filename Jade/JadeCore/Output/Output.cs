@@ -111,6 +111,7 @@ namespace JadeCore.Output
     {
         ObservableCollection<IItem> Items { get; }
         IItem Create(Source source, Level level, string message);
+        void Clear();
     }
 
     public class OutputController : IOutputController
@@ -133,6 +134,11 @@ namespace JadeCore.Output
         public ObservableCollection<IItem> Items 
         {
             get { return _Items; } 
+        }
+
+        public void Clear()
+        {
+            _Items.Clear();
         }
     }
 }

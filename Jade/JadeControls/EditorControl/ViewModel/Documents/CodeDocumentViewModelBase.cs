@@ -1,11 +1,32 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Collections.Generic;
 using System.Windows.Input;
 using JadeCore;
 using LibClang;
 
 namespace JadeControls.EditorControl.ViewModel
 {
+    internal static class DiagnosticOutputWriter
+    {
+        static private string FormatMsg(LibClang.Diagnostic diag)
+        {
+            return diag.DiagnosticSeverity.ToString() + " : " + diag.Location + " : " + diag.Spelling;
+        }
+
+        static internal void UpdateOutput(IList<LibClang.Diagnostic> diagnostics)
+        {
+            JadeCore.Output.IOutputController controller = JadeCore.Services.Provider.OutputController;
+            controller.Clear();
+
+            foreach(LibClang.Diagnostic diag in diagnostics)
+            {
+                
+                controller.Create(JadeCore.Output.Source.Compilation, JadeCore.Output.Level.Info, FormatMsg(diag));
+            }            
+        }
+    }
+
     public abstract class CodeDocumentViewModelBase : DocumentViewModel
     {
         internal CodeDocumentViewModelBase(IEditorDoc doc)
@@ -24,7 +45,10 @@ namespace JadeControls.EditorControl.ViewModel
         private void ProjectIndexItemUpdated(JadeUtils.IO.FilePath path)
         {
             if (path != Document.File.Path) return;
-            DiagnosticHighlighter.ProjectItem = Index.FindProjectItem(Document.File.Path);
+            CppCodeBrowser.IProjectFile fileIndex = Index.FindProjectItem(Document.File.Path);
+            DiagnosticHighlighter.ProjectItem = fileIndex;
+            List<LibClang.Diagnostic> diags = new List<Diagnostic>(fileIndex.Diagnostics);
+            DiagnosticOutputWriter.UpdateOutput(diags);
         }
 
         protected DiagnosticHighlighter DiagnosticHighlighter

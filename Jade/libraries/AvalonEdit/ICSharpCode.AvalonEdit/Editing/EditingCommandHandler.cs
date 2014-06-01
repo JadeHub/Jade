@@ -274,6 +274,7 @@ namespace ICSharpCode.AvalonEdit.Editing
 		#endregion
 		
 		#region Clipboard commands
+
 		static void CanCutOrCopy(object target, CanExecuteRoutedEventArgs args)
 		{
 			// HasSomethingSelected for copy and cut commands

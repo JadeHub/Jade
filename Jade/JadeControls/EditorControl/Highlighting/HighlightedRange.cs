@@ -6,7 +6,7 @@ namespace JadeControls.EditorControl.Highlighting
     public interface IHighlightedRange : ISegment
     {
         Color? BackgroundColour { get; set; }
-        Color? ForegroundColour { get; set; }                
+        Color? ForegroundColour { get; set; }            
     }
 
     internal class HighlightedRange : TextSegment, IHighlightedRange

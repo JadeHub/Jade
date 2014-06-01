@@ -2,3 +2,4 @@
 * Invalid regex in doc search crashes
 * Jump to on #include does not resolve path correctly
 * Open file via FindALlRefs search result from lower pane and results not highlighted
+* Cut, copy, paste, undo, redo commands in context menu
