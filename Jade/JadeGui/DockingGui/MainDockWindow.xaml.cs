@@ -74,7 +74,7 @@ namespace JadeGui.DockingGui
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
-        {
+        {            
             e.Cancel = !ViewModel.RequestExit();
         }
     }

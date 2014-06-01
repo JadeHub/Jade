@@ -57,6 +57,7 @@ namespace JadeGui
             if (settings.MainWindowPosition != null)
             {
                 _mainWindow.RestoreWindowPosition(settings.MainWindowPosition);
+                _viewModel.LoadMainWindowLayout();
             }
 
             _mainWindow.Closed += _window_Closed;
@@ -78,6 +79,8 @@ namespace JadeGui
         {
             JadeCore.Services.Provider.Settings.MainWindowPosition = _mainWindow.WindowPosition;
             JadeCore.Services.Provider.WorkspaceController.SaveSettings();
+
+            _viewModel.SaveMainWindowLayout();
         }
 
         private void TreeViewItem_PreviewMouseRightButtonDownEvent(object sender, RoutedEventArgs e)

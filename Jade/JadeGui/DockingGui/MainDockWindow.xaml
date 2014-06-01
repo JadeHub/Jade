@@ -9,6 +9,7 @@
         xmlns:JadeCtrlsWorkspace="clr-namespace:JadeControls.Workspace;assembly=JadeControls"        
         xmlns:JadeCtrlsOutput="clr-namespace:JadeControls.OutputControl;assembly=JadeControls"
         xmlns:JadeCtrlsSearchResults="clr-namespace:JadeControls.SearchResultsControl;assembly=JadeControls"
+        xmlns:JadeCtrlsInspectSymbol="clr-namespace:JadeControls.SymbolInspector;assembly=JadeControls"
         xmlns:JadeCtrlsEditor="clr-namespace:JadeControls.EditorControl;assembly=JadeControls"
         xmlns:JadeCtrlsConv="clr-namespace:JadeControls.Converters;assembly=JadeControls"
         xmlns:JadeCore="clr-namespace:JadeCore;assembly=JadeCore"
@@ -24,8 +25,7 @@
         <JadeGui:MainStatusBar DockPanel.Dock="Bottom"/>
         <Grid>            
             <avalonDock:DockingManager x:Name="dockManager"
-                                       DocumentsSource="{Binding Editor.Documents}"
-                                       
+                                       DocumentsSource="{Binding Editor.Documents}"                                       
                                        AnchorablesSource="{Binding ToolWindows}"
                                        ActiveContent="{Binding ActiveDockContent, Mode=TwoWay}">
                 
@@ -46,40 +46,19 @@
                                 
                 <avalonDock:DockingManager.LayoutItemTemplateSelector>
                     <local:PanesTemplateSelector>
-                        <local:PanesTemplateSelector.DocumentViewTemplate>
+                        
+                        <local:PanesTemplateSelector.HeaderDocumentViewTemplate>
                             <DataTemplate>
-                                <JadeCtrlsEditor:CodeEditor
-				                        FontFamily="Consolas"
-				                        FontSize="10pt"				                        
-                                        Margin="5,0"
-                                        Document="{Binding TextDocument}"
-                                        FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}">
-                                                                        
-                                    <JadeCtrlsEditor:CodeEditor.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Undo" Command="Undo"/>
-                                            <MenuItem Header="Redo" Command="Redo"/>
-                                            <Separator/>
-                                            <MenuItem Header="Cut" Command="Cut" />
-                                            <MenuItem Header="Copy" Command="Copy" />
-                                            <MenuItem Header="Paste" Command="Paste" />
-                                            <Separator/>
-                                            <MenuItem Header="Jump To" Command="{Binding JumpToCommand}">
-                                                <MenuItem.Icon>
-                                                    <Image HorizontalAlignment="Left" Width="16" Height="16" Margin="3,0" Source="{StaticResource DeleteIconSource}" />
-                                                </MenuItem.Icon>
-                                            </MenuItem>
-                                            <MenuItem Header="Find All References" Command="{Binding FindAllReferencesCommand}">
-                                                <MenuItem.Icon>
-                                                    <Image HorizontalAlignment="Left" Width="16" Height="16" Margin="3,0" Source="{StaticResource DeleteIconSource}" />
-                                                </MenuItem.Icon>
-                                            </MenuItem>
-                                        </ContextMenu>
-                                    </JadeCtrlsEditor:CodeEditor.ContextMenu>
-                                </JadeCtrlsEditor:CodeEditor>
+                                <JadeCtrlsEditor:HeaderDocumentControl/>
                             </DataTemplate>
-                        </local:PanesTemplateSelector.DocumentViewTemplate>
-                                                
+                        </local:PanesTemplateSelector.HeaderDocumentViewTemplate>
+                        
+                        <local:PanesTemplateSelector.SourceDocumentViewTemplate>
+                            <DataTemplate>
+                                <JadeCtrlsEditor:SourceDocumentControl/>
+                            </DataTemplate>
+                        </local:PanesTemplateSelector.SourceDocumentViewTemplate>
+                        
                         <local:PanesTemplateSelector.WorkspaceViewTemplate>
                             <DataTemplate> 
                                 <JadeCtrlsWorkspace:WorkspaceCtrl />
@@ -91,6 +70,13 @@
                                 <JadeCtrlsSearchResults:SearchResultsControl/>                                
                             </DataTemplate>
                         </local:PanesTemplateSelector.SearchResultsViewTemplate>
+                        
+                        <local:PanesTemplateSelector.SymbolInspectorViewTemplate>
+                            <DataTemplate> 
+                                <JadeCtrlsInspectSymbol:SymbolInspector/>                                
+                            </DataTemplate>
+                        </local:PanesTemplateSelector.SymbolInspectorViewTemplate>
+
                         
                         <local:PanesTemplateSelector.OutputViewTemplate>
                             <DataTemplate> 
@@ -118,8 +104,7 @@
                         <local:PanesStyleSelector.DocumentStyle>
                             <Style TargetType="{x:Type avalonDock:LayoutItem}">
                                 <Setter Property="ContentId" Value="{Binding Model.ContentId}"/>
-                                <Setter Property="Title" Value="{Binding Model.Title}"/>
-                                
+                                <Setter Property="Title" Value="{Binding Model.Title}"/>                                
                                 <Setter Property="Title">
                                     <Setter.Value>
                                         <MultiBinding Converter="{StaticResource TabFileNameConverter}">
@@ -142,13 +127,18 @@
                     <local:LayoutInitializer/>
                 </avalonDock:DockingManager.LayoutUpdateStrategy>
                 
+                                
                 <avalonDock:LayoutRoot>
-                        <avalonDock:LayoutPanel Orientation="Horizontal">                        
-                            <avalonDock:LayoutAnchorablePane Name="LeftToolPanel" DockWidth="150"/>
+                    
+                        <avalonDock:LayoutPanel Orientation="Horizontal">                                                        
+                            
+                                <avalonDock:LayoutAnchorablePane Name="LeftToolPanel" DockWidth="150" />
+                            
                             <avalonDock:LayoutPanel Orientation="Vertical">
                                 <avalonDock:LayoutDocumentPane/>
-                                <avalonDock:LayoutAnchorablePane Name="LowerToolPanel" DockHeight="150"/>
+                                <avalonDock:LayoutAnchorablePane Name="LowerToolPanel" DockHeight="150"/>                                
                             </avalonDock:LayoutPanel>
+                            
                         </avalonDock:LayoutPanel>
                 </avalonDock:LayoutRoot>                    
             </avalonDock:DockingManager>

@@ -82,6 +82,8 @@ namespace JadeCore
         public static readonly RoutedCommand SearchInFiles = new RoutedCommand("SearchInFiles", typeof(object));
         public static readonly RoutedCommand SearchDisplayNext = new RoutedCommand("SearchDisplayNext", typeof(object));
         public static readonly RoutedCommand SearchDisplayPrev = new RoutedCommand("SearchDisplayPrev", typeof(object));
+
+        public static readonly RoutedCommand DisplaySymbolInspector = new RoutedCommand("DisplaySymbolInspector", typeof(object));
        
         static Commands()
         {
@@ -181,6 +183,9 @@ namespace JadeCore
 
         void OnDisplayPrevSearchResult();
         bool CanDisplayPrevSearchResult();
+
+        //void OnDisplaySymbolInspector(FilePath sourceFile, FilePath symbolPath, int offset);
+        void OnDisplaySymbolInspector(CppSymbols.ISymbolCursor symbol);
 
         #endregion
     }

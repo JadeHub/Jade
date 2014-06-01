@@ -12,6 +12,7 @@ namespace JadeGui.ViewModels
     using JadeControls.OutputControl.ViewModel;
     using JadeControls.SearchResultsControl.ViewModel;
     using JadeControls.Workspace.ViewModel;
+    using JadeControls.SymbolInspector;
     using JadeUtils.IO;
     
     /// <summary>
@@ -21,29 +22,38 @@ namespace JadeGui.ViewModels
     {
         #region Data
 
+        //Command adaptor
         private JadeCommandAdaptor _commands;
 
+        //Workspace
         private JadeCore.Workspace.IWorkspaceController _workspaceController;
         private WorkspaceViewModel _currentWorkspace;
         
+        //Editor
         private EditorControlViewModel _editorViewModel;
         private JadeCore.IEditorController _editorController;
 
-        private JadeCore.Output.IOutputController _outputController;
+        //Output window
         private OutputViewModel _outputViewModel;
 
+        //Search results window
         private JadeCore.Search.ISearchController _searchController;
         private SearchResultsPaneViewModel _seachResultsViewModel;
+        
+        //Symbol Inspector window
+        private SymbolInspectorPaneViewModel _symbolInspectorViewModel;
 
-        private Window _view;
+        //Main window
+        private DockingGui.MainWindow _view;
 
+        //Set of tool windows
         private ObservableCollection<JadeControls.Docking.ToolPaneViewModel> _toolWindows;
 
         #endregion
 
         #region Contsructor
 
-        public JadeViewModel(Window view)
+        public JadeViewModel(DockingGui.MainWindow view)
         {
             _workspaceController = JadeCore.Services.Provider.WorkspaceController;
             //Todo - Workspace viewmodel to track WorkspaceController changes
@@ -54,11 +64,12 @@ namespace JadeGui.ViewModels
             _editorController.ActiveDocumentChanged += OnEditorControllerActiveDocumentChanged;
             _editorViewModel = new JadeControls.EditorControl.ViewModel.EditorControlViewModel(_editorController, new JadeControls.EditorControl.ViewModel.DocumentViewModelFactory());
 
-            _outputController = JadeCore.Services.Provider.OutputController;
-            _outputViewModel = new OutputViewModel(_outputController);
+            _outputViewModel = new OutputViewModel(JadeCore.Services.Provider.OutputController);
 
             _searchController = JadeCore.Services.Provider.SearchController;
             _seachResultsViewModel = new SearchResultsPaneViewModel(_searchController);
+
+            _symbolInspectorViewModel = new SymbolInspectorPaneViewModel(_editorController);
 
             _commands = new JadeCommandAdaptor(this);
             _view = view;
@@ -67,6 +78,7 @@ namespace JadeGui.ViewModels
             _toolWindows.Add(_seachResultsViewModel);
             _toolWindows.Add(_outputViewModel);
             _toolWindows.Add(_currentWorkspace);
+            _toolWindows.Add(_symbolInspectorViewModel);
             _currentWorkspace.IsVisible = false;
 
             UpdateWindowTitle();
@@ -75,6 +87,16 @@ namespace JadeGui.ViewModels
         public void Dispose()
         {
             _editorController.Dispose();
+        }
+
+        public void LoadMainWindowLayout()
+        {
+            DockingGui.LayoutReaderWriter.Read(_view.dockManager, "loutout.dat");
+        }
+
+        public void SaveMainWindowLayout()
+        {
+            DockingGui.LayoutReaderWriter.Write(_view.dockManager, "loutout.dat");
         }
 
         private void OnEditorControllerActiveDocumentChanged(JadeCore.IEditorDoc newValue, JadeCore.IEditorDoc oldValue)
@@ -546,7 +568,12 @@ namespace JadeGui.ViewModels
         {
             return _searchController.Current != null && _searchController.Current.Results.Count > 1;
         }
-       
+
+        public void OnDisplaySymbolInspector(JadeCore.CppSymbols.ISymbolCursor symbol)
+        {
+            _symbolInspectorViewModel.SymbolCursor = symbol;
+        }
+
         #endregion
 
         #region private Methods

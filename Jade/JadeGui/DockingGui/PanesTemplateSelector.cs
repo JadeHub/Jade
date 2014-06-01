@@ -6,6 +6,7 @@ using JadeControls.EditorControl.ViewModel;
 using JadeControls.OutputControl.ViewModel;
 using JadeControls.SearchResultsControl.ViewModel;
 using JadeControls.Workspace.ViewModel;
+using JadeControls.SymbolInspector;
 
 namespace JadeGui.DockingGui
 {   
@@ -19,7 +20,13 @@ namespace JadeGui.DockingGui
 
         }
         
-        public DataTemplate DocumentViewTemplate
+        public DataTemplate SourceDocumentViewTemplate
+        {
+            get;
+            set;
+        }
+
+        public DataTemplate HeaderDocumentViewTemplate
         {
             get;
             set;
@@ -43,12 +50,21 @@ namespace JadeGui.DockingGui
             set;
         }
 
+        public DataTemplate SymbolInspectorViewTemplate
+        {
+            get;
+            set;
+        }
+
         public override System.Windows.DataTemplate SelectTemplate(object item, System.Windows.DependencyObject container)
         {
             var itemAsLayoutContent = item as LayoutContent;
-            
-            if (item is DocumentViewModel)
-                return DocumentViewTemplate;
+
+            if (item is HeaderDocumentViewModel)
+                return HeaderDocumentViewTemplate;
+
+            if (item is SourceDocumentViewModel)
+                return SourceDocumentViewTemplate;
 
             if (item is WorkspaceViewModel)
                 return WorkspaceViewTemplate;
@@ -58,6 +74,9 @@ namespace JadeGui.DockingGui
 
             if (item is SearchResultsPaneViewModel)
                 return SearchResultsViewTemplate;
+
+            if (item is SymbolInspectorPaneViewModel)
+                return SymbolInspectorViewTemplate;
             
             return base.SelectTemplate(item, container);
         }

@@ -44,6 +44,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CppCodeViewModels\CurosrViewModel.cs" />
     <Compile Include="Docking\PaneViewModel.cs" />
     <Compile Include="Docking\ToolPaneViewModel.cs" />
     <Compile Include="EditorControl\CodeEditor.cs" />
@@ -51,12 +52,19 @@
     <Compile Include="Dialogs\SaveFiles.xaml.cs">
       <DependentUpon>SaveFiles.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EditorControl\HeaderDocumentControl.xaml.cs">
+      <DependentUpon>HeaderDocumentControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="EditorControl\Highlighting\Underliner.cs" />
     <Compile Include="EditorControl\Highlighting\HighlightedRange.cs" />
     <Compile Include="EditorControl\Highlighting\IHighlighter.cs" />
+    <Compile Include="EditorControl\SourceDocumentControl.xaml.cs">
+      <DependentUpon>SourceDocumentControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="EditorControl\ViewModel\Documents\CodeDocumentViewModelBase.cs" />
     <Compile Include="EditorControl\ViewModel\Documents\Commands\EditorCommand.cs" />
     <Compile Include="EditorControl\ViewModel\Documents\Commands\FindAllReferencesCommand.cs" />
+    <Compile Include="EditorControl\ViewModel\Documents\Commands\InspectSymbol.cs" />
     <Compile Include="EditorControl\ViewModel\Documents\HeaderDocumentViewModel.cs" />
     <Compile Include="EditorControl\ViewModel\Documents\Commands\SourceJumpToCommand.cs" />
     <Compile Include="EditorControl\ViewModel\EditorTabControl\DocViewModelFactory.cs" />
@@ -80,6 +88,10 @@
       <DependentUpon>SearchCurrentFileDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Search\SearchViewModel.cs" />
+    <Compile Include="Symbol Inspector\SymbolInspcetorViewModel.cs" />
+    <Compile Include="Symbol Inspector\SymbolInspector.xaml.cs">
+      <DependentUpon>SymbolInspector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Workspace Explorer\AddProjectFileWindow\AddProjectFileViewModel.cs" />
     <Compile Include="Workspace Explorer\AddProjectFileWindow\AddProjectFileWindow.xaml.cs">
       <DependentUpon>AddProjectFileWindow.xaml</DependentUpon>
@@ -112,6 +124,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
+    <Page Include="EditorControl\HeaderDocumentControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditorControl\SourceDocumentControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Output Control\OutputControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -121,6 +141,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Search\SearchCurrentFile\SearchCurrentFileDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Symbol Inspector\SymbolInspector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -170,6 +194,7 @@
   <ItemGroup>
     <EmbeddedResource Include="EditorControl\cpp_rules.xshd" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

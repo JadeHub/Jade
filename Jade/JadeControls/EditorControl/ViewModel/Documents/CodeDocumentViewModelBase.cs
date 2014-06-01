@@ -29,6 +29,8 @@ namespace JadeControls.EditorControl.ViewModel
 
     public abstract class CodeDocumentViewModelBase : DocumentViewModel
     {
+        private Commands.InspectSymbolCommand _inspectSymbolCommand;
+
         internal CodeDocumentViewModelBase(IEditorDoc doc)
             : base(doc)
         {
@@ -39,6 +41,8 @@ namespace JadeControls.EditorControl.ViewModel
             {
                 DiagnosticHighlighter.ProjectItem = Index.FindProjectItem(Document.File.Path);
                 Index.ItemUpdated += ProjectIndexItemUpdated;
+
+                _inspectSymbolCommand = new Commands.InspectSymbolCommand(this, doc.File.Path, doc.Project.Index);
             }
         }
 
@@ -85,7 +89,7 @@ namespace JadeControls.EditorControl.ViewModel
             view.TextArea.TextView.BackgroundRenderers.Add(DiagnosticHighlighter.Renderer);
             view.TextArea.TextView.BackgroundRenderers.Add(SearchHighlighter.Renderer);
             view.KeyDown += OnViewKeyDown;
-            //Underliner.Redraw();
+            //Underliner.Redraw();            
         }
 
         void OnViewKeyDown(object sender, KeyEventArgs e)
@@ -99,6 +103,11 @@ namespace JadeControls.EditorControl.ViewModel
         public string Path
         {
             get { return Document.File.Path.Str; }
+        }
+
+        public ICommand InspectSymbolCommand
+        {
+            get { return _inspectSymbolCommand; }
         }
     }
 }

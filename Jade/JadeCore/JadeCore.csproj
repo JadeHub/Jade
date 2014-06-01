@@ -47,6 +47,7 @@
     <Compile Include="Collections\ObservableCollectionTransform.cs" />
     <Compile Include="Collections\Observable.cs" />
     <Compile Include="Commands.cs" />
+    <Compile Include="Cpp Symbols\SymbolCursor.cs" />
     <Compile Include="Editor\EditorController.cs" />
     <Compile Include="Editor\IEditorDoc.cs" />
     <Compile Include="Editor\SourceDocument.cs" />
@@ -75,7 +76,6 @@
     <Compile Include="Search\ISearchResult.cs" />
     <Compile Include="Search\SearchBase.cs" />
     <Compile Include="Search\SearchController.cs" />
-    <Compile Include="ContentProvider\IContentProvider.cs" />
     <Compile Include="TextDocument\ITextDocument.cs" />
     <Compile Include="TextDocument\ITextDocumentCache.cs" />
     <Compile Include="TextDocument\TextDocument.cs" />

@@ -36,5 +36,39 @@ namespace JadeControls.EditorControl.ViewModel
         {
             get { return _findAllRefsCommand; }
         }
+
+        public LibClang.Cursor CurrentCppCursor
+        {
+            get
+            {
+                if (HasIndex)
+                {
+                    CppCodeBrowser.ISourceFile fileIndex = Index.FindSourceFile(Document.File.Path);
+                    if (fileIndex != null)
+                        return fileIndex.GetCursorAt(Document.File.Path, CaretOffset);
+                }
+                return null;
+            }
+        }
+
+        protected override void OnSetView(CodeEditor view)
+        {
+            base.OnSetView(view);
+            /*
+            view.CommandBindings.Add(new CommandBinding(JadeCore.Commands.DisplaySymbolInspector,
+                                        delegate(object target, ExecutedRoutedEventArgs args)
+                                        {
+                                 //           args.Parameter = 5;
+                                            if (HasIndex)
+                                            {
+                                            }
+                                            //args.Handled = true;
+                                        },
+                                        delegate(object target, CanExecuteRoutedEventArgs args)
+                                        {
+                                            args.CanExecute = true;
+                                            args.Handled = true;
+                                        }));*/
+        }
     }
 }
