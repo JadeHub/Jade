@@ -6,11 +6,6 @@ using System.Threading.Tasks;
 
 namespace JadeCore.CppSymbols
 {
-    public interface ISymbolCursor
-    {
-        LibClang.Cursor Cursor { get; }
-    }
-
     public abstract class SymbolCursorBase : ISymbolCursor
     {
         private LibClang.Cursor _cursor;
@@ -24,12 +19,19 @@ namespace JadeCore.CppSymbols
         {
             get { return _cursor; }
         }
-    }
 
-    public class ClassSymbol : SymbolCursorBase
-    {
-        public ClassSymbol(LibClang.Cursor cur)
-            :base(cur)
-        { }
+        public virtual string Spelling
+        {
+            get { return Cursor.Spelling; }
+        }
+        
+        protected IEnumerable<T> GetType<T>(LibClang.CursorKind kind)
+        {
+            return from c in _cursor.Children
+                   where c.Kind == kind
+                   select
+                       (T)JadeCore.Services.Provider.SymbolCursorFactory.Create(c);
+                       ;
+        }
     }
 }

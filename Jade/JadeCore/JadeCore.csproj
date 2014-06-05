@@ -47,7 +47,12 @@
     <Compile Include="Collections\ObservableCollectionTransform.cs" />
     <Compile Include="Collections\Observable.cs" />
     <Compile Include="Commands.cs" />
-    <Compile Include="Cpp Symbols\SymbolCursor.cs" />
+    <Compile Include="Cpp Symbols\ClassDeclarationSymbol.cs" />
+    <Compile Include="Cpp Symbols\ISymbolCursor.cs" />
+    <Compile Include="Cpp Symbols\ISymbolCursorFactory.cs" />
+    <Compile Include="Cpp Symbols\MethodDeclarationSymbol.cs" />
+    <Compile Include="Cpp Symbols\SymbolCursorBase.cs" />
+    <Compile Include="Cpp Symbols\SymbolCursorFactory.cs" />
     <Compile Include="Editor\EditorController.cs" />
     <Compile Include="Editor\IEditorDoc.cs" />
     <Compile Include="Editor\SourceDocument.cs" />

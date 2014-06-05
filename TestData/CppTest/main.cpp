@@ -29,6 +29,11 @@ void SomeClass::Fn()
 //	int k = sam * 2;		
 }
 
+double SomeClass::Fn2(int i, char* s)
+{
+	return (double)i;
+}
+
 }
 
 Test::ClassA SomeNewFucntion()

@@ -56,8 +56,6 @@ namespace JadeCore.Search
             
             foreach(CppCodeBrowser.ISourceFile sf in _projectIndex.SourceFiles)
             {
-                
-                
                 Cursor c = null;
                 if(loc != null)
                     c = sf.TranslationUnit.GetCursorAt(loc.Path.Str, loc.Offset);

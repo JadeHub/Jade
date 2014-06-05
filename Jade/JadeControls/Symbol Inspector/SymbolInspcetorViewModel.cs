@@ -10,6 +10,8 @@ namespace JadeControls.SymbolInspector
 {
     public class SymbolInspectorPaneViewModel : JadeControls.Docking.ToolPaneViewModel
     {
+        private SymbolViewModelBase _symbol;
+
         public SymbolInspectorPaneViewModel(IEditorController editorController)
         {
             Title = "Symbol Inspector";
@@ -18,8 +20,19 @@ namespace JadeControls.SymbolInspector
 
         public JadeCore.CppSymbols.ISymbolCursor SymbolCursor
         {
-            get;
-            set;
+            set
+            {
+                if (_symbol == null || _symbol.SymbolCursor != value)
+                {
+                    _symbol = new ClassDeclarationViewModel(value as JadeCore.CppSymbols.ClassDeclarationSymbol);
+                    OnPropertyChanged("Symbol");
+                }
+            }
+        }
+
+        public SymbolViewModelBase Symbol
+        {
+            get { return _symbol; }
         }
     }
 }

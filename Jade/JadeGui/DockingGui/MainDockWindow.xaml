@@ -47,37 +47,42 @@
                 <avalonDock:DockingManager.LayoutItemTemplateSelector>
                     <local:PanesTemplateSelector>
                         
+                        <!-- C++ Header file documents -->
                         <local:PanesTemplateSelector.HeaderDocumentViewTemplate>
                             <DataTemplate>
                                 <JadeCtrlsEditor:HeaderDocumentControl/>
                             </DataTemplate>
                         </local:PanesTemplateSelector.HeaderDocumentViewTemplate>
                         
+                        <!-- C++ Source file documents -->
                         <local:PanesTemplateSelector.SourceDocumentViewTemplate>
                             <DataTemplate>
                                 <JadeCtrlsEditor:SourceDocumentControl/>
                             </DataTemplate>
                         </local:PanesTemplateSelector.SourceDocumentViewTemplate>
                         
+                        <!-- Workspace Tree tool window -->
                         <local:PanesTemplateSelector.WorkspaceViewTemplate>
                             <DataTemplate> 
                                 <JadeCtrlsWorkspace:WorkspaceCtrl />
                             </DataTemplate>
                         </local:PanesTemplateSelector.WorkspaceViewTemplate>
                         
+                        <!-- Search Results tool window -->
                         <local:PanesTemplateSelector.SearchResultsViewTemplate>
                             <DataTemplate> 
                                 <JadeCtrlsSearchResults:SearchResultsControl/>                                
                             </DataTemplate>
                         </local:PanesTemplateSelector.SearchResultsViewTemplate>
                         
+                        <!-- Symbol Inspector tool window -->
                         <local:PanesTemplateSelector.SymbolInspectorViewTemplate>
                             <DataTemplate> 
                                 <JadeCtrlsInspectSymbol:SymbolInspector/>                                
                             </DataTemplate>
                         </local:PanesTemplateSelector.SymbolInspectorViewTemplate>
-
                         
+                        <!-- Output tool window -->
                         <local:PanesTemplateSelector.OutputViewTemplate>
                             <DataTemplate> 
                                 <JadeCtrlsOutput:OutputControl/>                                
@@ -88,8 +93,7 @@
                 </avalonDock:DockingManager.LayoutItemTemplateSelector>
                 
                 <avalonDock:DockingManager.LayoutItemContainerStyleSelector>
-                    <local:PanesStyleSelector>
-                        
+                    <local:PanesStyleSelector>                        
                         <local:PanesStyleSelector.ToolStyle>
                             <Style TargetType="{x:Type avalonDock:LayoutAnchorableItem}">
                                 <Setter Property="ContentId" Value="{Binding Model.ContentId}"/>
@@ -126,21 +130,82 @@
                 <avalonDock:DockingManager.LayoutUpdateStrategy>
                     <local:LayoutInitializer/>
                 </avalonDock:DockingManager.LayoutUpdateStrategy>
-                
-                                
-                <avalonDock:LayoutRoot>
-                    
-                        <avalonDock:LayoutPanel Orientation="Horizontal">                                                        
-                            
-                                <avalonDock:LayoutAnchorablePane Name="LeftToolPanel" DockWidth="150" />
-                            
+                                                
+                <avalonDock:LayoutRoot>                    
+                        <avalonDock:LayoutPanel Orientation="Horizontal">                                                                                    
+                            <avalonDock:LayoutAnchorablePane Name="LeftToolPanel" DockWidth="150" />                            
                             <avalonDock:LayoutPanel Orientation="Vertical">
                                 <avalonDock:LayoutDocumentPane/>
                                 <avalonDock:LayoutAnchorablePane Name="LowerToolPanel" DockHeight="150"/>                                
-                            </avalonDock:LayoutPanel>
+                            </avalonDock:LayoutPanel>                            
+                        </avalonDock:LayoutPanel>                        
+                </avalonDock:LayoutRoot>     
                             
-                        </avalonDock:LayoutPanel>
-                </avalonDock:LayoutRoot>                    
+                
+                <!--
+        <xcad:LayoutRoot x:Name="_layoutRoot">
+            <xcad:LayoutPanel Orientation="Horizontal">
+               <xcad:LayoutAnchorablePane DockWidth="200">
+                  <xcad:LayoutAnchorable ContentId="properties" Title="Properties" CanHide="False" CanClose="False"
+                                            AutoHideWidth="240"
+                                         IconSource="../Images/property-blue.png">
+                     <xctk:PropertyGrid NameColumnWidth="110"
+                        SelectedObject="{Binding ElementName=_layoutRoot, Path=LastFocusedDocument.Content}"/>
+                  </xcad:LayoutAnchorable>
+               </xcad:LayoutAnchorablePane>
+               <xcad:LayoutDocumentPaneGroup >
+                  <xcad:LayoutDocumentPane>
+                     <xcad:LayoutDocument ContentId="document1" Title="Document 1" IconSource="../Images/document.png" >
+                           <Button Content="Document 1 Content" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                     </xcad:LayoutDocument>
+                     <xcad:LayoutDocument ContentId="document2" Title="Document 2" IconSource="../Images/document.png">
+                        <TextBox Text="Document 2 Content" AcceptsReturn="True"/>
+                     </xcad:LayoutDocument>
+                  </xcad:LayoutDocumentPane>
+               </xcad:LayoutDocumentPaneGroup >
+               <xcad:LayoutAnchorablePaneGroup DockWidth="125">
+                  <xcad:LayoutAnchorablePane>
+                     <xcad:LayoutAnchorable ContentId="alarms" Title="Alarms" IconSource="../Images/alarm-clock-blue.png" >
+                        <ListBox>
+                           <s:String>Alarm 1</s:String>
+                           <s:String>Alarm 2</s:String>
+                           <s:String>Alarm 3</s:String>
+                        </ListBox>
+                     </xcad:LayoutAnchorable>
+                     <xcad:LayoutAnchorable ContentId="journal" Title="Journal" >
+                        <RichTextBox>
+                           <FlowDocument>
+                              <Paragraph FontSize="14" FontFamily="Segoe">
+                                 This is the content of the Journal Pane.
+                                 <LineBreak/>
+                                 A
+                                 <Bold>RichTextBox</Bold> has been added here
+                              </Paragraph>
+                           </FlowDocument>
+                        </RichTextBox>
+                     </xcad:LayoutAnchorable>
+                  </xcad:LayoutAnchorablePane>
+               </xcad:LayoutAnchorablePaneGroup>
+            </xcad:LayoutPanel>
+
+            <xcad:LayoutRoot.LeftSide>
+               <xcad:LayoutAnchorSide>
+                  <xcad:LayoutAnchorGroup>
+                     <xcad:LayoutAnchorable Title="Agenda" ContentId="agenda" IconSource="../Images/address-book-open.png">
+                        <TextBlock Text="Agenda Content" Margin="10" FontSize="18" FontWeight="Black" TextWrapping="Wrap"/>
+                     </xcad:LayoutAnchorable>
+                     <xcad:LayoutAnchorable Title="Contacts" ContentId="contacts" IconSource="../Images/address-bookpencil.png" >
+                        <TextBlock Text="Contacts Content" Margin="10" FontSize="18" FontWeight="Black" TextWrapping="Wrap"/>
+                     </xcad:LayoutAnchorable>
+                  </xcad:LayoutAnchorGroup>
+               </xcad:LayoutAnchorSide>
+            </xcad:LayoutRoot.LeftSide>
+         </xcad:LayoutRoot>
+      </xcad:DockingManager>
+   </Grid>
+</local:DemoView>
+                -->
+                
             </avalonDock:DockingManager>
         </Grid>
     </DockPanel>

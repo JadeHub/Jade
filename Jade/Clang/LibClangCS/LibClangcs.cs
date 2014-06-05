@@ -262,6 +262,34 @@ namespace LibClang
             }
         };
 
+        internal enum CXCallingConv
+        {
+            Default = 0,
+            C = 1,
+            X86StdCall = 2,
+            X86FastCall = 3,
+            X86ThisCall = 4,
+            X86Pascal = 5,
+            AAPCS = 6,
+            AAPCS_VFP = 7,
+            PnaclCall = 8,
+            IntelOclBicc = 9,
+            X86_64Win64 = 10,
+            X86_64SysV = 11,
+            Invalid = 100,
+            Unexposed = 200
+        };
+
+        internal enum CXRefQualifierKind
+        {
+            /// No ref-qualifier was provided.
+            None = 0,
+            /// An lvalue ref-qualifier was provided (\c &).
+            LValue,
+            /// An rvalue ref-qualifier was provided (\c &&).
+            RValue
+        };
+        
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
         public static extern uint clang_equalTypes(CXType a, CXType b);
 
@@ -283,7 +311,58 @@ namespace LibClang
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
         public static extern CXType clang_getResultType(CXType t);
 
-        #endregion
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        public static extern uint clang_isConstQualifiedType(CXType t);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        public static extern uint clang_isVolatileQualifiedType(CXType t);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        public static extern uint clang_isRestrictQualifiedType(CXType t);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        public static extern CXCallingConv clang_getFunctionTypeCallingConv(CXType t);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int clang_getNumArgTypes(CXType t);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        public static extern CXType clang_getArgType(CXType t, uint i);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        public static extern uint clang_isFunctionTypeVariadic(CXType t);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        public static extern uint clang_isPODType(CXType t);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        public static extern CXType clang_getElementType(CXType t);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        public static extern Int64 clang_getNumElements(CXType t);
+          
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        public static extern CXType clang_getArrayElementType(CXType t);
+         
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        public static extern Int64 clang_getArraySize(CXType t);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        public static extern CXRefQualifierKind clang_Type_getCXXRefQualifier(CXType t);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        public static extern Int64 clang_Type_getOffsetOf(CXType t, string s);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        public static extern Int64 clang_Type_getSizeOf(CXType t);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        public static extern CXType clang_Type_getClassType(CXType t);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        public static extern Int64 clang_Type_getAlignOf(CXType t);
+
+         #endregion
 
         #region CXCursor
 

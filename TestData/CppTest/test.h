@@ -34,6 +34,7 @@ public:
 	int ii;
 
 	void Fn();
+	double Fn2(int i, char* s);
 
 	inline bool InlinedMethod()
 	{
@@ -52,7 +53,7 @@ public:
 	ClassA();
 };
 
-class ClassB
+class ClassB : public ClassA
 {
 };
 

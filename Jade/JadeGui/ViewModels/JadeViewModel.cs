@@ -572,6 +572,7 @@ namespace JadeGui.ViewModels
         public void OnDisplaySymbolInspector(JadeCore.CppSymbols.ISymbolCursor symbol)
         {
             _symbolInspectorViewModel.SymbolCursor = symbol;
+            _symbolInspectorViewModel.IsSelected = true;
         }
 
         #endregion

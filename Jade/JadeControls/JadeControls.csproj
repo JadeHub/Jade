@@ -88,10 +88,18 @@
       <DependentUpon>SearchCurrentFileDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Search\SearchViewModel.cs" />
+    <Compile Include="Symbol Inspector\ClassDeclarationInspector.xaml.cs">
+      <DependentUpon>ClassDeclarationInspector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Symbol Inspector\SymbolGroupControl.xaml.cs">
+      <DependentUpon>SymbolGroupControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Symbol Inspector\SymbolInspcetorViewModel.cs" />
     <Compile Include="Symbol Inspector\SymbolInspector.xaml.cs">
       <DependentUpon>SymbolInspector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Symbol Inspector\Symbols\ClassDeclarationViewModel.cs" />
+    <Compile Include="Symbol Inspector\Symbols\SymbolGroupViewModel.cs" />
     <Compile Include="Workspace Explorer\AddProjectFileWindow\AddProjectFileViewModel.cs" />
     <Compile Include="Workspace Explorer\AddProjectFileWindow\AddProjectFileWindow.xaml.cs">
       <DependentUpon>AddProjectFileWindow.xaml</DependentUpon>
@@ -141,6 +149,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Search\SearchCurrentFile\SearchCurrentFileDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Symbol Inspector\ClassDeclarationInspector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Symbol Inspector\SymbolGroupControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

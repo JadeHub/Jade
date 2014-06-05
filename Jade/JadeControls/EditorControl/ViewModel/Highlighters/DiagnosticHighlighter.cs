@@ -30,22 +30,6 @@ namespace JadeControls.EditorControl.ViewModel
             get { return _highlighter; }
         }
 
-        private IEnumerable<CppCodeBrowser.ISourceFile> GetSources()
-        {
-            if (_projectItem is CppCodeBrowser.ISourceFile)
-            {
-                List<CppCodeBrowser.ISourceFile> temp = new List<CppCodeBrowser.ISourceFile>();
-                temp.Add(_projectItem as CppCodeBrowser.ISourceFile);
-                return temp;
-            }
-            else if (_projectItem is CppCodeBrowser.IHeaderFile)
-            {
-                return (_projectItem as CppCodeBrowser.IHeaderFile).SourceFiles;
-            }
-            Debug.Assert(false);
-            return null;
-        }
-
         private void HighlightDiagnostics()
         {
             _highlighter.Clear();
