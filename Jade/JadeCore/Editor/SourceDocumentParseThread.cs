@@ -277,7 +277,7 @@ namespace JadeCore.Editor
                 {
                     _stopEvent.Set();
                     _activeDocThread.Join();
-                    _workerThread.Join();                    
+                    _workerThread.Join();
                 }
             }
         }

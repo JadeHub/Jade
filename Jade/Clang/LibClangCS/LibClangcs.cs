@@ -59,7 +59,7 @@ namespace LibClang
         {
             internal string Filename;
             internal string Contents;
-            internal ulong Length;
+            internal UInt32 Length;
         }
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]

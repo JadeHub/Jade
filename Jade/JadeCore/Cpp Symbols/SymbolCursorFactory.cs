@@ -7,7 +7,7 @@ namespace JadeCore.CppSymbols
     {
         public ClassDeclarationSymbol CreateClassDefinition(LibClang.Cursor c)
         {
-            Debug.Assert(c.Kind == LibClang.CursorKind.ClassDecl);
+            Debug.Assert(c.Kind == LibClang.CursorKind.ClassDecl || c.Kind == LibClang.CursorKind.StructDecl);
             return new ClassDeclarationSymbol(c);
         }
 
@@ -25,7 +25,7 @@ namespace JadeCore.CppSymbols
 
         public ISymbolCursor Create(LibClang.Cursor c)
         {
-            if (c.Kind == LibClang.CursorKind.ClassDecl)
+            if (c.Kind == LibClang.CursorKind.ClassDecl || c.Kind == LibClang.CursorKind.StructDecl)
                 return CreateClassDefinition(c);
             else if (c.Kind == LibClang.CursorKind.CXXMethod)
                 return CreateMethodDefinition(c);
@@ -36,7 +36,7 @@ namespace JadeCore.CppSymbols
 
         public bool CanCreate(LibClang.Cursor c)
         {
-            return c.Kind == LibClang.CursorKind.ClassDecl;
+            return c.Kind == LibClang.CursorKind.ClassDecl || c.Kind == LibClang.CursorKind.StructDecl;
         }
     }
 }

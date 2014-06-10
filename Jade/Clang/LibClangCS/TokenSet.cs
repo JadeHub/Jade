@@ -84,7 +84,8 @@ namespace LibClang
             {
                 Library.Token tokHandle = handle.GetToken(i);
                 Token tok = new Token(tokHandle, _tu);
-                _tokens.Add(tok.Location.Offset, tok);
+                if(range.Contains(tok.Location.Offset))
+                    _tokens.Add(tok.Location.Offset, tok);
             }
         }
 

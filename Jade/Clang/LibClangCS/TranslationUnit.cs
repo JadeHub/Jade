@@ -59,14 +59,6 @@ namespace LibClang
 
         #region Lifetime
 
-        internal TranslationUnit(Index idx, string filename, ITranslationUnitItemStore itemStore)
-        {
-            _index = idx;
-            _filename = filename;
-            _itemStore = itemStore;
-            _headerFiles = new HashSet<HeaderInfo>();
-        }
-
         public TranslationUnit(Index idx, string filename)
         {
             _index = idx;
@@ -81,7 +73,7 @@ namespace LibClang
             {
                 DisposeDiagnosticSet();
                 Library.clang_disposeTranslationUnit(Handle);
-                Handle = IntPtr.Zero;
+                _handle = IntPtr.Zero;
                 GC.SuppressFinalize(this);
             }
         }
@@ -99,19 +91,11 @@ namespace LibClang
 
         #region Public Methods
 
-        private void ResetState()
-        {
-            _itemStore.Clear();
-            _headerFiles.Clear();
-            DisposeDiagnosticSet();
-        }
-
         public bool Parse(string[] cmdLineParams, IList<Tuple<string, string>> unsavedFiles)
         {
-            ResetState();
             if (!System.IO.File.Exists(Filename))
             {
-                throw new System.IO.FileNotFoundException("Couldn't find input file.", Filename);
+                return false;
             }
 
             Library.UnsavedFile[] unsaved = new Library.UnsavedFile[unsavedFiles.Count];
@@ -124,37 +108,17 @@ namespace LibClang
                     Library.UnsavedFile usf = new Library.UnsavedFile();
                     usf.Filename = pathContent.Item1;
                     usf.Contents = pathContent.Item2;
-                    usf.Length = (ulong)pathContent.Item2.Length;
+                    usf.Length = (UInt32) pathContent.Item2.Length;
                     unsaved[i] = usf;
                     i++;
                 }
             }
-
-            if (Valid)
-                return Reparse();
 
             Handle = Library.clang_parseTranslationUnit(_index.Handle, Filename,
                                                     cmdLineParams, cmdLineParams != null ? cmdLineParams.Length : 0,
                                                     unsaved.Length > 0 ? unsaved : null,
                                                     (uint)unsaved.Length,
                                                     (int)TranslationUnitFlags.DetailedPreprocessingRecord);
-            if (!Valid)
-            {
-                ResetState();
-            }
-            int d = DiagSet.Count;
-            return Valid;
-        }
-
-        private bool Reparse()
-        {
-            Debug.Assert(Valid);
-            if (Library.clang_reparseTranslationUnit(Handle, 0, null, 0) != 0)
-            {
-                _itemStore.Clear();
-                Library.clang_disposeTranslationUnit(Handle);
-                Handle = IntPtr.Zero;
-            }
             return Valid;
         }
 
@@ -310,7 +274,7 @@ namespace LibClang
 
         public bool Valid
         {
-            get { return Handle != IntPtr.Zero; }
+            get { return _handle != IntPtr.Zero; }
         }
 
         public IEnumerable<Diagnostic> Diagnostics
@@ -333,10 +297,16 @@ namespace LibClang
             }
         }
 
+        private IntPtr _handle;
+
         internal IntPtr Handle
         {
-            get;
-            private set;
+            get 
+            {
+                Debug.Assert(Valid);
+                return _handle; 
+            }
+            private set { _handle = value; }
         }
         
         #endregion

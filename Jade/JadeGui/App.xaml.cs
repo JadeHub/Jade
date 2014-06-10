@@ -66,6 +66,12 @@ namespace JadeGui
 
             //viewModel.OnOpenWorkspace(@"C:\Code\GitHub\JadeMaster\TestData\CppTest\CppTest.jws");
             _viewModel.OnOpenWorkspace(@"C:\Code\GitHub\JadeMaster\TestData\CppTest\CppTest\CppTest.sln");
+
+            JadeUtils.IO.IFileHandle file = JadeCore.Services.Provider.FileService.MakeFileHandle(@"C:\Code\GitHub\JadeMaster\TestData\CppTest\main.cpp");
+            if(file != null)
+                _viewModel.OnOpenFile(file);
+
+            //_viewModel.OnOpenDocument(new JadeCore.OpenFileCommandParams())
             //viewModel.OnOpenWorkspace(@"C:\Code\clang\build\llvm.sln");
         }
 

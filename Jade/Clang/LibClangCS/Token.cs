@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,17 +39,29 @@ namespace LibClang
 
         public string Spelling
         {
-            get { return _spelling ?? (_spelling = Library.clang_getTokenSpelling(_tu.Handle, Handle).ManagedString); }
+            get { return _spelling ?? (_spelling = Library.clang_getTokenSpelling(_tu.Handle, Handle).ManagedString); }        
+        }
+
+        private SourceLocation CreateLocation()
+        {
+            Debug.Assert(_tu.Handle != IntPtr.Zero);
+            return _tu.ItemFactory.CreateSourceLocation(Library.clang_getTokenLocation(_tu.Handle, Handle));
         }
 
         public SourceLocation Location
         {
-            get { return _location ??(_location = _tu.ItemFactory.CreateSourceLocation(Library.clang_getTokenLocation(_tu.Handle, Handle))); }
+            get { return _location ??(_location = CreateLocation()); }
+        }
+
+        private SourceRange CreateExtent()
+        {
+            Debug.Assert(_tu.Handle != IntPtr.Zero);
+            return _tu.ItemFactory.CreateSourceRange(Library.clang_getTokenExtent(_tu.Handle, Handle));
         }
 
         public SourceRange Extent
         {
-            get { return _extent ?? (_extent = _tu.ItemFactory.CreateSourceRange(Library.clang_getTokenExtent(_tu.Handle, Handle))); }
+            get { return _extent ?? (_extent = CreateExtent()); }
         }
 
         #endregion

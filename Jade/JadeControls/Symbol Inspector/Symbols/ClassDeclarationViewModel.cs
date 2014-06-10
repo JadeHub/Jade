@@ -61,6 +61,12 @@ namespace JadeControls.SymbolInspector
             {
                 _methodGroup.AddSymbol(method);
             }
+
+            foreach(JadeCore.CppSymbols.ClassDeclarationSymbol b in symbol.BaseClasses)
+            {
+                _baseClassGroup.AddSymbol(b);
+            }
+
         }
 
         public string TypeLabel
@@ -83,7 +89,7 @@ namespace JadeControls.SymbolInspector
             get { return _memberGroup; }
         }
 
-        public SymbolGroupViewModel BaseClassGroupGroup
+        public SymbolGroupViewModel BaseClassGroup
         {
             get { return _baseClassGroup; }
         }

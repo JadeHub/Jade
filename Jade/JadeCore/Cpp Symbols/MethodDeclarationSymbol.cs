@@ -7,7 +7,9 @@ namespace JadeCore.CppSymbols
     {
         public MethodDeclarationSymbol(Cursor cur)
             : base(cur)
-        { }
+        {
+            string s = MethodDeclaration;
+        }
 
         public string MethodDeclaration
         {

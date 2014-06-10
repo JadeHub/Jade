@@ -3,7 +3,7 @@
 void GlobalFn()
 {
 }
-
+ 
 namespace Test {
 
 int SomeClass::j = 0;

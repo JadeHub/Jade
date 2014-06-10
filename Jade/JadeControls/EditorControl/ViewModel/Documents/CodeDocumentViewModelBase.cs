@@ -50,6 +50,8 @@ namespace JadeControls.EditorControl.ViewModel
         {
             if (path != Document.File.Path) return;
             CppCodeBrowser.IProjectFile fileIndex = Index.FindProjectItem(Document.File.Path);
+            if (fileIndex != null && fileIndex is CppCodeBrowser.ISourceFile)
+                Debug.Assert((fileIndex as CppCodeBrowser.ISourceFile).TranslationUnit.Valid);
             DiagnosticHighlighter.ProjectItem = fileIndex;
             List<LibClang.Diagnostic> diags = new List<Diagnostic>(fileIndex.Diagnostics);
             DiagnosticOutputWriter.UpdateOutput(diags);

@@ -57,6 +57,7 @@ namespace CppCodeBrowser
 
             lock (_lock)
             {
+                
                 LibClang.TranslationUnit tu = new LibClang.TranslationUnit(_index.LibClangIndex, path.Str);
 
                 //pass in unsaved files
@@ -65,12 +66,19 @@ namespace CppCodeBrowser
                     tu.Dispose();
                     return false;
                 }
-                _allTus.Add(tu);
-                if(_index.UpdateSourceFile(path, tu))
-                {
-                    Task.Factory.StartNew(() => { _index.RaiseItemUpdatedEvent(path); },
-                                        CancellationToken.None, TaskCreationOptions.None, _callbackScheduler);
-                }
+                  
+                //_allTus.Add(tu);
+                Task.Factory.StartNew(() => 
+                    {
+                        lock (_lock)
+                        {
+                            if (_index.UpdateSourceFile(path, tu))
+                            {
+                                _index.RaiseItemUpdatedEvent(path);
+                            }
+                        }
+                    }, CancellationToken.None, TaskCreationOptions.None, _callbackScheduler);
+                
             }
             return true;
         }

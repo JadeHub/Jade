@@ -2,6 +2,8 @@
 
 #include "test2.h"
 
+
+
 extern void GlobalFn();
 
 namespace Test {
@@ -36,10 +38,15 @@ public:
 	void Fn();
 	double Fn2(int i, char* s);
 
+
 	inline bool InlinedMethod()
 	{
 		return false;
 	}
+	
+	void t() const;
+	
+	void t1() const;
 
 private:
 	AStruct MSt;
@@ -53,8 +60,12 @@ public:
 	ClassA();
 };
 
-class ClassB : public ClassA
+class ClassB : public AStruct, public ClassA
 {
+public:
+	ClassB();
+	
+	int ClassB::GetAnInt() const;
 };
 
 }
