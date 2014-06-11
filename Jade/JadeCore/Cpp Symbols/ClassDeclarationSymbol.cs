@@ -10,10 +10,10 @@ namespace JadeCore.CppSymbols
         private List<MethodDeclarationSymbol> _methods;
         private List<ConstructorDeclarationSymbol> _constructors;
         private List<ClassDeclarationSymbol> _baseClasses;
-        
+
         public ClassDeclarationSymbol(Cursor cur)
             : base(cur)
-        { 
+        {
         }
 
         public string Name
@@ -62,7 +62,6 @@ namespace JadeCore.CppSymbols
                                where c.Kind == CursorKind.CXXBaseSpecifier
                                select
                                    (ClassDeclarationSymbol)JadeCore.Services.Provider.SymbolCursorFactory.Create(c.CursorReferenced)                                   
-
                         );
                 }
 

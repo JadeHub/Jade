@@ -9,21 +9,21 @@ namespace JadeControls.SymbolInspector
 {
     public class SymbolGroupItemViewModel : NotifyPropertyChanged
     {
-        private string _name;
+        private JadeCore.CppSymbols.SymbolCursorBase _symbol;
         
-        public SymbolGroupItemViewModel(string name)
+        public SymbolGroupItemViewModel(JadeCore.CppSymbols.SymbolCursorBase symbol)
         {
-            _name = name;
+            _symbol = symbol;
         }
 
-        public string Name
+        public string SourceText
         {
-            get { return _name; }
+            get { return _symbol.SourceText; }
         }
 
-        public override string ToString()
+        public string Spelling
         {
-            return Name;
+            get { return _symbol.Spelling; }
         }
     }
 
@@ -40,7 +40,7 @@ namespace JadeControls.SymbolInspector
 
         public void AddSymbol(JadeCore.CppSymbols.SymbolCursorBase symbol)
         {
-            _symbols.Add(new SymbolGroupItemViewModel(symbol.Spelling));
+            _symbols.Add(new SymbolGroupItemViewModel(symbol));
         }
 
         public string Name

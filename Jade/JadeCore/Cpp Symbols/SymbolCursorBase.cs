@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JadeUtils.IO;
+using ICSharpCode.AvalonEdit.Document;
 
 namespace JadeCore.CppSymbols
 {
@@ -22,7 +24,12 @@ namespace JadeCore.CppSymbols
 
         public virtual string Spelling
         {
-            get { return Cursor.Spelling; }
+            get { return Cursor.Spelling; }            
+        }
+
+        public virtual string SourceText
+        {
+            get { return GetCursorSourceText(); }
         }
         
         protected IEnumerable<T> GetType<T>(LibClang.CursorKind kind)
@@ -32,6 +39,24 @@ namespace JadeCore.CppSymbols
                    select
                        (T)JadeCore.Services.Provider.SymbolCursorFactory.Create(c);
                        ;
+        }
+
+        protected string GetCursorSourceText()
+        {
+            IFileHandle file = Services.Provider.FileService.MakeFileHandle(Cursor.Location.File.Name);
+            if (file == null)
+                return null;
+
+            ITextDocument doc = JadeCore.Services.Provider.WorkspaceController.DocumentCache.FindOrAdd(file);
+            if (doc == null)
+                return null;
+
+            ISegment line = doc.GetLineForOffset(Cursor.Location.Offset);
+            if (line != null)
+            {
+                return doc.GetText(line).Trim();
+            }
+            return null;
         }
     }
 }

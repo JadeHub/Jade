@@ -8,7 +8,7 @@ namespace JadeCore.CppSymbols
         public MethodDeclarationSymbol(Cursor cur)
             : base(cur)
         {
-            string s = MethodDeclaration;
+            
         }
 
         public string MethodDeclaration
@@ -23,11 +23,6 @@ namespace JadeCore.CppSymbols
                 }
                 return result; 
             }
-        }
-
-        public override string Spelling
-        {
-            get { return MethodDeclaration; }
         }
     }
 
@@ -49,11 +44,6 @@ namespace JadeCore.CppSymbols
                 }
                 return result;
             }
-        }
-
-        public override string Spelling
-        {
-            get { return MethodDeclaration; }
         }
     }
 }
