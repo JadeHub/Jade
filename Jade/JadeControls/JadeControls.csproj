@@ -109,6 +109,8 @@
     <Compile Include="Symbol Inspector\ClassDeclarationInspector.xaml.cs">
       <DependentUpon>ClassDeclarationInspector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Symbol Inspector\Symbol View Models\ConstructorViewModel.cs" />
+    <Compile Include="Symbol Inspector\Symbol View Models\DataMemberViewModel.cs" />
     <Compile Include="Symbol Inspector\SymbolGroupControl.xaml.cs">
       <DependentUpon>SymbolGroupControl.xaml</DependentUpon>
     </Compile>
@@ -116,10 +118,12 @@
     <Compile Include="Symbol Inspector\SymbolInspector.xaml.cs">
       <DependentUpon>SymbolInspector.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Symbol Inspector\Symbols\ClassDeclarationViewModel.cs">
+    <Compile Include="Symbol Inspector\Symbol View Models\ClassDeclarationViewModel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Symbol Inspector\Symbols\SymbolGroupViewModel.cs" />
+    <Compile Include="Symbol Inspector\Symbol View Models\MethodDeclarationViewModel.cs" />
+    <Compile Include="Symbol Inspector\Symbol View Models\SymbolGroupViewModel.cs" />
+    <Compile Include="Symbol Inspector\Symbol View Models\SymbolViewModelBase.cs" />
     <Compile Include="Workspace Explorer\AddProjectFileWindow\AddProjectFileViewModel.cs" />
     <Compile Include="Workspace Explorer\AddProjectFileWindow\AddProjectFileWindow.xaml.cs">
       <DependentUpon>AddProjectFileWindow.xaml</DependentUpon>

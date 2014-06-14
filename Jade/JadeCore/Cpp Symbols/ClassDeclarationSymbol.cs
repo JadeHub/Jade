@@ -10,6 +10,7 @@ namespace JadeCore.CppSymbols
         private List<MethodDeclarationSymbol> _methods;
         private List<ConstructorDeclarationSymbol> _constructors;
         private List<ClassDeclarationSymbol> _baseClasses;
+        private List<DataMemberDeclarationSymbol> _dataMembers;
 
         public ClassDeclarationSymbol(Cursor cur)
             : base(cur)
@@ -66,6 +67,16 @@ namespace JadeCore.CppSymbols
                 }
 
                 return _baseClasses; 
+            }
+        }
+
+        public IEnumerable<DataMemberDeclarationSymbol> DataMembers
+        {
+            get
+            {
+                if (_dataMembers == null)
+                    _dataMembers = new List<DataMemberDeclarationSymbol>(GetType<DataMemberDeclarationSymbol>(LibClang.CursorKind.FieldDecl));
+                return _dataMembers;
             }
         }
     }

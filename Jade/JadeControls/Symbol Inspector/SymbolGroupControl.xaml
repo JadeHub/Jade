@@ -9,20 +9,26 @@
     <UserControl.Resources>
         <local:BoldifySpellingConverter x:Key="BoldifySpellingConverter" />
     </UserControl.Resources>
-    <DockPanel>
+    <DockPanel Margin="0,0,0,10">        
+        <Border Margin="0,0,0,10" BorderThickness="1" BorderBrush="LightGray" CornerRadius="10" Background="Transparent" >
         
-        <Expander Margin="0,0,0,10" DockPanel.Dock="top" FocusVisualStyle="{x:Null}">
+
+        <Expander Margin="2" DockPanel.Dock="top" FocusVisualStyle="{x:Null}" IsEnabled="{Binding IsEnabled}" IsExpanded="{Binding IsExpanded}">
             <Expander.Header>
-                <TextBlock Margin="10,0,0,0" FontFamily="Calibri" FontWeight="bold" TextTrimming="WordEllipsis" Text="{Binding Name}"/>
+                
+                <TextBlock Margin="10,0,0,0" FontSize="14" Foreground="{Binding ForegroundColour}" Text="{Binding Name}"/>
             </Expander.Header>
-            <ListView ItemsSource="{Binding Symbols}" Background="Transparent" BorderThickness="0">
+            <ListView Margin="0,6,0,0" ItemsSource="{Binding Symbols}" Background="Transparent" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
                 <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <!--<TextBlock Text="{Binding Converter={StaticResource BoldifySpellingConverter} }"/>-->
+                    <DataTemplate DataType="local:SymbolGroupItemViewModel">
+                        
                         <ContentPresenter Content="{Binding Converter={StaticResource BoldifySpellingConverter} }"/>
                     </DataTemplate>
+                    
                 </ListView.ItemTemplate>
             </ListView>
         </Expander>
+        </Border>
+    
     </DockPanel>
 </UserControl>

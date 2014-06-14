@@ -13,6 +13,14 @@ namespace LibClang
     /// </summary>
     public sealed class Cursor
     {
+        public enum AccessSpecifier
+        {
+            Invalid = 0,
+            Public = 1,
+            Protected = 2,
+            Private = 3
+        }
+
         internal delegate Cursor CreateCursorDel(Library.Cursor handle);
 
         #region Data
@@ -24,6 +32,9 @@ namespace LibClang
         private string _spelling;
         private readonly Type _type;
         private string _usr;
+        private List<Cursor> _argumentCursors;
+        private Type _resultType;
+        private string _displayName;
         
         #endregion
 
@@ -220,6 +231,73 @@ namespace LibClang
             {
                 Library.Cursor cur = Library.clang_getCursorSemanticParent(Handle);
                 return cur.IsNull ? null : _itemFactory.CreateCursor(cur);
+            }
+        }
+
+        AccessSpecifier Access
+        {
+            get { return (AccessSpecifier)Library.clang_getCXXAccessSpecifier(Handle); }
+        }
+        
+        public Type ResultType
+        {
+            get 
+            { 
+                if(_resultType == null)
+                {
+                    Library.CXType type = Library.clang_getCursorResultType(Handle);
+                    if (type != null)
+                        _resultType = _itemFactory.CreateType(type);
+                }
+                return _resultType;
+            }
+        }
+
+        public string DisplayName
+        {
+            get { return _displayName ?? (_displayName = Library.clang_getCursorDisplayName(Handle).ManagedString); }        
+        }
+
+        public IEnumerable<Cursor> ArgumentCursors
+        {
+            get
+            {
+                if(_argumentCursors == null)
+                {
+                    _argumentCursors = new List<Cursor>();
+
+                    for(uint i = 0; i < Library.clang_Cursor_getNumArguments(Handle); i++)
+                    {
+                        _argumentCursors.Add(_itemFactory.CreateCursor(Library.clang_Cursor_getArgument(Handle, i)));
+                    }
+                }
+                return _argumentCursors;
+            }
+        }
+
+        private static void ParseMethodUSR(string usr, out bool isConst)
+        {
+            int hashLoc = usr.LastIndexOf("#");
+            if (hashLoc == -1 || hashLoc == usr.Length - 1)
+            {
+                isConst = false;
+                return;
+            }
+            hashLoc++;
+            int val = usr[hashLoc];
+
+            isConst = (val & 0x1) == 0x1;
+        }
+
+        public bool IsConstMethod
+        {
+            get 
+            {
+                bool c;
+
+                ParseMethodUSR(Usr, out c);
+
+                return c; 
             }
         }
 

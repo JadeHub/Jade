@@ -24,6 +24,12 @@ namespace JadeCore.CppSymbols
             return new ConstructorDeclarationSymbol(c);
         }
 
+        public DataMemberDeclarationSymbol CreateDataMember(LibClang.Cursor c)
+        {
+            Debug.Assert(c.Kind == LibClang.CursorKind.FieldDecl);
+            return new DataMemberDeclarationSymbol(c);
+        }
+
         public ISymbolCursor Create(LibClang.Cursor c)
         {
             if (c.Kind == LibClang.CursorKind.ClassDecl || c.Kind == LibClang.CursorKind.StructDecl)
@@ -32,12 +38,20 @@ namespace JadeCore.CppSymbols
                 return CreateMethodDefinition(c);
             else if (c.Kind == LibClang.CursorKind.Constructor)
                 return CreateConstructorDefinition(c);
+            else if (c.Kind == LibClang.CursorKind.FieldDecl)
+                return CreateDataMember(c);
             return null;
         }
 
         public bool CanCreate(LibClang.Cursor c)
         {
-            return c.Kind == LibClang.CursorKind.ClassDecl || c.Kind == LibClang.CursorKind.StructDecl;
+            return c.Kind == LibClang.CursorKind.ClassDecl ||
+                    c.Kind == LibClang.CursorKind.StructDecl ||
+                    c.Kind == LibClang.CursorKind.CXXMethod ||
+                    c.Kind == LibClang.CursorKind.Constructor ||
+                    c.Kind == LibClang.CursorKind.FieldDecl;
+
+
         }
     }
 }

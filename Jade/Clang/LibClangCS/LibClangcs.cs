@@ -328,7 +328,7 @@ namespace LibClang
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
         public static extern CXType clang_getArgType(CXType t, uint i);
-
+                
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
         public static extern uint clang_isFunctionTypeVariadic(CXType t);
 
@@ -365,6 +365,14 @@ namespace LibClang
          #endregion
 
         #region CXCursor
+
+        internal enum CXXAccessSpecifier
+        {
+            Invalid = 0,
+            Public = 1,
+            Protected = 2,
+            Private = 3
+        }
 
         [StructLayout(LayoutKind.Sequential)]
         public struct Cursor
@@ -469,7 +477,22 @@ namespace LibClang
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
         internal static extern uint clang_hashCursor(Cursor c);
-        
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern CXXAccessSpecifier clang_getCXXAccessSpecifier(Cursor c);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern uint clang_Cursor_getNumArguments(Cursor c);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern Cursor clang_Cursor_getArgument(Cursor C, uint i);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern CXType clang_getCursorResultType(Cursor c);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern ClangString clang_getCursorDisplayName(Cursor c);
+
         #endregion
 
         #region CXTokens

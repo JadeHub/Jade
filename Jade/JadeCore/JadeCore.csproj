@@ -66,6 +66,7 @@
     <Compile Include="Collections\Observable.cs" />
     <Compile Include="Commands.cs" />
     <Compile Include="Cpp Symbols\ClassDeclarationSymbol.cs" />
+    <Compile Include="Cpp Symbols\DataMemberDeclarationSymbol.cs" />
     <Compile Include="Cpp Symbols\ISymbolCursor.cs" />
     <Compile Include="Cpp Symbols\ISymbolCursorFactory.cs" />
     <Compile Include="Cpp Symbols\MethodDeclarationSymbol.cs" />

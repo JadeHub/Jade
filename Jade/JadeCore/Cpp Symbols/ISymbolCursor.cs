@@ -8,5 +8,6 @@ namespace JadeCore.CppSymbols
         Cursor Cursor { get; }
 
         string Spelling { get; }
+        string SourceText { get; }
     }
 }

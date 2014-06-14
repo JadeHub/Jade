@@ -24,5 +24,10 @@ namespace JadeControls.SymbolInspector
         {
             InitializeComponent();
         }
+
+        private void Expander_Expanded(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

@@ -20,7 +20,7 @@ enum AnEnum
 	AnEnum_Item1 = 0
 };
 
-class SomeClass
+class SomeClass : AStruct
 {
 public:
 	SomeClass();
@@ -36,7 +36,7 @@ public:
 	int ii;
 
 	void Fn();
-	double Fn2(int i, char* s);
+	double Fn2(const int i, char* s) const;
 
 
 	inline bool InlinedMethod()
@@ -45,7 +45,7 @@ public:
 	}
 	
 	void t() const;
-	
+private:
 	void t1() const;
 
 private:
@@ -65,7 +65,7 @@ class ClassB : public AStruct, public ClassA
 public:
 	ClassB();
 	
-	int ClassB::GetAnInt() const;
+	int GetAnInt() const;
 };
 
 }

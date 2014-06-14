@@ -49,7 +49,7 @@ void SomeClass::Fn()
 //	int k = sam * 2;		
 }
 
-double SomeClass::Fn2(int i, char* s)
+double SomeClass::Fn2(const int i, char* s) const
 {
 	return (double)i;
 }

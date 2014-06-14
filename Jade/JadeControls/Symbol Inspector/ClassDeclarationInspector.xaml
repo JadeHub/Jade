@@ -16,8 +16,8 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>        
-            <Label Grid.Column="0" Content="{Binding TypeLabel}" FontWeight="Bold"/>
-            <Label Grid.Column="1" Content="{Binding Name}"/>
+            <Label Grid.Column="0" Content="{Binding TypeLabel}" FontSize="14" Foreground="Blue"/>
+            <Label Grid.Column="1" Content="{Binding Spelling}"/>
         </Grid>
         <Grid Grid.Row="1" >            
             <DockPanel Margin="7" DockPanel.LastChildFill="False">
