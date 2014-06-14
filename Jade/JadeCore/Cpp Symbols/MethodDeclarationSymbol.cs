@@ -83,20 +83,6 @@ namespace JadeCore.CppSymbols
             }
         }
 
-        public string MethodDeclaration
-        {
-            get 
-            {
-                string result = "";
-
-                foreach(LibClang.Token tok in Cursor.Extent.Tokens.Tokens)
-                {
-                    result += tok.Spelling;
-                }
-                return result; 
-            }
-        }
-
         public IEnumerable<MethodArgumentSymbol> Arguments
         {
             get { return _args; }
@@ -105,22 +91,21 @@ namespace JadeCore.CppSymbols
 
     public class ConstructorDeclarationSymbol : SymbolCursorBase
     {
+        private List<MethodArgumentSymbol> _args;
+
         public ConstructorDeclarationSymbol(Cursor cur)
             : base(cur)
-        { }
-
-        public string MethodDeclaration
         {
-            get
+            _args = new List<MethodArgumentSymbol>();
+            foreach (Cursor arg in cur.ArgumentCursors)
             {
-                string result = "";
-
-                foreach (LibClang.Token tok in Cursor.Extent.Tokens.Tokens)
-                {
-                    result += tok.Spelling;
-                }
-                return result;
+                _args.Add(new MethodArgumentSymbol(arg));
             }
+        }
+
+        public IEnumerable<MethodArgumentSymbol> Arguments
+        {
+            get { return _args; }
         }
     }
 }

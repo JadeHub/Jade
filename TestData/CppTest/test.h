@@ -13,6 +13,8 @@ struct AStruct;
 struct AStruct
 {
 	int i;
+
+	virtual void VFunc();
 };
 
 enum AnEnum
@@ -45,13 +47,15 @@ public:
 	}
 	
 	void t() const;
+
+	virtual void VFunc() override;
 private:
 	void t1() const;
 
 private:
 	AStruct MSt;
 	AnEnum mEnum;
-	int p;
+	int* p;
 };
 
 class ClassA

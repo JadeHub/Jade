@@ -493,6 +493,12 @@ namespace LibClang
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
         internal static extern ClangString clang_getCursorDisplayName(Cursor c);
 
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        internal static unsafe extern void clang_getOverriddenCursors(Cursor c, Cursor** overridden, uint* num_overridden);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        internal static unsafe extern void clang_disposeOverriddenCursors(Cursor* overridden);
+        
         #endregion
 
         #region CXTokens

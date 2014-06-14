@@ -29,8 +29,6 @@ namespace JadeControls.SymbolInspector
             sb.Append(MethodDecl.Spelling);
             sb.Append("(");
 
-            int p = c.ArgumentCursors.Count();
-
             foreach(JadeCore.CppSymbols.MethodArgumentSymbol arg in MethodDecl.Arguments)
             {                
                 sb.Append(arg.ToString());

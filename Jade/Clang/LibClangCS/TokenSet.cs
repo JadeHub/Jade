@@ -11,16 +11,15 @@ namespace LibClang
         private TranslationUnit _tu;
         private unsafe Library.Token* _tokens;
         private uint _count;
-
+        /*
         internal static unsafe TokenSetHandle Create(TranslationUnit tu, SourceRange range)
         {
             Library.Token* tokens;
             uint count = 0;
 
             Library.clang_tokenize(tu.Handle, range.Handle, &tokens, &count);
-
             return count > 0 ? new TokenSetHandle(tu, tokens, count) : null;
-        }
+        }*/
 
         internal unsafe TokenSetHandle(TranslationUnit tu, Library.Token* toks, uint count)
         {

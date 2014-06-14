@@ -2,8 +2,40 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
+/*
+ * clang_getOverriddenCursors
+clang_disposeOverriddenCursors
+clang_getIncludedFile
+clang_getTypeSpelling
+clang_getTypedefDeclUnderlyingType
+clang_getEnumDeclIntegerType
+clang_getEnumConstantDeclValue
+clang_getEnumConstantDeclUnsignedValue
+clang_getFieldDeclBitWidth
+clang_getCursorResultType
+clang_Cursor_isBitField
+clang_isVirtualBase
+clang_getNumOverloadedDecls(CXCursor cursor);
+clang_getOverloadedDecl(CXCursor cursor, unsigned index);
+
+clang_Cursor_isDynamicCall
+clang_Cursor_isVariadic
+clang_Cursor_getCommentRange
+clang_Cursor_getRawCommentText
+clang_Cursor_getBriefCommentText
+clang_Cursor_getParsedComment
+clang_CXXMethod_isPureVirtual
+clang_CXXMethod_isStatic(CXCursor C);
+clang_CXXMethod_isVirtual(CXCursor C);
+clang_getTemplateCursorKind
+CXCursor clang_getSpecializedCursorTemplate(CXCursor C);
+clang_getCursorReferenceNameRange
+ * */
+
 namespace LibClang
 {
+    
+
     /// <summary>
     /// An immutable wrapper around libclang's Cursor type.
     /// A Cursor represents an element in the AST of a translation unit.
@@ -13,6 +45,45 @@ namespace LibClang
     /// </summary>
     public sealed class Cursor
     {
+        #region Inner classes 
+
+        private sealed class OverriddenCursorSet
+        {
+            internal static OverriddenCursorSet Empty;
+
+            unsafe static OverriddenCursorSet()
+            {
+                Empty = new OverriddenCursorSet(null, 0, null);
+            }
+
+            internal unsafe static OverriddenCursorSet CreateOverriddenCursorSet(Cursor c, ITranslationUnitItemFactory factory)
+            {
+                Library.Cursor* overrides;
+                uint count;
+                Library.clang_getOverriddenCursors(c.Handle, &overrides, &count);
+                if (count == 0) return Empty;
+                OverriddenCursorSet result = new OverriddenCursorSet(overrides, count, factory);
+                //Assuming that this only deletes the array allocated above and that the handles remain valid
+                Library.clang_disposeOverriddenCursors(overrides);
+                return result;
+            }
+
+            private List<Cursor> _cursors;
+
+            private unsafe OverriddenCursorSet(Library.Cursor* handles, uint count, ITranslationUnitItemFactory factory)
+            {
+                _cursors = new List<Cursor>();
+                for (uint i = 0; i < count; i++)
+                {
+                    _cursors.Add(factory.CreateCursor(handles[i]));
+                }
+            }
+
+            public IEnumerable<Cursor> Cursors { get { return _cursors; } }
+        }
+
+        #endregion
+
         public enum AccessSpecifier
         {
             Invalid = 0,
@@ -35,6 +106,11 @@ namespace LibClang
         private List<Cursor> _argumentCursors;
         private Type _resultType;
         private string _displayName;
+
+        //For method cursors this is the list of methods they override.
+        //Multiple inheritance can result in a method overriding many methods
+        //Only methods overridden from immediate bases are returned. To discover all overridden methods in the case of multiple inheritance use this recursively
+        private OverriddenCursorSet _overriddenCursors;
         
         #endregion
 
@@ -298,6 +374,18 @@ namespace LibClang
                 ParseMethodUSR(Usr, out c);
 
                 return c; 
+            }
+        }
+
+        public IEnumerable<Cursor> OverriddenCursors
+        {
+            get 
+            {
+                if (_overriddenCursors == null && Kind == CursorKind.CXXMethod)
+                {
+                    _overriddenCursors = OverriddenCursorSet.CreateOverriddenCursorSet(this, _itemFactory);
+                }
+                return _overriddenCursors.Cursors; 
             }
         }
 

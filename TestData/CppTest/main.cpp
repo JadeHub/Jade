@@ -54,6 +54,9 @@ double SomeClass::Fn2(const int i, char* s) const
 	return (double)i;
 }
 
+void SomeClass::VFunc()
+{
+
 }
 
 Test::ClassA SomeNewFucntion()
@@ -75,4 +78,6 @@ int main()
 
 	sc.Fn();
 	return 0;
+}
+
 }

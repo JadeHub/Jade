@@ -9,7 +9,7 @@ namespace Test {
 int SomeClass::j = 0;
 
 SomeClass::SomeClass()
-: ii(0)
+: ii(0), p(nullptr)
 {
 	unsigned u = 0;
 	int i = u;
@@ -17,13 +17,13 @@ SomeClass::SomeClass()
 }
 
 SomeClass::SomeClass(int i)
-: ii(i)
+: ii(i), p(&i)
 {
 	int p = 0;
 }
 
 SomeClass::SomeClass(const SomeClass& other)
-: ii(other.ii)
+: ii(other.ii), p(other.p)
 {
 }
 
