@@ -58,7 +58,7 @@ namespace LibClang
     /// <summary>
     /// Cache of Cursor objects.
     /// </summary>
-    internal class CursorStore : WrapperObjectStore<Library.Cursor, Cursor> 
+    internal class CursorStore : WrapperObjectStore<Library.CXCursor, Cursor> 
     {
         private ITranslationUnitItemFactory _itemFactory;
 
@@ -67,9 +67,9 @@ namespace LibClang
             _itemFactory = itemFactory;            
         }
 
-        protected override Cursor Create(Library.Cursor handle)
+        protected override Cursor Create(Library.CXCursor handle)
         {
-            if (handle == Library.Cursor.NullCursor)
+            if (handle == Library.CXCursor.NullCursor)
                 throw new ArgumentException("Cursor Handle is a NullCursor");
             return new Cursor(handle, _itemFactory);
         }

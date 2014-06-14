@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 /*
- * clang_getOverriddenCursors
-clang_disposeOverriddenCursors
+ * 
 clang_getIncludedFile
-clang_getTypeSpelling
+
 clang_getTypedefDeclUnderlyingType
 clang_getEnumDeclIntegerType
 clang_getEnumConstantDeclValue
@@ -58,7 +57,7 @@ namespace LibClang
 
             internal unsafe static OverriddenCursorSet CreateOverriddenCursorSet(Cursor c, ITranslationUnitItemFactory factory)
             {
-                Library.Cursor* overrides;
+                Library.CXCursor* overrides;
                 uint count;
                 Library.clang_getOverriddenCursors(c.Handle, &overrides, &count);
                 if (count == 0) return Empty;
@@ -70,7 +69,7 @@ namespace LibClang
 
             private List<Cursor> _cursors;
 
-            private unsafe OverriddenCursorSet(Library.Cursor* handles, uint count, ITranslationUnitItemFactory factory)
+            private unsafe OverriddenCursorSet(Library.CXCursor* handles, uint count, ITranslationUnitItemFactory factory)
             {
                 _cursors = new List<Cursor>();
                 for (uint i = 0; i < count; i++)
@@ -92,7 +91,7 @@ namespace LibClang
             Private = 3
         }
 
-        internal delegate Cursor CreateCursorDel(Library.Cursor handle);
+        internal delegate Cursor CreateCursorDel(Library.CXCursor handle);
 
         #region Data
 
@@ -121,7 +120,7 @@ namespace LibClang
         /// </summary>
         /// <param name="handle">Handle to a non null cursor obect.</param>
         /// <param name="itemFactory">TranslationUnit's item factory / item cache.</param>
-        internal Cursor(Library.Cursor handle, ITranslationUnitItemFactory itemFactory)
+        internal Cursor(Library.CXCursor handle, ITranslationUnitItemFactory itemFactory)
         {
             Debug.Assert(!handle.IsNull);
             Handle = handle;
@@ -168,7 +167,7 @@ namespace LibClang
             return _itemFactory.CreateSourceRange(Library.clang_getCursorExtent(Handle));
         }
 
-        internal Library.Cursor Handle
+        internal Library.CXCursor Handle
         {
             get;
             private set;
@@ -235,7 +234,7 @@ namespace LibClang
         {
             get 
             {
-                Library.Cursor cur = Library.clang_getCursorDefinition(Handle);
+                Library.CXCursor cur = Library.clang_getCursorDefinition(Handle);
                 if (cur == Handle)
                     return this;
                 return cur.IsNull ? null : _itemFactory.CreateCursor(cur);
@@ -260,7 +259,7 @@ namespace LibClang
         {
             get 
             {
-                Library.Cursor cur = Library.clang_getCursorDefinition(Handle);
+                Library.CXCursor cur = Library.clang_getCursorDefinition(Handle);
                 return (cur.IsNull || cur == Handle) ? null : _itemFactory.CreateCursor(cur);
             }
         }
@@ -281,7 +280,7 @@ namespace LibClang
         {
             get
             {
-                Library.Cursor cur = Library.clang_getCursorReferenced(Handle);
+                Library.CXCursor cur = Library.clang_getCursorReferenced(Handle);
                 return (cur.IsNull || cur == Handle) ? null : _itemFactory.CreateCursor(cur);
             }
         }
@@ -293,7 +292,7 @@ namespace LibClang
         {
             get
             {
-                Library.Cursor cur = Library.clang_getCursorLexicalParent(Handle);
+                Library.CXCursor cur = Library.clang_getCursorLexicalParent(Handle);
                 return cur.IsNull ? null : _itemFactory.CreateCursor(cur);
             }
         }
@@ -305,7 +304,7 @@ namespace LibClang
         {
             get
             {
-                Library.Cursor cur = Library.clang_getCursorSemanticParent(Handle);
+                Library.CXCursor cur = Library.clang_getCursorSemanticParent(Handle);
                 return cur.IsNull ? null : _itemFactory.CreateCursor(cur);
             }
         }

@@ -176,7 +176,7 @@ namespace LibClang
             if (location == null)
                 throw new ArgumentException("null Location passed to GetCursotAt().");
 
-            Library.Cursor cur = Library.clang_getCursor(Handle, location.Handle);
+            Library.CXCursor cur = Library.clang_getCursor(Handle, location.Handle);
             if (cur.IsNull)
                 return null;
             cur = Library.clang_getCursor(Handle, location.Handle);
@@ -187,7 +187,7 @@ namespace LibClang
         {
             Library.CXCursorAndRangeVisitor visitor = new Library.CXCursorAndRangeVisitor();
             visitor.context = IntPtr.Zero;
-            visitor.visit = delegate(IntPtr ctx, Library.Cursor cur, Library.SourceRange range)
+            visitor.visit = delegate(IntPtr ctx, Library.CXCursor cur, Library.SourceRange range)
             {
                 if (callback(_itemStore.CreateCursor(cur), _itemStore.CreateSourceRange(range)) == true)
                     return Library.CXVisitorResult.CXVisit_Continue;
@@ -370,7 +370,7 @@ namespace LibClang
         {
             Library.CXCursorAndRangeVisitor visitor = new Library.CXCursorAndRangeVisitor();
             visitor.context = IntPtr.Zero;
-            visitor.visit = delegate(IntPtr ctx, Library.Cursor cur, Library.SourceRange range)
+            visitor.visit = delegate(IntPtr ctx, Library.CXCursor cur, Library.SourceRange range)
             {
                 if(callback(_itemStore.CreateCursor(cur), _itemStore.CreateSourceRange(range)) == true)
                     return Library.CXVisitorResult.CXVisit_Continue;
