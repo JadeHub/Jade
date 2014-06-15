@@ -4,30 +4,24 @@ using System.Diagnostics;
 
 /*
  * 
-clang_getIncludedFile
+
 
 clang_getTypedefDeclUnderlyingType
 clang_getEnumDeclIntegerType
 clang_getEnumConstantDeclValue
 clang_getEnumConstantDeclUnsignedValue
 clang_getFieldDeclBitWidth
-clang_getCursorResultType
 clang_Cursor_isBitField
-clang_isVirtualBase
+
 clang_getNumOverloadedDecls(CXCursor cursor);
 clang_getOverloadedDecl(CXCursor cursor, unsigned index);
 
-clang_Cursor_isDynamicCall
-clang_Cursor_isVariadic
 clang_Cursor_getCommentRange
 clang_Cursor_getRawCommentText
 clang_Cursor_getBriefCommentText
 clang_Cursor_getParsedComment
-clang_CXXMethod_isPureVirtual
-clang_CXXMethod_isStatic(CXCursor C);
-clang_CXXMethod_isVirtual(CXCursor C);
 clang_getTemplateCursorKind
-CXCursor clang_getSpecializedCursorTemplate(CXCursor C);
+
 clang_getCursorReferenceNameRange
  * */
 
@@ -105,12 +99,11 @@ namespace LibClang
         private List<Cursor> _argumentCursors;
         private Type _resultType;
         private string _displayName;
-
-        //For method cursors this is the list of methods they override.
-        //Multiple inheritance can result in a method overriding many methods
-        //Only methods overridden from immediate bases are returned. To discover all overridden methods in the case of multiple inheritance use this recursively
         private OverriddenCursorSet _overriddenCursors;
-        
+        private File _includedFile;
+        private Type _enumIntType;
+        private Cursor _templateSpecialisedCursorTemplate;
+
         #endregion
 
         #region Construction
@@ -376,6 +369,76 @@ namespace LibClang
             }
         }
 
+        /// <summary>
+        /// Returns true if the cursor is of kind CX_CXXBaseSpecifier and is a virtual base
+        /// </summary>
+        public bool IsVirtualBase
+        {
+            get { return Library.clang_isVirtualBase(Handle) != 0; }
+        }
+
+        /// <summary>
+        /// Returns true if the cursor is of kind CXXMethod and is a virtual method
+        /// </summary>
+        public bool IsVirtual
+        {
+            get { return Library.clang_CXXMethod_isVirtual(Handle) != 0; }
+        }
+
+        /// <summary>
+        /// Returns true if the cursor is of kind CXXMethod and is a pure virtual method
+        /// </summary>
+        public bool IsPureVirtual
+        {
+            get { return Library.clang_CXXMethod_isPureVirtual(Handle) != 0; }
+        }
+
+        /// <summary>
+        /// Returns true if the cursor is of kind CXXMethod and is a static method
+        /// </summary>
+        public bool IsStatic
+        {
+            get { return Library.clang_CXXMethod_isStatic(Handle) != 0; }
+        }
+
+        /// <summary>
+        /// Returns true if the cursor is a c++ method call and the method is virtual.
+        /// </summary>
+        public bool IsDynamicCall
+        {
+            get { return Library.clang_Cursor_isDynamicCall(Handle) != 0; }
+        }
+
+        /// <summary>
+        /// Returns true if the cursor is a variadic method or class
+        /// </summary>
+        public bool IsVariadic
+        {
+            get { return Library.clang_Cursor_isVariadic(Handle) != 0; }
+        }
+
+        /// <summary>
+        /// Retrieve the integer type of an enum declaration.
+        /// </summary>
+        public Type EnumIntegerType
+        {
+            get
+            {
+                if(_enumIntType == null)
+                {
+                    Library.CXType t = Library.clang_getEnumDeclIntegerType(Handle);
+                    if(t != null && t.IsValid)
+                        _enumIntType = _itemFactory.CreateType(t);
+                }
+                return _enumIntType;
+            }
+        }
+
+        /// <summary>
+        /// For method cursors this is the list of methods they override.
+        /// Multiple inheritance can result in a method overriding multiple methods
+        /// Only methods overridden from immediate bases are returned. To discover all overridden methods in the case of multiple inheritance use this recursively
+        /// </summary>
         public IEnumerable<Cursor> OverriddenCursors
         {
             get 
@@ -387,22 +450,59 @@ namespace LibClang
                 return _overriddenCursors.Cursors; 
             }
         }
-
-        private File _includedFile;
-
-        private File CreateIncludedFile()
-        {
-            IntPtr fileHandle = Library.clang_getIncludedFile(Handle);
-            if (fileHandle == IntPtr.Zero)
-                return null;
-            return _itemFactory.CreateFile(fileHandle);
-        }
-
+        
+        /// <summary>
+        /// Returns the included file for Cursors of type InclusionDirective or null
+        /// </summary>
+        /// <returns></returns>        
         public File IncludedFile
         {
-            get { return _includedFile ?? (_includedFile = CreateIncludedFile()); }
+            get 
+            { 
+                if(_includedFile == null)
+                {
+                    IntPtr fileHandle = Library.clang_getIncludedFile(Handle);
+                    if (fileHandle != IntPtr.Zero)
+                        _includedFile = _itemFactory.CreateFile(fileHandle);
+                }
+                return _includedFile;
+            }
         }
 
+        /// <summary>
+        /// Given a cursor that may represent a specialization or instantiation
+        /// of a template, retrieve the cursor that represents the template that it
+        /// specializes or from which it was instantiated.
+        /// </summary>
+        public Cursor TemplateSpecialisedCursorTemplate
+        {
+            get
+            {
+                if(_templateSpecialisedCursorTemplate == null)
+                {
+                    Library.CXCursor c = Library.clang_getSpecializedCursorTemplate(Handle);
+                    if (c != null)
+                        _templateSpecialisedCursorTemplate = _itemFactory.CreateCursor(c);
+                }
+                return _templateSpecialisedCursorTemplate;
+            }
+        }
+
+        /// <summary>
+        /// Given a cursor that represents a template, determine
+        /// the cursor kind of the specializations would be generated by instantiating
+        /// the template.
+        /// 
+        /// This routine can be used to determine what flavor of function template,
+        /// class template, or class template partial specialization is stored in the
+        /// cursor. For example, it can describe whether a class template cursor is
+        /// declared with "struct", "class" or "union".
+        /// </summary>
+        public CursorKind TemplateCursorKind
+        {
+            get { return Library.clang_getTemplateCursorKind(Handle); }
+        }
+        
         /// <summary>
         /// Returns true if the cursor's kind represents an invalid cursor.
         /// </summary>
