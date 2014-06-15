@@ -33,7 +33,7 @@ namespace JadeControls.SymbolInspector
                 _constructorGroup.AddSymbol(new ConstructorViewModel(ctor));
             }
 
-            foreach(JadeCore.CppSymbols.MethodDeclarationSymbol method in symbol.Methods)
+            foreach (JadeCore.CppSymbols.MethodDeclarationSymbol method in from method in symbol.Methods orderby method.Spelling select method)
             {
                 _methodGroup.AddSymbol(new MethodDeclarationViewModel(method));
             }
@@ -43,7 +43,7 @@ namespace JadeControls.SymbolInspector
                 _baseClassGroup.AddSymbol(new ClassDeclarationViewModel(b));
             }
 
-            foreach (JadeCore.CppSymbols.DataMemberDeclarationSymbol data in symbol.DataMembers)
+            foreach (JadeCore.CppSymbols.DataMemberDeclarationSymbol data in from member in symbol.DataMembers orderby member.Spelling select member)
             {
                 _memberGroup.AddSymbol(new DataMemberViewModel(data));
             }

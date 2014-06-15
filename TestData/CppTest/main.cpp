@@ -14,10 +14,6 @@ ClassA::ClassA()
 	double d = 7.0;
 }
 
-ClassB::ClassB()
-{
-}
-
 void NewFunction()
 {
 
@@ -28,9 +24,11 @@ int ClassB::GetAnInt() const
 	return 0;
 }
 
+
 void SomeClass::t() const
 {
 }
+
 
 void SomeClass::t1() const {}
 

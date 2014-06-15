@@ -23,13 +23,11 @@ namespace JadeControls.SymbolInspector
             }
         }
 
-        private string BuildDisplayText()
+        private string BuildParamText()
         {
             StringBuilder sb = new StringBuilder();
             LibClang.Cursor c = SymbolCursor.Cursor;
 
-            //name is in form "FuncName([params, ...])"
-            sb.Append(SymbolCursor.Spelling);
             sb.Append("(");
 
             foreach (JadeCore.CppSymbols.MethodArgumentSymbol arg in CtorSymbol.Arguments)
@@ -47,9 +45,14 @@ namespace JadeControls.SymbolInspector
         {
             get
             {
-                return BuildDisplayText();
+                return "";
                 //return SourceText; 
             }
+        }
+
+        public string ParamText
+        {
+            get { return BuildParamText(); }
         }
     }
 }

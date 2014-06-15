@@ -389,6 +389,14 @@ namespace LibClang
 
             public bool IsNull { get { return this == NullCursor; } }
 
+            public bool IsValid
+            {
+                get
+                {
+                    return !IsNull && kind != CursorKind.NoDeclFound;
+                }
+            }
+
             readonly CursorKind kind;
             readonly int xdata;
             readonly IntPtr data0, data1, data2;

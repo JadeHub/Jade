@@ -8,24 +8,75 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <local:BoldifySpellingConverter x:Key="BoldifySpellingConverter" />
-    </UserControl.Resources>
-    <DockPanel Margin="0,0,0,10">        
-        <Border Margin="0,0,0,10" BorderThickness="1" BorderBrush="LightGray" CornerRadius="10" Background="Transparent" >
         
-
-        <Expander Margin="2" DockPanel.Dock="top" FocusVisualStyle="{x:Null}" IsEnabled="{Binding IsEnabled}" IsExpanded="{Binding IsExpanded}">
-            <Expander.Header>
+        <!-- Default DataTemplate -->
+        <DataTemplate x:Key="DefaultDataTemplate">
+           <ContentPresenter Content="{Binding Converter={StaticResource BoldifySpellingConverter} }"/>
+        </DataTemplate>
+ 
+        <!-- DataTemplate for Constructors -->
+        <DataTemplate x:Key="CtorDataTemplate">
+            <StackPanel Orientation="Horizontal" ToolTip="{Binding SourceText}">
+                <TextBlock Text="{Binding Spelling}" FontWeight="Bold"></TextBlock>
+                <TextBlock Text="{Binding ParamText}" Margin="1,0,0,0"/>
+            </StackPanel>            
+        </DataTemplate>
+        
+        <!-- DataTemplate for Methods -->
+        <DataTemplate x:Key="MethodDataTemplate">
+            <StackPanel Orientation="Horizontal" ToolTip="{Binding SourceText}">
+                <TextBlock Text="{Binding Spelling}" FontWeight="Bold"></TextBlock>
+                <TextBlock Text="{Binding ParamText}" Margin="1,0,0,0"/>
                 
+                <StackPanel.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Jump To" Command="{Binding JumpToCommand}">
+                    </MenuItem>
+                    <MenuItem Header="Find All References" Command="{Binding FindAllReferencesCommand}">
+                    </MenuItem>
+                </ContextMenu>
+            </StackPanel.ContextMenu>
+                
+            </StackPanel>            
+        </DataTemplate>
+        
+        <!-- DataTemplate for Data Members -->
+        <DataTemplate x:Key="DataMemberDataTemplate">
+            <StackPanel Orientation="Horizontal" ToolTip="{Binding SourceText}">
+                <TextBlock Text="{Binding Spelling}" FontWeight="Bold"></TextBlock>
+                <TextBlock Text=" : " Margin="1,0,0,0"/>
+                <TextBlock Text="{Binding TypeText}" Margin="1,0,0,0"/>
+            </StackPanel>            
+        </DataTemplate>
+        
+        <!-- DataTemplate for Base Types -->
+        <DataTemplate x:Key="BaseTypeDataTemplate">
+            <StackPanel Orientation="Horizontal" ToolTip="{Binding SourceText}">
+                <TextBlock Text="{Binding Spelling}" FontWeight="Bold"></TextBlock>
+            </StackPanel>            
+        </DataTemplate>
+ 
+        <!-- DataTemplate Selector -->
+        <local:GroupItemDataTemplateSelector x:Key="templateSelector"
+              DefaultnDataTemplate="{StaticResource DefaultDataTemplate}"
+              CtorDataTemplate="{StaticResource CtorDataTemplate}"
+              MethodDataTemplate="{StaticResource MethodDataTemplate}"
+              DataMemberDataTemplate="{StaticResource DataMemberDataTemplate}"
+              BaseTypeDataTemplate="{StaticResource BaseTypeDataTemplate}"/>
+    </UserControl.Resources>
+    <DockPanel Margin="0,0,0,5">
+        <Border Margin="0,0,0,5" BorderThickness="1" BorderBrush="LightGray" CornerRadius="10" Background="Transparent" HorizontalAlignment="Stretch" >
+        <Expander Margin="2" DockPanel.Dock="top" FocusVisualStyle="{x:Null}" IsEnabled="{Binding IsEnabled}" IsExpanded="{Binding IsExpanded}" HorizontalContentAlignment="Stretch">
+            <Expander.Header>                
                 <TextBlock Margin="10,0,0,0" FontSize="14" Foreground="{Binding ForegroundColour}" Text="{Binding Name}"/>
             </Expander.Header>
-            <ListView Margin="0,6,0,0" ItemsSource="{Binding Symbols}" Background="Transparent" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
-                <ListView.ItemTemplate>
-                    <DataTemplate DataType="local:SymbolGroupItemViewModel">
-                        
-                        <ContentPresenter Content="{Binding Converter={StaticResource BoldifySpellingConverter} }"/>
-                    </DataTemplate>
-                    
-                </ListView.ItemTemplate>
+            <ListView Margin="0,6,0,0" 
+                        ItemsSource="{Binding Symbols}" 
+                        Background="Transparent" 
+                        BorderThickness="0" 
+                        ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                        HorizontalContentAlignment="Stretch" 
+                        ItemTemplateSelector="{StaticResource templateSelector}">                
             </ListView>
         </Expander>
         </Border>

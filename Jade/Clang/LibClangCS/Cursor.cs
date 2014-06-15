@@ -4,8 +4,6 @@ using System.Diagnostics;
 
 /*
  * 
-
-
 clang_getTypedefDeclUnderlyingType
 clang_getEnumDeclIntegerType
 clang_getEnumConstantDeclValue
@@ -314,7 +312,7 @@ namespace LibClang
                 if(_resultType == null)
                 {
                     Library.CXType type = Library.clang_getCursorResultType(Handle);
-                    if (type != null)
+                    if (type != null && type.IsValid)
                         _resultType = _itemFactory.CreateType(type);
                 }
                 return _resultType;

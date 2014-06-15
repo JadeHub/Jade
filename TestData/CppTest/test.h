@@ -32,6 +32,8 @@ public:
 
 	SomeClass& operator=(const SomeClass& other);
 
+	const AStruct * PrtToAStruct;
+
 	Struct22 a22;
 
 	static	int j;
@@ -49,13 +51,17 @@ public:
 	void t() const;
 
 	virtual void VFunc() override;
+
+	template <typename P1>
+	void TemplMethod(const P1& p1) {}
 private:
 	void t1() const;
 
 private:
 	AStruct MSt;
-	AnEnum mEnum;
+	const AnEnum mEnum;
 	int* p;
+	
 };
 
 class ClassA
@@ -67,9 +73,12 @@ public:
 class ClassB : public AStruct, public ClassA
 {
 public:
-	ClassB();
+	ClassB(char& c) : mRef(c) {}
 	
 	int GetAnInt() const;
+	
+private:
+	char& mRef;	
 };
 
 }

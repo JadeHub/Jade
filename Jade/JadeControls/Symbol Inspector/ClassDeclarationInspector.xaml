@@ -11,23 +11,17 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>        
-            <Label Grid.Column="0" Content="{Binding TypeLabel}" FontSize="14" Foreground="Blue"/>
-            <Label Grid.Column="1" Content="{Binding Spelling}"/>
-        </Grid>
-        <Grid Grid.Row="1" >            
-            <DockPanel Margin="7" DockPanel.LastChildFill="False">
-              <StackPanel>
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Label Content="{Binding TypeLabel}" FontSize="14" Foreground="Blue"/>
+            <Label Content="{Binding Spelling}"/>
+        </StackPanel>
+        <Grid Grid.Row="1" >
+              <StackPanel Margin="7,0" >
                   <local:SymbolGroupControl DataContext="{Binding ConstructorGroup}"/>
                   <local:SymbolGroupControl DataContext="{Binding MethodGroup}"/>
                   <local:SymbolGroupControl DataContext="{Binding DataMemberGroup}"/>
                   <local:SymbolGroupControl DataContext="{Binding BaseClassGroup}"/>              
-              </StackPanel>
-            </DockPanel>
+              </StackPanel>            
           </Grid>
     </Grid>
 </UserControl>

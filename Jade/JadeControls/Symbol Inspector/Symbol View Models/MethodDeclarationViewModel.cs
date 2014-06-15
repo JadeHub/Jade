@@ -19,14 +19,11 @@ namespace JadeControls.SymbolInspector
             get { return SymbolCursor as JadeCore.CppSymbols.MethodDeclarationSymbol; }
         }
 
-        private string BuildDisplayText()
+        private string BuildParamText()
         {
             StringBuilder sb = new StringBuilder();
             LibClang.Cursor c = SymbolCursor.Cursor;
 
-            //method name is in form "FuncName([params, ...])[const] : ret"
-            bool cst = c.IsConstMethod;
-            sb.Append(MethodDecl.Spelling);
             sb.Append("(");
 
             foreach(JadeCore.CppSymbols.MethodArgumentSymbol arg in MethodDecl.Arguments)
@@ -49,9 +46,13 @@ namespace JadeControls.SymbolInspector
         {
             get 
             {
-                return BuildDisplayText();
-                //return SourceText; 
+                return "";//();
             }
+        }
+
+        public string ParamText
+        {
+            get { return BuildParamText(); }
         }
     }
 }

@@ -62,7 +62,8 @@ namespace JadeCore.CppSymbols
                         from c in Cursor.Children
                                where c.Kind == CursorKind.CXXBaseSpecifier
                                select
-                                   (ClassDeclarationSymbol)JadeCore.Services.Provider.SymbolCursorFactory.Create(c.CursorReferenced)                                   
+                                   (ClassDeclarationSymbol)JadeCore.Services.Provider.SymbolCursorFactory.Create(c.CursorReferenced)      
+                                   //make new type with symbol & access / virtual
                         );
                 }
 

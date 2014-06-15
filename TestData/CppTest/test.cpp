@@ -9,7 +9,7 @@ namespace Test {
 int SomeClass::j = 0;
 
 SomeClass::SomeClass()
-: ii(0), p(nullptr)
+: PrtToAStruct(nullptr), ii(0), mEnum(AnEnum_Item1), p(nullptr)
 {
 	unsigned u = 0;
 	int i = u;
@@ -17,13 +17,13 @@ SomeClass::SomeClass()
 }
 
 SomeClass::SomeClass(int i)
-: ii(i), p(&i)
+: PrtToAStruct(nullptr), ii(1), mEnum(AnEnum_Item1), p(nullptr)
 {
 	int p = 0;
 }
 
 SomeClass::SomeClass(const SomeClass& other)
-: ii(other.ii), p(other.p)
+: PrtToAStruct(other.PrtToAStruct), ii(other.ii), mEnum(other.mEnum), p(other.p)
 {
 }
 

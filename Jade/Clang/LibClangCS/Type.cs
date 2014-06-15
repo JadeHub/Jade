@@ -225,7 +225,7 @@ namespace LibClang
 
         private Type ReturnType(Library.CXType t)
         {
-            return t.IsValid ? _itemFactory.CreateType(t) : null;
+            return t != null && t.IsValid ? _itemFactory.CreateType(t) : null;
         }
 
         /// <summary>
@@ -259,12 +259,23 @@ namespace LibClang
             }
         }
 
+        private Cursor _declaration;
+
         /// <summary>
         /// Returns the Cursor object representing the type's declaration.
         /// </summary>
         public Cursor Declaration
         {
-            get { return _itemFactory.CreateCursor(Library.clang_getTypeDeclaration(Handle)); }
+            get 
+            {
+                if (_declaration == null)
+                {
+                    Library.CXCursor c = Library.clang_getTypeDeclaration(Handle);
+                    if (c != null && c.IsValid)
+                        _declaration = _itemFactory.CreateCursor(c);
+                }
+                return _declaration; 
+            }
         }
 
         /// <summary>
