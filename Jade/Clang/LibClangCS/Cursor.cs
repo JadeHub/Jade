@@ -330,7 +330,7 @@ namespace LibClang
 
         public string DisplayName
         {
-            get { return _displayName ?? (_displayName = Library.clang_getCursorDisplayName(Handle).ManagedString); }        
+            get { return _displayName ?? (_displayName = Library.clang_getCursorDisplayName(Handle).ManagedString); }
         }
 
         public IEnumerable<Cursor> ArgumentCursors
@@ -386,6 +386,21 @@ namespace LibClang
                 }
                 return _overriddenCursors.Cursors; 
             }
+        }
+
+        private File _includedFile;
+
+        private File CreateIncludedFile()
+        {
+            IntPtr fileHandle = Library.clang_getIncludedFile(Handle);
+            if (fileHandle == IntPtr.Zero)
+                return null;
+            return _itemFactory.CreateFile(fileHandle);
+        }
+
+        public File IncludedFile
+        {
+            get { return _includedFile ?? (_includedFile = CreateIncludedFile()); }
         }
 
         /// <summary>

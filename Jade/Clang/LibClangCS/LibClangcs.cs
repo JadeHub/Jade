@@ -85,6 +85,9 @@ namespace LibClang
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         internal static extern ClangString clang_getTranslationUnitSpelling(IntPtr tu);
 
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        internal static extern IntPtr clang_getIncludedFile(CXCursor c);
+
         #endregion
 
         #region CXFile
