@@ -54,6 +54,9 @@ public:
 
 	template <typename P1>
 	void TemplMethod(const P1& p1) {}
+
+	template <int i, typename P1>
+	void TemplMethod2(const P1& p1) { p1 = i; }
 private:
 	void t1() const;
 

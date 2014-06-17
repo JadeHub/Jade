@@ -72,6 +72,7 @@
     <Compile Include="Cpp Symbols\MethodDeclarationSymbol.cs" />
     <Compile Include="Cpp Symbols\SymbolCursorBase.cs" />
     <Compile Include="Cpp Symbols\SymbolCursorFactory.cs" />
+    <Compile Include="Cpp Symbols\TemplateClassDeclarationSymbol.cs" />
     <Compile Include="Editor\EditorController.cs" />
     <Compile Include="Editor\IEditorDoc.cs" />
     <Compile Include="Editor\SourceDocument.cs" />
