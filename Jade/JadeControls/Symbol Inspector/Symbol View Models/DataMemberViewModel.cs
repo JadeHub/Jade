@@ -28,11 +28,11 @@ namespace JadeControls.SymbolInspector
 
             string name = SymbolCursor.Spelling;
 
-            if (type.Pointee != null)
-                result = GetTypeString(type.Pointee);
-            else if (type.Declaration != null)
+            if (type.PointeeType != null)
+                result = GetTypeString(type.PointeeType);
+            else if (type.DeclarationCursor != null)
                 //If there is a declaration, use its name. This removes any namespaces from class / struct types. eg "ClassFoo" rather than "NamespaceBar::ClassFoo"
-                result = type.Declaration.Spelling;
+                result = type.DeclarationCursor.Spelling;
             else
                 result = type.Spelling;
                         

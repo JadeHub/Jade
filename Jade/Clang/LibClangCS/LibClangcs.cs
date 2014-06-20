@@ -393,7 +393,7 @@ namespace LibClang
             {
                 get
                 {
-                    return !IsNull && kind != CursorKind.NoDeclFound;
+                    return !IsNull && Library.clang_isInvalid(kind) == 0;
                 }
             }
 
@@ -493,7 +493,7 @@ namespace LibClang
         internal static extern CXXAccessSpecifier clang_getCXXAccessSpecifier(CXCursor c);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern uint clang_Cursor_getNumArguments(CXCursor c);
+        internal static extern int clang_Cursor_getNumArguments(CXCursor c);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
         internal static extern CXCursor clang_Cursor_getArgument(CXCursor C, uint i);

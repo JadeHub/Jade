@@ -60,9 +60,18 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\libraries\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CppCodeViewModels\CurosrViewModel.cs" />
+    <Compile Include="Cursor Inspector\CursorInspectorControl.xaml.cs">
+      <DependentUpon>CursorInspectorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Cursor Inspector\CursorInspectorViewModel.cs" />
+    <Compile Include="Cursor Inspector\CursorViewModel.cs" />
+    <Compile Include="Cursor Inspector\TypeViewModel.cs" />
     <Compile Include="Docking\PaneViewModel.cs" />
     <Compile Include="Docking\ToolPaneViewModel.cs" />
     <Compile Include="EditorControl\CodeEditor.cs" />
@@ -82,6 +91,7 @@
     <Compile Include="EditorControl\ViewModel\Documents\CodeDocumentViewModelBase.cs" />
     <Compile Include="EditorControl\ViewModel\Documents\Commands\EditorCommand.cs" />
     <Compile Include="EditorControl\ViewModel\Documents\Commands\FindAllReferencesCommand.cs" />
+    <Compile Include="EditorControl\ViewModel\Documents\Commands\InspectCursor.cs" />
     <Compile Include="EditorControl\ViewModel\Documents\Commands\InspectSymbol.cs" />
     <Compile Include="EditorControl\ViewModel\Documents\HeaderDocumentViewModel.cs" />
     <Compile Include="EditorControl\ViewModel\Documents\Commands\SourceJumpToCommand.cs" />
@@ -148,6 +158,10 @@
     <Compile Include="Workspace Explorer\WorkspaceViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Cursor Inspector\CursorInspectorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dialogs\SaveFiles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

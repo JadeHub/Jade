@@ -38,7 +38,7 @@ namespace JadeControls.SymbolInspector
                 sb.Append(" const");
 
             sb.Append(" : ");
-            sb.Append(c.Type.Result.Spelling);
+            sb.Append(c.Type.ResultType.Spelling);
             return sb.ToString();
         }
 

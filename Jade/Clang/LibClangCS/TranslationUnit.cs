@@ -177,7 +177,7 @@ namespace LibClang
                 throw new ArgumentException("null Location passed to GetCursotAt().");
 
             Library.CXCursor cur = Library.clang_getCursor(Handle, location.Handle);
-            if (cur.IsNull)
+            if (cur.IsNull || !cur.IsValid)
                 return null;
             cur = Library.clang_getCursor(Handle, location.Handle);
             return _itemStore.CreateCursor(cur);

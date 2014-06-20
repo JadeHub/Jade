@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -24,9 +25,7 @@ clang_getCursorReferenceNameRange
  * */
 
 namespace LibClang
-{
-    
-
+{    
     /// <summary>
     /// An immutable wrapper around libclang's Cursor type.
     /// A Cursor represents an element in the AST of a translation unit.
@@ -114,6 +113,7 @@ namespace LibClang
         internal Cursor(Library.CXCursor handle, ITranslationUnitItemFactory itemFactory)
         {
             Debug.Assert(!handle.IsNull);
+            Debug.Assert(handle.IsValid);
             Handle = handle;
             _itemFactory = itemFactory;
             _translationUnit = _itemFactory.TranslationUnit;
@@ -192,7 +192,16 @@ namespace LibClang
         /// </summary>
         public SourceLocation Location
         {
-            get { return _location ??(_location = _itemFactory.CreateSourceLocation(Library.clang_getCursorLocation(Handle))); }
+            get
+            {
+                if (_location == null)
+                {
+                    Library.SourceLocation loc = Library.clang_getCursorLocation(Handle);
+                    if (loc.IsNull == false)
+                        _location = _itemFactory.CreateSourceLocation(loc);
+                }
+                return _location;
+            }
         }
 
         /// <summary>
@@ -246,7 +255,7 @@ namespace LibClang
         /// of some entity, return a cursor that describes the definition of
         /// that entity. 
         /// </summary>
-        public Cursor Definition
+        public Cursor DefinitionCursor
         {
             get 
             {
@@ -300,7 +309,7 @@ namespace LibClang
             }
         }
 
-        AccessSpecifier Access
+        public AccessSpecifier Access
         {
             get { return (AccessSpecifier)Library.clang_getCXXAccessSpecifier(Handle); }
         }
@@ -331,10 +340,10 @@ namespace LibClang
                 if(_argumentCursors == null)
                 {
                     _argumentCursors = new List<Cursor>();
-
-                    for(uint i = 0; i < Library.clang_Cursor_getNumArguments(Handle); i++)
+                    int t = Library.clang_Cursor_getNumArguments(Handle);
+                    for(int i = 0; i < Library.clang_Cursor_getNumArguments(Handle); i++)
                     {
-                        _argumentCursors.Add(_itemFactory.CreateCursor(Library.clang_Cursor_getArgument(Handle, i)));
+                        _argumentCursors.Add(_itemFactory.CreateCursor(Library.clang_Cursor_getArgument(Handle, (uint)i)));
                     }
                 }
                 return _argumentCursors;
@@ -445,7 +454,7 @@ namespace LibClang
                 {
                     _overriddenCursors = OverriddenCursorSet.CreateOverriddenCursorSet(this, _itemFactory);
                 }
-                return _overriddenCursors.Cursors; 
+                return _overriddenCursors == null ? Enumerable.Empty<Cursor>() : _overriddenCursors.Cursors; 
             }
         }
         
@@ -479,7 +488,7 @@ namespace LibClang
                 if(_templateSpecialisedCursorTemplate == null)
                 {
                     Library.CXCursor c = Library.clang_getSpecializedCursorTemplate(Handle);
-                    if (c != null)
+                    if (c != null && c.IsValid)
                         _templateSpecialisedCursorTemplate = _itemFactory.CreateCursor(c);
                 }
                 return _templateSpecialisedCursorTemplate;
@@ -502,9 +511,9 @@ namespace LibClang
         }
         
         /// <summary>
-        /// Returns true if the cursor's kind represents an invalid cursor.
+        /// Returns true if the cursor is the null cursor or the cursor kind represents an invalid cursor.
         /// </summary>
-        public bool Valid { get { return Library.clang_isInvalid(Kind) == 0; } }
+        public bool Valid { get { return Handle.IsValid; } }
 
         #endregion
 

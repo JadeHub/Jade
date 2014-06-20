@@ -18,19 +18,16 @@ namespace JadeControls.EditorControl.ViewModel
 
         public DocumentViewModel Create(IEditorDoc doc)
         {
-            if (IsHeaderFile(doc))
-            {
-                return new HeaderDocumentViewModel(doc);
-            }
-            else if (IsSourceFile(doc))
+            
+            if (IsSourceFile(doc))
             {
                 return new SourceDocumentViewModel(doc);
             }
-            else
+            else //(IsHeaderFile(doc))
             {
-                System.Diagnostics.Debug.Assert(false);
+                return new HeaderDocumentViewModel(doc);
             }
-            return null;
+            
         }
 
         static private bool IsHeaderFile(IEditorDoc doc)

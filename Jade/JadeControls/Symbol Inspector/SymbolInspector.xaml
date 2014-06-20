@@ -11,22 +11,6 @@
             <local:ClassDeclarationInspector/>
         </DataTemplate>
     </UserControl.Resources>
-    <!--
-    
-    <Window.Resources>
-    <DataTemplate DataType="{x:Type VM:PBRKEntryViewModel}">
-        <V:Overview  />
-    </DataTemplate>
-    <DataTemplate DataType="{x:Type VM:LoginViewModel}">
-        <V:LoginView />
-    </DataTemplate>
-</Window.Resources>
-<Grid>
-    <ContentPresenter Content="{Binding CurrentView}"/>
-</Grid>  
-    
-    -->
-    
     <Grid>
         <ContentPresenter Content="{Binding Symbol}" />
     </Grid>

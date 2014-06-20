@@ -64,8 +64,8 @@ namespace CppCodeBrowser
             {
                 if (c.CursorReferenced != null)
                     result = c.CursorReferenced;
-                else if (c.Definition != null)
-                    result = c.Definition;
+                else if (c.DefinitionCursor != null)
+                    result = c.DefinitionCursor;
                 else
                     result = c.CanonicalCursor;
             }

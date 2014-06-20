@@ -41,7 +41,7 @@ namespace CppCodeBrowser
             if (c.IsDefinition)
                 return c;
 
-            return c.Definition;
+            return c.DefinitionCursor;
         }
     }
 }

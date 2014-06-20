@@ -21,6 +21,7 @@
             <local:CodeEditor.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Debug Cursor" Command="{Binding DebugCursorCommand}" />
+                    <MenuItem Header="Display Cursor" Command="{Binding InspectCursorCommand}" />
                     <MenuItem Header="Display Symbol" Command="{Binding InspectSymbolCommand}" />
                     <MenuItem Header="Undo" Command="Undo"/>
                     <MenuItem Header="Redo" Command="Redo"/>

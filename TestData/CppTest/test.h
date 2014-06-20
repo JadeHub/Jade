@@ -1,7 +1,7 @@
 #pragma once
 
 #include "test2.h"
-
+#include <vector>
 
 
 extern void GlobalFn();
@@ -35,6 +35,8 @@ public:
 	const AStruct * PrtToAStruct;
 
 	Struct22 a22;
+
+	std::vector<int> mVec;
 
 	static	int j;
 	int ii;

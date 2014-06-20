@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using JadeUtils.IO;
-using JadeCore.CppSymbols;
 
 namespace JadeControls.EditorControl.ViewModel.Commands
 {
@@ -36,6 +32,10 @@ namespace JadeControls.EditorControl.ViewModel.Commands
             if (source == null) return;
 
             LibClang.Cursor c = source.TranslationUnit.GetCursorAt(_path.Str, ViewModel.CaretOffset);
+            foreach(var t in c.ArgumentCursors)
+            {
+                System.Diagnostics.Debug.WriteLine(t);
+            }
         }
     }
 
@@ -61,6 +61,7 @@ namespace JadeControls.EditorControl.ViewModel.Commands
         protected override bool CanExecute()
         {
             return true;
+            //return GetCursorAt(new CppCodeBrowser.CodeLocation(_path.Str, ViewModel.CaretOffset)) != null;
             /*LibClang.Cursor c = CppCodeBrowser.BrowsingUtils.GetDefinitionOfCursorAt(new CppCodeBrowser.CodeLocation(_path.Str, ViewModel.CaretOffset), _index);
             return (c != null && JadeCore.Services.Provider.SymbolCursorFactory.CanCreate(c));*/
         }
@@ -73,5 +74,23 @@ namespace JadeControls.EditorControl.ViewModel.Commands
                 JadeCore.Services.Provider.CommandHandler.OnDisplaySymbolInspector(JadeCore.Services.Provider.SymbolCursorFactory.Create(c));
             }
         }
+        /*
+        private LibClang.Cursor GetCursorAt(CppCodeBrowser.ICodeLocation loc)
+        {
+            CppCodeBrowser.IProjectFile fileIndex = _index.FindProjectItem(loc.Path);
+            if (fileIndex == null)
+                return null;
+            if (fileIndex is CppCodeBrowser.ISourceFile)
+                return (fileIndex as CppCodeBrowser.ISourceFile).GetCursorAt(loc);
+
+            CppCodeBrowser.IHeaderFile header = fileIndex as CppCodeBrowser.IHeaderFile;
+            foreach (CppCodeBrowser.ISourceFile sf in header.SourceFiles)
+            {
+                LibClang.Cursor c = sf.GetCursorAt(loc);
+                if (c != null)
+                    return c;
+            }
+            return null;
+        }*/
     }
 }

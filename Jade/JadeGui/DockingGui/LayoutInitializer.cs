@@ -11,7 +11,8 @@ namespace JadeGui.DockingGui
             //Determine panel name for given view model type
             string destPaneName = string.Empty;
             if (anchorableToShow.Content is JadeControls.Workspace.ViewModel.WorkspaceViewModel ||
-                anchorableToShow.Content is JadeControls.SymbolInspector.SymbolInspectorPaneViewModel)
+                anchorableToShow.Content is JadeControls.SymbolInspector.SymbolInspectorPaneViewModel ||
+                anchorableToShow.Content is JadeControls.CursorInspector.CursorInspectorPaneViewModel)
             {
                 destPaneName = "UpperLeftToolPanel";
             }

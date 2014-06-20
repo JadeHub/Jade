@@ -13,6 +13,7 @@ namespace JadeGui.ViewModels
     using JadeControls.SearchResultsControl.ViewModel;
     using JadeControls.Workspace.ViewModel;
     using JadeControls.SymbolInspector;
+    using JadeControls.CursorInspector;
     using JadeUtils.IO;
     
     /// <summary>
@@ -43,6 +44,7 @@ namespace JadeGui.ViewModels
         //Symbol Inspector window
         private SymbolInspectorPaneViewModel _symbolInspectorViewModel;
 
+        private CursorInspectorPaneViewModel _cursorInspectorViewModel;
         //Main window
         private DockingGui.MainWindow _view;
 
@@ -71,6 +73,8 @@ namespace JadeGui.ViewModels
 
             _symbolInspectorViewModel = new SymbolInspectorPaneViewModel(_editorController);
 
+            _cursorInspectorViewModel = new CursorInspectorPaneViewModel();            
+
             _commands = new JadeCommandAdaptor(this);
             _view = view;
 
@@ -79,6 +83,7 @@ namespace JadeGui.ViewModels
             _toolWindows.Add(_outputViewModel);
             _toolWindows.Add(_currentWorkspace);
             _toolWindows.Add(_symbolInspectorViewModel);
+            _toolWindows.Add(_cursorInspectorViewModel);
             _currentWorkspace.IsVisible = false;
 
             UpdateWindowTitle();
@@ -573,6 +578,12 @@ namespace JadeGui.ViewModels
         {
             _symbolInspectorViewModel.SymbolCursor = symbol;
             _symbolInspectorViewModel.IsSelected = true;
+        }
+
+        public void OnDisplayCursorInspector(LibClang.Cursor c)
+        {
+            _cursorInspectorViewModel.SetCursor(c);
+            _cursorInspectorViewModel.IsSelected = true;
         }
 
         #endregion

@@ -42,8 +42,8 @@ namespace JadeCore.Search
                 return null;
             Cursor c = fileIndex.GetCursorAt(_location.Path, _location.Offset);
 
-            if (c != null && c.Definition != null)
-                c = c.Definition;
+            if (c != null && c.DefinitionCursor != null)
+                c = c.DefinitionCursor;
 
             return new CodeLocation(c.Location);
         }

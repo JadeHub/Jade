@@ -103,8 +103,8 @@ namespace LibClangTest
                 Assert.IsTrue(method.IsDefinition);
 
                 //Definition
-                Assert.IsNull(ns.Definition);
-                Assert.IsNull(method.Definition);
+                Assert.IsNull(ns.DefinitionCursor);
+                Assert.IsNull(method.DefinitionCursor);
 
                 //IsReference
                 Assert.IsFalse(ns.IsReference);

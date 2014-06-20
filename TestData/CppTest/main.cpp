@@ -27,6 +27,7 @@ int ClassB::GetAnInt() const
 
 void SomeClass::t() const
 {
+	
 }
 
 
@@ -34,6 +35,8 @@ void SomeClass::t1() const {}
 
 void SomeClass::Fn()
 {
+	mVec.push_back(5);
+
 	SomeClass b(6);
 	SomeClass a(8);
 	SomeClass* sc = new SomeClass();

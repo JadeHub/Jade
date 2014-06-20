@@ -183,9 +183,10 @@ namespace JadeCore
 
         void OnDisplayPrevSearchResult();
         bool CanDisplayPrevSearchResult();
-
-        //void OnDisplaySymbolInspector(FilePath sourceFile, FilePath symbolPath, int offset);
+                
         void OnDisplaySymbolInspector(CppSymbols.ISymbolCursor symbol);
+
+        void OnDisplayCursorInspector(LibClang.Cursor c);
 
         #endregion
     }

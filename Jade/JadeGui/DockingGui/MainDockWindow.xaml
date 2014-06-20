@@ -10,6 +10,7 @@
         xmlns:JadeCtrlsOutput="clr-namespace:JadeControls.OutputControl;assembly=JadeControls"
         xmlns:JadeCtrlsSearchResults="clr-namespace:JadeControls.SearchResultsControl;assembly=JadeControls"
         xmlns:JadeCtrlsInspectSymbol="clr-namespace:JadeControls.SymbolInspector;assembly=JadeControls"
+        xmlns:JadeCtrlsCursorInspectSymbol="clr-namespace:JadeControls.CursorInspector;assembly=JadeControls"
         xmlns:JadeCtrlsEditor="clr-namespace:JadeControls.EditorControl;assembly=JadeControls"
         xmlns:JadeCtrlsConv="clr-namespace:JadeControls.Converters;assembly=JadeControls"
         xmlns:JadeCore="clr-namespace:JadeCore;assembly=JadeCore"
@@ -78,9 +79,16 @@
                         <!-- Symbol Inspector tool window -->
                         <local:PanesTemplateSelector.SymbolInspectorViewTemplate>
                             <DataTemplate> 
-                                <JadeCtrlsInspectSymbol:SymbolInspector/>                                
+                                <JadeCtrlsInspectSymbol:SymbolInspector/>
                             </DataTemplate>
                         </local:PanesTemplateSelector.SymbolInspectorViewTemplate>
+                        
+                        <!-- Cursor Inspector tool window -->
+                        <local:PanesTemplateSelector.CursorInspectorViewTemplate>
+                            <DataTemplate> 
+                                <JadeCtrlsCursorInspectSymbol:CursorInspectorControl/>                                
+                            </DataTemplate>
+                        </local:PanesTemplateSelector.CursorInspectorViewTemplate>
                         
                         <!-- Output tool window -->
                         <local:PanesTemplateSelector.OutputViewTemplate>

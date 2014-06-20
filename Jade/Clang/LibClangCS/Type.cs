@@ -232,7 +232,7 @@ namespace LibClang
         /// The canonical type is the underlying type with all the "sugar" removed.  For example, if 'T' is a typedef
         /// for 'int', the canonical type for 'T' would be 'int'.
         /// </summary>
-        public Type Canonical
+        public Type CanonicalType
         {
             get { return ReturnType(Library.clang_getCanonicalType(Handle)); }
         }
@@ -240,7 +240,7 @@ namespace LibClang
         /// <summary>
         /// Returns the Type object representing the type pointed to if kind is TypeKind.Pointer.
         /// </summary>
-        public Type Pointee
+        public Type PointeeType
         {
             get 
             {
@@ -251,7 +251,7 @@ namespace LibClang
         /// <summary>
         /// Retrieve the result type associated with a function type.
         /// </summary>
-        public Type Result
+        public Type ResultType
         {
             get 
             {
@@ -264,7 +264,7 @@ namespace LibClang
         /// <summary>
         /// Returns the Cursor object representing the type's declaration.
         /// </summary>
-        public Cursor Declaration
+        public Cursor DeclarationCursor
         {
             get 
             {

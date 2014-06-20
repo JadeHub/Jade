@@ -31,6 +31,7 @@ namespace JadeControls.EditorControl.ViewModel
     {
         private Commands.InspectSymbolCommand _inspectSymbolCommand;
         private Commands.DebugCursorCommand _debugCursorCommand;
+        private Commands.InspectCursorCommand _inspectCursorCommand;
 
         internal CodeDocumentViewModelBase(IEditorDoc doc)
             : base(doc)
@@ -44,6 +45,7 @@ namespace JadeControls.EditorControl.ViewModel
                 Index.ItemUpdated += ProjectIndexItemUpdated;
 
                 _inspectSymbolCommand = new Commands.InspectSymbolCommand(this, doc.File.Path, doc.Project.Index);
+                _inspectCursorCommand = new Commands.InspectCursorCommand(this, doc.File.Path, doc.Project.Index);
                 _debugCursorCommand = new Commands.DebugCursorCommand(this, doc.File.Path, doc.Project.Index);
             }
         }
@@ -117,6 +119,11 @@ namespace JadeControls.EditorControl.ViewModel
         public ICommand DebugCursorCommand
         {
             get { return _debugCursorCommand; }
+        }
+
+        public ICommand InspectCursorCommand
+        {
+            get { return _inspectCursorCommand; }
         }
     }
 }

@@ -17,7 +17,7 @@ namespace JadeCore.CppSymbols
             get
             {
                 if (IsLValueReference)
-                    return Cursor.Type.Pointee.IsConstQualified;
+                    return Cursor.Type.PointeeType.IsConstQualified;
                 return Cursor.Type.IsConstQualified;
             }
         }
@@ -39,7 +39,7 @@ namespace JadeCore.CppSymbols
 
         public LibClang.Type Pointee
         {
-            get { return Cursor.Type.Pointee; }
+            get { return Cursor.Type.PointeeType; }
         }
 
         public override string ToString()
