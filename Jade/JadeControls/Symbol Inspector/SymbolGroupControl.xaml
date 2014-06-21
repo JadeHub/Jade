@@ -72,14 +72,16 @@
             </Expander.Header>
             <ListView Margin="0,6,0,0" 
                         ItemsSource="{Binding Symbols}" 
+                        SelectedItem="{Binding SelectedSymbol}"
                         Background="Transparent" 
                         BorderThickness="0" 
                         ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                         HorizontalContentAlignment="Stretch" 
-                        ItemTemplateSelector="{StaticResource templateSelector}">                
+                        ItemTemplateSelector="{StaticResource templateSelector}"
+                       MouseDoubleClick="ListView_MouseDoubleClick"
+                      >
             </ListView>
         </Expander>
-        </Border>
-    
+        </Border>    
     </DockPanel>
 </UserControl>

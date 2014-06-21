@@ -65,7 +65,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CppCodeViewModels\CurosrViewModel.cs" />
     <Compile Include="Cursor Inspector\CursorInspectorControl.xaml.cs">
       <DependentUpon>CursorInspectorControl.xaml</DependentUpon>
     </Compile>

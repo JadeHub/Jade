@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,6 +29,15 @@ namespace JadeControls.SymbolInspector
         private void Expander_Expanded(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            Debug.Assert(DataContext is SymbolGroupViewModel);
+            SymbolGroupViewModel vm = DataContext as SymbolGroupViewModel;
+            vm.OnDoubleClick();
+            //Debug.Assert(vm.SelectedSymbol != null);
+            //vm.SelectedSymbol.
         }
     }
 }

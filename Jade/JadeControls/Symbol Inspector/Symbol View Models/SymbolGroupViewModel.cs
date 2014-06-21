@@ -49,6 +49,7 @@ namespace JadeControls.SymbolInspector
         private string _name;
         private ObservableCollection<SymbolViewModelBase> _symbols;
         private bool _expanded;
+        private SymbolViewModelBase _selectedSymbol;
 
         public SymbolGroupViewModel(string name)
         {
@@ -62,9 +63,7 @@ namespace JadeControls.SymbolInspector
             _symbols.Add(symbol);
             _expanded = true;
             OnPropertyChanged("IsExpanded");
-            OnPropertyChanged("IsEnabled");
-
-            
+            OnPropertyChanged("IsEnabled");            
         }
 
         public string Name
@@ -95,12 +94,32 @@ namespace JadeControls.SymbolInspector
             }
         }
 
+        public SymbolViewModelBase SelectedSymbol
+        {
+            get { return _selectedSymbol; }
+            set
+            {
+                if(_selectedSymbol != value)
+                {
+                    _selectedSymbol = value;
+                }
+            }
+        }
+
         public System.Windows.Media.Brush ForegroundColour
         {
             get
             {
                 return IsEnabled ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Gray;
             }
+        }
+
+        public void OnDoubleClick()
+        {
+            if (SelectedSymbol == null) return;
+            CppCodeBrowser.ICodeLocation loc = new CppCodeBrowser.CodeLocation(SelectedSymbol.SymbolCursor.Cursor.Location);
+            if (loc == null) return;
+            JadeCore.Services.Provider.CommandHandler.OnDisplayCodeLocation(new JadeCore.DisplayCodeLocationCommandParams(loc, true, true));
         }
     }
 }
