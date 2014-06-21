@@ -28,6 +28,7 @@ namespace JadeCore.Project
             _items = new Dictionary<string, IItem>();
             _folders = new List<IFolder>();
             _allSourceFiles = new Collections.Observable.List<IFileItem>();
+
             _indexBuilder = new CppCodeBrowser.ProjectIndexBuilder(JadeCore.Services.Provider.GuiScheduler, JadeCore.Services.Provider.EditorController);
         }
 
@@ -104,7 +105,7 @@ namespace JadeCore.Project
             _items[item.ItemName] = item;
             OnItemAdded(item);*/
         }
-        
+
         public bool RemoveItem(string itemName)
         {
             IItem item;
