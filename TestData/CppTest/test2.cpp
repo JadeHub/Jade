@@ -4,6 +4,7 @@ struct StructA {};
 
 struct StructB
 {
+	Test::AStruct a;
 	StructA AAA;
 };
 

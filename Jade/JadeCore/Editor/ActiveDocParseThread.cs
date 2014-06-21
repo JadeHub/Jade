@@ -188,7 +188,7 @@ namespace JadeCore.Editor
         {
             set
             {
-                if (value && _activeDocThread.ThreadState == System.Threading.ThreadState.Stopped)
+                if (value)// && _activeDocThread.ThreadState == System.Threading.ThreadState.Stopped)
                 {
                     _stopEvent.Reset();
                     _activeDocThread.Start();

@@ -28,6 +28,11 @@ namespace CppCodeBrowser
             _headerFiles = new HashSet<IHeaderFile>();
         }
 
+        public override string ToString()
+        {
+            return Path.FileName;
+        }
+
         #region Properties
 
         public ProjectItemType Type
