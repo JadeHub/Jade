@@ -6,25 +6,76 @@ using System.Threading.Tasks;
 using JadeUtils.IO;
 
 namespace JadeCore.Editor
-{
-    internal class ActiveParseFile : ParseFile
+{    
+    internal class ActiveParseFile// : ParseFile
     {
-        public ActiveParseFile(IEditorDoc doc)
-            : base(doc.File.Path, doc.Project.IndexBuilder)
+        private bool _parsed; //parsed at least once?
+        private Project.IFileItem _projectItem;
+        private bool _parsing;
+        private CppCodeBrowser.IIndexBuilder _indexBuilder;
+        private ActiveDocParseThread _parseThread;
+        
+        public ActiveParseFile(ActiveDocParseThread parseThread, IEditorDoc doc, Project.IFileItem projectItem)
         {
-            Document = doc;
+            _parseThread = parseThread;
+            _parsed = false;
+            _projectItem = projectItem;
+            _parsing = false;
+            _indexBuilder = doc.Project.IndexBuilder;
+            doc.TextDocument.TextChanged += TextDocumentChanged;
         }
 
-        public IEditorDoc Document
+        private void TextDocumentChanged(ulong version)
         {
-            get;
-            private set;
+            RequiresParse = true;
+
+            _parseThread.WakeUp();
         }
 
-        protected override UInt64 GetVersion()
+        public FilePath Path { get { return _projectItem.Path; } }
+
+        public bool Parsing
         {
-            return Document.TextDocument.Version; ;
+            get { return _parsing; }
+            set
+            {
+                Debug.Assert(value == true); //only this class may turn this off via _parsing
+                _parsing = value;
+            }
         }
+
+        public bool RequiresParse
+        {
+            get
+            {
+                return _parsed == false && _parsing == false;
+            }
+            set
+            {
+                _parsed = false;
+            }
+        }
+
+        public void Parse()
+        {
+            Debug.Assert(Parsing);
+            if (_projectItem.Type == Project.ItemType.CppSourceFile)
+            {                
+                _indexBuilder.ParseFile(Path, null);
+            }
+            else if(_projectItem.Type == Project.ItemType.CppHeaderFile)
+            {
+                CppCodeBrowser.IHeaderFile header = _indexBuilder.Index.FindHeaderFile(Path);
+                List<CppCodeBrowser.ISourceFile> sources = new List<CppCodeBrowser.ISourceFile>(header.SourceFiles);
+                if(sources.Count > 0)
+                {
+                    _indexBuilder.ParseFile(sources[0].Path, null);
+                }
+            }
+            _parsed = true;
+            _parsing = false;
+        }
+
     }
 
     public class ActiveDocParseThread
@@ -36,9 +87,6 @@ namespace JadeCore.Editor
 
         private AutoResetEvent _activeDocParseEvent;
         private Thread _activeDocThread;
-
-        private TaskScheduler _guiScheduler;
-
         private IDictionary<FilePath, ParseFile> _files;
         
         private ActiveParseFile _activeFile;
@@ -49,7 +97,6 @@ namespace JadeCore.Editor
             _lock = new object();
 
             _files = new Dictionary<FilePath, ParseFile>();        
-            _guiScheduler = JadeCore.Services.Provider.GuiScheduler;
             _stopEvent = new ManualResetEvent(false);                        
             _activeDocParseEvent = new AutoResetEvent(false);
             _activeDocThread = new Thread(ActiveDocThreadLoop);
@@ -64,40 +111,28 @@ namespace JadeCore.Editor
                 {
                     if (_activeFile != null)
                     {
-                        _activeFile.Document.TextDocument.TextChanged -= ActiveDocumentModified;
                         _activeFile = null;
                     }
                     return;
                 }
 
-                if (_activeFile != null && _activeFile.Document == doc) //no change
-                    return;
-
-                if (_activeFile != null) //unsubscribe
-                {
-                    _activeFile.Document.TextDocument.TextChanged -= ActiveDocumentModified;
-                    _activeFile = null;
-                }
+                _activeFile = null;
+               
                 //if (_files.ContainsKey(doc.File.Path))
               //  if(doc.File.Path.Extention != ".h")
                 {
-                    _activeFile = new ActiveParseFile(doc);
-                    _activeFile.Document.TextDocument.TextChanged += ActiveDocumentModified;
+                    Project.IFileItem projectItem = doc.Project.FindFileItem(doc.File.Path);
+                    if(projectItem == null) return;
+
+                    _activeFile = new ActiveParseFile(this, doc, projectItem);
                     _activeDocParseEvent.Set();
                 }                
             }
         }
 
-        private void ActiveDocumentModified(UInt64 version)
+        public void WakeUp()
         {
-            lock (_lock)
-            {
-                if (_activeFile != null)
-                {
-                    _activeFile.RequiresParse = true;
-                    _activeDocParseEvent.Set();
-                }
-            }
+            _activeDocParseEvent.Set();
         }
 
         public void Dispose()
@@ -116,7 +151,7 @@ namespace JadeCore.Editor
                 if (wait == 0)
                     return;
 
-                ParseFile pf = null;
+                ActiveParseFile pf = null;
                 bool parse = false;
                 lock(_lock)
                 {
@@ -144,16 +179,16 @@ namespace JadeCore.Editor
             }
         }
 
-        private void Parse(ParseFile pf)
-        {
-            pf.Parse(_guiScheduler);
+        private void Parse(ActiveParseFile pf)
+        {            
+            pf.Parse();
         }
 
         public bool Run
         {
             set
             {
-                if (value)
+                if (value && _activeDocThread.ThreadState == System.Threading.ThreadState.Stopped)
                 {
                     _stopEvent.Reset();
                     _activeDocThread.Start();
