@@ -64,7 +64,11 @@ namespace CppCodeBrowser
         {
             get
             {
-                return _tu.Diagnostics.Where(d => d.Location.File.Name == Path.Str);
+                foreach(LibClang.Diagnostic d in _tu.Diagnostics)
+                {
+                    if (d.Location != null && d.Location.File.Name == Path.Str)
+                        yield return d;
+                }
             }
         }
 

@@ -58,7 +58,8 @@ double SomeClass::Fn2(const int i, char* s) const
 void SomeClass::VFunc()
 {
 	TemplMethod(5);
-	TemplMethod2<5, int>(8);
+	int i = 8;
+	TemplMethod2<5, int>(i);
 }
 
 Test::ClassA SomeNewFucntion()

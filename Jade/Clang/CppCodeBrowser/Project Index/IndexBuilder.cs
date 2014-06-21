@@ -16,7 +16,7 @@ namespace CppCodeBrowser
         IList<Tuple<string, string>> GetUnsavedFiles();
     }
 
-    public class IndexBuilder : IIndexBuilder
+    public class ProjectIndexBuilder : IIndexBuilder
     {
         private bool _disposed = false;
         private readonly ProjectIndex _index;
@@ -28,7 +28,7 @@ namespace CppCodeBrowser
         private IUnsavedFileProvider _unsavedFilesProvider;
         private object _lock = new object();
 
-        public IndexBuilder(TaskScheduler callbackSCheduler, IUnsavedFileProvider unsavedFiles)
+        public ProjectIndexBuilder(TaskScheduler callbackSCheduler, IUnsavedFileProvider unsavedFiles)
         {
             _callbackScheduler = callbackSCheduler;
             _unsavedFilesProvider = unsavedFiles;

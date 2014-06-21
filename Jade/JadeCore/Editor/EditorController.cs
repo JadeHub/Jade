@@ -24,13 +24,13 @@ namespace JadeCore.Editor
         public void Dispose()
         {
             _parserThreads.Dispose();
+
         }
 
         public CppCodeBrowser.IProjectIndex Index { get { return _project.Index; } }
 
         private void OnParseComplete(FilePath path)
-        {
-            
+        {            
         }
     }
 
@@ -41,6 +41,9 @@ namespace JadeCore.Editor
         private Dictionary<FilePath, IEditorDoc> _openDocuments;
         private IEditorDoc _activeDocument;
         private IDictionary<Project.IProject, ProjectIndexBuilder> _projectBuilders;
+
+        private ActiveDocParseThread _activeDocParseThread;
+
         private object _lockObject;
                 
         #endregion
@@ -52,6 +55,8 @@ namespace JadeCore.Editor
             _openDocuments = new Dictionary<FilePath, IEditorDoc>();
             _projectBuilders = new Dictionary<Project.IProject, ProjectIndexBuilder>();
             _lockObject = new object();
+            _activeDocParseThread = new ActiveDocParseThread(this);
+            _activeDocParseThread.Run = true;
         }
 
         public void Dispose()
@@ -60,6 +65,7 @@ namespace JadeCore.Editor
             foreach (var projectBuilder in _projectBuilders.Values)
                 projectBuilder.Dispose();
             _projectBuilders.Clear();
+            _activeDocParseThread.Run = false;
         }
 
         #endregion

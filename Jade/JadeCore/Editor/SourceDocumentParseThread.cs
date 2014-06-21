@@ -15,12 +15,14 @@ namespace JadeCore.Editor
         private bool _parsed; //parsed at least once?
         private FilePath _path;
         private bool _parsing;
+        private CppCodeBrowser.IIndexBuilder _indexBuilder;
 
-        public ParseFile(FilePath path)
+        public ParseFile(FilePath path, CppCodeBrowser.IIndexBuilder indexBuilder)
         {
             _parsed = false;
             _parsing = false;
             _path = path;
+            _indexBuilder = indexBuilder;
         }
 
         public FilePath Path { get { return _path; } }
@@ -47,10 +49,10 @@ namespace JadeCore.Editor
             }
         }
 
-        public void Parse(CppCodeBrowser.IIndexBuilder indexBuilder, TaskScheduler guiScheduler)
+        public void Parse(TaskScheduler guiScheduler)
         {
             Debug.Assert(Parsing);
-            indexBuilder.ParseFile(Path, null);
+            _indexBuilder.ParseFile(Path, null);
             _parsed = true;
             _parsing = false;
         }
@@ -60,27 +62,7 @@ namespace JadeCore.Editor
             return 0;
         }
     }
-
-    internal class ActiveParseFile : ParseFile
-    {
-        public ActiveParseFile(IEditorDoc doc)
-            :base(doc.File.Path)
-        {
-            Document = doc;
-        }
-
-        public IEditorDoc Document
-        {
-            get;
-            private set;
-        }
-
-        protected override UInt64 GetVersion()
-        {
-            return Document.TextDocument.Version; ;
-        }
-    }
-
+        
     internal class ProjectParseThreads : IDisposable
     {
         private bool _disposed;
@@ -93,15 +75,11 @@ namespace JadeCore.Editor
         private ManualResetEvent _workerParseEvent;
         private Thread _workerThread;
 
-        private AutoResetEvent _activeDocParseEvent;
-        private Thread _activeDocThread;
-
         private Action<FilePath> _onParseComplete;
         private TaskScheduler _guiScheduler;
 
         private IDictionary<FilePath, ParseFile> _files;
         private IList<ParseFile> _work;
-        private ActiveParseFile _activeFile;
         
         public ProjectParseThreads(Project.IProject project, 
                                     CppCodeBrowser.IIndexBuilder indexBuilder, 
@@ -125,91 +103,15 @@ namespace JadeCore.Editor
             _workerParseEvent = new ManualResetEvent(false);
             _workerThread = new Thread(WorkerThreadLoop);
 
-            _activeDocParseEvent = new AutoResetEvent(false);
-            _activeDocThread = new Thread(ActiveDocThreadLoop);
-
-            controller.ActiveDocumentChanged += OnActiveDocumentChanged;
-
+            //controller.ActiveDocumentChanged += OnActiveDocumentChanged;
             _project.SourceFiles.Observe(OnFileAdded, OnFileRemoved);
         }
-
-        private void OnActiveDocumentChanged(IEditorDoc doc, IEditorDoc oldValue)
-        {
-            lock (_lock)
-            {
-                if (doc == null) //becoming null
-                {
-                    if (_activeFile != null)
-                    {
-                        _activeFile.Document.TextDocument.TextChanged -= ActiveDocumentModified;
-                        _activeFile = null;
-                    }
-                    return;
-                }
-
-                if (_activeFile != null && _activeFile.Document == doc) //no change
-                    return;
-
-                if (_activeFile != null) //unsubscribe
-                {
-                    _activeFile.Document.TextDocument.TextChanged -= ActiveDocumentModified;
-                    _activeFile = null;
-                }
-                if (_files.ContainsKey(doc.File.Path))
-                {
-                    _activeFile = new ActiveParseFile(doc);
-                    _activeFile.Document.TextDocument.TextChanged += ActiveDocumentModified;
-                    _activeDocParseEvent.Set();
-                }                
-            }
-        }
-
-        private void ActiveDocumentModified(UInt64 version)
-        {
-            lock (_lock)
-            {
-                if (_activeFile != null)
-                {
-                    _activeFile.RequiresParse = true;
-                    _activeDocParseEvent.Set();
-                }
-            }
-        }
-
+       
         public void Dispose()
         {
             if (_disposed) return;
             Run = false;            
             _disposed = true;
-        }
-
-        private void ActiveDocThreadLoop()
-        {
-            WaitHandle[] waitHandles = new WaitHandle[2] { _stopEvent, _activeDocParseEvent };
-            while (true)
-            {
-                int wait = WaitHandle.WaitAny(waitHandles);
-                if (wait == 0)
-                    return;
-
-                ParseFile pf = null;
-                bool parse = false;
-                lock(_lock)
-                {
-                    pf = _activeFile;
-                    if(pf != null && pf.RequiresParse)
-                    {
-                        parse = true;
-                        pf.Parsing = true;
-                    }
-                }
-
-                if(parse)
-                {
-                    Debug.WriteLine("Active doc parsing " + pf.Path.Str);
-                    Parse(pf);
-                }
-            }                
         }
 
         private void WorkerThreadLoop()
@@ -227,7 +129,7 @@ namespace JadeCore.Editor
                 {
                     foreach(ParseFile pf in _work)
                     {
-                        if(pf.RequiresParse && IsActiveFile(pf) == false)
+                        if(pf.RequiresParse)
                         {
                             pf.Parsing = true;
                             work = pf;
@@ -249,18 +151,9 @@ namespace JadeCore.Editor
             }
         }
 
-        private bool IsActiveFile(ParseFile pf)
-        {
-            lock (_lock)
-            {
-                return _activeFile != null && _activeFile.Path == pf.Path;
-            }
-        }
-
         private void Parse(ParseFile pf)
         {
-            pf.Parse(_indexBuilder, _guiScheduler);
-            
+            pf.Parse(_guiScheduler);            
         }
                 
         public bool Run
@@ -271,12 +164,10 @@ namespace JadeCore.Editor
                 {
                     _stopEvent.Reset();
                     _workerThread.Start();
-                    _activeDocThread.Start();
                 }
                 else
                 {
                     _stopEvent.Set();
-                    _activeDocThread.Join();
                     _workerThread.Join();
                 }
             }
@@ -287,7 +178,7 @@ namespace JadeCore.Editor
             lock(_lock)
             {
                 Debug.Assert(_files.ContainsKey(file.Path) == false);
-                ParseFile pf = new ParseFile(file.Path);
+                ParseFile pf = new ParseFile(file.Path, _indexBuilder);
                 _files.Add(file.Path, pf);
                 _work.Add(pf);
                 _workerParseEvent.Set();

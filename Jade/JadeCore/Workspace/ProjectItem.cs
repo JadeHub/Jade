@@ -29,7 +29,7 @@ namespace JadeCore.Workspace
         
         public JadeCore.Project.IProject OwningProject { get { return _project.OwningProject; } }
         public Collections.Observable.List<JadeCore.Project.IFileItem> SourceFiles { get { return _project.SourceFiles; } }
-        public CppCodeBrowser.IndexBuilder IndexBuilder { get { return _project.IndexBuilder; } }
+        public CppCodeBrowser.ProjectIndexBuilder IndexBuilder { get { return _project.IndexBuilder; } }
         public CppCodeBrowser.IProjectIndex Index { get { return _project.Index; } }
         public void AddItem(Project.IFolder folder, JadeCore.Project.IItem item) { _project.AddItem(folder, item); }
         public void AddItem(JadeCore.Project.IItem item) { _project.AddItem(item); }

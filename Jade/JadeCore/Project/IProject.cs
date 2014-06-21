@@ -26,7 +26,7 @@ namespace JadeCore.Project
         /// <summary>
         /// Index builder for this project
         /// </summary>
-        CppCodeBrowser.IndexBuilder IndexBuilder { get; }
+        CppCodeBrowser.ProjectIndexBuilder IndexBuilder { get; }
 
         CppCodeBrowser.IProjectIndex Index { get; }
 

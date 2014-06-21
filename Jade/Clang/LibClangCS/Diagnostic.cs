@@ -192,7 +192,16 @@ namespace LibClang
         /// </summary>
         public SourceLocation Location
         {
-            get { return _location ?? (_location = _itemFactory.CreateSourceLocation(Library.clang_getDiagnosticLocation(Handle))); }
+            get 
+            {
+                if (_location == null)
+                {
+                    Library.SourceLocation loc = Library.clang_getDiagnosticLocation(Handle);
+                    if(loc.IsNull == false)
+                        _location = _itemFactory.CreateSourceLocation(loc);
+                }
+                return _location; 
+            }
         }
 
         public Cursor LocationCursor
