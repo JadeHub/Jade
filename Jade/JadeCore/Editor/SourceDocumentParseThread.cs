@@ -13,26 +13,26 @@ namespace JadeCore.Editor
     internal class ParseFile
     {
         private bool _parsed; //parsed at least once?
-        private FilePath _path;
+        private Project.IFileItem _projectItem;
         private bool _parsing;
         private CppCodeBrowser.IIndexBuilder _indexBuilder;
 
-        public ParseFile(FilePath path, CppCodeBrowser.IIndexBuilder indexBuilder)
+        public ParseFile(Project.IFileItem projectItem, CppCodeBrowser.IIndexBuilder indexBuilder)
         {
             _parsed = false;
             _parsing = false;
-            _path = path;
+            _projectItem = projectItem;
             _indexBuilder = indexBuilder;
         }
 
-        public FilePath Path { get { return _path; } }
+        public FilePath Path { get { return _projectItem.Path; } }
 
         public bool Parsing
         {
             get { return _parsing; }
             set 
             {
-                Debug.Assert(value); //only this class may turn this off via _parsing
+                Debug.Assert(value == true); //only this class may turn this off via _parsing
                 _parsing = value; 
             }
         }
@@ -51,8 +51,22 @@ namespace JadeCore.Editor
 
         public void Parse(TaskScheduler guiScheduler)
         {
-            Debug.Assert(Parsing);
-            _indexBuilder.ParseFile(Path, null);
+         //   if (_projectItem.Type == Project.ItemType.CppSourceFile)
+            {
+                Debug.Assert(Parsing);
+                _indexBuilder.ParseFile(Path, null);                
+            }
+         /*   else if(_projectItem.Type == Project.ItemType.CppHeaderFile)
+            {
+                CppCodeBrowser.IHeaderFile header = _indexBuilder.Index.FindHeaderFile(Path);
+                List<CppCodeBrowser.ISourceFile> sources = new List<CppCodeBrowser.ISourceFile>(header.SourceFiles);
+                foreach(CppCodeBrowser.ISourceFile sf in sources)
+                {
+                    //check bailout flag
+                    _indexBuilder.ParseFile(sf.Path, null);
+                }                
+            }
+            */
             _parsed = true;
             _parsing = false;
         }
@@ -178,7 +192,7 @@ namespace JadeCore.Editor
             lock(_lock)
             {
                 Debug.Assert(_files.ContainsKey(file.Path) == false);
-                ParseFile pf = new ParseFile(file.Path, _indexBuilder);
+                ParseFile pf = new ParseFile(file, _indexBuilder);
                 _files.Add(file.Path, pf);
                 _work.Add(pf);
                 _workerParseEvent.Set();
