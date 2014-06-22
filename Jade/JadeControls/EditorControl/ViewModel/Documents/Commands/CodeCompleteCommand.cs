@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace JadeControls.EditorControl.ViewModel.Commands
     {
         private FilePath _path;
         private CppCodeBrowser.IProjectIndex _index;
-
+        
         public CodeCompleteCommand(DocumentViewModel vm, FilePath path, CppCodeBrowser.IProjectIndex index)
             : base(vm)
         {
@@ -27,7 +28,7 @@ namespace JadeControls.EditorControl.ViewModel.Commands
 
         protected override bool CanExecute()
         {
-            return true;
+            return CodeCompletion != null;
         }
 
         protected override void Execute()
@@ -35,11 +36,20 @@ namespace JadeControls.EditorControl.ViewModel.Commands
             CppCodeBrowser.ISourceFile sf = _index.FindSourceFile(_path);
             if (sf == null) return;
 
+            CodeCompletion.DoCompletion(sf.TranslationUnit, _path.Str, ViewModel.CaretLine, ViewModel.CaretColumn);
+            /*
             CppCodeBrowser.IUnsavedFileProvider unsavedProvider = JadeCore.Services.Provider.EditorController;
 
             LibClang.CodeCompletion.Results r = sf.TranslationUnit.CodeCompleteAt(_path.Str, ViewModel.CaretLine, ViewModel.CaretColumn, unsavedProvider.GetUnsavedFiles());
+            */
 
             //ViewModel.CaretLine 
+        }
+
+        public CodeCompletion.CodeCompletion CodeCompletion
+        {
+            get;
+            set;
         }
     }
 }

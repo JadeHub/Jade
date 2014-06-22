@@ -16,6 +16,7 @@ namespace JadeControls.EditorControl.ViewModel
         private Commands.SourceFileJumpToCommand _jumpToCommand;
         private Commands.FindAllReferences _findAllRefsCommand;
         private Commands.CodeCompleteCommand _codeCompleteCommand;
+        private CodeCompletion.CodeCompletion _codeCompletion;
 
         public SourceDocumentViewModel(IEditorDoc doc) 
             : base(doc)
@@ -44,38 +45,13 @@ namespace JadeControls.EditorControl.ViewModel
             get { return _codeCompleteCommand; }
         }
 
-        public LibClang.Cursor CurrentCppCursor
-        {
-            get
-            {
-                if (HasIndex)
-                {
-                    CppCodeBrowser.ISourceFile fileIndex = Index.FindSourceFile(Document.File.Path);
-                    if (fileIndex != null)
-                        return fileIndex.GetCursorAt(Document.File.Path, CaretOffset);
-                }
-                return null;
-            }
-        }
-
         protected override void OnSetView(CodeEditor view)
         {
             base.OnSetView(view);
-            /*
-            view.CommandBindings.Add(new CommandBinding(JadeCore.Commands.DisplaySymbolInspector,
-                                        delegate(object target, ExecutedRoutedEventArgs args)
-                                        {
-                                 //           args.Parameter = 5;
-                                            if (HasIndex)
-                                            {
-                                            }
-                                            //args.Handled = true;
-                                        },
-                                        delegate(object target, CanExecuteRoutedEventArgs args)
-                                        {
-                                            args.CanExecute = true;
-                                            args.Handled = true;
-                                        }));*/
+            Debug.Assert(_codeCompletion == null);
+            _codeCompletion = new CodeCompletion.CodeCompletion(view.TextArea, JadeCore.Services.Provider.EditorController);
+            _codeCompleteCommand.CodeCompletion = _codeCompletion;
+            
         }
     }
 }

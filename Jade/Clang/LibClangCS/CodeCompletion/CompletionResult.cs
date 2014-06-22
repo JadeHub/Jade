@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -90,6 +91,19 @@ namespace LibClang.CodeCompletion
         {
             get;
             private set;
+        }
+
+        public ResultChunk TypedChunk
+        {
+            get
+            {
+                foreach (ResultChunk c in _chunks)
+                    if (c.Kind == ChunkKind.TypedText)
+                        return c;
+                Debug.Assert(false);
+                return null;
+            }
+            
         }
 
         public IEnumerable<ResultChunk> GetChunks(ChunkKind kind)
