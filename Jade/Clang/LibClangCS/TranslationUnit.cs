@@ -91,13 +91,8 @@ namespace LibClang
 
         #region Public Methods
 
-        public bool Parse(string[] cmdLineParams, IList<Tuple<string, string>> unsavedFiles)
+        private Library.UnsavedFile[] BuildUnsavedFileArray(IList<Tuple<string, string>> unsavedFiles)
         {
-            if (!System.IO.File.Exists(Filename))
-            {
-                return false;
-            }
-
             Library.UnsavedFile[] unsaved = new Library.UnsavedFile[unsavedFiles.Count];
 
             if (unsavedFiles != null)
@@ -108,11 +103,22 @@ namespace LibClang
                     Library.UnsavedFile usf = new Library.UnsavedFile();
                     usf.Filename = pathContent.Item1;
                     usf.Contents = pathContent.Item2;
-                    usf.Length = (UInt32) pathContent.Item2.Length;
+                    usf.Length = (UInt32)pathContent.Item2.Length;
                     unsaved[i] = usf;
                     i++;
                 }
             }
+            return unsaved;
+        }
+
+        public bool Parse(string[] cmdLineParams, IList<Tuple<string, string>> unsavedFiles)
+        {
+            if (!System.IO.File.Exists(Filename))
+            {
+                return false;
+            }
+
+            Library.UnsavedFile[] unsaved = BuildUnsavedFileArray(unsavedFiles);
 
             Handle = Library.clang_parseTranslationUnit(_index.Handle, Filename,
                                                     cmdLineParams, cmdLineParams != null ? cmdLineParams.Length : 0,
@@ -379,6 +385,24 @@ namespace LibClang
             return Library.clang_findReferencesInFile(c.Handle, f.Handle, visitor) != Library.CXResult.CXResult_Invalid;
         }
         
+        #endregion
+
+        #region Code Completion
+
+        public CodeCompletion.Results CodeCompleteAt(string fileName, int line, int col, IList<Tuple<string, string>> unsavedFiles)
+        {
+            Library.UnsavedFile[] unsaved = BuildUnsavedFileArray(unsavedFiles);
+
+            return CodeCompletion.CodeComplete.CompleteAt(this, fileName, line, col, unsaved);
+            /*
+            CodeCompletion.Library.CXCodeCompleteResults* results = CodeCompletion.Library.clang_codeCompleteAt(Handle, fileName, (uint)line, (uint)col,
+                                                                                                                unsaved.Length > 0 ? unsaved : null,
+                                                                                                                (uint)unsaved.Length, 
+                                                                                                                CodeCompletion.Library.clang_defaultCodeCompleteOptions());
+            */
+            //return null;
+        }
+
         #endregion
     }
 }

@@ -14,7 +14,7 @@ struct AStruct
 {
 	int i;
 
-	virtual void VFunc();
+	virtual void VFunc(int i, int j);
 };
 
 enum AnEnum
@@ -52,7 +52,7 @@ public:
 	
 	void t() const;
 
-	virtual void VFunc() override;
+	virtual void VFunc(int i, int j) override;
 
 	template <typename P1>
 	void TemplMethod(const P1& p1) {}

@@ -61,6 +61,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeCompletion\AvailabilityKind.cs" />
+    <Compile Include="CodeCompletion\CodeComplete.cs" />
+    <Compile Include="CodeCompletion\CompletionChunkKind.cs" />
+    <Compile Include="CodeCompletion\CompletionResult.cs" />
+    <Compile Include="CodeCompletion\CompletionResults.cs" />
+    <Compile Include="CodeCompletion\CXCompletionContext.cs" />
+    <Compile Include="CodeCompletion\Library.cs" />
     <Compile Include="Cursor.cs" />
     <Compile Include="CursorKind.cs" />
     <Compile Include="Diagnostic.cs" />
@@ -86,6 +93,7 @@
     <Compile Include="TypeKind.cs" />
     <Compile Include="WrapperStore.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

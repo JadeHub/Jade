@@ -88,6 +88,7 @@
       <DependentUpon>SourceDocumentControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="EditorControl\ViewModel\Documents\CodeDocumentViewModelBase.cs" />
+    <Compile Include="EditorControl\ViewModel\Documents\Commands\CodeCompleteCommand.cs" />
     <Compile Include="EditorControl\ViewModel\Documents\Commands\EditorCommand.cs" />
     <Compile Include="EditorControl\ViewModel\Documents\Commands\FindAllReferencesCommand.cs" />
     <Compile Include="EditorControl\ViewModel\Documents\Commands\InspectCursor.cs" />

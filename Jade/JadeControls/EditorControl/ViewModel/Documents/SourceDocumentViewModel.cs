@@ -15,6 +15,7 @@ namespace JadeControls.EditorControl.ViewModel
     {        
         private Commands.SourceFileJumpToCommand _jumpToCommand;
         private Commands.FindAllReferences _findAllRefsCommand;
+        private Commands.CodeCompleteCommand _codeCompleteCommand;
 
         public SourceDocumentViewModel(IEditorDoc doc) 
             : base(doc)
@@ -24,6 +25,7 @@ namespace JadeControls.EditorControl.ViewModel
             {
                 _jumpToCommand = new Commands.SourceFileJumpToCommand(this, doc.File.Path, doc.Project.Index);
                 _findAllRefsCommand = new Commands.FindAllReferences(this, doc.File.Path, doc.Project.Index);
+                _codeCompleteCommand = new Commands.CodeCompleteCommand(this, doc.File.Path, doc.Project.Index);
             }
         }
 
@@ -35,6 +37,11 @@ namespace JadeControls.EditorControl.ViewModel
         public ICommand FindAllReferencesCommand
         {
             get { return _findAllRefsCommand; }
+        }
+
+        public ICommand CodeCompleteCommand
+        {
+            get { return _codeCompleteCommand; }
         }
 
         public LibClang.Cursor CurrentCppCursor

@@ -42,8 +42,10 @@ void SomeClass::Fn()
 	SomeClass* sc = new SomeClass();
 	InlinedMethod();
 		
+			
 	AStruct as;
 	AnEnum ae;
+	as.
 	/*int sam = 
 		ReturnInt(7);	*/
 		
@@ -55,11 +57,11 @@ double SomeClass::Fn2(const int i, char* s) const
 	return (double)i;
 }
 
-void SomeClass::VFunc()
+void SomeClass::VFunc(int i, int j)
 {
 	TemplMethod(5);
-	int i = 8;
-	TemplMethod2<5, int>(i);
+	int ii = 8;
+	TemplMethod2<5, int>(ii);
 }
 
 Test::ClassA SomeNewFucntion()
