@@ -121,6 +121,18 @@ namespace JadeCore
             return true;
         }
 
+        public bool GetLineAndColumnForOffset(int offset, out int line, out int col)
+        {
+            line = col = 0;
+            if (offset > this.TextLength) return false;
+         
+            ISegment lineSeg = GetLineForOffset(offset);
+            if (lineSeg == null) return false;            
+            line = GetLineNumForOffset(offset);
+            col = offset - lineSeg.Offset + 1;
+            return true;
+        }
+
         public int GetLineNumForOffset(int offset)
         {
             return AvDoc.GetLineByOffset(offset).LineNumber;

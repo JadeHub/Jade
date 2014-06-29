@@ -75,6 +75,10 @@
     <Compile Include="Docking\ToolPaneViewModel.cs" />
     <Compile Include="EditorControl\CodeCompletion\CodeCompletion.cs" />
     <Compile Include="EditorControl\CodeCompletion\CompletionData.cs" />
+    <Compile Include="EditorControl\CodeCompletion\OverloadProvider.cs" />
+    <Compile Include="EditorControl\CodeCompletion\ResultProvider.cs" />
+    <Compile Include="EditorControl\CodeCompletion\ResultSet.cs" />
+    <Compile Include="EditorControl\ViewModel\Documents\Commands\SearchCommand.cs" />
     <Compile Include="EditorControl\CodeEditor.cs" />
     <Compile Include="Converters\TabFileNameConverter.cs" />
     <Compile Include="Dialogs\SaveFiles.xaml.cs">

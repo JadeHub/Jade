@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,21 +32,26 @@ namespace JadeControls.EditorControl.ViewModel.Commands
         }
 
         protected override void Execute()
-        {
+        {         
+            /*
+            int startOffset = ViewModel.CaretOffset;
+            while (startOffset > 0 && char.IsLetterOrDigit(ViewModel.TextDocument.Text[startOffset-1]))
+                startOffset--;
+            int line = 0;
+            int col = 0;
+            ViewModel.TextDocument.GetLineAndColumnForOffset(startOffset, out line, out col);
+            string triggerWord = ViewModel.TextDocument.Text.Substring(startOffset, ViewModel.CaretOffset - startOffset);
+            */
             CppCodeBrowser.ISourceFile sf = _index.FindSourceFile(_path);
             if (sf == null) return;
 
-            CodeCompletion.DoCompletion(sf.TranslationUnit, _path.Str, ViewModel.CaretLine, ViewModel.CaretColumn);
-            /*
-            CppCodeBrowser.IUnsavedFileProvider unsavedProvider = JadeCore.Services.Provider.EditorController;
+            int offset;
+            string triggerWord = CodeCompletion.ExtractTriggerWord(ViewModel.CaretOffset, out offset);
 
-            LibClang.CodeCompletion.Results r = sf.TranslationUnit.CodeCompleteAt(_path.Str, ViewModel.CaretLine, ViewModel.CaretColumn, unsavedProvider.GetUnsavedFiles());
-            */
-
-            //ViewModel.CaretLine 
+            CodeCompletion.BeginSelection(offset);//, triggerWord);
         }
 
-        public CodeCompletion.CodeCompletion CodeCompletion
+        public CodeCompletion.CompletionEngine CodeCompletion
         {
             get;
             set;

@@ -124,7 +124,7 @@ namespace LibClang
                                                     cmdLineParams, cmdLineParams != null ? cmdLineParams.Length : 0,
                                                     unsaved.Length > 0 ? unsaved : null,
                                                     (uint)unsaved.Length,
-                                                    (int)TranslationUnitFlags.DetailedPreprocessingRecord);
+                                                    (int)(TranslationUnitFlags.DetailedPreprocessingRecord | TranslationUnitFlags.CacheCompletionResults));
             return Valid;
         }
 

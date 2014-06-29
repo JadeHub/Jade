@@ -3,39 +3,283 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Input;
 using ICSharpCode.AvalonEdit.Editing;
+using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.CodeCompletion;
+using JadeUtils.IO;
+using LibClang.CodeCompletion;
 
 namespace JadeControls.EditorControl.CodeCompletion
 {
-    public class CodeCompletion
+    public interface ICompletionEngine
     {
-        private TextArea _textArea;
-        private CompletionWindow _completionWindow;
-        CppCodeBrowser.IUnsavedFileProvider _unsavedFiles;
+        void BeginSelection(int offset);
+        /*void EndSelection(bool selectCurrentItem);
+        void Abort();        
 
-        public CodeCompletion(TextArea textArea, CppCodeBrowser.IUnsavedFileProvider unsavedFiles)
+        bool IsInactive { get;}
+        bool IsSelecting { get;}
+        bool IsCompleting { get; }*/
+
+        /// <summary>
+        /// Extract the 'word' at the point line, column.
+        /// </summary>
+        /// <param name="line"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        string ExtractTriggerWord(int offset, out int startOffset);
+    }
+
+    public class CompletionContext
+    {
+        public TextArea TextArea;
+        public IResultProvider ResultProvider;
+        public FilePath Path;
+        public CompletionSelection.CallbackDel Callback;
+        public string TriggerWord;
+        public int Offset;
+        public int Line;
+        public int Column;
+    }
+
+    public class CompletionSelection
+    {
+        public delegate void CallbackDel(LibClang.CodeCompletion.Result selection, ISegment completionSegment);
+
+        private CompletionContext _context;
+        private CompletionWindow _completionWindow;
+        private Action _onComplete;
+        
+        public CompletionSelection(CompletionContext context, Action onComplete)
         {
-            _textArea = textArea;
-            _unsavedFiles = unsavedFiles;
+            _context = context;
+            _onComplete = onComplete;
+            ResultSet results = _context.ResultProvider.GetResults(_context.Path.Str, _context.Line, _context.Column, this);
+            if (results == null) return;
+
+            _completionWindow = new CompletionWindow(_context.TextArea);
+            foreach (CompletionData cd in results.Results)
+            {
+                _completionWindow.CompletionList.CompletionData.Add(cd);
+            }
+
+            _completionWindow.StartOffset = _context.Offset;
+            _completionWindow.EndOffset = _completionWindow.StartOffset + _context.TriggerWord.Length;
+
+            if (_context.TriggerWord.Length > 0)
+            {
+                _completionWindow.CompletionList.SelectItem(_context.TriggerWord);
+            }
+
+            _completionWindow.Show();
+            
+            _completionWindow.Closed += (o, args) =>
+            {   
+                _completionWindow = null;
+                _onComplete();
+            };
         }
 
-        public void DoCompletion(LibClang.TranslationUnit tu, string file, int line, int col)
+        public void SelectResult(LibClang.CodeCompletion.Result result, ISegment completionSegment)
         {
-            Debug.Assert(_completionWindow == null);
-            LibClang.CodeCompletion.Results results = tu.CodeCompleteAt(file, line, col, _unsavedFiles.GetUnsavedFiles());
-            if (results == null)
+            _context.Callback(result, completionSegment);
+        }
+
+        public void RequestInsertion()
+        {
+            _completionWindow.CompletionList.RequestInsertion(null);
+        }
+    }
+
+    /// <summary>
+    /// Manages CodeCompletion for a single source file
+    /// </summary>
+    public class CompletionEngine : ICompletionEngine
+    {
+        private enum Phase
+        {
+            Inactive,
+            Selecting, //User is selecting from the list of results
+            Completing //User is completing their sellection
+        }
+
+        private TextArea _textArea;
+        //private CompletionWindow _completionWindow;
+        private CompletionSelection _currentSelection;
+        private IResultProvider _resulsProvider;
+        private JadeCore.ITextDocument _sourceDoc;
+        private Phase _currentPhase;
+
+        public CompletionEngine(JadeCore.ITextDocument sourceDoc, TextArea textArea, IResultProvider resultsProvider)
+        {
+            _textArea = textArea;
+            _sourceDoc = sourceDoc;
+            _resulsProvider = resultsProvider;
+            _textArea.TextEntering += TextAreaTextEntering;
+            _textArea.TextEntered += TextAreaTextEntered;
+            _currentPhase = Phase.Inactive;
+        }
+
+        private bool IsCompletionStartChar(char c)
+        {
+            return char.IsLetter(c) || c == '.' || c == '(' || c == '<';
+        }
+
+        private void TextAreaTextEntered(object sender, TextCompositionEventArgs e)
+        {
+            if (_currentSelection == null && e.Text.Length > 0 && IsCompletionStartChar(e.Text[0]))
+            {
+                BeginSelection(_textArea.Caret.Offset);// - e.Text.Length, e.Text);
+            }
+        }
+
+        private void TextAreaTextEntering(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            if (_currentSelection != null && e.Text.Length > 0)
+            {
+                if (!char.IsLetterOrDigit(e.Text[0]))
+                {
+                    // Whenever a non-letter is typed while the completion window is open,
+                    // insert the currently selected element.
+                    
+                    _currentSelection.RequestInsertion();
+                }
+            }
+        }
+
+        public bool IsInactive
+        { 
+            get { return _currentPhase == Phase.Inactive; } 
+        }
+
+        public bool IsSelecting
+        {
+            get { return _currentPhase == Phase.Selecting; }
+        }
+
+        public bool IsCompleting
+        {
+            get { return _currentPhase == Phase.Completing; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="triggerWord">Initial text to be selected in the completion window. line and col should point to the start of this word</param>
+        /// <param name="line"></param>
+        /// <param name="col"></param>
+        public void BeginSelection(int offset)
+        {
+            if (_currentSelection != null) return;
+
+            string triggerWord = ExtractTriggerWord(offset, out offset);
+
+            int line, col;
+            if (!_sourceDoc.GetLineAndColumnForOffset(offset, out line, out col))
                 return;
 
-            _completionWindow = new CompletionWindow(_textArea);
-            IList<ICompletionData> data = _completionWindow.CompletionList.CompletionData;
-            foreach(LibClang.CodeCompletion.Result r in results.Items.OrderBy(item => item.TypedChunk.Text))
+            CompletionContext context = new CompletionContext
             {
-                data.Add(new CompletionData(r));
+                Line = line,
+                Column = col,
+                Offset = offset,
+                Path = _sourceDoc.File.Path,
+                ResultProvider = _resulsProvider,
+                TextArea = _textArea,
+                TriggerWord = triggerWord,
+                Callback = delegate(LibClang.CodeCompletion.Result selection, ISegment completionSegment) 
+                    {
+                        int caretLoc;
+                        int startOffset = completionSegment.Offset;
+                        string s = GetInsertionText(selection, out caretLoc);
+                        _textArea.Document.Replace(completionSegment, s);
+                        if(caretLoc != -1)
+                            _textArea.Caret.Offset = startOffset + caretLoc;
+                    }
+            };
+            _currentSelection = new CompletionSelection(context, delegate { _currentSelection = null; });
+        }
+        
+        public string ExtractTriggerWord(int offset, out int startOffset)
+        {
+            startOffset = offset;
+            while (startOffset > 0 && (char.IsLetterOrDigit(_sourceDoc.Text[startOffset - 1])))
+                startOffset--;
+            int endOffset = offset;
+            while (char.IsLetterOrDigit(_sourceDoc.Text[endOffset]))
+                endOffset++;
+
+            int line = 0;
+            int col = 0;
+            _sourceDoc.GetLineAndColumnForOffset(startOffset, out line, out col);
+            return _sourceDoc.Text.Substring(startOffset, endOffset - startOffset);
+        }
+
+        private string GetInsertionText(LibClang.CodeCompletion.Result result, out int caretLocation)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            caretLocation = -1;
+            foreach(ResultChunk rc in result.Chunks)
+            {
+                switch(rc.Kind)
+                {
+                    case (ChunkKind.TypedText):
+                    case (ChunkKind.Text):                    
+                        sb.Append(rc.Text);
+                        break;
+                    case (ChunkKind.Placeholder):
+                        if (caretLocation == -1)
+                            caretLocation = sb.Length;
+                        break;
+                    case (ChunkKind.LeftParen):
+                        sb.Append('(');
+                        break;
+                    case (ChunkKind.RightParen):
+                        sb.Append(')');
+                        break;
+                    case (ChunkKind.LeftBracket):
+                        sb.Append(']');
+                        break;
+                    case (ChunkKind.RightBracket):
+                        sb.Append('[');
+                        break;
+                    case (ChunkKind.LeftBrace):
+                        sb.Append('{');
+                        break;
+                    case (ChunkKind.RightBrace):
+                        sb.Append('}');
+                        break;
+                    case (ChunkKind.LeftAngle):
+                        sb.Append('<');
+                        break;
+                    case (ChunkKind.RightAngle):
+                        sb.Append('>');
+                        break;
+                    case (ChunkKind.Comma):
+                        sb.Append(", ");
+                        break;
+                    case (ChunkKind.Colon):
+                        sb.Append(':');
+                        break;
+                    case (ChunkKind.SemiColon):
+                        sb.Append(';');
+                        break;
+                    case (ChunkKind.Equal):
+                        sb.Append('=');
+                        break;
+                    case (ChunkKind.HorizontalSpace):
+                        sb.Append(' ');
+                        break;
+                    case (ChunkKind.VerticalSpace):
+                        sb.Append('\n');
+                        break;
+                }
             }
-            _completionWindow.Show();
-            _completionWindow.Closed += (o, args) => _completionWindow = null;
+
+            return sb.ToString();
         }
     }
 }

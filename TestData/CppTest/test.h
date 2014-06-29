@@ -42,7 +42,7 @@ public:
 	int ii;
 
 	void Fn();
-	double Fn2(const int i, char* s) const;
+	double Fn2(const int i, const char* s) const;
 
 
 	inline bool InlinedMethod()
@@ -57,10 +57,11 @@ public:
 	template <typename P1>
 	void TemplMethod(const P1& p1) {}
 
-	template <int i, typename P1>
-	void TemplMethod2(P1& p1) { p1 = i; }
+	template <typename P1, typename P2>
+	void TemplMethod2(P1& p1, P1 p2) { p1 = i; }
 private:
 	void t1() const;
+	void t1(int j) const {}
 
 private:
 	AStruct MSt;

@@ -16,7 +16,7 @@ namespace JadeControls.EditorControl.ViewModel
         private Commands.SourceFileJumpToCommand _jumpToCommand;
         private Commands.FindAllReferences _findAllRefsCommand;
         private Commands.CodeCompleteCommand _codeCompleteCommand;
-        private CodeCompletion.CodeCompletion _codeCompletion;
+        private CodeCompletion.CompletionEngine _codeCompletion;
 
         public SourceDocumentViewModel(IEditorDoc doc) 
             : base(doc)
@@ -49,9 +49,11 @@ namespace JadeControls.EditorControl.ViewModel
         {
             base.OnSetView(view);
             Debug.Assert(_codeCompletion == null);
-            _codeCompletion = new CodeCompletion.CodeCompletion(view.TextArea, JadeCore.Services.Provider.EditorController);
+
+            _codeCompletion = new CodeCompletion.CompletionEngine(Document.TextDocument, view.TextArea, new CodeCompletion.ResultProvider(Document.File.Path, Document.Project.Index, JadeCore.Services.Provider.EditorController));
             _codeCompleteCommand.CodeCompletion = _codeCompletion;
-            
+
+            view.InputBindings.Add(new InputBinding(CodeCompleteCommand, new KeyGesture(Key.Space, ModifierKeys.Control)));            
         }
     }
 }

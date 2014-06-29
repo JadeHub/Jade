@@ -63,7 +63,7 @@ namespace JadeControls.OutputControl.ViewModel
                 if (Text.Length > 0)
                     _sb.Append(Environment.NewLine);
                 _sb.Append(((OutputItemViewModel)e.NewItems[0]).DisplayText);
-                
+                IsSelected = true;
             }
             else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
             {

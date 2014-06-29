@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
@@ -100,25 +101,28 @@ namespace LibClang.CodeCompletion
                 foreach (ResultChunk c in _chunks)
                     if (c.Kind == ChunkKind.TypedText)
                         return c;
-                Debug.Assert(false);
                 return null;
             }
             
         }
 
-        public IEnumerable<ResultChunk> GetChunks(ChunkKind kind)
-        {
-            foreach (ResultChunk c in _chunks)
-            {
-                if (c.Kind == kind)
-                    yield return c;
-            }
-        }
-
         public override string ToString()
         {
-            ResultChunk r = GetChunks(ChunkKind.TypedText).First();
-            return r.Text;
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append(CursorKind.ToString());
+            sb.Append(" : ");
+            sb.Append(CompletionPriority);
+
+            foreach(ResultChunk c in _chunks)
+            {
+                sb.Append(" {");
+                sb.Append(c.Kind.ToString());
+                sb.Append(" : ");
+                sb.Append(c.Text);
+                sb.Append("}");
+            }            
+            return sb.ToString();
         }
     }
 }

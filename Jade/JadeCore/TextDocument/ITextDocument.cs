@@ -33,6 +33,7 @@ namespace JadeCore
 
         #region Methods
 
+        bool GetLineAndColumnForOffset(int offset, out int line, out int col);
         int GetLineNumForOffset(int offset);
         ISegment GetLineForOffset(int offset);
         string GetText(ISegment segment);        

@@ -14,7 +14,7 @@ ClassA::ClassA()
 	double d = 7.0;
 }
 
-void NewFunction()
+void NewFunction(int i)
 {
 
 }
@@ -22,16 +22,36 @@ void NewFunction()
 int ClassB::GetAnInt() const
 {
 	return 0;
+	
+	
 }
 
 
 void SomeClass::t() const
 {
+	SomeClass::j = 0;
+	const char * str = "";
 	
+	this->Fn2(1, str);
 }
 
 
 void SomeClass::t1() const {}
+
+class Overloads
+{
+public:
+	Overloads() {}
+	
+	void Func() {}
+	void Func(int i, int j) {}
+	void Func(double d, int j) {}	
+	
+private:
+	Overloads(const Overloads&); 
+	Overloads& operator =(const Overloads& o);	
+	Overloads&& operator =(const Overloads&& o);
+};
 
 void SomeClass::Fn()
 {
@@ -41,18 +61,23 @@ void SomeClass::Fn()
 	SomeClass a(8);
 	SomeClass* sc = new SomeClass();
 	InlinedMethod();
-		
-			
+	
 	AStruct as;
 	AnEnum ae;
-	as.
+	int i = 7;
+	this->TemplMethod2<int, int>(i, 8);
+	
+	Overloads o;
+			
+	int k = as.i;
+	
 	/*int sam = 
 		ReturnInt(7);	*/
 		
 //	int k = sam * 2;		
 }
 
-double SomeClass::Fn2(const int i, char* s) const
+double SomeClass::Fn2(const int i, const char* s) const
 {
 	return (double)i;
 }
@@ -60,8 +85,7 @@ double SomeClass::Fn2(const int i, char* s) const
 void SomeClass::VFunc(int i, int j)
 {
 	TemplMethod(5);
-	int ii = 8;
-	TemplMethod2<5, int>(ii);
+	int ii = 8;	
 }
 
 Test::ClassA SomeNewFucntion()

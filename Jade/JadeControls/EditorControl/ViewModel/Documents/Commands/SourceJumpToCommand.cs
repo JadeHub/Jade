@@ -41,6 +41,7 @@ namespace JadeControls.EditorControl.ViewModel.Commands
 
         protected override bool CanExecute()
         {
+            _indexItem = _index.FindProjectItem(_path);
             return JumpTo(ViewModel.CaretOffset) != null;
         }
 

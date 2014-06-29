@@ -5,16 +5,27 @@ using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 
-
 namespace JadeControls.EditorControl.CodeCompletion
 {
-    public class CompletionData : ICSharpCode.AvalonEdit.CodeCompletion.ICompletionData
+    public interface IResult : ICSharpCode.AvalonEdit.CodeCompletion.ICompletionData
+    {
+        LibClang.CodeCompletion.Result Result { get; }
+    }
+
+    public class CompletionData : IResult
     {
         private LibClang.CodeCompletion.Result _result;
+        private CompletionSelection _selection;
 
-        public CompletionData(LibClang.CodeCompletion.Result r)
+        public CompletionData(LibClang.CodeCompletion.Result r, CompletionSelection selection)
         {
             _result = r;
+            _selection = selection;
+        }
+
+        public LibClang.CodeCompletion.Result Result 
+        {
+            get { return _result; }
         }
 
         public ImageSource Image { get { return null; } }
@@ -24,7 +35,12 @@ namespace JadeControls.EditorControl.CodeCompletion
         /// </summary>
         public string Text 
         {
-            get { return _result.TypedChunk.Text;}
+            get 
+            { 
+                if(_result.TypedChunk != null)
+                    return _result.TypedChunk.Text;
+                return "";
+            }
         }
 
         /// <summary>
@@ -36,7 +52,7 @@ namespace JadeControls.EditorControl.CodeCompletion
         /// <summary>
         /// Gets the description.
         /// </summary>
-        public object Description { get { return Text; } }
+        public object Description { get { return _result.CursorKind.ToString(); } }
 
         /// <summary>
         /// Gets the priority. This property is used in the selection logic. You can use it to prefer selecting those items
@@ -55,7 +71,23 @@ namespace JadeControls.EditorControl.CodeCompletion
         /// the insertion was triggered.</param>
         public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
         {
-            textArea.Document.Replace(completionSegment, _result.TypedChunk.Text);
+            _selection.SelectResult(_result, completionSegment);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if(obj != null && obj is CompletionData)
+            {
+                CompletionData rhs = obj as CompletionData;
+                return rhs.Result.CursorKind == Result.CursorKind && rhs.Text == Text;
+            }
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            string s = _result.CursorKind.ToString() + Text;
+            return s.GetHashCode();
         }
     }
 }

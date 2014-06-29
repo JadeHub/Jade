@@ -203,8 +203,6 @@ namespace JadeGui.ViewModels
 
         #region Editor
 
-        public OutputViewModel Output { get { return _outputViewModel; } }
-
         public SearchResultsPaneViewModel SearchResults { get { return _seachResultsViewModel; } }
 
         #endregion
