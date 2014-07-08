@@ -40,6 +40,7 @@ namespace ICSharpCode.AvalonEdit.CodeCompletion
 			this.MaxHeight = 300;
 			this.Width = 175;
 			this.Content = completionList;
+            this.WindowStyle = System.Windows.WindowStyle.SingleBorderWindow;
 			// prevent user from resizing window to 0x0
 			this.MinHeight = 15;
 			this.MinWidth = 30;

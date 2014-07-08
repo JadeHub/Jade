@@ -45,7 +45,7 @@ namespace JadeControls.EditorControl.CodeCompletion
 
     public class CompletionSelection
     {
-        public delegate void CallbackDel(LibClang.CodeCompletion.Result selection, ISegment completionSegment);
+        public delegate void CallbackDel(LibClang.CodeCompletion.Result selection, ISegment completionSegment, EventArgs insertionRequestEventArgs);
 
         private CompletionContext _context;
         private CompletionWindow _completionWindow;
@@ -59,7 +59,7 @@ namespace JadeControls.EditorControl.CodeCompletion
             if (results == null) return;
 
             _completionWindow = new CompletionWindow(_context.TextArea);
-            foreach (CompletionData cd in results.Results)
+            foreach (IResult cd in results.Results)
             {
                 _completionWindow.CompletionList.CompletionData.Add(cd);
             }
@@ -81,14 +81,14 @@ namespace JadeControls.EditorControl.CodeCompletion
             };
         }
 
-        public void SelectResult(LibClang.CodeCompletion.Result result, ISegment completionSegment)
+        public void SelectResult(LibClang.CodeCompletion.Result result, ISegment completionSegment, EventArgs insertionRequestEventArgs)
         {
-            _context.Callback(result, completionSegment);
+            _context.Callback(result, completionSegment, insertionRequestEventArgs);
         }
 
-        public void RequestInsertion()
+        public void RequestInsertion(System.Windows.Input.TextCompositionEventArgs e)
         {
-            _completionWindow.CompletionList.RequestInsertion(null);
+            _completionWindow.CompletionList.RequestInsertion(e);
         }
     }
 
@@ -143,7 +143,8 @@ namespace JadeControls.EditorControl.CodeCompletion
                     // Whenever a non-letter is typed while the completion window is open,
                     // insert the currently selected element.
                     
-                    _currentSelection.RequestInsertion();
+                    _currentSelection.RequestInsertion(e);
+                    e.Handled = true;
                 }
             }
         }
@@ -189,11 +190,11 @@ namespace JadeControls.EditorControl.CodeCompletion
                 ResultProvider = _resulsProvider,
                 TextArea = _textArea,
                 TriggerWord = triggerWord,
-                Callback = delegate(LibClang.CodeCompletion.Result selection, ISegment completionSegment) 
+                Callback = delegate(LibClang.CodeCompletion.Result selection, ISegment completionSegment, EventArgs insertionRequestEventArgs) 
                     {
                         int caretLoc;
                         int startOffset = completionSegment.Offset;
-                        string s = GetInsertionText(selection, out caretLoc);
+                        string s = GetInsertionText(selection, insertionRequestEventArgs, out caretLoc);
                         _textArea.Document.Replace(completionSegment, s);
                         if(caretLoc != -1)
                             _textArea.Caret.Offset = startOffset + caretLoc;
@@ -217,10 +218,10 @@ namespace JadeControls.EditorControl.CodeCompletion
             return _sourceDoc.Text.Substring(startOffset, endOffset - startOffset);
         }
 
-        private string GetInsertionText(LibClang.CodeCompletion.Result result, out int caretLocation)
+        private string GetInsertionText(LibClang.CodeCompletion.Result result, EventArgs insertionRequestEventArgs, out int caretLocation)
         {
             StringBuilder sb = new StringBuilder();
-
+            
             caretLocation = -1;
             foreach(ResultChunk rc in result.Chunks)
             {

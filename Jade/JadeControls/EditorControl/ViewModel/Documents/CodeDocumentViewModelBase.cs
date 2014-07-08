@@ -32,6 +32,8 @@ namespace JadeControls.EditorControl.ViewModel
         private Commands.InspectSymbolCommand _inspectSymbolCommand;
         private Commands.DebugCursorCommand _debugCursorCommand;
         private Commands.InspectCursorCommand _inspectCursorCommand;
+        private Commands.SourceFileJumpToCommand _jumpToCommand;        
+        private Commands.FindAllReferences _findAllRefsCommand;
 
         internal CodeDocumentViewModelBase(IEditorDoc doc)
             : base(doc)
@@ -47,6 +49,8 @@ namespace JadeControls.EditorControl.ViewModel
                 _inspectSymbolCommand = new Commands.InspectSymbolCommand(this, doc.File.Path, doc.Project.Index);
                 _inspectCursorCommand = new Commands.InspectCursorCommand(this, doc.File.Path, doc.Project.Index);
                 _debugCursorCommand = new Commands.DebugCursorCommand(this, doc.File.Path, doc.Project.Index);
+                _jumpToCommand = new Commands.SourceFileJumpToCommand(this, doc.File.Path, doc.Project.Index);
+                _findAllRefsCommand = new Commands.FindAllReferences(this, doc.File.Path, doc.Project.Index);
             }
         }
 
@@ -95,7 +99,8 @@ namespace JadeControls.EditorControl.ViewModel
             view.TextArea.TextView.BackgroundRenderers.Add(DiagnosticHighlighter.Renderer);
             view.TextArea.TextView.BackgroundRenderers.Add(SearchHighlighter.Renderer);
             view.KeyDown += OnViewKeyDown;
-            //Underliner.Redraw();            
+            //Underliner.Redraw();
+            
         }
 
         void OnViewKeyDown(object sender, KeyEventArgs e)
@@ -124,6 +129,16 @@ namespace JadeControls.EditorControl.ViewModel
         public ICommand InspectCursorCommand
         {
             get { return _inspectCursorCommand; }
+        }
+
+        public ICommand FindAllReferencesCommand
+        {
+            get { return _findAllRefsCommand; }
+        }
+
+        public ICommand JumpToCommand
+        {
+            get { return _jumpToCommand; }
         }
     }
 }

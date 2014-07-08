@@ -11,21 +11,35 @@ namespace JadeControls.EditorControl.CodeCompletion
 
     public class ResultSet : IResultSet
     {
-        HashSet<CompletionData> _results;
+        Dictionary<Tuple<string, LibClang.CursorKind>, IResult> _items;
 
         public ResultSet()
         {
-            _results = new HashSet<CompletionData>();
+            _items = new Dictionary<Tuple<string,LibClang.CursorKind>,IResult>();
         }
 
-        public void Add(CompletionData result)
+        public void Add(IResult result)
         {
-            if(_results.Add(result) == false)
+            IResult existing = FindItem(result.Text, result.Result.CursorKind);
+            if(existing == null)
             {
-                //int i = 0;
+                _items.Add(new Tuple<string, LibClang.CursorKind>(result.Text, result.Result.CursorKind), result);
+                return;
+            }
+            if(existing != null && result.IsFunctionCall)
+            {
+                //existing.OverloadProvider.
             }
         }
 
-        public IEnumerable<CompletionData> Results { get { return _results; } }
+        public IEnumerable<IResult> Results { get { return _items.Values; } }
+
+        private IResult FindItem(string name, LibClang.CursorKind k)
+        {
+            IResult result;
+            if(_items.TryGetValue(new Tuple<string, LibClang.CursorKind>(name, k), out result) == false)
+                return null;
+            return result;
+        }
     }
 }

@@ -12,6 +12,7 @@ ClassA::ClassA()
 	Template<int> ti(5);
 	int test = ti;
 	double d = 7.0;
+	
 }
 
 void NewFunction(int i)
@@ -26,6 +27,10 @@ int ClassB::GetAnInt() const
 	
 }
 
+template<typename T> 
+void GlobalTemplFunc(T t)
+{
+}
 
 void SomeClass::t() const
 {
@@ -33,6 +38,7 @@ void SomeClass::t() const
 	const char * str = "";
 	
 	this->Fn2(1, str);
+	TemplMethod(5);
 }
 
 

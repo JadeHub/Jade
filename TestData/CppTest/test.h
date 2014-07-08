@@ -55,7 +55,7 @@ public:
 	virtual void VFunc(int i, int j) override;
 
 	template <typename P1>
-	void TemplMethod(const P1& p1) {}
+	void TemplMethod(P1 p1) const {}
 
 	template <typename P1, typename P2>
 	void TemplMethod2(P1& p1, P1 p2) { p1 = i; }

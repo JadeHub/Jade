@@ -41,8 +41,11 @@ namespace JadeControls.EditorControl.ViewModel.Commands
 
         protected override bool CanExecute()
         {
+            
             _indexItem = _index.FindProjectItem(_path);
-            return JumpTo(ViewModel.CaretOffset) != null;
+            bool b = JumpTo(ViewModel.CaretOffset) != null;
+            Debug.WriteLine("CE " + b.ToString());
+            return b;
         }
 
         protected override void Execute()
@@ -80,20 +83,11 @@ namespace JadeControls.EditorControl.ViewModel.Commands
 
         private CppCodeBrowser.ICodeLocation JumpTo(int offset)
         {
-            if (_indexItem == null) return null;
-
-            /*CppCodeBrowser.ICodeLocation location = new CppCodeBrowser.CodeLocation(_path.Str, offset);            
-            LibClang.Cursor cur = _indexItem.GetCursorAt(location.Path, location.Offset);
-
-            if (cur == null)
-                return null;
-
-            List<LibClang.Cursor> cursors = new List<LibClang.Cursor>();
-            cursors.Add(cur);
-            */
-            HashSet<CppCodeBrowser.ICodeLocation> results = new HashSet<CppCodeBrowser.ICodeLocation>();
+            if (_indexItem == null) return null;            
             IList<LibClang.Cursor> cursors = GetSourceCursors(offset);
+            if (cursors.Count == 0) return null;
 
+            HashSet<CppCodeBrowser.ICodeLocation> results = new HashSet<CppCodeBrowser.ICodeLocation>();
             _jumpToBrowser.BrowseFrom(cursors,
                 delegate(CppCodeBrowser.ICodeLocation result)
                 {
@@ -109,12 +103,13 @@ namespace JadeControls.EditorControl.ViewModel.Commands
             if (cursor.Extent == null)
                 return false;
 
-            if (cursor.Extent.Tokens == null)
-                return false;
-
-            if (cursor.Kind == LibClang.CursorKind.InclusionDirective)
+            if (cursor.Kind == LibClang.CursorKind.InclusionDirective ||
+                cursor.Kind == LibClang.CursorKind.CXXMethod) // Added CXXMethod to improve usage with operator over loads eg 'operator=' which are almost entirely TokenKind.Keyword not TokenKind.Identifier             
                 return true;
 
+            if (cursor.Extent.Tokens == null)
+                return false;
+            
             LibClang.Token tok = cursor.Extent.Tokens.GetTokenAtOffset(offset);
             return (tok != null && tok.Kind == LibClang.TokenKind.Identifier);
         }

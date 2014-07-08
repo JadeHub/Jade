@@ -21,7 +21,7 @@ namespace JadeControls.SymbolInspector
         {
             set
             {
-                if (_symbol == null || _symbol.SymbolCursor != value)
+                if (_symbol == null || _symbol.SymbolCursor != value && _symbol is JadeCore.CppSymbols.ClassDeclarationSymbol)
                 {
                     _symbol = new ClassDeclarationViewModel(value as JadeCore.CppSymbols.ClassDeclarationSymbol);
                     OnPropertyChanged("Symbol");

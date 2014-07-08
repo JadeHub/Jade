@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
+using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 
@@ -10,12 +11,17 @@ namespace JadeControls.EditorControl.CodeCompletion
     public interface IResult : ICSharpCode.AvalonEdit.CodeCompletion.ICompletionData
     {
         LibClang.CodeCompletion.Result Result { get; }
+
+        bool IsFunctionCall { get; }
+
+        IOverloadProvider OverloadProvider { get; }
     }
 
     public class CompletionData : IResult
     {
         private LibClang.CodeCompletion.Result _result;
         private CompletionSelection _selection;
+        private OverloadProvider _overloadProvider;
 
         public CompletionData(LibClang.CodeCompletion.Result r, CompletionSelection selection)
         {
@@ -71,7 +77,7 @@ namespace JadeControls.EditorControl.CodeCompletion
         /// the insertion was triggered.</param>
         public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
         {
-            _selection.SelectResult(_result, completionSegment);
+            _selection.SelectResult(_result, completionSegment, insertionRequestEventArgs);
         }
 
         public override bool Equals(object obj)
@@ -88,6 +94,25 @@ namespace JadeControls.EditorControl.CodeCompletion
         {
             string s = _result.CursorKind.ToString() + Text;
             return s.GetHashCode();
+        }
+
+        public bool IsFunctionCall
+        {
+            get
+            {
+                return Result.CursorKind == LibClang.CursorKind.CXXMethod ||
+                       Result.CursorKind == LibClang.CursorKind.CallExpr;
+            }
+        }
+
+        public IOverloadProvider OverloadProvider
+        {
+            get
+            {
+                if (_overloadProvider == null && IsFunctionCall)
+                    _overloadProvider = new OverloadProvider(_result, _selection);
+                return _overloadProvider;
+            }
         }
     }
 }
