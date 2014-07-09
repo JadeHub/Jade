@@ -55,12 +55,18 @@ namespace JadeControls.SymbolInspector
 
         public string SourceText
         {
-            get { return SymbolCursor.SourceText; }
+            get 
+            { 
+                return SymbolCursor != null ? SymbolCursor.SourceText : ""; 
+            }
         }
 
         public string Spelling
         {
-            get { return SymbolCursor.Spelling; }
+            get 
+            {
+                return SymbolCursor != null ? SymbolCursor.Spelling : "";
+            }
         }
 
         public abstract string DisplayText

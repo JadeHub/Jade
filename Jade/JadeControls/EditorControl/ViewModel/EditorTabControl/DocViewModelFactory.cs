@@ -31,7 +31,7 @@ namespace JadeControls.EditorControl.ViewModel
 
         static private bool IsHeaderFile(IEditorDoc doc)
         {
-            return doc.File.Path.Extention.ToLower() == ".h";
+            return doc.File.Path.Extention.ToLower() == ".h" || doc.File.Path.Extention.Length == 0;
         }
 
         static private bool IsSourceFile(IEditorDoc doc)

@@ -117,9 +117,8 @@ namespace JadeCore.Editor
                 }
 
                 _activeFile = null;
-               
-                //if (_files.ContainsKey(doc.File.Path))
-              //  if(doc.File.Path.Extention != ".h")
+
+                if (doc.Project != null)
                 {
                     Project.IFileItem projectItem = doc.Project.FindFileItem(doc.File.Path);
                     if(projectItem == null) return;

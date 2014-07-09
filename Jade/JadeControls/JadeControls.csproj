@@ -11,6 +11,7 @@
     <AssemblyName>JadeControls</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <ExpressionBlendVersion>12.0.41002.1</ExpressionBlendVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -50,6 +51,7 @@
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -124,8 +126,12 @@
     <Compile Include="Symbol Inspector\ClassDeclarationInspector.xaml.cs">
       <DependentUpon>ClassDeclarationInspector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Symbol Inspector\NullSymbolInspector.xaml.cs">
+      <DependentUpon>NullSymbolInspector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Symbol Inspector\Symbol View Models\ConstructorViewModel.cs" />
     <Compile Include="Symbol Inspector\Symbol View Models\DataMemberViewModel.cs" />
+    <Compile Include="Symbol Inspector\Symbol View Models\NullSymbolViewModel.cs" />
     <Compile Include="Symbol Inspector\SymbolGroupControl.xaml.cs">
       <DependentUpon>SymbolGroupControl.xaml</DependentUpon>
     </Compile>
@@ -199,6 +205,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Symbol Inspector\NullSymbolInspector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Symbol Inspector\SymbolGroupControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -253,7 +263,9 @@
   <ItemGroup>
     <EmbeddedResource Include="EditorControl\cpp_rules.xshd" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Symbol Inspector\Views\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

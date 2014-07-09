@@ -23,6 +23,9 @@ namespace JadeGui.DockingGui
         public MainWindow()
         {
             InitializeComponent();
+            Icon = new BitmapImage(new Uri("pack://application:,,,/Images/JadeIcon.ico", UriKind.Absolute));
+           // Icon = new BitmapImage(new Uri("../../Resources/JadeIcon.ico", UriKind.Relative));
+          //  Icon = new Bitmap(JadeGui.Resource1.JadeIcon);
         }
     
         public void RestoreWindowPosition(WindowPosition position)

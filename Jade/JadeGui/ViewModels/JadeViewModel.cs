@@ -576,6 +576,7 @@ namespace JadeGui.ViewModels
         {
             _symbolInspectorViewModel.SymbolCursor = symbol;
             _symbolInspectorViewModel.IsSelected = true;
+            _symbolInspectorViewModel.IsVisible = true;
         }
 
         public void OnDisplayCursorInspector(LibClang.Cursor c)
