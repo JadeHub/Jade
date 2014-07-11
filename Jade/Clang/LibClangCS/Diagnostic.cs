@@ -211,7 +211,7 @@ namespace LibClang
 
         private unsafe Tuple<string, string> LoadOption()
         {
-            Library.ClangString enable, disable;
+            Library.CXString enable, disable;
             enable = Library.clang_getDiagnosticOption(Handle, &disable);
             return new Tuple<string, string>(enable.ManagedString, disable.ManagedString);
         }

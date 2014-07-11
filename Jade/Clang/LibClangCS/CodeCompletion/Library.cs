@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace LibClang.CodeCompletion
 {
     using CXCompletionString = System.IntPtr;
-    using CXString = LibClang.Library.ClangString;
+    using CXString = LibClang.Library.CXString;
     using CXCursor = LibClang.Library.CXCursor;
     using CXUnsavedFile = LibClang.Library.UnsavedFile;
     using CXTranslationUnit = System.IntPtr;
