@@ -17,11 +17,17 @@ namespace LibClang
 
         #region Properties
 
+        /// <summary>
+        /// Returns the CommentKind
+        /// </summary>
         public CommentKind Kind
         {
             get { return Library.clang_Comment_getKind(_handle); }
         }
 
+        /// <summary>
+        /// Returns the child comments
+        /// </summary>
         public IEnumerable<Comment> Children
         {
             get

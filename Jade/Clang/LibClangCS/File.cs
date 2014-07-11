@@ -37,12 +37,18 @@ namespace LibClang
             private set;
         }       
 
+        /// <summary>
+        /// Returns the complete path and file name.
+        /// </summary>
         public string Name
         {
             get { return _name ?? (_name = Library.clang_getFileName(Handle).ManagedString); }
         }
 
-        public DateTime Time
+        /// <summary>
+        /// Returns the file's last modified time
+        /// </summary>
+        public DateTime LastModifiedTime
         {
             get
             {
@@ -51,21 +57,23 @@ namespace LibClang
             }
         }
 
-        #endregion
-
-        #region Find References
-
-        public bool FindAllReferences(Cursor c, Func<Cursor, SourceRange, bool> callback)
+        /// <summary>
+        /// Returns the file's unique id
+        /// </summary>
+        public Tuple<UInt64, UInt64, UInt64> UniqueId
         {
-            Library.CXCursorAndRangeVisitor visitor = new Library.CXCursorAndRangeVisitor();
-            visitor.context = IntPtr.Zero;
-            visitor.visit = delegate(IntPtr ctx, Library.CXCursor cur, Library.CXSourceRange range)
+            get
             {
-                if (callback(_itemFactory.CreateCursor(cur), _itemFactory.CreateSourceRange(range)) == true)
-                    return Library.CXVisitorResult.CXVisit_Continue;
-                return Library.CXVisitorResult.CXVisit_Break;
-            };
-            return Library.clang_findReferencesInFile(c.Handle, Handle, visitor) != Library.CXResult.CXResult_Invalid;
+                unsafe
+                {
+                    Library.CXFileUniqueID id;
+                    if (Library.clang_getFileUniqueID(Handle, &id) != 0)
+                    {
+                        return new Tuple<ulong, ulong, ulong>(id.data1, id.data2, id.data3);
+                    }
+                }
+                return null;
+            }
         }
 
         #endregion

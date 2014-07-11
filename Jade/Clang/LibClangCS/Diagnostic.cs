@@ -113,6 +113,7 @@ namespace LibClang
         private Tuple<string, string> _option;
         private readonly IList<SourceRange> _ranges;
         private Tuple<string, SourceRange>[] _fixIts;
+        private DiagnosticSet _children;
 
         #endregion
 
@@ -158,6 +159,9 @@ namespace LibClang
 
         #region Properties
 
+        /// <summary>
+        /// Returns the TranslationUnit which produced this Diagnostic
+        /// </summary>
         private TranslationUnit TranslatonUnit
         {
             get { return _itemFactory.TranslationUnit; }
@@ -204,6 +208,9 @@ namespace LibClang
             }
         }
 
+        /// <summary>
+        /// Returns the Cursor located at Location
+        /// </summary>
         public Cursor LocationCursor
         {
             get { return this.TranslatonUnit.GetCursorAt(Location); }
@@ -292,7 +299,25 @@ namespace LibClang
                 return _fixIts;
             }
         }
-    
+
+        /// <summary>
+        /// Returns the child diagnostics.  
+        /// </summary>
+        public IEnumerable<Diagnostic> Children
+        {
+            get
+            {
+                if (_children == null)
+                {
+                    IntPtr set = Library.clang_getChildDiagnostics(Handle);
+                    if (set == IntPtr.Zero) return null;
+                    //comments in libcang code says this does not need to be disposed
+                    _children = new DiagnosticSet(set, _itemFactory);
+                }
+                return _children.Diagnostics;
+            }
+        }
+
         #endregion
 
         #region object overrides

@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace LibClang
 {
+    /// <summary>
+    /// Wrapper around libclang's DiagnosticSet type
+    /// This is only used internally, clients of this library should obtain Diagnostics via the TranslationUnit
+    /// </summary>
     internal class DiagnosticSet : IDisposable
     {
         #region Data
