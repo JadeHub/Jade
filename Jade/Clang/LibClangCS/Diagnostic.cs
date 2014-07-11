@@ -271,7 +271,7 @@ namespace LibClang
                 _fixIts = new Tuple<string, SourceRange>[count];
                 for (uint i = 0; i < count; i++)
                 {
-                    Library.SourceRange rangeHandle;
+                    Library.CXSourceRange rangeHandle;
                     string fixIt = Library.clang_getDiagnosticFixIt(Handle, i, &rangeHandle).ManagedString;
                     _fixIts[i] = new Tuple<string, SourceRange>(fixIt, _itemFactory.CreateSourceRange(rangeHandle));
                 }

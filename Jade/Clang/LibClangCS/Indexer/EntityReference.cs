@@ -12,7 +12,7 @@ namespace LibClang.Indexer
 
         private ITranslationUnitItemFactory _itemFactory;
 
-        private Library.IndexerEntityReferenceInfo _handle;
+        private Library.CXIdxEntityRefInfo _handle;
         private Cursor _cursor;
         private SourceLocation _location;
         private EntityInfo _refedEntity;
@@ -23,7 +23,7 @@ namespace LibClang.Indexer
 
         #region Constructor
 
-        internal unsafe EntityReference(Library.IndexerEntityReferenceInfo handle, ITranslationUnitItemFactory itemFactory)
+        internal unsafe EntityReference(Library.CXIdxEntityRefInfo handle, ITranslationUnitItemFactory itemFactory)
         {
             _handle = handle;
             _itemFactory = itemFactory;

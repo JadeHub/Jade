@@ -16,9 +16,9 @@ namespace LibClang
 
         #region Constructor
 
-        internal delegate SourceRange CreateSourceRangeDel(Library.SourceRange handle);
+        internal delegate SourceRange CreateSourceRangeDel(Library.CXSourceRange handle);
 
-        internal SourceRange(Library.SourceRange handle, ITranslationUnitItemFactory itemFactory)
+        internal SourceRange(Library.CXSourceRange handle, ITranslationUnitItemFactory itemFactory)
         {
             Debug.Assert(!handle.IsNull);
             Handle = handle;
@@ -34,10 +34,10 @@ namespace LibClang
         #region Properties
 
         internal TranslationUnit TranslationUnit { get; private set; }
-        internal Library.SourceRange Handle { get; private set; }        
+        internal Library.CXSourceRange Handle { get; private set; }        
         public SourceLocation Start { get; private set; }
         public SourceLocation End { get; private set; }
-        public bool Null { get { return Handle == Library.SourceRange.NullRange; } }
+        public bool Null { get { return Handle == Library.CXSourceRange.NullRange; } }
         public int Length { get { return End.Offset - Start.Offset; } }
 
         public TokenSet Tokens

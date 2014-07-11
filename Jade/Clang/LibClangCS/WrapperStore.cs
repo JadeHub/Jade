@@ -118,7 +118,7 @@ namespace LibClang
     /// <summary>
     /// Cache of SourceRange objects.
     /// </summary>
-    internal class SourceRangeStore : WrapperObjectStore<Library.SourceRange, SourceRange>
+    internal class SourceRangeStore : WrapperObjectStore<Library.CXSourceRange, SourceRange>
     {
         private ITranslationUnitItemFactory _itemFactory;
 
@@ -127,7 +127,7 @@ namespace LibClang
             _itemFactory = itemFactory;
         }
 
-        protected override SourceRange Create(Library.SourceRange handle)
+        protected override SourceRange Create(Library.CXSourceRange handle)
         {
             if(handle.IsNull)
                 throw new ArgumentException("SourceRange Handle is null");

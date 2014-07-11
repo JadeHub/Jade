@@ -130,7 +130,7 @@ namespace LibClang
 
         public SourceRange GetSourceRange(SourceLocation start, SourceLocation end)
         {
-            Library.SourceRange handle = Library.clang_getRange(start.Handle, end.Handle);
+            Library.CXSourceRange handle = Library.clang_getRange(start.Handle, end.Handle);
             return _itemStore.CreateSourceRange(handle);
         }
 
@@ -193,7 +193,7 @@ namespace LibClang
         {
             Library.CXCursorAndRangeVisitor visitor = new Library.CXCursorAndRangeVisitor();
             visitor.context = IntPtr.Zero;
-            visitor.visit = delegate(IntPtr ctx, Library.CXCursor cur, Library.SourceRange range)
+            visitor.visit = delegate(IntPtr ctx, Library.CXCursor cur, Library.CXSourceRange range)
             {
                 if (callback(_itemStore.CreateCursor(cur), _itemStore.CreateSourceRange(range)) == true)
                     return Library.CXVisitorResult.CXVisit_Continue;
@@ -376,7 +376,7 @@ namespace LibClang
         {
             Library.CXCursorAndRangeVisitor visitor = new Library.CXCursorAndRangeVisitor();
             visitor.context = IntPtr.Zero;
-            visitor.visit = delegate(IntPtr ctx, Library.CXCursor cur, Library.SourceRange range)
+            visitor.visit = delegate(IntPtr ctx, Library.CXCursor cur, Library.CXSourceRange range)
             {
                 if(callback(_itemStore.CreateCursor(cur), _itemStore.CreateSourceRange(range)) == true)
                     return Library.CXVisitorResult.CXVisit_Continue;

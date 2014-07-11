@@ -11,7 +11,7 @@ namespace LibClang.Indexer
     {
         #region Data
 
-        private Library.IndexerDeclarationInfo _handle;
+        private Library.CXIdxDeclInfo _handle;
 
         private ITranslationUnitItemFactory _itemFactory;
 
@@ -26,7 +26,7 @@ namespace LibClang.Indexer
 
         #region Constructor
 
-        internal unsafe DeclInfo(Library.IndexerDeclarationInfo handle, ITranslationUnitItemFactory itemFactory)
+        internal unsafe DeclInfo(Library.CXIdxDeclInfo handle, ITranslationUnitItemFactory itemFactory)
         {
             _handle = handle;
             _itemFactory = itemFactory;

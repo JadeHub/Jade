@@ -3,23 +3,6 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-/*
- * 
-clang_getTypedefDeclUnderlyingType
-clang_getEnumDeclIntegerType
-clang_getEnumConstantDeclValue
-clang_getEnumConstantDeclUnsignedValue
-clang_getFieldDeclBitWidth
-clang_Cursor_isBitField
-
-clang_Cursor_getCommentRange
-clang_Cursor_getRawCommentText
-clang_Cursor_getBriefCommentText
-clang_Cursor_getParsedComment
-
-clang_getCursorReferenceNameRange
- * */
-
 namespace LibClang
 {    
     /// <summary>
@@ -70,6 +53,8 @@ namespace LibClang
 
         #endregion
 
+        #region enums
+
         public enum AccessSpecifier
         {
             Invalid = 0,
@@ -77,6 +62,31 @@ namespace LibClang
             Protected = 2,
             Private = 3
         }
+
+        public enum ReferenceNameRangeFlags
+        {
+            /// <summary>
+            /// Include the nested-name-specifier, e.g. Foo:: in x.Foo::y, in the range.
+            /// </summary>
+            WantQualifier = 0x1,
+
+            /// <summary>
+            /// Include the explicit template arguments, e.g. \<int> in x.f<int>, in the range.
+            /// </summary>
+            WantTemplateArgs = 0x2,
+
+            /// <summary>
+            /// If the name is non-contiguous, return the full spanning range.
+            /// 
+            /// Non-contiguous names occur in Objective-C when a selector with two or more
+            /// parameters is used, or in C++ when using an operator:
+            /// [object doSomething:here withValue:there]; // ObjC
+            /// * return some_vector[1]; // C++
+            /// </summary>
+            WantSinglePiece = 0x4
+        }
+
+        #endregion
 
         internal delegate Cursor CreateCursorDel(Library.CXCursor handle);
 
@@ -96,6 +106,7 @@ namespace LibClang
         private File _includedFile;
         private Type _enumIntType;
         private Cursor _templateSpecialisedCursorTemplate;
+        private List<Cursor> _overloadedDecls;
 
         #endregion
 
@@ -123,6 +134,9 @@ namespace LibClang
 
         #region Properties
 
+        /// <summary>
+        /// Returns the TranslationUnit to which this cursor belongs
+        /// </summary>
         public TranslationUnit TranslationUnit
         {
             get { return _translationUnit; }
@@ -148,7 +162,7 @@ namespace LibClang
 
         private SourceRange MakeExtent()
         {
-            Library.SourceRange range = Library.clang_getCursorExtent(Handle);
+            Library.CXSourceRange range = Library.clang_getCursorExtent(Handle);
             if (range.IsNull)
                 return null;
             return _itemFactory.CreateSourceRange(Library.clang_getCursorExtent(Handle));
@@ -169,6 +183,9 @@ namespace LibClang
             private set;
         }
                 
+        /// <summary>
+        /// Returns a name for the entity referenced by this cursor.
+        /// </summary>
         public string Spelling
         {
             get { return _spelling ?? (_spelling = Library.clang_getCursorSpelling(Handle).ManagedString); }
@@ -305,11 +322,21 @@ namespace LibClang
             }
         }
 
+        /// <summary>
+        /// Returns the access control level for the referenced object.
+        /// If the cursor refers to a C++ declaration, its access control level within its
+        ///  parent scope is returned. Otherwise, if the cursor refers to a base specifier or
+        ///  access specifier, the specifier itself is returned.
+        /// </summary>
         public AccessSpecifier Access
         {
             get { return (AccessSpecifier)Library.clang_getCXXAccessSpecifier(Handle); }
         }
         
+        /// <summary>
+        /// Returns the result type associated with a given cursor.
+        /// This only returns a valid type if the cursor refers to a function or method.
+        /// </summary>
         public Type ResultType
         {
             get 
@@ -324,11 +351,22 @@ namespace LibClang
             }
         }
 
+        /// <summary>
+        /// Retrieve the display name for the entity referenced by this cursor.
+        /// The display name contains extra information that helps identify the cursor,
+        /// such as the parameters of a function or template or the arguments of a 
+        /// class template specialization.
+        /// </summary>
         public string DisplayName
         {
             get { return _displayName ?? (_displayName = Library.clang_getCursorDisplayName(Handle).ManagedString); }
         }
 
+        /// <summary>
+        /// Returns the argument cursor of a function or method.
+        /// The argument cursor can be determined for calls as well as for declarations
+        /// of functions or methods.        
+        /// </summary>
         public IEnumerable<Cursor> ArgumentCursors
         {
             get
@@ -360,14 +398,16 @@ namespace LibClang
             isConst = (val & 0x1) == 0x1;
         }
 
+        /// <summary>
+        /// Returns true if the cursor is of kind CXXMethod and is a const method.
+        /// </summary>
         public bool IsConstMethod
         {
             get 
             {
                 bool c;
-
+                //This is not exposed from libclang but can be determined from the USR
                 ParseMethodUSR(Usr, out c);
-
                 return c; 
             }
         }
@@ -421,6 +461,14 @@ namespace LibClang
         }
 
         /// <summary>
+        /// Returns true if the cursor specifies a Record member that is a bitfield.
+        /// </summary>
+        public bool IsBitField
+        {
+            get { return Library.clang_Cursor_isBitField(Handle) != 0; }
+        }
+
+        /// <summary>
         /// Retrieve the integer type of an enum declaration.
         /// </summary>
         public Type EnumIntegerType
@@ -437,6 +485,37 @@ namespace LibClang
             }
         }
 
+        /// <summary>
+        /// Returns the integer value of an enum constant declaration as an Int64.
+        /// </summary>
+        public Int64 EnumConstantDeclarationValue
+        {
+            get
+            {
+                return Library.clang_getEnumConstantDeclValue(Handle);
+            }
+        }
+
+        /// <summary>
+        /// Returns the integer value of an enum constant declaration as an Int64.
+        /// </summary>
+        public UInt64 EnumConstantDeclarationUnsignedValue
+        {
+            get
+            {
+                return Library.clang_getEnumConstantDeclUnsignedValue(Handle);
+            }
+        }
+
+        /// <summary>
+        /// Retrieve the bit width of a bit field declaration as an integer.
+        /// If a cursor that is not a bit field declaration is passed in, -1 is returned.
+        /// </summary>
+        public int FieldDeclarationBitWidth
+        {
+            get { return Library.clang_getFieldDeclBitWidth(Handle); }
+        }
+        
         /// <summary>
         /// For method cursors this is the list of methods they override.
         /// Multiple inheritance can result in a method overriding multiple methods
@@ -507,22 +586,73 @@ namespace LibClang
         }
 
         /// <summary>
-        /// Determine the number of overloaded declarations referenced by a CXCursor_OverloadedDeclRef cursor.
+        /// Returns the overloaded declarations referenced by a CXCursor_OverloadedDeclRef cursor.
         /// </summary>
-        public uint OverloadedDeclarationCount
+        public IEnumerable<Cursor> OverloadedDeclarations
         {
-            get { return Library.clang_getNumOverloadedDecls(Handle); }
+            get
+            {
+                if(_overloadedDecls == null)
+                {
+                    _overloadedDecls = new List<Cursor>();
+                    for(uint i=0;i<Library.clang_getNumOverloadedDecls(Handle);i++)
+                    {
+                        Library.CXCursor cur = Library.clang_getOverloadedDecl(Handle, i);
+                        if (cur != null && cur.IsValid)
+                            _overloadedDecls.Add(_itemFactory.CreateCursor(cur));
+                    }
+                }
+                return _overloadedDecls;
+            }
+        }
+        
+        /// <summary>
+        /// Given a cursor that represents a documentable entity (e.g., declaration), return the associated parsed comment.
+        /// </summary>
+        public Comment ParseComment
+        {
+            get
+            {
+                Comment c = new Comment(Library.clang_Cursor_getParsedComment(Handle));
+                return c.Kind != CommentKind.Null ? c : null;
+            }
+        
         }
 
-        public Cursor GetOverloadedDeclaration(uint index)
+        /// <summary>
+        /// Returns the underlying type of a typedef declaration.
+        /// </summary>
+        public Type GetTypedefDeclarationUnderlyingType
         {
-            if (index < OverloadedDeclarationCount)
+            get
             {
-                Library.CXCursor cur = Library.clang_getOverloadedDecl(Handle, index);
-                if (cur != null && cur.IsValid)
-                    return _itemFactory.CreateCursor(cur);
+                Library.CXType t = Library.clang_getTypedefDeclUnderlyingType(Handle);
+                if (!t.IsValid) return null;
+                return _itemFactory.CreateType(t);
             }
-            return null;
+        }
+                
+        /// <summary>
+        /// Given a cursor that references something else, return the source range covering that reference.
+        /// \param C A cursor pointing to a member reference, a declaration reference, or
+        /// an operator call.
+        /// \param NameFlags A bitset with three independent flags: 
+        /// CXNameRange_WantQualifier, CXNameRange_WantTemplateArgs, and
+        /// CXNameRange_WantSinglePiece.
+        /// \param PieceIndex For contiguous names or when passing the flag 
+        /// CXNameRange_WantSinglePiece, only one piece with index 0 is 
+        /// available. When the CXNameRange_WantSinglePiece flag is not passed for a
+        /// non-contiguous names, this index can be used to retrieve the individual
+        /// pieces of the name. See also CXNameRange_WantSinglePiece.
+        /// 
+        /// \returns The piece of the name pointed to by the given cursor. If there is no
+        /// name, or if the PieceIndex is out-of-range, a null-cursor will be returned.
+        /// </summary>
+        public SourceRange GetReferenceNameRange(uint flags, uint pieceIndex)
+        {
+            Library.CXSourceRange r = Library.clang_getCursorReferenceNameRange(Handle, flags, pieceIndex);
+            if (r.IsNull) return null;
+            return _itemFactory.CreateSourceRange(r); 
         }
         
         /// <summary>

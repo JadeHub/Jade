@@ -59,7 +59,7 @@ namespace LibClang
         {
             Library.CXCursorAndRangeVisitor visitor = new Library.CXCursorAndRangeVisitor();
             visitor.context = IntPtr.Zero;
-            visitor.visit = delegate(IntPtr ctx, Library.CXCursor cur, Library.SourceRange range)
+            visitor.visit = delegate(IntPtr ctx, Library.CXCursor cur, Library.CXSourceRange range)
             {
                 if (callback(_itemFactory.CreateCursor(cur), _itemFactory.CreateSourceRange(range)) == true)
                     return Library.CXVisitorResult.CXVisit_Continue;

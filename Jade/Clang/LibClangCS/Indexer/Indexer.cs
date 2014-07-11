@@ -135,13 +135,13 @@ namespace LibClang.Indexer
             return IntPtr.Zero;
         }
 
-        private unsafe IntPtr OnIndexerPPIncludedFile(IntPtr client_data, Library.IndexerIncludeFileInfo* includedFileInfo)
+        private unsafe IntPtr OnIndexerPPIncludedFile(IntPtr client_data, Library.CXIdxIncludedFileInfo* includedFileInfo)
         {
             //never called
             return IntPtr.Zero;
         }
         
-        private IntPtr OnIndexerImportedASTFile(IntPtr clientData, Library.IndexerImportedAstFileInfo astFileInfo)
+        private IntPtr OnIndexerImportedASTFile(IntPtr clientData, Library.CXIdxImportedASTFileInfo astFileInfo)
         {
             return IntPtr.Zero;
         }
@@ -152,12 +152,12 @@ namespace LibClang.Indexer
             return IntPtr.Zero;
         }
 
-        private unsafe void OnIndexerDeclaration(IntPtr clientData, Library.IndexerDeclarationInfo* decl)
+        private unsafe void OnIndexerDeclaration(IntPtr clientData, Library.CXIdxDeclInfo* decl)
         {
             _observer.EntityDeclaration(this, new DeclInfo(*decl, _translationUnit.ItemFactory));
         }
 
-        private unsafe void OnIndexerEntityReference(IntPtr clientData, Library.IndexerEntityReferenceInfo* reference)
+        private unsafe void OnIndexerEntityReference(IntPtr clientData, Library.CXIdxEntityRefInfo* reference)
         {
             _observer.EntityReference(this, new EntityReference(*reference, _translationUnit.ItemFactory));
         }

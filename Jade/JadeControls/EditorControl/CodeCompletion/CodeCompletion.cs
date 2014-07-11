@@ -45,12 +45,25 @@ namespace JadeControls.EditorControl.CodeCompletion
         private CompletionWindow _completionWindow;
         private Action _onComplete;
         
-        public CompletionSelection(CompletionContext context, Action onComplete)
+        public static CompletionSelection Create(CompletionContext context, Action onComplete)
+        {
+            try
+            {
+                return new CompletionSelection(context, onComplete);
+            }
+            catch(System.Exception )
+            {
+                return null;
+            }
+        }
+
+        private CompletionSelection(CompletionContext context, Action onComplete)
         {
             _context = context;
             _onComplete = onComplete;
             ResultSet results = _context.ResultProvider.GetResults(_context.Path.Str, _context.Line, _context.Column, this);
-            if (results == null) return;
+            if (results == null)
+                throw new System.Exception();
 
             _completionWindow = new CompletionWindow(_context.TextArea);
             foreach (IResult cd in results.Results)
@@ -66,6 +79,7 @@ namespace JadeControls.EditorControl.CodeCompletion
                 _completionWindow.CompletionList.SelectItem(_context.TriggerWord);
                 if(_completionWindow.CompletionList.SelectedItem == null) //nothing to display
                 {
+                    _completionWindow = null;
                     _onComplete();
                     return;
                 }
@@ -87,7 +101,8 @@ namespace JadeControls.EditorControl.CodeCompletion
 
         public void RequestInsertion(System.Windows.Input.TextCompositionEventArgs e)
         {
-            _completionWindow.CompletionList.RequestInsertion(e);
+            if (_completionWindow != null) //todo fix
+                _completionWindow.CompletionList.RequestInsertion(e);
         }
     }
 
@@ -200,7 +215,7 @@ namespace JadeControls.EditorControl.CodeCompletion
                         }
                     }
             };
-            _currentSelection = new CompletionSelection(context, delegate { _currentSelection = null; });
+            _currentSelection = CompletionSelection.Create(context, delegate { _currentSelection = null; });
         }
         
         public string ExtractTriggerWord(int offset, out int startOffset)

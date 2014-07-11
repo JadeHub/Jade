@@ -15,6 +15,7 @@ ClassA::ClassA()
 	
 }
 
+///\brief NewFunction!
 void NewFunction(int i)
 {
 
