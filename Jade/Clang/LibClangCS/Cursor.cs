@@ -12,14 +12,10 @@ clang_getEnumConstantDeclUnsignedValue
 clang_getFieldDeclBitWidth
 clang_Cursor_isBitField
 
-clang_getNumOverloadedDecls(CXCursor cursor);
-clang_getOverloadedDecl(CXCursor cursor, unsigned index);
-
 clang_Cursor_getCommentRange
 clang_Cursor_getRawCommentText
 clang_Cursor_getBriefCommentText
 clang_Cursor_getParsedComment
-clang_getTemplateCursorKind
 
 clang_getCursorReferenceNameRange
  * */
@@ -508,6 +504,25 @@ namespace LibClang
         public CursorKind TemplateCursorKind
         {
             get { return Library.clang_getTemplateCursorKind(Handle); }
+        }
+
+        /// <summary>
+        /// Determine the number of overloaded declarations referenced by a CXCursor_OverloadedDeclRef cursor.
+        /// </summary>
+        public uint OverloadedDeclarationCount
+        {
+            get { return Library.clang_getNumOverloadedDecls(Handle); }
+        }
+
+        public Cursor GetOverloadedDeclaration(uint index)
+        {
+            if (index < OverloadedDeclarationCount)
+            {
+                Library.CXCursor cur = Library.clang_getOverloadedDecl(Handle, index);
+                if (cur != null && cur.IsValid)
+                    return _itemFactory.CreateCursor(cur);
+            }
+            return null;
         }
         
         /// <summary>

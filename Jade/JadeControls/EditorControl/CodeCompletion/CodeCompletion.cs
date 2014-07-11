@@ -15,13 +15,7 @@ namespace JadeControls.EditorControl.CodeCompletion
     public interface ICompletionEngine
     {
         void BeginSelection(int offset);
-        /*void EndSelection(bool selectCurrentItem);
-        void Abort();        
-
-        bool IsInactive { get;}
-        bool IsSelecting { get;}
-        bool IsCompleting { get; }*/
-
+        
         /// <summary>
         /// Extract the 'word' at the point line, column.
         /// </summary>
@@ -70,6 +64,11 @@ namespace JadeControls.EditorControl.CodeCompletion
             if (_context.TriggerWord.Length > 0)
             {
                 _completionWindow.CompletionList.SelectItem(_context.TriggerWord);
+                if(_completionWindow.CompletionList.SelectedItem == null) //nothing to display
+                {
+                    _onComplete();
+                    return;
+                }
             }
 
             _completionWindow.Show();
@@ -105,7 +104,6 @@ namespace JadeControls.EditorControl.CodeCompletion
         }
 
         private TextArea _textArea;
-        //private CompletionWindow _completionWindow;
         private CompletionSelection _currentSelection;
         private IResultProvider _resulsProvider;
         private JadeCore.ITextDocument _sourceDoc;
@@ -196,8 +194,10 @@ namespace JadeControls.EditorControl.CodeCompletion
                         int startOffset = completionSegment.Offset;
                         string s = GetInsertionText(selection, insertionRequestEventArgs, out caretLoc);
                         _textArea.Document.Replace(completionSegment, s);
-                        if(caretLoc != -1)
+                        if (caretLoc != -1)
+                        {
                             _textArea.Caret.Offset = startOffset + caretLoc;
+                        }
                     }
             };
             _currentSelection = new CompletionSelection(context, delegate { _currentSelection = null; });

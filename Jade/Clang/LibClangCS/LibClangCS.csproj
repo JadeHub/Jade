@@ -68,6 +68,8 @@
     <Compile Include="CodeCompletion\CompletionResults.cs" />
     <Compile Include="CodeCompletion\CXCompletionContext.cs" />
     <Compile Include="CodeCompletion\Library.cs" />
+    <Compile Include="Comment.cs" />
+    <Compile Include="CommentKind.cs" />
     <Compile Include="Cursor.cs" />
     <Compile Include="CursorKind.cs" />
     <Compile Include="Diagnostic.cs" />

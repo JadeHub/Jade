@@ -44,11 +44,11 @@ namespace JadeControls.EditorControl.ViewModel.Commands
             */
             CppCodeBrowser.ISourceFile sf = _index.FindSourceFile(_path);
             if (sf == null) return;
-
+            /*
             int offset;
             string triggerWord = CodeCompletion.ExtractTriggerWord(ViewModel.CaretOffset, out offset);
-
-            CodeCompletion.BeginSelection(offset);//, triggerWord);
+            */
+            CodeCompletion.BeginSelection(ViewModel.CaretOffset);//, triggerWord);
         }
 
         public CodeCompletion.CompletionEngine CodeCompletion

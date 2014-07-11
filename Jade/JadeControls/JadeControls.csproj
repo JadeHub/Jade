@@ -123,16 +123,16 @@
       <DependentUpon>SearchCurrentFileDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Search\SearchViewModel.cs" />
-    <Compile Include="Symbol Inspector\ClassDeclarationInspector.xaml.cs">
+    <Compile Include="Symbol Inspector\Views\ClassDeclarationInspector.xaml.cs">
       <DependentUpon>ClassDeclarationInspector.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Symbol Inspector\NullSymbolInspector.xaml.cs">
+    <Compile Include="Symbol Inspector\Views\NullSymbolInspector.xaml.cs">
       <DependentUpon>NullSymbolInspector.xaml</DependentUpon>
     </Compile>
     <Compile Include="Symbol Inspector\Symbol View Models\ConstructorViewModel.cs" />
     <Compile Include="Symbol Inspector\Symbol View Models\DataMemberViewModel.cs" />
     <Compile Include="Symbol Inspector\Symbol View Models\NullSymbolViewModel.cs" />
-    <Compile Include="Symbol Inspector\SymbolGroupControl.xaml.cs">
+    <Compile Include="Symbol Inspector\Views\SymbolGroupControl.xaml.cs">
       <DependentUpon>SymbolGroupControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Symbol Inspector\SymbolInspcetorViewModel.cs" />
@@ -201,15 +201,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Symbol Inspector\ClassDeclarationInspector.xaml">
+    <Page Include="Symbol Inspector\Views\ClassDeclarationInspector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Symbol Inspector\NullSymbolInspector.xaml">
+    <Page Include="Symbol Inspector\Views\NullSymbolInspector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Symbol Inspector\SymbolGroupControl.xaml">
+    <Page Include="Symbol Inspector\Views\SymbolGroupControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -263,9 +263,7 @@
   <ItemGroup>
     <EmbeddedResource Include="EditorControl\cpp_rules.xshd" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Symbol Inspector\Views\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

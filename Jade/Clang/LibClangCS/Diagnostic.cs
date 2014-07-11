@@ -40,7 +40,7 @@ namespace LibClang
             Fatal = 4
         }
 
-        enum CXDiagnosticDisplayOptions
+        enum DiagnosticDisplayOptions
         {
             /// <summary>
             /// Display the source-location information where the diagnostic was located.
@@ -52,7 +52,7 @@ namespace LibClang
             /// 
             ///  This option corresponds to the clang flag \c -fshow-source-location.        
             /// </summary>
-            CXDiagnostic_DisplaySourceLocation = 0x01,
+            DisplaySourceLocation = 0x01,
 
             /// <summary>
             /// If displaying the source-location information of the
@@ -60,7 +60,7 @@ namespace LibClang
             ///
             /// This option corresponds to the clang flag \c -fshow-column.
             /// </summary>
-            CXDiagnostic_DisplayColumn = 0x02,
+            DisplayColumn = 0x02,
 
             /// <summary>
             /// If displaying the source-location information of the
@@ -70,7 +70,7 @@ namespace LibClang
             /// This option corresponds to the clang flag
             /// -fdiagnostics-print-source-range-info.
             /// </summary>
-            CXDiagnostic_DisplaySourceRanges = 0x04,
+            DisplaySourceRanges = 0x04,
 
             /// <summary>
             /// Display the option name associated with this diagnostic, if any.
@@ -79,7 +79,7 @@ namespace LibClang
             /// after the diagnostic text. This option corresponds to the clang flag
             /// -fdiagnostics-show-option.
             /// </summary>
-            CXDiagnostic_DisplayOption = 0x08,
+            DisplayOption = 0x08,
 
             /// <summary>
             /// Display the category number associated with this diagnostic, if any.
@@ -88,7 +88,7 @@ namespace LibClang
             /// This option corresponds to the clang flag 
             /// -fdiagnostics-show-category=id.
             /// </summary>
-            CXDiagnostic_DisplayCategoryId = 0x10,
+            DisplayCategoryId = 0x10,
 
             /// <summary>
             /// Display the category name associated with this diagnostic, if any.
@@ -97,7 +97,7 @@ namespace LibClang
             /// This option corresponds to the clang flag 
             /// -fdiagnostics-show-category=name.
             /// </summary>
-            CXDiagnostic_DisplayCategoryName = 0x20
+            DisplayCategoryName = 0x20
         };
 
         #endregion

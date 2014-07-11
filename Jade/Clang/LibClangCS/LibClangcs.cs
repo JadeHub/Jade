@@ -365,7 +365,7 @@ namespace LibClang
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
         public static extern Int64 clang_Type_getAlignOf(CXType t);
 
-         #endregion
+        #endregion
 
         #region CXCursor
 
@@ -511,32 +511,38 @@ namespace LibClang
         internal static unsafe extern void clang_disposeOverriddenCursors(CXCursor* overridden);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static unsafe extern uint clang_isVirtualBase(CXCursor c);
+        internal static extern uint clang_isVirtualBase(CXCursor c);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static unsafe extern uint clang_CXXMethod_isPureVirtual(CXCursor c);
+        internal static extern uint clang_CXXMethod_isPureVirtual(CXCursor c);
         
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static unsafe extern uint clang_CXXMethod_isStatic(CXCursor C);
+        internal static extern uint clang_CXXMethod_isStatic(CXCursor C);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static unsafe extern uint clang_CXXMethod_isVirtual(CXCursor C);
+        internal static extern uint clang_CXXMethod_isVirtual(CXCursor C);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static unsafe extern CXType clang_getEnumDeclIntegerType(CXCursor C);
+        internal static extern CXType clang_getEnumDeclIntegerType(CXCursor C);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static unsafe extern int clang_Cursor_isDynamicCall(CXCursor C); //returns int not uint
+        internal static extern int clang_Cursor_isDynamicCall(CXCursor C); //returns int not uint
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static unsafe extern uint clang_Cursor_isVariadic(CXCursor C);
+        internal static extern uint clang_Cursor_isVariadic(CXCursor C);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static unsafe extern CXCursor clang_getSpecializedCursorTemplate(CXCursor c);
+        internal static extern CXCursor clang_getSpecializedCursorTemplate(CXCursor c);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static unsafe extern CursorKind clang_getTemplateCursorKind(CXCursor c);
+        internal static extern CursorKind clang_getTemplateCursorKind(CXCursor c);
         
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern uint clang_getNumOverloadedDecls(CXCursor cursor);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern CXCursor clang_getOverloadedDecl(CXCursor cursor, uint index);
+
         #endregion
 
         #region CXTokens
