@@ -56,6 +56,9 @@ namespace LibClang
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
         internal static extern CXIndexAction clang_IndexAction_create(CXIndex index);
+
+        [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void clang_IndexAction_dispose(CXIndex index);
         
         #endregion
 
@@ -584,7 +587,7 @@ namespace LibClang
         #region CXTokens
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct Token
+        internal struct CXToken
         {
             readonly uint data0;
             readonly uint data1;
@@ -593,7 +596,7 @@ namespace LibClang
 
             readonly IntPtr ptr_data;
 
-            public static bool operator ==(Token left, Token right)
+            public static bool operator ==(CXToken left, CXToken right)
             {
                 return left.data0 == right.data0 &&
                     left.data1 == right.data1 &&
@@ -602,16 +605,16 @@ namespace LibClang
                     left.ptr_data == right.ptr_data;
             }
 
-            public static bool operator !=(Token left, Token right)
+            public static bool operator !=(CXToken left, CXToken right)
             {
                 return !(left == right);
             }
 
             public override bool Equals(object obj)
             {
-                if (obj != null && obj is Token)
+                if (obj != null && obj is CXToken)
                 {
-                    return (Token)obj == this;
+                    return (CXToken)obj == this;
                 }
                 return false;
             }
@@ -623,22 +626,22 @@ namespace LibClang
         }
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern TokenKind clang_getTokenKind(Token tok);
+        internal static extern TokenKind clang_getTokenKind(CXToken tok);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern CXString clang_getTokenSpelling(CXTranslationUnit tu, Token tok);
+        internal static extern CXString clang_getTokenSpelling(CXTranslationUnit tu, CXToken tok);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern SourceLocation clang_getTokenLocation(CXTranslationUnit tu, Token tok);
+        internal static extern SourceLocation clang_getTokenLocation(CXTranslationUnit tu, CXToken tok);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern CXSourceRange clang_getTokenExtent(CXTranslationUnit tu, Token tok);
+        internal static extern CXSourceRange clang_getTokenExtent(CXTranslationUnit tu, CXToken tok);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static unsafe extern void clang_tokenize(CXTranslationUnit tu, CXSourceRange Range, Token** Tokens, uint* NumTokens);
+        internal static unsafe extern void clang_tokenize(CXTranslationUnit tu, CXSourceRange Range, CXToken** Tokens, uint* NumTokens);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static unsafe extern void clang_disposeTokens(CXTranslationUnit tu, Token* Tokens, uint NumTokens);
+        internal static unsafe extern void clang_disposeTokens(CXTranslationUnit tu, CXToken* Tokens, uint NumTokens);
 
         #endregion
 
@@ -1045,6 +1048,5 @@ namespace LibClang
         internal static extern CXString clang_FullComment_getAsXML(CXComment Comment);
 
         #endregion
-
     }
 }

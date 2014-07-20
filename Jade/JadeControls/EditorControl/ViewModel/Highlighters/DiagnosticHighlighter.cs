@@ -45,11 +45,7 @@ namespace JadeControls.EditorControl.ViewModel
             Cursor cursor = diagnostic.LocationCursor;
             if (cursor == null || cursor.Extent == null) return null;
 
-            TokenSet tokens = cursor.Extent.Tokens;
-            if (tokens == null)
-                return null;
-
-            Token tok = tokens.GetTokenAtOffset(diagnostic.Location.Offset);
+            Token tok = cursor.Extent.GetTokenAtOffset(diagnostic.Location.Offset);
             return tok == null ? null : tok.Extent;
         }                    
 

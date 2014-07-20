@@ -19,22 +19,35 @@ namespace LibClang
 
         #region Constructor
 
-        unsafe static internal bool IsValid(Library.SourceLocation handle, IntPtr expectedFile, int expectedOffset)
+        /// <summary>
+        /// Return true if handle represents the expected location
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <param name="expectedFile"></param>
+        /// <param name="expectedOffset"></param>
+        /// <returns></returns>
+        static internal bool IsValid(Library.SourceLocation handle, IntPtr expectedFile, int expectedOffset)
         {
             IntPtr file = IntPtr.Zero;
             uint line, column, offset;
-            Library.clang_getInstantiationLocation(handle, &file, out line, out column, out offset);
+            unsafe
+            {
+                Library.clang_getInstantiationLocation(handle, &file, out line, out column, out offset);
+            }
             return (file == expectedFile && offset == expectedOffset);
         }
 
-        unsafe internal SourceLocation(Library.SourceLocation handle, ITranslationUnitItemFactory itemFactory)
+        internal SourceLocation(Library.SourceLocation handle, ITranslationUnitItemFactory itemFactory)
         {
             Debug.Assert(!handle.IsNull);
             Handle = handle;
             _itemFactory = itemFactory;
             IntPtr file = IntPtr.Zero;
             uint line, column, offset;
-            Library.clang_getInstantiationLocation(Handle, &file, out line, out column, out offset);
+            unsafe
+            {
+                Library.clang_getInstantiationLocation(Handle, &file, out line, out column, out offset);
+            }
             Line = (int)line;
             Column = (int)column;
             Offset = (int)offset;
@@ -50,9 +63,24 @@ namespace LibClang
 
         internal Library.SourceLocation Handle  { get; private set; }
 
+        /// <summary>
+        /// Zero based index of the source file line which contains this SourceLocation
+        /// </summary>
         public int Line { get; private set; }
+
+        /// <summary>
+        /// Zero base index of the SourceLocation's column within Line
+        /// </summary>
         public int Column { get; private set; }
+
+        /// <summary>
+        /// Zero based index of the SourceLocation within File
+        /// </summary>
         public int Offset { get; private set; }
+
+        /// <summary>
+        /// File containing the SourceLocation
+        /// </summary>
         public File File { get; private set; }
 
         #endregion

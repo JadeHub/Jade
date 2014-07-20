@@ -1,114 +1,61 @@
 ﻿using System;
 using System.Collections.Generic;
-//using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace LibClang
 {
-    internal class TokenSetHandle : IDisposable
+    /// <summary>
+    /// A set of Token objects sorted by offset
+    /// </summary>
+    public class TokenSet : IEnumerable<Token>
     {
-        private TranslationUnit _tu;
-        private unsafe Library.Token* _tokens;
-        private uint _count;
-        /*
-        internal static unsafe TokenSetHandle Create(TranslationUnit tu, SourceRange range)
+        private readonly List<Token> _tokens;      
+        
+        internal unsafe static TokenSet Create(TranslationUnit tu, SourceRange range)
         {
-            Library.Token* tokens;
+            Library.CXToken* tokenHandles;
             uint count = 0;
 
-            Library.clang_tokenize(tu.Handle, range.Handle, &tokens, &count);
-            return count > 0 ? new TokenSetHandle(tu, tokens, count) : null;
-        }*/
-
-        internal unsafe TokenSetHandle(TranslationUnit tu, Library.Token* toks, uint count)
-        {
-            _tu = tu;
-            _tokens = toks;
-            _count = count;
-        }
-
-        public unsafe void Dispose()
-        {
-            if (_tokens == null)
-                return;
-
-            Library.clang_disposeTokens(_tu.Handle, _tokens, _count);
-
-            _tokens = null;
-        }
-
-        public unsafe Library.Token GetToken(uint index)
-        {
-            if (index > _count)
-                throw new ArgumentException("invalid index");
-            return *(_tokens + index);
-        }
-
-        public uint Count { get { return _count; } }
-    }
-
-    public class TokenSet : IDisposable
-    {
-        internal TokenSetHandle Handle
-        {
-            get;
-            private set;
-        }
-
-        private TranslationUnit _tu;
-        private readonly IDictionary<int, Token> _tokens;
-
-        public unsafe static TokenSet Create(TranslationUnit tu, SourceRange range)
-        {
-            Library.Token* tokens;
-            uint count = 0;
-
-            Library.clang_tokenize(tu.Handle, range.Handle, &tokens, &count);
+            Library.clang_tokenize(tu.Handle, range.Handle, &tokenHandles, &count);
             if (count == 0)
                 return null;
 
-            TokenSetHandle handle = new TokenSetHandle(tu, tokens, count);
-            if (handle == null)
-                return null;
-            return new TokenSet(tu, handle, range);
-        }
-                        
-        internal unsafe TokenSet(TranslationUnit tu, TokenSetHandle handle, SourceRange range)
-        {
-            _tu = tu;
-            Handle = handle;
-            _tokens = new SortedList<int, Token>();
-            for (uint i = 0; i < handle.Count; i++)
-            {
-                Library.Token tokHandle = handle.GetToken(i);
-                Token tok = new Token(tokHandle, _tu);
-                if(range.Contains(tok.Location.Offset))
-                    _tokens.Add(tok.Location.Offset, tok);
+            SortedList<int, Token> tokens = new SortedList<int, Token>();
+            for(uint i = 0; i < count; i++)
+            {                
+                Token token = new Token(*(tokenHandles + i), tu);
+                if(range.Contains(token.Location.Offset))
+                    tokens.Add(token.Location.Offset, token);
             }
+            Library.clang_disposeTokens(tu.Handle, tokenHandles, count);
+            
+            return new TokenSet(tokens.Values);
         }
-
-        public unsafe void Dispose()
+        
+        internal TokenSet(IEnumerable<Token> tokens)
         {
-            Handle.Dispose();
-        }
-
-        public IEnumerable<Token> Tokens
-        {
-            get
-            {
-                return _tokens.Values;
-            }
+            _tokens = new List<Token>(tokens);
         }
 
         public Token GetTokenAtOffset(int offset)
         {
-            foreach (Token t in _tokens.Values)
+            foreach (Token t in _tokens)
             {
                 if (t.Extent.Contains(offset))
                     return t;
             }
             return null;
+        }
+
+        public IEnumerator<Token> GetEnumerator()
+        {
+            return _tokens.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return _tokens.GetEnumerator();
         }
     }
 }

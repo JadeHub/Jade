@@ -7,61 +7,58 @@ using System.Threading.Tasks;
 
 namespace LibClang
 {
+    /// <summary>
+    /// Wrapper around libclang's Token type.
+    /// 
+    /// Describes a single preprocessing token.
+    /// </summary>
     public sealed class Token
-    {
-        #region Data
+    {        
+        internal Token(Library.CXToken handle, TranslationUnit tu)
+        {
+            //we dont save the handle here as it will be destroyed when the CXTokenSet id disposed
+            Kind = Library.clang_getTokenKind(handle);
+            Spelling = Library.clang_getTokenSpelling(tu.Handle, handle).ManagedString;
+            Location = tu.ItemFactory.CreateSourceLocation(Library.clang_getTokenLocation(tu.Handle, handle));
+            Extent = tu.ItemFactory.CreateSourceRange(Library.clang_getTokenExtent(tu.Handle, handle));
+        }
 
-        internal Library.Token Handle
+        #region Properties
+
+        /// <summary>
+        /// Returns the Token's kind
+        /// </summary>
+        public TokenKind Kind
         {
             get;
             private set;
         }
 
-        private readonly TranslationUnit _tu;
-        private string _spelling;
-        private SourceLocation _location;
-        private SourceRange _extent;
-
-        #endregion
-
-        internal Token(Library.Token handle, TranslationUnit tu)
-        {
-            _tu = tu;
-            Handle = handle;
-        }
-
-        #region Properties
-
-        public TokenKind Kind
-        {
-            get { return Library.clang_getTokenKind(Handle); }
-        }
-
+        /// <summary>
+        /// Returns the Token's spelling
+        /// </summary>
         public string Spelling
         {
-            get { return _spelling ?? (_spelling = Library.clang_getTokenSpelling(_tu.Handle, Handle).ManagedString); }        
+            get;
+            private set;
         }
 
-        private SourceLocation CreateLocation()
-        {
-            Debug.Assert(_tu.Handle != IntPtr.Zero);
-            return _tu.ItemFactory.CreateSourceLocation(Library.clang_getTokenLocation(_tu.Handle, Handle));
-        }
-
+        /// <summary>
+        /// Returns the Token's location
+        /// </summary>
         public SourceLocation Location
         {
-            get { return _location ??(_location = CreateLocation()); }
+            get;
+            private set;
         }
 
-        private SourceRange CreateExtent()
-        {
-            Debug.Assert(_tu.Handle != IntPtr.Zero);
-            return _tu.ItemFactory.CreateSourceRange(Library.clang_getTokenExtent(_tu.Handle, Handle));
-        }
-
+        /// <summary>
+        /// Returns the Token's extent.
+        /// </summary>
         public SourceRange Extent
         {
-            get { return _extent ?? (_extent = CreateExtent()); }
+            get;
+            private set;
         }
 
         #endregion

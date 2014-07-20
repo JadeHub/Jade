@@ -116,10 +116,15 @@ namespace LibClang
         {
             Library.clang_disposeIndex(Handle);
         }
-        /*
+        
         public IntPtr CreateIndexingSession()
         {
             return Library.clang_IndexAction_create(Handle);
-        }*/
+        }
+
+        public void DisposeIndexingSession(IntPtr session)
+        {
+            Library.clang_IndexAction_dispose(session);
+        }
     }
 }

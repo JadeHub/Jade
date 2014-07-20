@@ -34,8 +34,6 @@ namespace JadeControls.EditorControl.ViewModel.Commands
 
         private void OnIndexItemUpdated(JadeUtils.IO.FilePath path)
         {
-       //     if (path != _path)
-           //     return;
             _indexItem = _index.FindProjectItem(_path);
         }
 
@@ -107,10 +105,7 @@ namespace JadeControls.EditorControl.ViewModel.Commands
                 cursor.Kind == LibClang.CursorKind.CXXMethod) // Added CXXMethod to improve usage with operator over loads eg 'operator=' which are almost entirely TokenKind.Keyword not TokenKind.Identifier             
                 return true;
 
-            if (cursor.Extent.Tokens == null)
-                return false;
-            
-            LibClang.Token tok = cursor.Extent.Tokens.GetTokenAtOffset(offset);
+            LibClang.Token tok = cursor.Extent.GetTokenAtOffset(offset);
             return (tok != null && tok.Kind == LibClang.TokenKind.Identifier);
         }
     }

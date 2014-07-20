@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System.Linq;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace LibClang
 {
@@ -35,21 +37,52 @@ namespace LibClang
 
         internal TranslationUnit TranslationUnit { get; private set; }
         internal Library.CXSourceRange Handle { get; private set; }        
+
+        /// <summary>
+        /// Returns a SourceLocation representing the begining of the SourceRange
+        /// </summary>
         public SourceLocation Start { get; private set; }
+
+        /// <summary>
+        /// Returns a SourceLocation representing the end of the SourceRange
+        /// </summary>
         public SourceLocation End { get; private set; }
-        public bool Null { get { return Handle == Library.CXSourceRange.NullRange; } }
+
+        /// <summary>
+        /// Returns the length of the SourceRange
+        /// </summary>
         public int Length { get { return End.Offset - Start.Offset; } }
 
+        /// <summary>
+        /// Returns the set of Tokens within this SourceRange
+        /// </summary>
         public TokenSet Tokens
         {
             get
             {
-                if(_tokens == null)
+                if (_tokens == null)
                 {
                     _tokens = TokenSet.Create(TranslationUnit, this);
                 }
                 return _tokens;
             }
+        }
+
+        /// <summary>
+        /// Return the Token located at offset 
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <returns>The Token located at offset or null if no Token exists</returns>
+        public Token GetTokenAtOffset(int offset)
+        {
+            if (offset < Start.Offset || offset > End.Offset) return null;
+
+            foreach (Token t in Tokens)
+            {
+                if (t.Extent.Contains(offset))
+                    return t;
+            }
+            return null;
         }
 
         #endregion

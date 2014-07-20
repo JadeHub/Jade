@@ -212,7 +212,7 @@ namespace LibClang
 
             return true;
         }
-        
+
         #endregion
 
         #region Properties
@@ -232,13 +232,7 @@ namespace LibClang
                         {
                             locationStack.Add(_itemStore.CreateSourceLocation(inclusionStack[i]));
                         }
-
-                        Cursor includeStatement = GetCursorAt(locationStack[0]);
-
-                        File file = _itemStore.CreateFile(fileHandle);
-
-                        HeaderInfo header = new HeaderInfo(file, locationStack);
-                        _headerFiles.Add(header);
+                        _headerFiles.Add(new HeaderInfo(_itemStore.CreateFile(fileHandle), locationStack));
                     }
                 };
 
@@ -361,46 +355,12 @@ namespace LibClang
         }
 
         #endregion
-
-        #region Find References to Cursor
-
-        /// <summary>
-        /// Callback for FindReferencesTo
-        /// </summary>
-        /// <param name="c"></param>
-        /// <param name="r"></param>
-        /// <returns>True to continue searching, False to stop.</returns>
-        public delegate bool FindReferencesDelegate(Cursor c, SourceRange r);
         
-        public bool FindReferencesTo(Cursor c, File f, FindReferencesDelegate callback)
-        {
-            Library.CXCursorAndRangeVisitor visitor = new Library.CXCursorAndRangeVisitor();
-            visitor.context = IntPtr.Zero;
-            visitor.visit = delegate(IntPtr ctx, Library.CXCursor cur, Library.CXSourceRange range)
-            {
-                if(callback(_itemStore.CreateCursor(cur), _itemStore.CreateSourceRange(range)) == true)
-                    return Library.CXVisitorResult.CXVisit_Continue;
-                return Library.CXVisitorResult.CXVisit_Break;
-            };
-            return Library.clang_findReferencesInFile(c.Handle, f.Handle, visitor) != Library.CXResult.CXResult_Invalid;
-        }
-        
-        #endregion
-
         #region Code Completion
 
         public CodeCompletion.Results CodeCompleteAt(string fileName, int line, int col, IList<Tuple<string, string>> unsavedFiles)
         {
-            Library.UnsavedFile[] unsaved = BuildUnsavedFileArray(unsavedFiles);
-
-            return CodeCompletion.CodeComplete.CompleteAt(this, fileName, line, col, unsaved);
-            /*
-            CodeCompletion.Library.CXCodeCompleteResults* results = CodeCompletion.Library.clang_codeCompleteAt(Handle, fileName, (uint)line, (uint)col,
-                                                                                                                unsaved.Length > 0 ? unsaved : null,
-                                                                                                                (uint)unsaved.Length, 
-                                                                                                                CodeCompletion.Library.clang_defaultCodeCompleteOptions());
-            */
-            //return null;
+            return CodeCompletion.CodeComplete.CompleteAt(this, fileName, line, col, BuildUnsavedFileArray(unsavedFiles));
         }
 
         #endregion
