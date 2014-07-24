@@ -67,6 +67,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContextTool\ContextControl.xaml.cs">
+      <DependentUpon>ContextControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ContextTool\ContextPaneViewModel.cs" />
+    <Compile Include="ContextTool\Tree\ViewModels\ClassViewModel.cs" />
+    <Compile Include="ContextTool\Tree\ViewModels\Factory.cs" />
+    <Compile Include="ContextTool\Tree\ViewModels\FileViewModel.cs" />
+    <Compile Include="ContextTool\Tree\ViewModels\ITreeItem.cs" />
+    <Compile Include="ContextTool\Tree\ViewModels\NamespaceViewModel.cs" />
     <Compile Include="Cursor Inspector\CursorInspectorControl.xaml.cs">
       <DependentUpon>CursorInspectorControl.xaml</DependentUpon>
     </Compile>
@@ -123,9 +132,11 @@
       <DependentUpon>SearchCurrentFileDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Search\SearchViewModel.cs" />
+    <Compile Include="Symbol Inspector\Views\BoldifySpellingConverter.cs" />
     <Compile Include="Symbol Inspector\Views\ClassDeclarationInspector.xaml.cs">
       <DependentUpon>ClassDeclarationInspector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Symbol Inspector\Views\GroupItemDataTemplateSelector.cs" />
     <Compile Include="Symbol Inspector\Views\NullSymbolInspector.xaml.cs">
       <DependentUpon>NullSymbolInspector.xaml</DependentUpon>
     </Compile>
@@ -169,6 +180,14 @@
     <Compile Include="Workspace Explorer\WorkspaceViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="ContextTool\ContextControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ContextTool\JadeTreeViewStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Cursor Inspector\CursorInspectorControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

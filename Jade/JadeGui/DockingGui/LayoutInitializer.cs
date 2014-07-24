@@ -14,12 +14,16 @@ namespace JadeGui.DockingGui
                 anchorableToShow.Content is JadeControls.SymbolInspector.SymbolInspectorPaneViewModel ||
                 anchorableToShow.Content is JadeControls.CursorInspector.CursorInspectorPaneViewModel)
             {
-                destPaneName = "UpperLeftToolPanel";
+                destPaneName = "LeftToolPanel";
             }
             else if (anchorableToShow.Content is JadeControls.OutputControl.ViewModel.OutputViewModel ||
                     anchorableToShow.Content is JadeControls.SearchResultsControl.ViewModel.SearchResultsPaneViewModel)
             {
                 destPaneName = "LowerToolPanel";
+            }
+            else if (anchorableToShow.Content is JadeControls.ContextTool.ContextPaneViewModel)
+            {
+                destPaneName = "RightToolPanel";
             }
             else
             {

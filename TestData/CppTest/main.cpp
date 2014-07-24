@@ -2,6 +2,17 @@
 #include "test2.h"
 #include "template.h"
 
+int global = 0;
+
+void GlobalNamespaceFunc();
+
+namespace {
+
+	void AnonNamespaceFunc();
+}
+
+namespace Blah { namespace ModuleA { class ModuleB{ }; } }
+
 namespace Test
 {
 
@@ -23,9 +34,7 @@ void NewFunction(int i)
 
 int ClassB::GetAnInt() const
 {
-	return 0;
-	
-	
+	return 0;	
 }
 
 template<typename T> 
@@ -49,16 +58,24 @@ class Overloads
 {
 public:
 	Overloads() {}
+	~Overloads();
 	
 	void Func() {}
 	void Func(int i, int j) {}
 	void Func(double d, int j) {}	
 	
+	void Test() {}	
 private:
 	Overloads(const Overloads&); 
 	Overloads& operator =(const Overloads& o);	
 	Overloads&& operator =(const Overloads&& o);
+	
+	int i;
 };
+
+Overloads::~Overloads()
+{
+}
 
 void SomeClass::Fn()
 {

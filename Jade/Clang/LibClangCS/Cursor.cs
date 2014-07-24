@@ -690,7 +690,27 @@ namespace LibClang
         {
             Library.clang_visitChildren(
                 Handle,
-                (cursor, parent, data) => visitor(_itemFactory.CreateCursor(cursor), _itemFactory.CreateCursor(parent)),
+                //(cursor, parent, data) => visitor(_itemFactory.CreateCursor(cursor), _itemFactory.CreateCursor(parent)),
+                delegate (Library.CXCursor cursor, Library.CXCursor parent, IntPtr data) 
+                {
+                    return visitor(_itemFactory.CreateCursor(cursor), _itemFactory.CreateCursor(parent));
+                },
+                
+                IntPtr.Zero);
+        }
+
+        public void VisitChildren(CursorVisitor visitor, Predicate<CursorKind> kindPred)
+        {
+            Library.clang_visitChildren(
+                Handle,
+                //(cursor, parent, data) => visitor(_itemFactory.CreateCursor(cursor), _itemFactory.CreateCursor(parent)),
+                delegate(Library.CXCursor cursor, Library.CXCursor parent, IntPtr data)
+                {
+                    if(kindPred(Library.clang_getCursorKind(cursor)))
+                        return visitor(_itemFactory.CreateCursor(cursor), _itemFactory.CreateCursor(parent));
+                    return ChildVisitResult.Continue;
+                },
+
                 IntPtr.Zero);
         }
 

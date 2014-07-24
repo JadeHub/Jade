@@ -6,10 +6,6 @@
              xmlns:local="clr-namespace:JadeControls.Workspace"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-
-    <UserControl.Resources>
-        <ResourceDictionary Source="WorkspaceCtrlResources.xaml" />
-    </UserControl.Resources>    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />          

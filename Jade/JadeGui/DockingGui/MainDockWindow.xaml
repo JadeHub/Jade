@@ -11,6 +11,7 @@
         xmlns:JadeCtrlsSearchResults="clr-namespace:JadeControls.SearchResultsControl;assembly=JadeControls"
         xmlns:JadeCtrlsInspectSymbol="clr-namespace:JadeControls.SymbolInspector;assembly=JadeControls"
         xmlns:JadeCtrlsCursorInspectSymbol="clr-namespace:JadeControls.CursorInspector;assembly=JadeControls"
+        xmlns:JadeCtrlsContext="clr-namespace:JadeControls.ContextTool;assembly=JadeControls"
         xmlns:JadeCtrlsEditor="clr-namespace:JadeControls.EditorControl;assembly=JadeControls"
         xmlns:JadeCtrlsConv="clr-namespace:JadeControls.Converters;assembly=JadeControls"
         xmlns:JadeCore="clr-namespace:JadeCore;assembly=JadeCore"
@@ -97,6 +98,13 @@
                             </DataTemplate>
                         </local:PanesTemplateSelector.OutputViewTemplate>
                         
+                        <!-- Context tool window -->
+                        <local:PanesTemplateSelector.ContextToolViewTemplate>
+                            <DataTemplate> 
+                                <JadeCtrlsContext:ContextControl/>                                
+                            </DataTemplate>
+                        </local:PanesTemplateSelector.ContextToolViewTemplate>
+                        
                     </local:PanesTemplateSelector>
                 </avalonDock:DockingManager.LayoutItemTemplateSelector>
                 
@@ -141,11 +149,12 @@
                                                 
                 <avalonDock:LayoutRoot>                    
                         <avalonDock:LayoutPanel Orientation="Horizontal">                                                                                    
-                            <avalonDock:LayoutAnchorablePane Name="LeftToolPanel" DockWidth="150" />                            
+                            <avalonDock:LayoutAnchorablePane Name="LeftToolPanel" DockWidth="250" />                            
                             <avalonDock:LayoutPanel Orientation="Vertical">
                                 <avalonDock:LayoutDocumentPane/>
                                 <avalonDock:LayoutAnchorablePane Name="LowerToolPanel" DockHeight="150"/>                                
-                            </avalonDock:LayoutPanel>                            
+                            </avalonDock:LayoutPanel>          
+                            <avalonDock:LayoutAnchorablePane Name="RightToolPanel" DockWidth="200" />                            
                         </avalonDock:LayoutPanel>                        
                 </avalonDock:LayoutRoot>     
                             

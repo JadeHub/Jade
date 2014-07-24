@@ -89,6 +89,7 @@ namespace LibClang
 
         public override string ToString()
         {
+            if (File == null) return "Implicit";
             return string.Format("{0} {1}:{2} {3}", File.Name, Line, Column, Offset);
         }
 

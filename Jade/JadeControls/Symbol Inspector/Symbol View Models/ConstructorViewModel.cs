@@ -26,7 +26,7 @@ namespace JadeControls.SymbolInspector
         private string BuildParamText()
         {
             StringBuilder sb = new StringBuilder();
-            LibClang.Cursor c = SymbolCursor.Cursor;
+            //LibClang.Cursor c = SymbolCursor.Cursor;
 
             sb.Append("(");
 

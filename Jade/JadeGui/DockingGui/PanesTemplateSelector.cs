@@ -8,6 +8,7 @@ using JadeControls.SearchResultsControl.ViewModel;
 using JadeControls.Workspace.ViewModel;
 using JadeControls.SymbolInspector;
 using JadeControls.CursorInspector;
+using JadeControls.ContextTool;
 
 namespace JadeGui.DockingGui
 {   
@@ -63,6 +64,12 @@ namespace JadeGui.DockingGui
             set;
         }
 
+        public DataTemplate ContextToolViewTemplate
+        {
+            get;
+            set;
+        }
+
         public override System.Windows.DataTemplate SelectTemplate(object item, System.Windows.DependencyObject container)
         {
             var itemAsLayoutContent = item as LayoutContent;
@@ -87,6 +94,9 @@ namespace JadeGui.DockingGui
 
             if (item is CursorInspectorPaneViewModel)
                 return CursorInspectorViewTemplate;
+
+            if (item is ContextPaneViewModel)
+                return ContextToolViewTemplate;
             
             return base.SelectTemplate(item, container);
         }

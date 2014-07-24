@@ -81,7 +81,7 @@ namespace JadeControls.EditorControl.CodeCompletion
                 {
                     _completionWindow = null;
                     _onComplete();
-                    return;
+                    ;return;
                 }
             }
 
@@ -99,10 +99,14 @@ namespace JadeControls.EditorControl.CodeCompletion
             _context.Callback(result, completionSegment, insertionRequestEventArgs);
         }
 
-        public void RequestInsertion(System.Windows.Input.TextCompositionEventArgs e)
+        public bool RequestInsertion(System.Windows.Input.TextCompositionEventArgs e)
         {
             if (_completionWindow != null) //todo fix
+            {
                 _completionWindow.CompletionList.RequestInsertion(e);
+                return true;
+            }
+            return false;
         }
     }
 
@@ -151,13 +155,11 @@ namespace JadeControls.EditorControl.CodeCompletion
         {
             if (_currentSelection != null && e.Text.Length > 0)
             {
-                if (!char.IsLetterOrDigit(e.Text[0]))
+                if (!char.IsLetterOrDigit(e.Text[0]) )
                 {
                     // Whenever a non-letter is typed while the completion window is open,
                     // insert the currently selected element.
-                    
-                    _currentSelection.RequestInsertion(e);
-                    e.Handled = true;
+                    _currentSelection.RequestInsertion(e); ;
                 }
             }
         }
@@ -294,7 +296,11 @@ namespace JadeControls.EditorControl.CodeCompletion
                         break;
                 }
             }
-
+            if (insertionRequestEventArgs is System.Windows.Input.TextCompositionEventArgs)
+            {
+              //  sb.Append((insertionRequestEventArgs as System.Windows.Input.TextCompositionEventArgs).Text);
+            }
+            
             return sb.ToString();
         }
     }

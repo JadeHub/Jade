@@ -14,6 +14,7 @@ namespace JadeGui.ViewModels
     using JadeControls.Workspace.ViewModel;
     using JadeControls.SymbolInspector;
     using JadeControls.CursorInspector;
+    using JadeControls.ContextTool;
     using JadeUtils.IO;
     
     /// <summary>
@@ -45,6 +46,9 @@ namespace JadeGui.ViewModels
         private SymbolInspectorPaneViewModel _symbolInspectorViewModel;
 
         private CursorInspectorPaneViewModel _cursorInspectorViewModel;
+
+        private ContextPaneViewModel _contextPaneViewModel;
+
         //Main window
         private DockingGui.MainWindow _view;
 
@@ -73,7 +77,9 @@ namespace JadeGui.ViewModels
 
             _symbolInspectorViewModel = new SymbolInspectorPaneViewModel(_editorController);
 
-            _cursorInspectorViewModel = new CursorInspectorPaneViewModel();            
+            _cursorInspectorViewModel = new CursorInspectorPaneViewModel();
+
+            _contextPaneViewModel = new ContextPaneViewModel(_editorController);
 
             _commands = new JadeCommandAdaptor(this);
             _view = view;
@@ -84,7 +90,8 @@ namespace JadeGui.ViewModels
             _toolWindows.Add(_currentWorkspace);
             _toolWindows.Add(_symbolInspectorViewModel);
             _toolWindows.Add(_cursorInspectorViewModel);
-            _currentWorkspace.IsVisible = false;
+            _toolWindows.Add(_contextPaneViewModel);
+            OnViewWorkspaceWindow();
 
             UpdateWindowTitle();
         }
@@ -121,6 +128,7 @@ namespace JadeGui.ViewModels
             OnPropertyChanged("ToolWindows");
             
             UpdateWindowTitle();
+            OnViewWorkspaceWindow();            
         }
 
         #endregion
@@ -361,6 +369,7 @@ namespace JadeGui.ViewModels
         public void OnViewWorkspaceWindow()
         {
             _currentWorkspace.IsVisible = true;
+            _currentWorkspace.IsSelected = true;
         }
 
         public bool CanViewWorkspaceWindow()
