@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
-using JadeCore.CppSymbols;
+using JadeCore.CppSymbols2;
 
 namespace JadeControls.SymbolInspector
 {
@@ -14,7 +14,7 @@ namespace JadeControls.SymbolInspector
 
         }
 
-        private JadeCore.CppSymbols.ConstructorDeclarationSymbol CtorSymbol
+        private JadeCore.CppSymbols2.ConstructorDeclarationSymbol CtorSymbol
         {
             get
             {
@@ -30,7 +30,7 @@ namespace JadeControls.SymbolInspector
 
             sb.Append("(");
 
-            foreach (JadeCore.CppSymbols.MethodArgumentSymbol arg in CtorSymbol.Arguments)
+            foreach (JadeCore.CppSymbols2.MethodArgumentSymbol arg in CtorSymbol.Arguments)
             {
                 sb.Append(arg.ToString());
                 if (arg != CtorSymbol.Arguments.Last())

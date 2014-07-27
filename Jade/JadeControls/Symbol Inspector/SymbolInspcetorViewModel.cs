@@ -23,13 +23,13 @@ namespace JadeControls.SymbolInspector
             _symbol = _nullSymbolViewModel;
         }
 
-        public JadeCore.CppSymbols.ISymbolCursor SymbolCursor
+        public JadeCore.CppSymbols2.ISymbolCursor SymbolCursor
         {
             set
             {
-                if (_symbol == null || _symbol.SymbolCursor != value && value is JadeCore.CppSymbols.ClassDeclarationSymbol)
+                if (_symbol == null || _symbol.SymbolCursor != value && value is JadeCore.CppSymbols2.ClassDeclarationSymbol)
                 {
-                    _symbol = new ClassDeclarationViewModel(value as JadeCore.CppSymbols.ClassDeclarationSymbol);
+                    _symbol = new ClassDeclarationViewModel(value as JadeCore.CppSymbols2.ClassDeclarationSymbol);
                     OnPropertyChanged("Symbol");
                 }
                 else

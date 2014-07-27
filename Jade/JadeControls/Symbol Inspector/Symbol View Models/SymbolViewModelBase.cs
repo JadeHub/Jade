@@ -10,12 +10,12 @@ namespace JadeControls.SymbolInspector
     public abstract class SymbolViewModelBase : NotifyPropertyChanged
     {
         
-        public SymbolViewModelBase(JadeCore.CppSymbols.ISymbolCursor symbol)
+        public SymbolViewModelBase(JadeCore.CppSymbols2.ISymbolCursor symbol)
         {
             SymbolCursor = symbol;
         }
 
-        public JadeCore.CppSymbols.ISymbolCursor SymbolCursor
+        public JadeCore.CppSymbols2.ISymbolCursor SymbolCursor
         {
             get;
             private set;

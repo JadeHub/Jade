@@ -13,13 +13,13 @@ namespace JadeControls.SymbolInspector
 { 
     public class ClassDeclarationViewModel : SymbolViewModelBase
     {
-        private JadeCore.CppSymbols.ClassDeclarationSymbol _symbol;
+        private JadeCore.CppSymbols2.ClassDeclarationSymbol _symbol;
         private SymbolGroupViewModel _constructorGroup;
         private SymbolGroupViewModel _methodGroup;
         private SymbolGroupViewModel _memberGroup;
         private SymbolGroupViewModel _baseClassGroup;
 
-        public ClassDeclarationViewModel(JadeCore.CppSymbols.ClassDeclarationSymbol symbol)
+        public ClassDeclarationViewModel(JadeCore.CppSymbols2.ClassDeclarationSymbol symbol)
             :base(symbol)
         {
             _symbol = symbol;
@@ -28,22 +28,22 @@ namespace JadeControls.SymbolInspector
             _memberGroup = new SymbolGroupViewModel("Data Members");
             _baseClassGroup = new SymbolGroupViewModel("Base Classes");
 
-            foreach (JadeCore.CppSymbols.ConstructorDeclarationSymbol ctor in symbol.Constructors)
+            foreach (JadeCore.CppSymbols2.ConstructorDeclarationSymbol ctor in symbol.Constructors)
             {
                 _constructorGroup.AddSymbol(new ConstructorViewModel(ctor));
             }
 
-            foreach (JadeCore.CppSymbols.MethodDeclarationSymbol method in from method in symbol.Methods orderby method.Spelling select method)
+            foreach (JadeCore.CppSymbols2.MethodDeclarationSymbol method in from method in symbol.Methods orderby method.Spelling select method)
             {
                 _methodGroup.AddSymbol(new MethodDeclarationViewModel(method));
             }
 
-            foreach(JadeCore.CppSymbols.ClassDeclarationSymbol b in symbol.BaseClasses)
+            foreach(JadeCore.CppSymbols2.ClassDeclarationSymbol b in symbol.BaseClasses)
             {
                 _baseClassGroup.AddSymbol(new ClassDeclarationViewModel(b));
             }
 
-            foreach (JadeCore.CppSymbols.DataMemberDeclarationSymbol data in from member in symbol.DataMembers orderby member.Spelling select member)
+            foreach (JadeCore.CppSymbols2.DataMemberDeclarationSymbol data in from member in symbol.DataMembers orderby member.Spelling select member)
             {
                 _memberGroup.AddSymbol(new DataMemberViewModel(data));
             }

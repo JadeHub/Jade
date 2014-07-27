@@ -8,15 +8,15 @@ namespace JadeControls.SymbolInspector
 {
     public class MethodDeclarationViewModel : SymbolViewModelBase
     {
-        public MethodDeclarationViewModel(JadeCore.CppSymbols.MethodDeclarationSymbol symbol)
+        public MethodDeclarationViewModel(JadeCore.CppSymbols2.MethodDeclarationSymbol symbol)
             : base(symbol)
         {
             
         }
 
-        private JadeCore.CppSymbols.MethodDeclarationSymbol MethodDecl
+        private JadeCore.CppSymbols2.MethodDeclarationSymbol MethodDecl
         {
-            get { return SymbolCursor as JadeCore.CppSymbols.MethodDeclarationSymbol; }
+            get { return SymbolCursor as JadeCore.CppSymbols2.MethodDeclarationSymbol; }
         }
 
         private string BuildParamText()
@@ -26,7 +26,7 @@ namespace JadeControls.SymbolInspector
 
             sb.Append("(");
 
-            foreach(JadeCore.CppSymbols.MethodArgumentSymbol arg in MethodDecl.Arguments)
+            foreach(JadeCore.CppSymbols2.MethodArgumentSymbol arg in MethodDecl.Arguments)
             {                
                 sb.Append(arg.ToString());
                 if (arg != MethodDecl.Arguments.Last())

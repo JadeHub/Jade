@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using JadeCore.CppSymbols;
+using JadeCore.CppSymbols2;
 
 namespace JadeControls.ContextTool
 {

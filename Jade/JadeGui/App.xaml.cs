@@ -26,7 +26,7 @@ namespace JadeGui
             JadeCore.Services.Provider.OutputController = new JadeCore.Output.OutputController();
             JadeCore.Services.Provider.SearchController = new JadeCore.Search.SearchController();
             JadeCore.Services.Provider.GuiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-            JadeCore.Services.Provider.SymbolCursorFactory = new JadeCore.CppSymbols.SymbolCursorFactory();
+            JadeCore.Services.Provider.SymbolCursorFactory = new JadeCore.CppSymbols2.SymbolCursorFactory();
 
             _mainWindow = new DockingGui.MainWindow();
 

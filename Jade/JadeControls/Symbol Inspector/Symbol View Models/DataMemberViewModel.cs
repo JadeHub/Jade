@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Diagnostics;
-using JadeCore.CppSymbols;
+using JadeCore.CppSymbols2;
 
 namespace JadeControls.SymbolInspector
 {
@@ -13,7 +13,7 @@ namespace JadeControls.SymbolInspector
 
         }
 
-        private JadeCore.CppSymbols.DataMemberDeclarationSymbol CtorSymbol
+        private JadeCore.CppSymbols2.DataMemberDeclarationSymbol CtorSymbol
         {
             get
             {

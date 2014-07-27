@@ -69,7 +69,7 @@ namespace JadeControls.EditorControl.ViewModel.Commands
         protected override void Execute()
         {
             LibClang.Cursor c = CppCodeBrowser.BrowsingUtils.GetDefinitionOfCursorAt(new CppCodeBrowser.CodeLocation(_path.Str, ViewModel.CaretOffset), _index);
-            if(c != null && JadeCore.Services.Provider.SymbolCursorFactory.CanCreate(c))
+            if(c != null && JadeCore.Services.Provider.SymbolCursorFactory.CanCreateKind(c.Kind))
             {
                 JadeCore.Services.Provider.CommandHandler.OnDisplaySymbolInspector(JadeCore.Services.Provider.SymbolCursorFactory.Create(c));
             }

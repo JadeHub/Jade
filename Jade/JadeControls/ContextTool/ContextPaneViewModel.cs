@@ -12,6 +12,8 @@ namespace JadeControls.ContextTool
     {
         private JadeCore.IEditorController _editorController;
         private CppCodeBrowser.IProjectIndex _currentIndex;
+
+        private JadeCore.CppSymbols2.ISymbolTable _st = new JadeCore.CppSymbols2.TranslationUnitTable();
         
         public ContextPaneViewModel(JadeCore.IEditorController editCtrl)
         {
@@ -52,6 +54,8 @@ namespace JadeControls.ContextTool
 
             if(_editorController.ActiveDocument.File.Path == path)
             {
+                
+
                 UpdateTree(_editorController.ActiveDocument.File.Path);
                 SelectPath("main.cpp/Test/Overloads/Func");
             }
@@ -67,6 +71,7 @@ namespace JadeControls.ContextTool
                 if (selected != null)
                     selectedPath = selected.TreeItemPath;
             }
+            _st.Update(sf.TranslationUnit);
             CurrentFile = new FileViewModel(path, sf.TranslationUnit);
 
             if(selectedPath.Length > 0)

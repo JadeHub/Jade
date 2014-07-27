@@ -55,7 +55,10 @@ public:
 	virtual void VFunc(int i, int j) override;
 
 	template <typename P1>
-	void TemplMethod(P1 p1) const {}
+	void TemplMethod(P1 p1) const {
+	
+		class d{};
+	}
 
 	template <typename P1, typename P2>
 	void TemplMethod2(P1& p1, P1 p2) { p1 = i; }
@@ -68,6 +71,7 @@ private:
 	const AnEnum mEnum;
 	int* p;
 	
+	int x;
 };
 
 class ClassA

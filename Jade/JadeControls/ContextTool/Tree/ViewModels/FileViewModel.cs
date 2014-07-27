@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using JadeUtils.IO;
 using LibClang;
-using JadeCore.CppSymbols;
+using JadeCore.CppSymbols2;
 
 namespace JadeControls.ContextTool
 {

@@ -184,7 +184,7 @@ namespace JadeCore
         void OnDisplayPrevSearchResult();
         bool CanDisplayPrevSearchResult();
                 
-        void OnDisplaySymbolInspector(CppSymbols.ISymbolCursor symbol);
+        void OnDisplaySymbolInspector(CppSymbols2.ISymbolCursor symbol);
 
         void OnDisplayCursorInspector(LibClang.Cursor c);
 
