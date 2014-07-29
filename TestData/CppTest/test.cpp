@@ -4,7 +4,7 @@ void GlobalFn()
 {
 }
  
-namespace Test {
+namespace TestNS {
 
 int SomeClass::j = 0;
 

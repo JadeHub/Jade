@@ -7,7 +7,7 @@ namespace LibClang
     /// An immutable wrapper around libclang's File type.
     /// A File represents a single code file (source or header) in a Translation Unit
     /// </summary>
-    public sealed class File
+    public sealed class File : IComparable
     {
         internal delegate File CreateFileDel(IntPtr handle);
 
@@ -119,6 +119,28 @@ namespace LibClang
             return left.Handle != right.Handle;
         }
         
+        #endregion
+
+        #region IComparable implementation
+
+        public int CompareTo(object obj)
+        {
+            File other = obj as File;
+            if (other == null)
+            {
+                throw new ArgumentException("Incorrect type for comparison", "obj");
+            }
+            if (Handle == other.Handle)
+            {
+                return 0;
+            }
+            if (Handle.ToInt32() < other.Handle.ToInt32())
+            {
+                return -1;
+            }
+            return 1;
+        }
+
         #endregion
     }
 }

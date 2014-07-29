@@ -33,21 +33,41 @@ namespace LibClang.Indexer
 
             _entityInfo = new EntityInfo(*_handle.entityInfo, itemFactory);
 
-            if (handle.semanticContainer != (Library.IndexerContainerInfo*)IntPtr.Zero)
+            if (handle.semanticContainer != (Library.CXIdxContainerInfo*)IntPtr.Zero)
                 _semanticContainer = _itemFactory.CreateCursor(handle.semanticContainer->cursor);
 
-            if(handle.lexicalContainer != (Library.IndexerContainerInfo*)IntPtr.Zero)
+            if(handle.lexicalContainer != (Library.CXIdxContainerInfo*)IntPtr.Zero)
                 _lexicalContainer = _itemFactory.CreateCursor(handle.lexicalContainer->cursor);
 
-            if(handle.declAsContainer != (Library.IndexerContainerInfo*)IntPtr.Zero)
+            if(handle.declAsContainer != (Library.CXIdxContainerInfo*)IntPtr.Zero)
                 _declAsContainer = _itemFactory.CreateCursor(handle.declAsContainer->cursor);
 
-            Debug.Assert(Location == Cursor.Location);            
+           // Debug.Assert(Location == Cursor.Location);            
         }
 
         #endregion
 
         #region Properties
+
+        public string FileName
+        {
+            get
+            {
+                if(_location == null)
+                {
+
+                    Library.CXSourceLocation loc = Library.clang_indexLoc_getCXSourceLocation(_handle.location);
+                    IntPtr file = IntPtr.Zero;
+                    uint line, column, offset;
+                    unsafe
+                    {
+                        Library.clang_getInstantiationLocation(loc, &file, out line, out column, out offset);
+                    }
+                    return Library.clang_getFileName(file).ManagedString;
+                }
+                return _location.File.Name;
+            }
+        }
 
         /// <summary>
         /// Returns the EntityInfo object for the declared entity.
@@ -95,11 +115,11 @@ namespace LibClang.Indexer
         }
 
         /// <summary>
-        /// Retusn true is this declaration is also the definition of the declared entity.
+        /// Returns true is this declaration is also the definition of the declared entity.
         /// </summary>
         public bool IsDefinition
         {
-            get { return _cur.IsDefinition; }
+            get { return _handle.isDefinition != 0; }
         }
 
         /// <summary>
@@ -111,5 +131,10 @@ namespace LibClang.Indexer
         }
 
         #endregion
+
+        public override string ToString()
+        {
+            return EntityInfo + " " + Location;
+        }
     }
 }

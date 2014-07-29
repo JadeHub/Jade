@@ -1,5 +1,4 @@
-﻿
-namespace LibClang.Indexer
+﻿namespace LibClang.Indexer
 {
     /// <summary>
     /// Immutable wrapper around Libclang's CXIdxEntityInfo type.
@@ -11,7 +10,7 @@ namespace LibClang.Indexer
         #region Data
 
         private ITranslationUnitItemFactory _itemFactory;
-        private Library.EntityInfo _handle;
+        private Library.CXIdxEntityInfo _handle;
         private string _name;
         private string _usr;
         private Cursor _cur;
@@ -20,7 +19,7 @@ namespace LibClang.Indexer
 
         #region Constructor
 
-        internal unsafe EntityInfo(Library.EntityInfo handle, ITranslationUnitItemFactory itemFactory)
+        internal unsafe EntityInfo(Library.CXIdxEntityInfo handle, ITranslationUnitItemFactory itemFactory)
         {
             _itemFactory = itemFactory;
             _handle = handle;
@@ -84,7 +83,7 @@ namespace LibClang.Indexer
         
         public override string ToString()
         {
-            return Cursor.Kind.ToString() + ":" + _name + " " + _cur.ToString();
+            return Kind.ToString() + " " + Name;
         }       
     }
 }

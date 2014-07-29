@@ -9,7 +9,7 @@ namespace LibClang
     /// </summary>
     public sealed class SourceLocation : IComparable
     {
-        internal delegate SourceLocation CreateSourceLocationDel(Library.SourceLocation handle);
+        internal delegate SourceLocation CreateSourceLocationDel(Library.CXSourceLocation handle);
                 
         #region Data
                 
@@ -26,7 +26,7 @@ namespace LibClang
         /// <param name="expectedFile"></param>
         /// <param name="expectedOffset"></param>
         /// <returns></returns>
-        static internal bool IsValid(Library.SourceLocation handle, IntPtr expectedFile, int expectedOffset)
+        static internal bool IsValid(Library.CXSourceLocation handle, IntPtr expectedFile, int expectedOffset)
         {
             IntPtr file = IntPtr.Zero;
             uint line, column, offset;
@@ -37,7 +37,7 @@ namespace LibClang
             return (file == expectedFile && offset == expectedOffset);
         }
 
-        internal SourceLocation(Library.SourceLocation handle, ITranslationUnitItemFactory itemFactory)
+        internal SourceLocation(Library.CXSourceLocation handle, ITranslationUnitItemFactory itemFactory)
         {
             Debug.Assert(!handle.IsNull);
             Handle = handle;
@@ -61,7 +61,7 @@ namespace LibClang
 
         #region Properties
 
-        internal Library.SourceLocation Handle  { get; private set; }
+        internal Library.CXSourceLocation Handle  { get; private set; }
 
         /// <summary>
         /// Zero based index of the source file line which contains this SourceLocation
@@ -170,7 +170,7 @@ namespace LibClang
             }
             if (this.File != other.File)
             {
-                throw new ArgumentException("Attempt to compare SourceLocation objects in different files.");
+                return File.CompareTo(other.File);
             }
             return Offset.CompareTo(other.Offset);
         }

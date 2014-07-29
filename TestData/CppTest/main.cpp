@@ -13,7 +13,7 @@ namespace {
 
 namespace Blah { namespace ModuleA { class ModuleB{ }; } }
 
-namespace Test
+namespace TestNS
 {
 
 Struct22::Struct22(){}
@@ -21,6 +21,7 @@ Struct22::Struct22(){}
 ClassA::ClassA()
 {
 	Template<int> ti(5);
+	Template<float> tf(5);
 	int test = ti;
 	double d = 7.0;
 	
@@ -112,9 +113,9 @@ void SomeClass::VFunc(int i, int j)
 	int ii = 8;	
 }
 
-Test::ClassA SomeNewFucntion()
+TestNS::ClassA SomeNewFucntion()
 {
-	Test::ClassA a;
+	TestNS::ClassA a;
 	
 	for(int i = 0;i < 10;i++)
 	{
@@ -125,9 +126,9 @@ Test::ClassA SomeNewFucntion()
 
 int main()
 {
-	Test::SomeClass::j = 8;
+	TestNS::SomeClass::j = 8;
 
-	Test::SomeClass sc;
+	TestNS::SomeClass sc;
 
 	sc.Fn();
 	return 0;

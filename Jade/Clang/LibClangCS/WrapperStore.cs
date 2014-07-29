@@ -98,7 +98,7 @@ namespace LibClang
     /// <summary>
     /// Cache of SourceLocation objects.
     /// </summary>
-    internal class SourceLocationStore : WrapperObjectStore<Library.SourceLocation, SourceLocation>
+    internal class SourceLocationStore : WrapperObjectStore<Library.CXSourceLocation, SourceLocation>
     {
         private ITranslationUnitItemFactory _itemFactory;
 
@@ -107,7 +107,7 @@ namespace LibClang
             _itemFactory = itemFactory;
         }
 
-        protected override SourceLocation Create(Library.SourceLocation handle)
+        protected override SourceLocation Create(Library.CXSourceLocation handle)
         {
             if (handle.IsNull)
                 throw new ArgumentException("SourceLocation Handle is null");

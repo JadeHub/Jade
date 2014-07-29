@@ -40,31 +40,36 @@ namespace LibClang.Indexer
 
         #region Constructor
 
-        public Indexer(Index idx, TranslationUnit tu) : this()
-        {            
-            Index = idx;
+        private Indexer(TranslationUnit tu)
+        {
+            unsafe
+            {
+                _cbs = new Library.IndexerCallbacks();
+                _cbs.abortQuery = OnIndexerAbortQuery;
+                _cbs.diagnostic = OnIndexerDiagnostic;
+                _cbs.enterMainFile = OnIndexerEnteredMainFile;
+                _cbs.ppIncludedFile = OnIndexerPPIncludedFile;
+                _cbs.astImportFile = OnIndexerImportedASTFile;
+                _cbs.startTU = OnIndexerStartTranslationUnit;
+                _cbs.index = OnIndexerDeclaration;
+                _cbs.entityRef = OnIndexerEntityReference;
+
+                _includeCallback = OnCxxIncludeVisit;
+            }
             _translationUnit = tu;
         }
 
-        private unsafe Indexer()
+        #endregion
+        
+        public static bool Parse(TranslationUnit tu, IObserver o, IntPtr session)
         {
-            _cbs = new Library.IndexerCallbacks();
-            _cbs.abortQuery = OnIndexerAbortQuery;
-            _cbs.diagnostic = OnIndexerDiagnostic;
-            _cbs.enterMainFile = OnIndexerEnteredMainFile;
-            _cbs.ppIncludedFile = OnIndexerPPIncludedFile;
-            _cbs.astImportFile = OnIndexerImportedASTFile;
-            _cbs.startTU = OnIndexerStartTranslationUnit;
-            _cbs.index = OnIndexerDeclaration;
-            _cbs.entityRef = OnIndexerEntityReference;
-
-            _includeCallback = OnCxxIncludeVisit;
+            Indexer i = new Indexer(tu);
+            return i.Parse(o, session) != 0;
         }
 
-        #endregion
+        public TranslationUnit Tu { get { return _translationUnit; } }
                 
-        
-        public int Parse(IObserver o, IntPtr session)
+        private int Parse(IObserver o, IntPtr session)
         {
             _observer = o;
 
@@ -76,38 +81,13 @@ namespace LibClang.Indexer
                                             (uint)System.Runtime.InteropServices.Marshal.SizeOf(_cbs), 0x2, _translationUnit.Handle);
             return err;
         }
-
-        #region Properties
-            
-        public Index Index
-        {
-            get;
-            private set;
-        }
-
-        /*
-        public string Filename
-        {
-            get;
-            private set;
-        }*/
-        
-        public TranslationUnit TranslationUnit
-        {
-            get
-            {
-                return _translationUnit;
-            }
-        }
-
-        #endregion
-
+               
         #region event handlers
 
-        private unsafe void OnCxxIncludeVisit(IntPtr fileHandle, Library.SourceLocation* inclusionStack, uint includeStackSize, IntPtr clientData)
+        private unsafe void OnCxxIncludeVisit(IntPtr fileHandle, Library.CXSourceLocation* inclusionStack, uint includeStackSize, IntPtr clientData)
         {
             SourceLocation[] locs = new SourceLocation[includeStackSize];
-            Library.SourceLocation* incStackPtr = inclusionStack;
+            Library.CXSourceLocation* incStackPtr = inclusionStack;
             for (uint i = 0; i < includeStackSize; i++)
             {
                // locs[i] = new SourceLocation(*incStackPtr);

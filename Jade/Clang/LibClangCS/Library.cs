@@ -175,24 +175,24 @@ namespace LibClang
         internal static extern uint clang_equalRanges(CXSourceRange r1, CXSourceRange r2);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern SourceLocation clang_getRangeStart(CXSourceRange range);
+        internal static extern CXSourceLocation clang_getRangeStart(CXSourceRange range);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern SourceLocation clang_getRangeEnd(CXSourceRange range);
+        internal static extern CXSourceLocation clang_getRangeEnd(CXSourceRange range);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern CXSourceRange clang_getRange(SourceLocation start, SourceLocation end);
+        internal static extern CXSourceRange clang_getRange(CXSourceLocation start, CXSourceLocation end);
         
         #endregion
 
         #region CXSourceLocation
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct SourceLocation
+        public struct CXSourceLocation
         {
-            static public SourceLocation NullLocation;
+            static public CXSourceLocation NullLocation;
 
-            static SourceLocation()
+            static CXSourceLocation()
             {
                 NullLocation = Library.clang_getNullLocation();
             }
@@ -203,21 +203,21 @@ namespace LibClang
             readonly IntPtr data1;
             readonly uint data2;
 
-            public static bool operator ==(SourceLocation left, SourceLocation right)
+            public static bool operator ==(CXSourceLocation left, CXSourceLocation right)
             {
                 return Library.clang_equalLocations(left, right) != 0;
             }
 
-            public static bool operator !=(SourceLocation left, SourceLocation right)
+            public static bool operator !=(CXSourceLocation left, CXSourceLocation right)
             {
                 return !(left == right);
             }
 
             public override bool Equals(object obj)
             {
-                if (obj != null && obj is SourceLocation)
+                if (obj != null && obj is CXSourceLocation)
                 {
-                    return (SourceLocation)obj == this;
+                    return (CXSourceLocation)obj == this;
                 }
                 return false;
             }
@@ -229,16 +229,16 @@ namespace LibClang
         }
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern SourceLocation clang_getLocationForOffset(CXTranslationUnit tu, CXFile fileHandle, uint offset);
+        internal static extern CXSourceLocation clang_getLocationForOffset(CXTranslationUnit tu, CXFile fileHandle, uint offset);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern SourceLocation clang_getNullLocation();
+        internal static extern CXSourceLocation clang_getNullLocation();
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern uint clang_equalLocations(SourceLocation l1, SourceLocation l2);
+        internal static extern uint clang_equalLocations(CXSourceLocation l1, CXSourceLocation l2);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal unsafe static extern void clang_getInstantiationLocation(SourceLocation location, CXFile* file,
+        internal unsafe static extern void clang_getInstantiationLocation(CXSourceLocation location, CXFile* file,
                                             out uint line, out uint column, out uint offset);
 
         #endregion
@@ -466,7 +466,7 @@ namespace LibClang
         internal static extern uint clang_visitChildren(CXCursor parent, CXCursorVisitor visitor, CXClientData clientData);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern SourceLocation clang_getCursorLocation(CXCursor cursor);
+        internal static extern CXSourceLocation clang_getCursorLocation(CXCursor cursor);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
         internal static extern CXCursor clang_getCursorReferenced(CXCursor c);
@@ -499,7 +499,7 @@ namespace LibClang
         internal static extern CXCursor clang_getCanonicalCursor(CXCursor c);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern CXCursor clang_getCursor(CXTranslationUnit tu, SourceLocation loc);
+        internal static extern CXCursor clang_getCursor(CXTranslationUnit tu, CXSourceLocation loc);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
         internal static extern uint clang_equalCursors(CXCursor c1, CXCursor c2);
@@ -632,7 +632,7 @@ namespace LibClang
         internal static extern CXString clang_getTokenSpelling(CXTranslationUnit tu, CXToken tok);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern SourceLocation clang_getTokenLocation(CXTranslationUnit tu, CXToken tok);
+        internal static extern CXSourceLocation clang_getTokenLocation(CXTranslationUnit tu, CXToken tok);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
         internal static extern CXSourceRange clang_getTokenExtent(CXTranslationUnit tu, CXToken tok);
@@ -676,12 +676,12 @@ namespace LibClang
         {
             internal IntPtr file;
             internal IntPtr module; 
-            internal SourceLocation location;
+            internal CXSourceLocation location;
             internal int isImplicit;
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-        internal struct IndexerAttributeInfo
+        internal struct CXIdxAttrInfo
         {
             internal Indexer.AttributeKind kind;
             internal CXCursor cursor;
@@ -689,7 +689,7 @@ namespace LibClang
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-        internal unsafe struct EntityInfo
+        internal unsafe struct CXIdxEntityInfo
         {
             internal Indexer.EntityKind kind;
             internal Indexer.EntityCXXTemplateKind templateKind;
@@ -697,12 +697,12 @@ namespace LibClang
             internal sbyte* name;
             internal sbyte* USR;
             internal CXCursor cursor;
-            internal IndexerAttributeInfo** attributes;
+            internal CXIdxAttrInfo** attributes;
             internal int numAttributes;
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal unsafe struct IndexerContainerInfo
+        internal unsafe struct CXIdxContainerInfo
         {
             internal CXCursor cursor;
         }
@@ -710,17 +710,17 @@ namespace LibClang
         [StructLayout(LayoutKind.Sequential)]
         internal unsafe struct CXIdxDeclInfo
         {
-            internal EntityInfo* entityInfo;
+            internal CXIdxEntityInfo* entityInfo;
             internal CXCursor cursor;
             internal CXIdxLoc location;
-            internal IndexerContainerInfo* semanticContainer;
-            internal IndexerContainerInfo* lexicalContainer;
+            internal CXIdxContainerInfo* semanticContainer;
+            internal CXIdxContainerInfo* lexicalContainer;
             internal int isRedeclaration;
             internal int isDefinition;
             internal int isContainer;
-            internal IndexerContainerInfo* declAsContainer;
+            internal CXIdxContainerInfo* declAsContainer;
             internal int isImplicit;
-            internal IndexerAttributeInfo** attributes;
+            internal CXIdxAttrInfo** attributes;
             internal int numAttributes;
             internal int flags;
         }
@@ -731,9 +731,9 @@ namespace LibClang
             internal Indexer.EntityReferenceKind kind;
             internal CXCursor cursor;
             internal CXIdxLoc location;
-            internal EntityInfo* referencedEntity;
-            internal EntityInfo* parentEntity;
-            internal IndexerContainerInfo* container;
+            internal CXIdxEntityInfo* referencedEntity;
+            internal CXIdxEntityInfo* parentEntity;
+            internal CXIdxContainerInfo* container;
         }
                 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -817,14 +817,14 @@ namespace LibClang
                                 UnsavedFile[] unsavedFiles, uint numUnsavedFiles, out TranslationUnit translationUnit, uint tuOptions);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        internal static extern SourceLocation clang_indexLoc_getCXSourceLocation(CXIdxLoc idxLoc);
+        internal static extern CXSourceLocation clang_indexLoc_getCXSourceLocation(CXIdxLoc idxLoc);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         internal static extern int clang_indexTranslationUnit(CXIndexAction session, CXClientData clientData,
                                 IndexerCallbacks[] cbs, uint cbsSize, uint indexOptions, CXTranslationUnit translationUnit);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal unsafe delegate void CXInclusionVisitor(CXFile fileHandle, SourceLocation* inclusion_stack, uint include_len, CXClientData clientData);
+        internal unsafe delegate void CXInclusionVisitor(CXFile fileHandle, CXSourceLocation* inclusion_stack, uint include_len, CXClientData clientData);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
         internal static extern void clang_getInclusions(CXTranslationUnit tu, CXInclusionVisitor visitor, CXClientData clientData);
@@ -884,7 +884,7 @@ namespace LibClang
         internal static extern Diagnostic.Severity clang_getDiagnosticSeverity(CXDiagnostic diagnostic);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern SourceLocation clang_getDiagnosticLocation(CXDiagnostic diagnostic);
+        internal static extern CXSourceLocation clang_getDiagnosticLocation(CXDiagnostic diagnostic);
 
         [DllImport("libclang", CallingConvention = CallingConvention.Cdecl)]
         internal static extern CXString clang_getDiagnosticSpelling(CXDiagnostic diagnostic);

@@ -17,7 +17,7 @@ namespace JadeCore.Project
         private Collections.Observable.List<IFileItem> _allSourceFiles;
         private CppCodeBrowser.ProjectIndexBuilder _indexBuilder;
 
-        private Symbols.ITable _symbolTable;
+        private Symbols.ProjectTable _symbolTable;
 
         #endregion
 
@@ -32,7 +32,7 @@ namespace JadeCore.Project
             _allSourceFiles = new Collections.Observable.List<IFileItem>();
             _indexBuilder = new CppCodeBrowser.ProjectIndexBuilder(JadeCore.Services.Provider.GuiScheduler, JadeCore.Services.Provider.EditorController);
 
-            _symbolTable = new Symbols.Table(this);
+            _symbolTable = new Symbols.ProjectTable(this);
         }
 
         #endregion

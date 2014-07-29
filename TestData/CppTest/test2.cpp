@@ -6,7 +6,7 @@ struct StructA {};
 
 struct StructB
 {
-	Test::AStruct a;
+	TestNS::AStruct a;
 	StructA AAA;
 };
 

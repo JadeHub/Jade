@@ -27,17 +27,36 @@ namespace LibClang.Indexer
         {
             _handle = handle;
             _itemFactory = itemFactory;
-            if (_handle.referencedEntity != (Library.EntityInfo*)IntPtr.Zero)
+            if (_handle.referencedEntity != (Library.CXIdxEntityInfo*)IntPtr.Zero)
                 _refedEntity = new EntityInfo(*_handle.referencedEntity, _itemFactory);
-            if (_handle.parentEntity != (Library.EntityInfo*)IntPtr.Zero)
+            if (_handle.parentEntity != (Library.CXIdxEntityInfo*)IntPtr.Zero)
                 _parentEntity = new EntityInfo(*_handle.parentEntity, _itemFactory);
-            if(_handle.container != (Library.IndexerContainerInfo*)IntPtr.Zero)
+            if(_handle.container != (Library.CXIdxContainerInfo*)IntPtr.Zero)
                 _container = _itemFactory.CreateCursor(_handle.container->cursor);
         }
 
         #endregion
 
         #region Properties
+
+        public string FileName
+        {
+            get
+            {
+                if (_location == null)
+                {
+                    Library.CXSourceLocation loc = Library.clang_indexLoc_getCXSourceLocation(_handle.location);
+                    IntPtr file = IntPtr.Zero;
+                    uint line, column, offset;
+                    unsafe
+                    {
+                        Library.clang_getInstantiationLocation(loc, &file, out line, out column, out offset);
+                    }
+                    return Library.clang_getFileName(file).ManagedString;
+                }
+                return _location.File.Name;
+            }
+        }
 
         /// <summary>
         /// Returns the reference kind (Direct|Implicit).

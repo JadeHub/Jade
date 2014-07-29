@@ -8,6 +8,7 @@ namespace LibClang.Indexer
 {
     //Various Libclang enums.
 
+
     public enum EntityKind
     {
         Unexposed = 0,
@@ -42,17 +43,6 @@ namespace LibClang.Indexer
         CXXTypeAlias = 25,
         CXXInterface = 26
     }
-
-    
-
-/// Extra C++ template information for an entity. This can apply to:
-/// CXIdxEntity_Function
-/// CXIdxEntity_CXXClass
-/// CXIdxEntity_CXXStaticMethod
-/// CXIdxEntity_CXXInstanceMethod
-/// CXIdxEntity_CXXConstructor
-/// CXIdxEntity_CXXConversionFunction
-/// CXIdxEntity_CXXTypeAlias
 
     /// <summary>
     /// Extra C++ template information for an entity. This can apply to:

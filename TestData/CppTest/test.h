@@ -6,7 +6,7 @@
 
 extern void GlobalFn();
 
-namespace Test {
+namespace TestNS {
 	
 struct AStruct;
 

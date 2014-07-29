@@ -200,7 +200,7 @@ namespace LibClang
             {
                 if (_location == null)
                 {
-                    Library.SourceLocation loc = Library.clang_getDiagnosticLocation(Handle);
+                    Library.CXSourceLocation loc = Library.clang_getDiagnosticLocation(Handle);
                     if(loc.IsNull == false)
                         _location = _itemFactory.CreateSourceLocation(loc);
                 }

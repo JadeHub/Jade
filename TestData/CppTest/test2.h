@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Test {
+namespace TestNS {
 
 struct Struct22
 {

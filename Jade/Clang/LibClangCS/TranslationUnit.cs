@@ -151,7 +151,7 @@ namespace LibClang
             {
                 return null;
             }
-            Library.SourceLocation sloc = Library.clang_getLocationForOffset(Handle, f, (uint)offset);
+            Library.CXSourceLocation sloc = Library.clang_getLocationForOffset(Handle, f, (uint)offset);
             if (sloc.IsNull)
                 return null;
 
@@ -222,7 +222,7 @@ namespace LibClang
         private unsafe void LoadHeaderFiles()
         {
             Library.CXInclusionVisitor callBack =
-                delegate(IntPtr fileHandle, Library.SourceLocation* inclusionStack, uint includeStackSize, IntPtr clientData)
+                delegate(IntPtr fileHandle, Library.CXSourceLocation* inclusionStack, uint includeStackSize, IntPtr clientData)
                 {
                     if (includeStackSize > 0)
                     {
