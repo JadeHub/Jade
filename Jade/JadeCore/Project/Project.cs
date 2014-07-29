@@ -30,7 +30,8 @@ namespace JadeCore.Project
             _items = new Dictionary<string, IItem>();
             _folders = new List<IFolder>();
             _allSourceFiles = new Collections.Observable.List<IFileItem>();
-            _indexBuilder = new CppCodeBrowser.ProjectIndexBuilder(JadeCore.Services.Provider.GuiScheduler, JadeCore.Services.Provider.EditorController);
+            _indexBuilder = new CppCodeBrowser.ProjectIndexBuilder(delegate(FilePath p) {return FindFileItem(p) != null;},
+                JadeCore.Services.Provider.GuiScheduler, JadeCore.Services.Provider.EditorController);
 
             _symbolTable = new Symbols.ProjectTable(this);
         }

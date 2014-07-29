@@ -10,6 +10,7 @@ namespace CppCodeBrowser
     public interface ISourceFile : IProjectFile
     {
         LibClang.TranslationUnit TranslationUnit { get; }
+
         IEnumerable<IHeaderFile> Headers { get; }
 
         LibClang.Cursor GetCursorAt(FilePath path, int offset);
@@ -83,5 +84,7 @@ namespace CppCodeBrowser
         {
             _headerFiles.Add(headerFile);
         }
+
+        public Symbols.IFileSymbolMap FileSymbolMap { get { return null; } }
     }
 }

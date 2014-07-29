@@ -4,11 +4,11 @@
     <ClCompile Include="..\test2.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="BLah.cc">
-      <Filter>Source\Blah</Filter>
-    </ClCompile>
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\test.cpp" />
+    <ClCompile Include="..\blah.cc">
+      <Filter>Source\Blah</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\template.h">
@@ -19,6 +19,9 @@
     </ClInclude>
     <ClInclude Include="..\test2.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\blah.h">
+      <Filter>Source\Blah</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

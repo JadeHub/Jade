@@ -52,14 +52,15 @@ namespace JadeCore.Symbols
 
         private void Index_ItemUpdated(FilePath path)
         {
-            if (_project.FindFileItem(path) == null) return;
+        
+            /*if (_project.FindFileItem(path) == null) return;
 
             CppCodeBrowser.IProjectFile fileIndex = _project.Index.FindProjectItem(path);
 
             if (fileIndex != null && fileIndex is CppCodeBrowser.ISourceFile)
             {
                 Update((fileIndex as CppCodeBrowser.ISourceFile).TranslationUnit);
-            }
+            }*/
         }
 
         public Project.IProject Project { get { return _project; } }

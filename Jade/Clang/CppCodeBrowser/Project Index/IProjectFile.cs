@@ -29,6 +29,6 @@ namespace CppCodeBrowser
         /// </summary>
         IEnumerable<LibClang.Diagnostic> Diagnostics { get; }
 
-    //    LibClang.Cursor GetCursorAt(FilePath path, int offset);
+        
     }
 }

@@ -16,9 +16,11 @@ namespace CppCodeBrowser
         IProjectFile FindProjectItem(FilePath path);
         ISourceFile FindSourceFile(FilePath path);
         IHeaderFile FindHeaderFile(FilePath path);
-        bool UpdateSourceFile(FilePath path, LibClang.TranslationUnit tu);
+        void UpdateSourceFile(FilePath path, LibClang.TranslationUnit tu);
         IEnumerable<ISourceFile> SourceFiles { get; }
         LibClang.Index LibClangIndex { get; }
+
+        Symbols.ISymbolTable Symbols { get; }        
     }
 
     public class ProjectIndex : IProjectIndex
@@ -28,13 +30,19 @@ namespace CppCodeBrowser
 
         private object _lock;
         private readonly LibClang.Index _libClangIndex;
+        private Func<FilePath, bool> _fileFilter;
+
+        private Symbols.ProjectSymbolTable _symbols;
                         
-        public ProjectIndex()
+        public ProjectIndex(Func<FilePath, bool> fileFilter)
         {
             _lock = new object();
+            _fileFilter = fileFilter;
             _libClangIndex = new LibClang.Index(false, true);
             _headers = new Dictionary<FilePath, IHeaderFile>();
-            _sources = new Dictionary<FilePath, ISourceFile>();            
+            _sources = new Dictionary<FilePath, ISourceFile>();
+
+            _symbols = new Symbols.ProjectSymbolTable();
         }
 
         public event ProjectItemEvent ItemUpdated;
@@ -44,6 +52,11 @@ namespace CppCodeBrowser
             ProjectItemEvent handler = ItemUpdated;
             if (handler != null)
                 handler(path);
+        }
+
+        public bool IsProjectFile(FilePath path)
+        {
+            return _sources.ContainsKey(path) || _headers.ContainsKey(path);
         }
 
         public ISourceFile FindSourceFile(FilePath path)
@@ -79,18 +92,26 @@ namespace CppCodeBrowser
             return null;
         }
 
-        public bool UpdateSourceFile(FilePath path, LibClang.TranslationUnit tu)
+        public void UpdateSourceFile(FilePath path, LibClang.TranslationUnit tu)
         {
+            TranslationUnit tuToDispose = null;
             lock (_lock)
             {
                 if (_sources.ContainsKey(path))
                 {
+                    tuToDispose = _sources[path].TranslationUnit;
                     RemoveSourceFile(path);
                 }
-                AddSourceFile(path, tu);
-                
+                AddSourceFile(path, tu);               
             }
-            return true;
+            RaiseItemUpdatedEvent(path);
+            if(tuToDispose != null)
+                tuToDispose.Dispose();
+            /*
+            if(path.FileName == "blah.cc")
+                IndexTranslationUnit(tu);
+            */
+            return;
         }
 
         private void RemoveSourceFile(FilePath path)
@@ -111,8 +132,7 @@ namespace CppCodeBrowser
             {
                 _headers.Remove(p);
             }
-            _sources.Remove(path);
-            sf.TranslationUnit.Dispose();
+            _sources.Remove(path);            
         }
 
         private void AddSourceFile(FilePath path, TranslationUnit tu)
@@ -145,6 +165,8 @@ namespace CppCodeBrowser
 
         public LibClang.Index LibClangIndex { get { return _libClangIndex; } }
 
+        public Symbols.ISymbolTable Symbols { get { return _symbols; } }
+
         public IEnumerable<ISourceFile> SourceFiles 
         {
             get { return _sources.Values; }
@@ -167,6 +189,72 @@ namespace CppCodeBrowser
                 if (cursor != null && set.Add(cursor))
                     yield return cursor;
             }
+        }*/
+
+        /*
+        private bool IsIndexCursorKind(CursorKind k)
+        {
+            return k == LibClang.CursorKind.ClassDecl ||
+                    k == LibClang.CursorKind.StructDecl ||
+                    k == LibClang.CursorKind.CXXMethod ||
+                    k == LibClang.CursorKind.Constructor ||
+                    k == LibClang.CursorKind.Destructor ||
+                    k == LibClang.CursorKind.FieldDecl ||
+                    k == LibClang.CursorKind.ClassTemplate ||
+                    k == LibClang.CursorKind.Namespace ||
+                    k == LibClang.CursorKind.FunctionDecl ||
+                    k == LibClang.CursorKind.VarDecl;
+        }
+
+        private void IndexTranslationUnit(TranslationUnit tu)
+        {
+            foreach(Cursor c in tu.Cursor.Children)
+            {
+                IndexCursor(tu, c);
+            }
+        }
+
+        private void IndexDefinitionCursor(Cursor c)
+        {
+            if(c.Kind == CursorKind.ClassDecl)
+            {
+               // Symbols.ISymbol symbol = new Symbols.ClassDecl(c);
+            }
+        }
+
+        private void IndexReferenceCursor(Cursor c)
+        {
+            
+        }
+
+        private void IndexCursor(TranslationUnit tu, Cursor c)
+        {
+            if (IsIndexCursorKind(c.Kind) == false) return;
+            if (c.Location == null || c.Location.File == null) return;
+                        
+            FilePath path = FilePath.Make(c.Location.File.Name);
+            if (_fileFilter(path) == false) return;
+
+            if(c.Kind == CursorKind.CXXMethod)
+            {
+                int i = 0;
+            }
+
+            if (c.IsDefinition)
+            {
+                IndexDefinitionCursor(c);
+            }
+            else if (c.IsReference)
+            {
+                IndexReferenceCursor(c);
+            }
+
+            foreach(Cursor child in c.Children)
+            {
+                IndexCursor(tu, child);
+            }
+
+            return;
         }*/
     }
 }

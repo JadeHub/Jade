@@ -27,12 +27,14 @@ namespace CppCodeBrowser
         private TaskScheduler _callbackScheduler;
         private IUnsavedFileProvider _unsavedFilesProvider;
         private object _lock = new object();
-
-        public ProjectIndexBuilder(TaskScheduler callbackSCheduler, IUnsavedFileProvider unsavedFiles)
+        private Func<FilePath, bool> _fileFilter;
+        
+        public ProjectIndexBuilder(Func<FilePath, bool> fileFilter, TaskScheduler callbackSCheduler, IUnsavedFileProvider unsavedFiles)
         {
             _callbackScheduler = callbackSCheduler;
             _unsavedFilesProvider = unsavedFiles;
-            _index = new ProjectIndex();
+            _fileFilter = fileFilter;
+            _index = new ProjectIndex(fileFilter);
             _allTus = new HashSet<TranslationUnit>();
         }
 
@@ -67,15 +69,13 @@ namespace CppCodeBrowser
                     return false;
                 }
                   
-                //_allTus.Add(tu);
+                //Perform on gui thread
                 Task.Factory.StartNew(() => 
                     {
                         lock (_lock)
                         {
-                            if (_index.UpdateSourceFile(path, tu))
-                            {
-                                _index.RaiseItemUpdatedEvent(path);
-                            }
+                            _index.UpdateSourceFile(path, tu);
+                            IndexTranslationUnit(tu);
                         }
                     }, CancellationToken.None, TaskCreationOptions.None, _callbackScheduler);
                 
@@ -89,6 +89,59 @@ namespace CppCodeBrowser
             {
                 if (_disposed) return null;
                 return _index; 
+            }
+        }
+
+        private void IndexTranslationUnit(TranslationUnit tu)
+        {
+            foreach(Cursor c in tu.Cursor.Children)
+                IndexCursor(c);
+        }
+        
+        private bool IsIndexCursorKind(CursorKind k)
+        {
+            return  k == LibClang.CursorKind.ClassDecl ||
+                    k == LibClang.CursorKind.StructDecl ||
+                    k == LibClang.CursorKind.CXXMethod ||
+                    k == LibClang.CursorKind.Constructor ||
+                    k == LibClang.CursorKind.Destructor ||
+                    k == LibClang.CursorKind.FieldDecl ||
+                    k == LibClang.CursorKind.ClassTemplate ||
+                    k == LibClang.CursorKind.Namespace ||
+                    k == LibClang.CursorKind.FunctionDecl ||
+                    k == LibClang.CursorKind.VarDecl;
+        }
+
+        private void IndexDefinitionCursor(Cursor c)
+        {
+            _index.Symbols.UpdateDefinition(c);
+        }
+
+        private void IndexReferenceCursor(Cursor c)
+        {
+
+        }
+
+        private void IndexCursor(Cursor c)
+        {
+            if (IsIndexCursorKind(c.Kind) == false) return;
+            if (c.Location == null || c.Location.File == null) return;
+
+            FilePath path = FilePath.Make(c.Location.File.Name);
+            if (_fileFilter(path) == false) return;
+            
+            if (c.IsDefinition)
+            {
+                IndexDefinitionCursor(c);
+            }
+            else if (c.IsReference)
+            {
+                IndexReferenceCursor(c);
+            }
+
+            foreach (Cursor child in c.Children)
+            {
+                IndexCursor(child);
             }
         }
     }
