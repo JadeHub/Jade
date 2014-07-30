@@ -10,9 +10,14 @@ struct StructB
 	StructA AAA;
 };
 
+namespace TestNS2
+{
+
+	class Josh {};
+
 void fn()
 {
 }
 
-
+}
 

@@ -109,7 +109,8 @@ namespace CppCodeBrowser
                     k == LibClang.CursorKind.ClassTemplate ||
                     k == LibClang.CursorKind.Namespace ||
                     k == LibClang.CursorKind.FunctionDecl ||
-                    k == LibClang.CursorKind.VarDecl;
+                    k == LibClang.CursorKind.VarDecl ||
+                    ((int)k >= (int)LibClang.CursorKind.FirstRef && (int)k <= (int)LibClang.CursorKind.LastRef);
         }
 
         private void IndexDefinitionCursor(Cursor c)
@@ -134,10 +135,13 @@ namespace CppCodeBrowser
             {
                 IndexDefinitionCursor(c);
             }
-            else if (c.IsReference)
+            else if (c.CursorReferenced != null)
             {
                 IndexReferenceCursor(c);
             }
+
+            if(c.Location.Offset == 483)
+            System.Diagnostics.Debug.WriteLine("Indexing Cursor " + c.Spelling + c.ToString());
 
             foreach (Cursor child in c.Children)
             {

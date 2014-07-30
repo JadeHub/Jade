@@ -54,6 +54,12 @@
                         </StackPanel>
                     </HierarchicalDataTemplate>
                     
+                    <HierarchicalDataTemplate DataType="{x:Type local:DeclarationViewModel}" ItemsSource="{Binding Children}">
+                        <StackPanel Orientation="Horizontal" >                            
+                            <TextBlock Margin="5,0,0,0"  Text="{Binding Name}" />
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                    
                 </ResourceDictionary>
             </TreeView.Resources>
         </TreeView>

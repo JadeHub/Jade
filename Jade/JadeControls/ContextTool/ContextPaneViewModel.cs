@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using JadeUtils.IO;
+using CppCodeBrowser.Symbols;
 
 namespace JadeControls.ContextTool
 {
@@ -13,15 +14,11 @@ namespace JadeControls.ContextTool
         private JadeCore.IEditorController _editorController;
         private CppCodeBrowser.IProjectIndex _currentIndex;
 
-        private JadeCore.CppSymbols2.ISymbolTable _st = new JadeCore.CppSymbols2.TranslationUnitTable();
-        
         public ContextPaneViewModel(JadeCore.IEditorController editCtrl)
         {
             Title = "Context Tool";
             ContentId = "ContextToolPane";
-
             _editorController = editCtrl;
-
             _editorController.ActiveDocumentChanged += EditorControllerActiveDocumentChanged;
         }
 
@@ -54,35 +51,95 @@ namespace JadeControls.ContextTool
 
             if(_editorController.ActiveDocument.File.Path == path)
             {
-                
-
                 UpdateTree(_editorController.ActiveDocument.File.Path);
-                SelectPath("main.cpp/Test/Overloads/Func");
             }
         }
 
+        private ObservableCollection<DeclarationViewModel> _root = new ObservableCollection<DeclarationViewModel>();
+
+        private DeclarationViewModel FindRootLevelNamespace(string usr)
+        {
+            foreach(DeclarationViewModel d in _root)
+            {
+                if (d.Usr == usr)
+                    return d;
+            }
+            return null;
+        }
+
+        private DeclarationViewModel FindOrAddNamespaceNode(NamespaceDecl ns)
+        {
+            List<NamespaceDecl> parents = new List<NamespaceDecl>();
+            NamespaceDecl temp = ns.ParentNamespace;
+            while (temp != null)
+            {
+                parents.Insert(0, temp);
+                temp = temp.ParentNamespace;
+            }
+
+            DeclarationViewModel parentNode = null;
+
+            if (parents.Count > 0)
+            {
+                foreach (NamespaceDecl parent in parents)
+                {
+                    if (parentNode == null)
+                    {
+                        parentNode = FindRootLevelNamespace(parent.Usr);
+                    }
+                    else
+                    {
+                        parentNode = parentNode.FindOrAddChildDecl(parent);
+                        if (parentNode == null)
+                            return null;
+                    }
+                }
+                return parentNode.FindOrAddChildDecl(ns);
+            }
+            DeclarationViewModel result = FindRootLevelNamespace(ns.Usr);
+            if(result == null)
+            {
+                result = new DeclarationViewModel(parentNode, ns);
+                _root.Add(result);
+            }
+            return result;
+        }
+
+        private DeclarationViewModel FindOrAddClassNode(ClassDecl c)
+        {
+            DeclarationViewModel classNode = null;
+            if (c.Parent != null && c.Parent is NamespaceDecl)
+            {
+                var namespaceNode = FindOrAddNamespaceNode(c.Parent as NamespaceDecl);
+                classNode = namespaceNode.FindOrAddChildDecl(c);                
+            }
+            return classNode;
+        }
+                
         private void UpdateTree(FilePath path)
         {
-            string selectedPath = "";
-            CppCodeBrowser.ISourceFile sf = _currentIndex.FindSourceFile(path);
-            if(CurrentFile != null)
-            {
-                ITreeItem selected = CurrentFile.FindSelected();
-                if (selected != null)
-                    selectedPath = selected.TreeItemPath;
-            }
-            _st.Update(sf.TranslationUnit);
-            CurrentFile = new FileViewModel(path, sf.TranslationUnit);
+            ISymbolTable symbols = _currentIndex.Symbols;
 
-            if(selectedPath.Length > 0)
+            foreach(NamespaceDecl ns in symbols.Namespaces)
             {
-                SelectPath(selectedPath);
+                FindOrAddNamespaceNode(ns);
+            }
+
+            foreach(ClassDecl c in symbols.Classes)
+            {
+                FindOrAddClassNode(c);
+            }
+
+            foreach(MethodDecl m in symbols.Methods)
+            {
+                DeclarationViewModel parentClass = FindOrAddClassNode(m.Class);
+                parentClass.FindOrAddChildDecl(m);
             }
 
             OnPropertyChanged("RootItems");
         }
 
-        public ObservableCollection<ITreeItem> RootItems { get { return CurrentFile == null ? null : CurrentFile.Children; } }
+        public ObservableCollection<DeclarationViewModel> RootItems { get { return _root; } }
 
         public FileViewModel CurrentFile { get; private set; }
 

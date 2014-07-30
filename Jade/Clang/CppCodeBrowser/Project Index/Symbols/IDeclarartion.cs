@@ -17,6 +17,7 @@ namespace CppCodeBrowser.Symbols
         Enum,
         EnumConstant,
         Method,
+        Field,
         Constructor,
         Destructor,
         Typedef

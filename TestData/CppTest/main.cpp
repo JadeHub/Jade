@@ -11,7 +11,7 @@ namespace {
 	void AnonNamespaceFunc();
 }
 
-namespace Blah { namespace ModuleA { class ModuleB{ }; } }
+namespace Blah { namespace ModuleA { namespace ModuleB { class ClassInAB{ }; } } }
 
 namespace TestNS
 {
