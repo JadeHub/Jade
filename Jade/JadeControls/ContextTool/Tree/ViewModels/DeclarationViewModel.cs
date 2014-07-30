@@ -19,6 +19,7 @@ namespace JadeControls.ContextTool
         }
 
         public string Usr { get { return _decl.Usr; } }
+        public string KindString { get { return _decl.Kind.ToString(); } }
 
         public DeclarationViewModel FindOrAddChildDecl(IDeclaration child)
         {
@@ -31,6 +32,22 @@ namespace JadeControls.ContextTool
             var r = new DeclarationViewModel(this, child);
             Children.Add(r);
             return r;
+        }
+
+        public DeclarationViewModel Find(string usr)
+        {
+            if (usr == this.Usr)
+                return this;
+            foreach(var child in Children)
+            {
+                if(child is DeclarationViewModel)
+                {
+                    DeclarationViewModel result = (child as DeclarationViewModel).Find(usr);
+                    if (result != null)
+                        return result;
+                }
+            }
+            return null;
         }
     }
 }

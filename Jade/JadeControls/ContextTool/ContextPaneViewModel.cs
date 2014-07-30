@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace JadeControls.ContextTool
     {
         private JadeCore.IEditorController _editorController;
         private CppCodeBrowser.IProjectIndex _currentIndex;
+        private ObservableCollection<DeclarationViewModel> _root;
 
         public ContextPaneViewModel(JadeCore.IEditorController editCtrl)
         {
@@ -20,6 +22,7 @@ namespace JadeControls.ContextTool
             ContentId = "ContextToolPane";
             _editorController = editCtrl;
             _editorController.ActiveDocumentChanged += EditorControllerActiveDocumentChanged;
+            _root = new ObservableCollection<DeclarationViewModel>();
         }
 
         private void EditorControllerActiveDocumentChanged(JadeCore.IEditorDoc newValue, JadeCore.IEditorDoc oldValue)
@@ -49,13 +52,11 @@ namespace JadeControls.ContextTool
         {
             if (_editorController.ActiveDocument == null) return;
 
-            if(_editorController.ActiveDocument.File.Path == path)
+          //  if(_editorController.ActiveDocument.File.Path == path)
             {
-                UpdateTree(_editorController.ActiveDocument.File.Path);
+                UpdateTree();
             }
         }
-
-        private ObservableCollection<DeclarationViewModel> _root = new ObservableCollection<DeclarationViewModel>();
 
         private DeclarationViewModel FindRootLevelNamespace(string usr)
         {
@@ -105,18 +106,36 @@ namespace JadeControls.ContextTool
             return result;
         }
 
+        private DeclarationViewModel FindOrAddParentNode(IDeclaration decl)
+        {
+            if(decl is NamespaceDecl)
+                return FindOrAddNamespaceNode(decl as NamespaceDecl);
+            if(decl is ClassDecl)
+                return FindOrAddClassNode(decl as ClassDecl);
+            return null;
+        }
+
         private DeclarationViewModel FindOrAddClassNode(ClassDecl c)
         {
-            DeclarationViewModel classNode = null;
-            if (c.Parent != null && c.Parent is NamespaceDecl)
-            {
-                var namespaceNode = FindOrAddNamespaceNode(c.Parent as NamespaceDecl);
-                classNode = namespaceNode.FindOrAddChildDecl(c);                
-            }
-            return classNode;
+            Debug.Assert(c.Parent != null);
+            var parentnode = FindOrAddParentNode(c.Parent);
+            return parentnode.FindOrAddChildDecl(c);
+        }
+
+        private DeclarationViewModel FindOrAddEnumNode(EnumDecl e)
+        {
+            Debug.Assert(e.Parent != null);
+            var parentnode = FindOrAddParentNode(e.Parent);
+            return parentnode.FindOrAddChildDecl(e);
+        }
+
+        private DeclarationViewModel FindOrAddEnumConstantNode(EnumConstantDecl c)
+        {
+            DeclarationViewModel enumNode = FindOrAddEnumNode(c.Parent);
+            return enumNode.FindOrAddChildDecl(c);
         }
                 
-        private void UpdateTree(FilePath path)
+        private void UpdateTree()
         {
             ISymbolTable symbols = _currentIndex.Symbols;
 
@@ -135,6 +154,36 @@ namespace JadeControls.ContextTool
                 DeclarationViewModel parentClass = FindOrAddClassNode(m.Class);
                 parentClass.FindOrAddChildDecl(m);
             }
+
+            foreach(ConstructorDecl c in symbols.Constructors)
+            {
+                if (c.Class != null)
+                {
+                    DeclarationViewModel parentClass = FindOrAddClassNode(c.Class);
+                    parentClass.FindOrAddChildDecl(c);
+                }
+            }
+
+            foreach (DestructorDecl d in symbols.Destructors)
+            {
+                if (d.Class != null)
+                {
+                    DeclarationViewModel parentClass = FindOrAddClassNode(d.Class);
+                    parentClass.FindOrAddChildDecl(d);
+                }
+            }
+
+            foreach(EnumDecl e in symbols.Enums)
+            {
+                FindOrAddEnumNode(e);
+            }
+
+            foreach (EnumConstantDecl c in symbols.EnumConstants)
+            {
+                FindOrAddEnumConstantNode(c);
+            }
+
+
 
             OnPropertyChanged("RootItems");
         }

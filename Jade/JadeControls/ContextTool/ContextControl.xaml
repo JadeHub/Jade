@@ -55,7 +55,8 @@
                     </HierarchicalDataTemplate>
                     
                     <HierarchicalDataTemplate DataType="{x:Type local:DeclarationViewModel}" ItemsSource="{Binding Children}">
-                        <StackPanel Orientation="Horizontal" >                            
+                        <StackPanel Orientation="Horizontal" >
+                            <TextBlock Text="{Binding KindString}" Foreground="Blue" />
                             <TextBlock Margin="5,0,0,0"  Text="{Binding Name}" />
                         </StackPanel>
                     </HierarchicalDataTemplate>

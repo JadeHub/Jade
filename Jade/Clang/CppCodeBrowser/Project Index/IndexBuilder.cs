@@ -110,11 +110,15 @@ namespace CppCodeBrowser
                     k == LibClang.CursorKind.Namespace ||
                     k == LibClang.CursorKind.FunctionDecl ||
                     k == LibClang.CursorKind.VarDecl ||
+                    k == LibClang.CursorKind.EnumDecl ||
+                    k == LibClang.CursorKind.EnumConstantDecl ||
                     ((int)k >= (int)LibClang.CursorKind.FirstRef && (int)k <= (int)LibClang.CursorKind.LastRef);
         }
 
         private void IndexDefinitionCursor(Cursor c)
         {
+            if (c.Kind == CursorKind.EnumConstantDecl)
+                System.Diagnostics.Debug.WriteLine("Indexing Cursor " + c.Spelling + c.ToString());
             _index.Symbols.UpdateDefinition(c);
         }
 
@@ -138,10 +142,7 @@ namespace CppCodeBrowser
             else if (c.CursorReferenced != null)
             {
                 IndexReferenceCursor(c);
-            }
-
-            if(c.Location.Offset == 483)
-            System.Diagnostics.Debug.WriteLine("Indexing Cursor " + c.Spelling + c.ToString());
+            }            
 
             foreach (Cursor child in c.Children)
             {

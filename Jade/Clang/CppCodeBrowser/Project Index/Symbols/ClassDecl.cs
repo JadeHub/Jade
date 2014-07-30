@@ -14,6 +14,7 @@ namespace CppCodeBrowser.Symbols
         public ClassDecl(Cursor c, ISymbolTable table)
             : base(c, table)
         {
+            Debug.Assert(c.Kind == CursorKind.ClassDecl);
             if(c.SemanticParentCurosr.Kind == CursorKind.Namespace)
             {
                 _parent = table.FindNamespace(c.SemanticParentCurosr.Usr);

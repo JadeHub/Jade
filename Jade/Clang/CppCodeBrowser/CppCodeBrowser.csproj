@@ -62,6 +62,7 @@
     <Compile Include="Project Index\Symbols\ClassDecl.cs" />
     <Compile Include="Project Index\Symbols\ConstructorDecl.cs" />
     <Compile Include="Project Index\Symbols\DestructorDecl.cs" />
+    <Compile Include="Project Index\Symbols\EnumConstantDecl.cs" />
     <Compile Include="Project Index\Symbols\EnumDecl.cs" />
     <Compile Include="Project Index\Symbols\FieldDecl.cs" />
     <Compile Include="Project Index\Symbols\FileSymbolMap.cs" />

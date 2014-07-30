@@ -82,6 +82,7 @@ namespace CppCodeBrowser.Symbols
         ISymbolSet<ClassDecl> Classes { get; }
         ISymbolSet<MethodDecl> Methods { get; }
         ISymbolSet<EnumDecl> Enums { get; }
+        ISymbolSet<EnumConstantDecl> EnumConstants { get; }
         ISymbolSet<ConstructorDecl> Constructors { get; }
         ISymbolSet<DestructorDecl> Destructors { get; }
         ISymbolSet<FieldDecl> Fields { get; }
@@ -92,7 +93,7 @@ namespace CppCodeBrowser.Symbols
         NamespaceDecl FindNamespace(string usr);
         ClassDecl FindClass(string usr);
         MethodDecl FindMethod(string usr);
-
+        EnumDecl FindEnum(string usr);
 
         void UpdateDefinition(Cursor c);
     }
@@ -103,6 +104,7 @@ namespace CppCodeBrowser.Symbols
         private SymbolSet<ClassDecl> _classes;
         private SymbolSet<MethodDecl> _methods;
         private SymbolSet<EnumDecl> _enums;
+        private SymbolSet<EnumConstantDecl> _enumConstants;
         private SymbolSet<ConstructorDecl> _constructors;
         private SymbolSet<DestructorDecl> _destructors;
         private SymbolSet<FieldDecl> _fields;
@@ -116,6 +118,7 @@ namespace CppCodeBrowser.Symbols
             _classes = new SymbolSet<ClassDecl>(delegate(Cursor c) { return new ClassDecl(c, this); });
             _methods = new SymbolSet<MethodDecl>(delegate(Cursor c) { return new MethodDecl(c, this); });
             _enums = new SymbolSet<EnumDecl>(delegate(Cursor c) { return new EnumDecl(c, this); });
+            _enumConstants = new SymbolSet<EnumConstantDecl>(delegate(Cursor c) { return new EnumConstantDecl(c, this); });
             _constructors = new SymbolSet<ConstructorDecl>(delegate(Cursor c) { return new ConstructorDecl(c, this); });
             _destructors = new SymbolSet<DestructorDecl>(delegate(Cursor c) { return new DestructorDecl(c, this); });
             _fields = new SymbolSet<FieldDecl>(delegate(Cursor c) { return new FieldDecl(c, this); });
@@ -127,13 +130,14 @@ namespace CppCodeBrowser.Symbols
         public ISymbolSet<ClassDecl> Classes { get { return _classes; } }
         public ISymbolSet<NamespaceDecl> Namespaces { get { return _namespaces; } }
         public ISymbolSet<MethodDecl> Methods { get { return _methods; } }
-        public ISymbolSet<EnumDecl> Enums { get { return null; } }
-        public ISymbolSet<ConstructorDecl> Constructors { get { return null; } }
-        public ISymbolSet<DestructorDecl> Destructors { get { return null; } }
-        public ISymbolSet<FieldDecl> Fields { get { return null; } }
-        public ISymbolSet<FunctionDecl> Functions { get { return null; } }
-        public ISymbolSet<TypedefDecl> Typedefs { get { return null; } }
-        public ISymbolSet<VariableDecl> Variables { get { return null; } }
+        public ISymbolSet<EnumDecl> Enums { get { return _enums; } }
+        public ISymbolSet<EnumConstantDecl> EnumConstants { get { return _enumConstants; } }
+        public ISymbolSet<ConstructorDecl> Constructors { get { return _constructors; } }
+        public ISymbolSet<DestructorDecl> Destructors { get { return _destructors; } }
+        public ISymbolSet<FieldDecl> Fields { get { return _fields; } }
+        public ISymbolSet<FunctionDecl> Functions { get { return _functions; } }
+        public ISymbolSet<TypedefDecl> Typedefs { get { return _typedefs; } }
+        public ISymbolSet<VariableDecl> Variables { get { return _variables; } }
 
         public NamespaceDecl FindNamespace(string usr)
         {
@@ -150,6 +154,11 @@ namespace CppCodeBrowser.Symbols
             return _methods.Find(usr);
         }
 
+        public EnumDecl FindEnum(string usr)
+        {
+            return _enums.Find(usr);
+        }
+
         public void UpdateDefinition(Cursor c)
         {
             if (c.Kind == CursorKind.Namespace)
@@ -164,9 +173,17 @@ namespace CppCodeBrowser.Symbols
             {
                 UpdateMethodDecl(c);
             }
+            else if(c.Kind == CursorKind.EnumConstantDecl)
+            {
+                UpdateEnumConstantDecl(c);
+            }
             else if(c.Kind == CursorKind.EnumDecl)
             {
                 UpdateEnumDecl(c);
+            }
+            else if (c.Kind == CursorKind.EnumConstantDecl)
+            {
+                UpdateEnumConstantDecl(c);
             }
             else if(c.Kind  == LibClang.CursorKind.Constructor)
             {
@@ -208,6 +225,11 @@ namespace CppCodeBrowser.Symbols
         private void UpdateEnumDecl(Cursor c)
         {
             _enums.FindOrAdd(c);
+        }
+
+        private void UpdateEnumConstantDecl(Cursor c)
+        {
+            _enumConstants.FindOrAdd(c);
         }
 
         private void UpdateConstrctorDecl(Cursor c)
