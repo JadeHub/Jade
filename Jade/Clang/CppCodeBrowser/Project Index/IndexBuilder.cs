@@ -1,4 +1,4 @@
-﻿    using JadeUtils.IO;
+﻿using JadeUtils.IO;
 using LibClang;
 using System;
 using System.Collections.Generic;
@@ -92,16 +92,31 @@ namespace CppCodeBrowser
             }
         }
 
-        private void IndexTranslationUnit(TranslationUnit tu)
+        static bool done = false;
+
+        private void IndexTranslationUnit(TranslationUnit tu)        
         {
-            foreach(Cursor c in tu.Cursor.Children)
+            
+            FilePath p = FilePath.Make(tu.File.Name);
+            if (p.FileName == "main.cpp" && done)
+            {
+                
+                return;
+            }
+            if(p.FileName == "main.cpp")
+               done = true;
+
+            System.Diagnostics.Debug.WriteLine("**Indexing " + p.FileName);
+
+            foreach (Cursor c in tu.Cursor.Children)
+            {
                 IndexCursor(c);
+            }
         }
         
         private bool IsIndexCursorKind(CursorKind k)
         {
-            return  k == LibClang.CursorKind.ClassDecl ||
-                    k == LibClang.CursorKind.StructDecl ||
+            return  CursorKinds.IsClassStructEtc(k) ||
                     k == LibClang.CursorKind.CXXMethod ||
                     k == LibClang.CursorKind.Constructor ||
                     k == LibClang.CursorKind.Destructor ||
@@ -112,19 +127,20 @@ namespace CppCodeBrowser
                     k == LibClang.CursorKind.VarDecl ||
                     k == LibClang.CursorKind.EnumDecl ||
                     k == LibClang.CursorKind.EnumConstantDecl ||
-                    ((int)k >= (int)LibClang.CursorKind.FirstRef && (int)k <= (int)LibClang.CursorKind.LastRef);
+                    k == CursorKind.ConversionFunction ||
+                    CursorKinds.IsReference(k);
         }
 
         private void IndexDefinitionCursor(Cursor c)
         {
-            if (c.Kind == CursorKind.EnumConstantDecl)
-                System.Diagnostics.Debug.WriteLine("Indexing Cursor " + c.Spelling + c.ToString());
+            if (c.Kind == CursorKind.CXXMethod)
+                System.Diagnostics.Debug.WriteLine("Indexing Cursor " + c.Spelling + " " + c.ToString());
             _index.Symbols.UpdateDefinition(c);
         }
 
         private void IndexReferenceCursor(Cursor c)
         {
-
+            
         }
 
         private void IndexCursor(Cursor c)
@@ -134,15 +150,20 @@ namespace CppCodeBrowser
 
             FilePath path = FilePath.Make(c.Location.File.Name);
             if (_fileFilter(path) == false) return;
-            
-            if (c.IsDefinition)
+
+            if (c.Kind == CursorKind.CXXMethod && c.Spelling == "Undefined" && c.IsDefinition == false)
+            {
+                int j = 0;
+            }
+
+            if (CursorKinds.IsDefinition(c.Kind))
             {
                 IndexDefinitionCursor(c);
             }
             else if (c.CursorReferenced != null)
             {
                 IndexReferenceCursor(c);
-            }            
+            } 
 
             foreach (Cursor child in c.Children)
             {

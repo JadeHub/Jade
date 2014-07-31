@@ -735,6 +735,8 @@ namespace LibClang
 
         public override string ToString()
         {
+            if (Location == null)
+                return Kind.ToString();
             return Kind + " at " + Location.ToString();
         }
 

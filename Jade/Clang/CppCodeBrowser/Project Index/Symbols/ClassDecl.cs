@@ -14,16 +14,33 @@ namespace CppCodeBrowser.Symbols
         public ClassDecl(Cursor c, ISymbolTable table)
             : base(c, table)
         {
-            Debug.Assert(c.Kind == CursorKind.ClassDecl);
+            Debug.Assert(CursorKinds.IsClassStructEtc(c.Kind));
             if(c.SemanticParentCurosr.Kind == CursorKind.Namespace)
             {
                 _parent = table.FindNamespace(c.SemanticParentCurosr.Usr);
                 Debug.Assert(_parent != null);
             }
+            else if(c.SemanticParentCurosr.Kind == CursorKind.TranslationUnit)
+            {
+                _parent = null;
+            }
+            else
+            {
+                int p = 0;
+            }
         }
         
         public override string Name { get { return Cursor.Spelling; } }
-        public override EntityKind Kind { get { return EntityKind.Class; } }
+        public override EntityKind Kind 
+        { 
+            get 
+            {
+                if (Cursor.Kind == CursorKind.ClassDecl)
+                    return EntityKind.Class; 
+                
+                return EntityKind.Struct; 
+            }
+        }
 
         public IDeclaration Parent { get { return _parent; } }
     }

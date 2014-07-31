@@ -15,14 +15,14 @@ namespace JadeControls.ContextTool
         private JadeCore.IEditorController _editorController;
         private CppCodeBrowser.IProjectIndex _currentIndex;
         private ObservableCollection<DeclarationViewModel> _root;
-
+        
         public ContextPaneViewModel(JadeCore.IEditorController editCtrl)
         {
             Title = "Context Tool";
             ContentId = "ContextToolPane";
             _editorController = editCtrl;
             _editorController.ActiveDocumentChanged += EditorControllerActiveDocumentChanged;
-            _root = new ObservableCollection<DeclarationViewModel>();
+            _root = new ObservableCollection<DeclarationViewModel>();            
         }
 
         private void EditorControllerActiveDocumentChanged(JadeCore.IEditorDoc newValue, JadeCore.IEditorDoc oldValue)
@@ -58,7 +58,7 @@ namespace JadeControls.ContextTool
             }
         }
 
-        private DeclarationViewModel FindRootLevelNamespace(string usr)
+        private DeclarationViewModel FindRootLevelItem(string usr)
         {
             foreach(DeclarationViewModel d in _root)
             {
@@ -86,7 +86,7 @@ namespace JadeControls.ContextTool
                 {
                     if (parentNode == null)
                     {
-                        parentNode = FindRootLevelNamespace(parent.Usr);
+                        parentNode = FindRootLevelItem(parent.Usr);
                     }
                     else
                     {
@@ -97,7 +97,7 @@ namespace JadeControls.ContextTool
                 }
                 return parentNode.FindOrAddChildDecl(ns);
             }
-            DeclarationViewModel result = FindRootLevelNamespace(ns.Usr);
+            DeclarationViewModel result = FindRootLevelItem(ns.Usr);
             if(result == null)
             {
                 result = new DeclarationViewModel(parentNode, ns);
@@ -107,7 +107,7 @@ namespace JadeControls.ContextTool
         }
 
         private DeclarationViewModel FindOrAddParentNode(IDeclaration decl)
-        {
+        {            
             if(decl is NamespaceDecl)
                 return FindOrAddNamespaceNode(decl as NamespaceDecl);
             if(decl is ClassDecl)
@@ -117,9 +117,37 @@ namespace JadeControls.ContextTool
 
         private DeclarationViewModel FindOrAddClassNode(ClassDecl c)
         {
+            if(c.Parent == null)
+            {
+                DeclarationViewModel vm = FindRootLevelItem(c.Usr);
+                if (vm != null)
+                    return vm;
+
+                vm = new DeclarationViewModel(null, c);
+                _root.Add(vm);
+                return vm;
+            }
             Debug.Assert(c.Parent != null);
             var parentnode = FindOrAddParentNode(c.Parent);
             return parentnode.FindOrAddChildDecl(c);
+        }
+
+        private DeclarationViewModel FindOrAddFunctionNode(FunctionDecl f)
+        {
+            if (f.Parent == null)
+            {
+                DeclarationViewModel vm = FindRootLevelItem(f.Usr);
+                if (vm != null)
+                    return vm;
+
+                vm = new DeclarationViewModel(null, f);
+                _root.Add(vm);
+                return vm;
+            }
+
+            Debug.Assert(f.Parent != null);
+            var parentnode = FindOrAddParentNode(f.Parent);
+            return parentnode.FindOrAddChildDecl(f);
         }
 
         private DeclarationViewModel FindOrAddEnumNode(EnumDecl e)
@@ -155,6 +183,12 @@ namespace JadeControls.ContextTool
                 parentClass.FindOrAddChildDecl(m);
             }
 
+            foreach(FieldDecl f in symbols.Fields)
+            {
+                DeclarationViewModel parentClass = FindOrAddClassNode(f.Class);
+                parentClass.FindOrAddChildDecl(f);
+            }
+
             foreach(ConstructorDecl c in symbols.Constructors)
             {
                 if (c.Class != null)
@@ -183,8 +217,10 @@ namespace JadeControls.ContextTool
                 FindOrAddEnumConstantNode(c);
             }
 
-
-
+            foreach(FunctionDecl f in symbols.Functions)
+            {
+                FindOrAddFunctionNode(f);
+            }
             OnPropertyChanged("RootItems");
         }
 

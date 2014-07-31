@@ -1,6 +1,5 @@
 ﻿namespace LibClang
 {
-
 /// <summary>
 /// Describes the type of entity refered to by a Cursor.
 /// The comments below come directly from the libclang source

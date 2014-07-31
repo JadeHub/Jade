@@ -1,0 +1,74 @@
+* cxxmethod
+
+Definition
+IsDefinition = true
+IsReference = false
+DefinitionCursor = null
+Location = cc file
+SemanticParent = class
+Lex parent = namespace in cc
+
+------------------------
+Declaration
+IsDefinition = false
+IsReference = false
+DefinitionCursor = points to Definition
+Location = h file
+SemanticParent = class
+Lex parent = class
+
+* Inline
+
+Definition
+IsDefinition = true
+IsReference = false
+DefinitionCursor = null
+Location = .h file
+SemanticParent = class
+Lex parent = class
+
+* Undefined
+IsDefinition = false
+IsReference = false
+DefinitionCursor = null
+Location = .h file
+SemanticParent = class
+Lex parent = class
+
+functions
+=========
+
+* GlobalFuncWithExternPrototype
+IsDefinition = false
+IsReference = false
+DefinitionCursor = null
+Location = .h file
+SemanticParent = translation unit
+lexicalparent  = translation unit
+
+* globalfuncNoimpl
+IsDefinition = false
+IsReference = false
+DefinitionCursor = null
+Location = .cpp file
+SemanticParent = translation unit
+lexicalparent  = translation unit
+
+* anonymouseNamespaceFunc
+IsDefinition = true if function defined
+IsReference = false
+DefinitionCursor = null
+Location = .cpp file
+SemanticParent = namespace
+lexicalparent  = namespace
+
+* globalFuncNoPrototype
+IsDefinition = true
+IsReference = false
+DefinitionCursor = null
+Location = .cpp file
+SemanticParent = namespace
+lexicalparent  = namespace
+
+
+

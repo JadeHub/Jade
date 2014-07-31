@@ -7,20 +7,41 @@ using LibClang;
 
 namespace CppCodeBrowser.Symbols
 {
-    public class MethodDecl : DeclarationBase
+    /// <summary>
+    /// Add things common to Functions, Methods, Constructors and Destructors
+    /// 
+    /// </summary>
+    public abstract class FunctionDeclBase : DeclarationBase
     {
         private Cursor _definition;
+
+        //args
+        //return type
+
+        public FunctionDeclBase(Cursor declaration, ISymbolTable table)
+            : base(declaration, table)
+        {
+        }
+
+        public void UpdateDefinition(Cursor c)
+        {
+            Debug.Assert(CursorKinds.IsFunctionEtc(c.Kind));
+            Debug.Assert(c.IsDefinition);
+            if (_definition == null)
+                _definition = c;
+        }
+    }
+
+    public class MethodDecl : FunctionDeclBase
+    {
         private ClassDecl _class;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="definition">Implementation</param>
-        /// <param name="declaration">Method declaration in header, may be the same as declaration</param>
+        //is const
+        
         public MethodDecl(Cursor declaration, ISymbolTable table)
             : base(declaration, table)
         {
-            Debug.Assert(declaration.SemanticParentCurosr.Kind == CursorKind.ClassDecl);
+            Debug.Assert(CursorKinds.IsClassStructEtc(declaration.SemanticParentCurosr.Kind));
             _class = table.FindClass(declaration.SemanticParentCurosr.Usr);
             Debug.Assert(_class != null);
             //_class.AddMethodDecl(this);
@@ -31,12 +52,6 @@ namespace CppCodeBrowser.Symbols
         public override string Name { get { return Cursor.Spelling; } }
         public override EntityKind Kind { get { return EntityKind.Method; } }
 
-        public void SetDefinition(Cursor c)
-        {
-            Debug.Assert(c.Kind == CursorKind.CXXMethod);
-            Debug.Assert(c.IsDefinition);
-            if (_definition == null)
-                _definition = c;
-        }
+        public bool IsConst { get { return Cursor.IsConstMethod; } }
     }
 }

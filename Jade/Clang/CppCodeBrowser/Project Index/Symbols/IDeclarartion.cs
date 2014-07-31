@@ -44,9 +44,15 @@ namespace CppCodeBrowser.Symbols
 
         public Cursor Cursor { get { return _cursor; } }
         public ICodeLocation Location { get { return _location; } }
+        public int SpellingLength { get { return _cursor.Spelling.Length; } }
         public string Usr { get{ return _cursor.Usr;}}
 
         public abstract string Name { get ;}
         public abstract EntityKind Kind { get; }
+
+        public override string ToString()
+        {
+            return string.Format("Definition of {0} {1} at {2}", Kind, Name, Location);
+        }
     }
 }

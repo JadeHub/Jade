@@ -7,6 +7,8 @@ namespace CppCodeBrowser.Symbols
 {
     public class VariableDecl : DeclarationBase
     {
+        public IDeclaration _parent;
+
         public VariableDecl(Cursor c, ISymbolTable table)
             : base(c, table)
         {

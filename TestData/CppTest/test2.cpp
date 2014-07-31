@@ -15,9 +15,5 @@ namespace TestNS2
 
 	class Josh {};
 
-void fn()
-{
-}
-
 }
 

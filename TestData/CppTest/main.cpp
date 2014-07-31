@@ -4,11 +4,11 @@
 
 int global = 0;
 
-void GlobalNamespaceFunc();
+void GlobalFunctionNoImpl();
 
 namespace {
 
-	void AnonNamespaceFunc();
+	void AnonNamespaceFunc() {}
 }
 
 namespace Blah { namespace ModuleA { namespace ModuleB { class ClassInAB{ }; } } }
@@ -52,6 +52,7 @@ void SomeClass::t() const
 	TemplMethod(5);
 }
 
+//void SomeClass::t1(int j) const {}
 
 void SomeClass::t1() const {}
 
@@ -113,15 +114,8 @@ void SomeClass::VFunc(int i, int j)
 	int ii = 8;	
 }
 
-TestNS::ClassA SomeNewFucntion()
+void GlobalFunctionNoPrototype()
 {
-	TestNS::ClassA a;
-	
-	for(int i = 0;i < 10;i++)
-	{
-		
-	}
-	return a;
 }
 
 int main()

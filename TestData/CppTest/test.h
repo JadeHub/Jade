@@ -4,7 +4,7 @@
 #include <vector>
 
 
-extern void GlobalFn();
+extern void GlobalFunctionWithExternPrototype();
 
 namespace TestNS {
 	
@@ -20,6 +20,11 @@ struct AStruct
 enum AnEnum
 {
 	AnEnum_Item1 = 0
+};
+
+class Blah
+{
+	void Undefined();
 };
 
 class SomeClass : AStruct
@@ -64,7 +69,7 @@ public:
 	void TemplMethod2(P1& p1, P1 p2) { p1 = i; }
 private:
 	void t1() const;
-	void t1(int j) const {}
+//	void t1(int j) const;
 
 private:
 	AStruct MSt;
