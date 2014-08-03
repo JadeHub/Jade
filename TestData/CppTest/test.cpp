@@ -6,7 +6,7 @@ void GlobalFunctionWithExternPrototype()
  
 namespace TestNS {
 
-int SomeClass::j = 0;
+int SomeClass::staticInt = 0;
 
 SomeClass::SomeClass()
 : PrtToAStruct(nullptr), ii(0), mEnum(AnEnum_Item1), p(nullptr)

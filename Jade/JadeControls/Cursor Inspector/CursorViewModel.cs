@@ -155,7 +155,7 @@ namespace JadeControls.CursorInspector
         [Category("Cursor"), Description("Blah.")]
         public bool IsVirtual
         {
-            get { return Cursor.IsVirtual; }
+            get { return Cursor.IsVirtualMethod; }
         }
 
         [Category("Cursor"), Description("Blah.")]
@@ -167,7 +167,7 @@ namespace JadeControls.CursorInspector
         [Category("Cursor"), Description("Blah.")]
         public bool IsStatic
         {
-            get { return Cursor.IsStatic; }
+            get { return Cursor.IsStaticMethod; }
         }
 
         [Category("Cursor"), Description("Blah.")]

@@ -226,8 +226,8 @@ namespace JadeControls.ContextTool
 
         public ObservableCollection<DeclarationViewModel> RootItems { get { return _root; } }
 
-        public FileViewModel CurrentFile { get; private set; }
-
+        //public FileViewModel CurrentFile { get; private set; }
+        /*
         private void SelectPath(string path)
         {
             string [] parts = path.Split('/');
@@ -246,6 +246,6 @@ namespace JadeControls.ContextTool
                 item = child;
                 item.Selected = true;                
             }
-        }
+        */
     }
 }

@@ -12,7 +12,7 @@ namespace JadeControls.ContextTool
         string Name { get; }
         string TypeChar { get; }
         ObservableCollection<ITreeItem> Children { get; }
-        string TreeItemPath { get; }
+        
         ITreeItem Parent { get; }
         ITreeItem FindSelected();
         ITreeItem FindChild(string name);
@@ -55,28 +55,6 @@ namespace JadeControls.ContextTool
                 if (result != null) return result;
             }
             return null;
-        }
-
-        public string TreeItemPath 
-        { 
-            get
-            {
-                StringBuilder sb = new StringBuilder();
-                List<ITreeItem> path = new List<ITreeItem>();
-                ITreeItem i = _parent;
-                while(i != null)
-                {
-                    path.Insert(0, i);
-                    i = i.Parent;
-                }
-                foreach(ITreeItem item in path)
-                {
-                    sb.Append(item.Name);
-                    sb.Append("/");
-                }
-                sb.Append(Name);
-                return sb.ToString();
-            }
         }
 
         public ITreeItem FindChild(string name)

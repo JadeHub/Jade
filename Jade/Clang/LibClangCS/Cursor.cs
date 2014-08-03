@@ -423,7 +423,7 @@ namespace LibClang
         /// <summary>
         /// Returns true if the cursor is of kind CXXMethod and is a virtual method
         /// </summary>
-        public bool IsVirtual
+        public bool IsVirtualMethod
         {
             get { return Library.clang_CXXMethod_isVirtual(Handle) != 0; }
         }
@@ -439,7 +439,7 @@ namespace LibClang
         /// <summary>
         /// Returns true if the cursor is of kind CXXMethod and is a static method
         /// </summary>
-        public bool IsStatic
+        public bool IsStaticMethod
         {
             get { return Library.clang_CXXMethod_isStatic(Handle) != 0; }
         }

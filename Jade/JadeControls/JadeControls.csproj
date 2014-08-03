@@ -71,12 +71,8 @@
       <DependentUpon>ContextControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ContextTool\ContextPaneViewModel.cs" />
-    <Compile Include="ContextTool\Tree\ViewModels\ClassViewModel.cs" />
     <Compile Include="ContextTool\Tree\ViewModels\DeclarationViewModel.cs" />
-    <Compile Include="ContextTool\Tree\ViewModels\Factory.cs" />
-    <Compile Include="ContextTool\Tree\ViewModels\FileViewModel.cs" />
     <Compile Include="ContextTool\Tree\ViewModels\ITreeItem.cs" />
-    <Compile Include="ContextTool\Tree\ViewModels\NamespaceViewModel.cs" />
     <Compile Include="Cursor Inspector\CursorInspectorControl.xaml.cs">
       <DependentUpon>CursorInspectorControl.xaml</DependentUpon>
     </Compile>

@@ -8,18 +8,27 @@ using CppCodeBrowser.Symbols;
 
 namespace JadeControls.ContextTool  
 {
-    public class DeclarationViewModel : TreeItemBase
+    public class DeclarationViewModel : TreeItemBase, IComparable<DeclarationViewModel>
     {
         private IDeclaration _decl;
 
         public DeclarationViewModel(ITreeItem parent, IDeclaration decl)
-            :base(parent, decl.Name)
+            : base(parent, BuildName(decl))
         {
             _decl = decl;
         }
 
         public string Usr { get { return _decl.Usr; } }
         public string KindString { get { return _decl.Kind.ToString(); } }
+
+        private static string BuildName(IDeclaration decl)
+        {
+            if(decl is FunctionDeclBase)
+            {
+                return decl.Name + (decl as FunctionDeclBase).BuildParamText();
+            }
+            return decl.Name;
+        }
 
         public DeclarationViewModel FindOrAddChildDecl(IDeclaration child)
         {
@@ -30,7 +39,7 @@ namespace JadeControls.ContextTool
             }
 
             var r = new DeclarationViewModel(this, child);
-            Children.Add(r);
+            AddChild(r);
             return r;
         }
 
@@ -48,6 +57,45 @@ namespace JadeControls.ContextTool
                 }
             }
             return null;
+        }
+
+        private DeclarationViewModel GetChildAtIndex(int index)
+        {
+            if (Children[index] is DeclarationViewModel)
+                return Children[index] as DeclarationViewModel;
+            return null;
+        }
+
+        private void AddChild(DeclarationViewModel child)
+        {
+            bool added = false;
+            for (int index = 0; index < Children.Count; index++)
+            {
+                DeclarationViewModel c = GetChildAtIndex(index);
+                if (c == null) continue;
+                
+                if(c.CompareTo(child) > 0)
+                {
+                    added = true;
+                    Children.Insert(index, child);
+                    break;
+                }
+            }
+            if (!added)
+                Children.Add(child);
+        }
+
+        public int CompareTo(DeclarationViewModel other)
+        {
+            if(_decl.Kind != other._decl.Kind)
+            {
+                return _decl.Kind < other._decl.Kind ? -1 : 1;
+            }
+
+            if (Name != other.Name)
+                return Name.CompareTo(other.Name);
+
+            return Usr.CompareTo(other.Usr);
         }
     }
 }

@@ -188,6 +188,14 @@ namespace CppCodeBrowser.Symbols
             {
                 UpdateDeclarationSymbolMapping(result.Item2);
             }
+            if (c.IsDefinition)
+            {
+                result.Item2.UpdateDefinition(c);
+                _fileSymbolMaps.UpdateDeclarationMapping(FilePath.Make(c.Location.File.Name),
+                                                     c.Location.Offset,
+                                                     c.Location.Offset + c.Spelling.Length,
+                                                     result.Item2);
+            }
         }
 
         private void UpdateDestrctorDecl(Cursor c)
@@ -196,6 +204,14 @@ namespace CppCodeBrowser.Symbols
             if (result.Item1)
             {
                 UpdateDeclarationSymbolMapping(result.Item2);
+            }
+            if (c.IsDefinition)
+            {
+                result.Item2.UpdateDefinition(c);
+                _fileSymbolMaps.UpdateDeclarationMapping(FilePath.Make(c.Location.File.Name),
+                                                     c.Location.Offset,
+                                                     c.Location.Offset + c.Spelling.Length,
+                                                     result.Item2);
             }
         }
 
@@ -231,6 +247,14 @@ namespace CppCodeBrowser.Symbols
             if (result.Item1)
             {
                 UpdateDeclarationSymbolMapping(result.Item2);
+            }
+            if(c.IsDefinition)
+            {
+                result.Item2.UpdateDefinition(c);
+                _fileSymbolMaps.UpdateDeclarationMapping(FilePath.Make(c.Location.File.Name),
+                                                     c.Location.Offset,
+                                                     c.Location.Offset + c.Spelling.Length,
+                                                     result.Item2);
             }
         }
     }

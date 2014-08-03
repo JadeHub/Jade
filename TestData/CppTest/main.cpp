@@ -45,7 +45,7 @@ void GlobalTemplFunc(T t)
 
 void SomeClass::t() const
 {
-	SomeClass::j = 0;
+	SomeClass::staticInt = 0;
 	const char * str = "";
 	
 	this->Fn2(1, str);
@@ -120,7 +120,7 @@ void GlobalFunctionNoPrototype()
 
 int main()
 {
-	TestNS::SomeClass::j = 8;
+	TestNS::SomeClass::staticInt = 8;
 
 	TestNS::SomeClass sc;
 

@@ -151,7 +151,7 @@ namespace CppCodeBrowser
             FilePath path = FilePath.Make(c.Location.File.Name);
             if (_fileFilter(path) == false) return;
 
-            if (c.Kind == CursorKind.CXXMethod && c.Spelling == "Undefined" && c.IsDefinition == false)
+            if (c.Spelling == "staticInt")
             {
                 int j = 0;
             }

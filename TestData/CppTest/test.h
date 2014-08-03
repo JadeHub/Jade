@@ -43,7 +43,7 @@ public:
 
 	std::vector<int> mVec;
 
-	static	int j;
+	static	int staticInt;
 	int ii;
 
 	void Fn();

@@ -15,45 +15,6 @@
                     </ResourceDictionary.MergedDictionaries>
                  
                     <BitmapImage x:Key="DeleteIconSource" UriSource="pack://application:,,,/Images/red_c.ico" />
-                 
-                    <HierarchicalDataTemplate DataType="{x:Type local:FileViewModel}" ItemsSource="{Binding Children}">
-                        <StackPanel Orientation="Horizontal" >                        
-                            <TextBlock Text="{Binding TypeChar}" Foreground="Blue" MinWidth="40" />
-                            <TextBlock Text="{Binding Name}" />
-                        </StackPanel>
-                    </HierarchicalDataTemplate>
-                 
-                    <!--
-                    <HierarchicalDataTemplate DataType="{x:Type local:NamespaceViewModel}" ItemsSource="{Binding Children}">
-                        <StackPanel Orientation="Horizontal" >                            
-                            <TextBlock Text="{Binding TypeChar}" />
-                            <TextBlock Text="{Binding Name}" />
-                        </StackPanel>
-                    </HierarchicalDataTemplate>
-                    
-                    <HierarchicalDataTemplate DataType="{x:Type local:ClassViewModel}" ItemsSource="{Binding Children}">
-                        <StackPanel Orientation="Horizontal" >                            
-                            <TextBlock Text="{Binding TypeChar}" />
-                            <TextBlock Padding="10,0,0,0"  Text="{Binding Name}" />
-                        </StackPanel>
-                    </HierarchicalDataTemplate>
-                    -->
-                    
-                    <!--
-                    <HierarchicalDataTemplate DataType="{x:Type local:CursorViewModel}" ItemsSource="{Binding Children}">
-                        <StackPanel Orientation="Horizontal" >                        
-                            <TextBlock Text="{Binding TypeChar}" Foreground="Blue" MinWidth="40" />
-                            <TextBlock Margin="0,0,0,0"  Text="{Binding Name}" />
-                        </StackPanel>
-                    </HierarchicalDataTemplate>
-                    -->
-                    <HierarchicalDataTemplate DataType="{x:Type local:CursorViewModel}" ItemsSource="{Binding Children}">
-                        <StackPanel Orientation="Horizontal" >                        
-                            <TextBlock Text="{Binding TypeChar}" Foreground="Blue" />
-                            <TextBlock Margin="5,0,0,0"  Text="{Binding Name}" />
-                        </StackPanel>
-                    </HierarchicalDataTemplate>
-                    
                     <HierarchicalDataTemplate DataType="{x:Type local:DeclarationViewModel}" ItemsSource="{Binding Children}">
                         <StackPanel Orientation="Horizontal" >
                             <TextBlock Text="{Binding KindString}" Foreground="Blue" />
