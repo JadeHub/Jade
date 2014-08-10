@@ -20,9 +20,9 @@ namespace CppCodeBrowser
         static public bool IsClassStructEtc(CursorKind k)
         {
             return k == CursorKind.ClassDecl ||
-                    k == CursorKind.StructDecl /*||
+                    k == CursorKind.StructDecl ||
                     k == CursorKind.ClassTemplate ||
-                    k == CursorKind.ClassTemplatePartialSpecialization*/;
+                    k == CursorKind.ClassTemplatePartialSpecialization;
 
         }
 

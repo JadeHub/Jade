@@ -1,13 +1,49 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Controls;
 using JadeCore.CppSymbols2;
 using CppCodeBrowser.Symbols;
 
 namespace JadeControls.ContextTool  
 {
+    public class BoldifySpellingConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            DeclarationViewModel item = value as DeclarationViewModel;
+            string text = item.Name;
+            string spelling = item.Spelling;
+            TextBlock textBlock = new TextBlock();
+            int index = text.IndexOf(spelling);
+            if (index >= 0)
+            {
+                string before = text.Substring(0, index);
+                string after = text.Substring(index + spelling.Length);
+                textBlock.Inlines.Clear();
+                textBlock.Inlines.Add(new Run() { Text = before });
+                textBlock.Inlines.Add(new Run() { Text = spelling, FontWeight = FontWeights.Bold });
+                textBlock.Inlines.Add(new Run() { Text = after });
+            }
+            else
+            {
+                textBlock.Text = text;
+            }
+            textBlock.TextTrimming = TextTrimming.CharacterEllipsis;
+            return textBlock;
+        }
+
+        public object ConvertBack(object value1, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value1;
+        }
+    }
+
     public class DeclarationViewModel : TreeItemBase, IComparable<DeclarationViewModel>
     {
         private IDeclaration _decl;
@@ -18,6 +54,7 @@ namespace JadeControls.ContextTool
             _decl = decl;
         }
 
+        public string Spelling { get { return _decl.Spelling; } }
         public string Usr { get { return _decl.Usr; } }
         public string KindString { get { return _decl.Kind.ToString(); } }
 
@@ -27,6 +64,18 @@ namespace JadeControls.ContextTool
             {
                 return decl.Name + (decl as FunctionDeclBase).BuildParamText();
             }
+
+            if(decl is ClassDecl)
+            {
+                ClassDecl c = decl as ClassDecl;
+
+                
+                if(c.TemplateKind != TemplateKind.NonTemplate)
+                {
+                    return decl.Cursor.DisplayName;
+                }
+            }
+
             return decl.Name;
         }
 
@@ -96,6 +145,21 @@ namespace JadeControls.ContextTool
                 return Name.CompareTo(other.Name);
 
             return Usr.CompareTo(other.Usr);
+        }
+
+        public DeclarationViewModel FindSelectedDeclaration()
+        {
+            ITreeItem sel = FindSelected();
+            if (sel != null && sel is DeclarationViewModel)
+                return sel as DeclarationViewModel;
+            return null;
+        }
+
+        public void BrowseToLocation()
+        {
+            CppCodeBrowser.ICodeLocation loc = _decl.Location;
+            if (loc == null) return;
+            JadeCore.Services.Provider.CommandHandler.OnDisplayCodeLocation(new JadeCore.DisplayCodeLocationCommandParams(loc, true, true));
         }
     }
 }

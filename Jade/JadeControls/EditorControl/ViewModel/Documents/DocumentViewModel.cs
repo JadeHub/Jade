@@ -157,6 +157,11 @@ namespace JadeControls.EditorControl.ViewModel
 
         #region Public Properties
 
+        protected CodeEditor View
+        {
+            get { return _view; }
+        }
+
         public bool Modified
         {
             get { return _model.Modified; }           

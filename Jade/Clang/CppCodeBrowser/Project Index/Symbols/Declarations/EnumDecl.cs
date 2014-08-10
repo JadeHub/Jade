@@ -15,8 +15,17 @@ namespace CppCodeBrowser.Symbols
             Debug.Assert(c.Kind == CursorKind.EnumDecl);
             if (c.SemanticParentCurosr.Kind == CursorKind.Namespace)
             {
-                _parent = table.FindNamespace(c.SemanticParentCurosr.Usr);
+                _parent = table.FindNamespaceDeclaration(c.SemanticParentCurosr.Usr);
                 Debug.Assert(_parent != null);
+            }
+            else if (CursorKinds.IsClassStructEtc(c.SemanticParentCurosr.Kind))
+            {
+                _parent = table.FindClassDeclaration(c.SemanticParentCurosr.Usr);
+                Debug.Assert(_parent != null);
+            }
+            else
+            {
+                CursorKind k = c.SemanticParentCurosr.Kind;
             }
         }
 

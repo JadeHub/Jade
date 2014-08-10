@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 using JadeUtils.IO;
 using CppCodeBrowser.Symbols;
 
@@ -225,6 +225,26 @@ namespace JadeControls.ContextTool
         }
 
         public ObservableCollection<DeclarationViewModel> RootItems { get { return _root; } }
+
+        public void BrowseToSelectedSymbol()
+        {
+            DeclarationViewModel selected = FindSelectedDeclaration();
+            if(selected != null)
+            {
+                selected.BrowseToLocation();
+            }
+        }
+
+        private DeclarationViewModel FindSelectedDeclaration()
+        {
+            foreach(DeclarationViewModel rootItem in _root)
+            {
+                DeclarationViewModel selected = rootItem.FindSelectedDeclaration();
+                if (selected != null)
+                    return selected;
+            }
+            return null;
+        }
 
         //public FileViewModel CurrentFile { get; private set; }
         /*

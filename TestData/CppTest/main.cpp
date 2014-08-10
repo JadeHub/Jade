@@ -62,13 +62,20 @@ public:
 	Overloads() {}
 	~Overloads();
 	
+	Overloads(const Overloads&) {}
+	Overloads(const Overloads&&) {}	
+
 	void Func() {}
 	void Func(int i, int j) {}
 	void Func(double d, int j) {}	
 	
 	void Test() {}	
+
+	int& Get() {return i;}
+	const int& Get() const {return i;}
+
 private:
-	Overloads(const Overloads&); 
+	
 	Overloads& operator =(const Overloads& o);	
 	Overloads&& operator =(const Overloads&& o);
 	

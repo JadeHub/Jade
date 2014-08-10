@@ -7,18 +7,19 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <TreeView ItemsSource="{Binding RootItems}">
+        <TreeView ItemsSource="{Binding RootItems}" MouseDoubleClick="TreeView_MouseDoubleClick">
             <TreeView.Resources>
                 <ResourceDictionary>
                     <ResourceDictionary.MergedDictionaries>
                         <ResourceDictionary Source="JadeTreeViewStyle.xaml" />                
                     </ResourceDictionary.MergedDictionaries>
-                 
+                    <local:BoldifySpellingConverter x:Key="BoldifySpellingConverter" />
                     <BitmapImage x:Key="DeleteIconSource" UriSource="pack://application:,,,/Images/red_c.ico" />
                     <HierarchicalDataTemplate DataType="{x:Type local:DeclarationViewModel}" ItemsSource="{Binding Children}">
                         <StackPanel Orientation="Horizontal" >
                             <TextBlock Text="{Binding KindString}" Foreground="Blue" />
-                            <TextBlock Margin="5,0,0,0"  Text="{Binding Name}" />
+                            <!--<TextBlock Margin="5,0,0,0"  Text="{Binding Name}" />-->
+                            <ContentPresenter Margin="5,0,0,0" Content="{Binding Converter={StaticResource BoldifySpellingConverter} }"/>
                         </StackPanel>
                     </HierarchicalDataTemplate>
                     

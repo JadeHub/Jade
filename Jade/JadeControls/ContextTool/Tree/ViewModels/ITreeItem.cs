@@ -35,7 +35,7 @@ namespace JadeControls.ContextTool
         }
 
         public string Name { get { return _name; } }
-
+        
         public ObservableCollection<ITreeItem> Children { get { return _children; } }
 
         public bool Selected { get; set ; }

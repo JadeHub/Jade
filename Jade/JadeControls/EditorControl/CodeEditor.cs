@@ -32,6 +32,7 @@ namespace JadeControls.EditorControl
         {
             ShowLineNumbers = true;            
             TextArea.MouseRightButtonDown += TextArea_MouseRightButtonDown;
+            
             this.DataContextChanged += CodeEditor_DataContextChanged;
             this.SyntaxHighlighting = highlighDefinition;
             this.Options.CutCopyWholeLine = false;

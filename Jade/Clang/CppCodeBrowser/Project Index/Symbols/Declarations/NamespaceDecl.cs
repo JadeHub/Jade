@@ -16,7 +16,7 @@ namespace CppCodeBrowser.Symbols
 
             if(c.SemanticParentCurosr.Kind == CursorKind.Namespace)
             {
-                _parent = table.FindNamespace(c.SemanticParentCurosr.Usr);
+                _parent = table.FindNamespaceDeclaration(c.SemanticParentCurosr.Usr);
                 Debug.Assert(_parent != null);
             }
         }

@@ -24,5 +24,11 @@ namespace JadeControls.ContextTool
         {
             InitializeComponent();
         }
+
+        private void TreeView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ContextPaneViewModel vm = DataContext as ContextPaneViewModel;
+            vm.BrowseToSelectedSymbol();
+        }
     }
 }

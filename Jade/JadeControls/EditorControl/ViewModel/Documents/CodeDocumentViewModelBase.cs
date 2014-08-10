@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using JadeCore;
 using LibClang;
@@ -35,11 +38,16 @@ namespace JadeControls.EditorControl.ViewModel
         private Commands.SourceFileJumpToCommand _jumpToCommand;        
         private Commands.FindAllReferences _findAllRefsCommand;
 
+        private CppCodeBrowser.Symbols.FileMapping.IFileMap _fileMap;
+
+        private IndexHighlighter _indexHighlighter;
+        
         internal CodeDocumentViewModelBase(IEditorDoc doc)
             : base(doc)
         {
             DiagnosticHighlighter = new DiagnosticHighlighter(new Highlighting.Highlighter(TextDocument));
             SearchHighlighter = new SearchHighlighter(Document.File.Path, new Highlighting.Highlighter(TextDocument));
+            _indexHighlighter = new IndexHighlighter(new Highlighting.Highlighter(TextDocument));
 
             if(HasIndex)
             {
@@ -51,16 +59,37 @@ namespace JadeControls.EditorControl.ViewModel
                 _debugCursorCommand = new Commands.DebugCursorCommand(this, doc.File.Path, doc.Project.Index);
                 _jumpToCommand = new Commands.SourceFileJumpToCommand(this, doc.File.Path, doc.Project.Index);
                 _findAllRefsCommand = new Commands.FindAllReferences(this, doc.File.Path, doc.Project.Index);
+
+                _fileMap = Index.FileSymbolMaps.GetMap(Document.File.Path);
+                if (_fileMap != null)
+                {
+                    _indexHighlighter.SetMap(_fileMap);
+                }
             }
+
         }
 
+        
+
         private void ProjectIndexItemUpdated(JadeUtils.IO.FilePath path)
-        {
+        {            
             if (path != Document.File.Path) return;
+
+            if (_fileMap == null)
+            {
+                _fileMap = Index.FileSymbolMaps.GetMap(Document.File.Path);
+                if (_fileMap != null)
+                {
+                    _indexHighlighter.SetMap(_fileMap);
+                }
+            }
+
             CppCodeBrowser.IProjectFile fileIndex = Index.FindProjectItem(Document.File.Path);
             if (fileIndex != null && fileIndex is CppCodeBrowser.ISourceFile)
                 Debug.Assert((fileIndex as CppCodeBrowser.ISourceFile).TranslationUnit.Valid);
-            DiagnosticHighlighter.ProjectItem = fileIndex;
+
+        //    DiagnosticHighlighter.ProjectItem = fileIndex;
+
             List<LibClang.Diagnostic> diags = new List<Diagnostic>(fileIndex.Diagnostics);
             DiagnosticOutputWriter.UpdateOutput(diags);
         }
@@ -98,9 +127,9 @@ namespace JadeControls.EditorControl.ViewModel
         {
             view.TextArea.TextView.BackgroundRenderers.Add(DiagnosticHighlighter.Renderer);
             view.TextArea.TextView.BackgroundRenderers.Add(SearchHighlighter.Renderer);
+            view.TextArea.TextView.BackgroundRenderers.Add(_indexHighlighter.Renderer);
             view.KeyDown += OnViewKeyDown;
             //Underliner.Redraw();
-            
         }
 
         void OnViewKeyDown(object sender, KeyEventArgs e)

@@ -15,7 +15,7 @@ namespace CppCodeBrowser.Symbols
             Debug.Assert(c.Kind == CursorKind.EnumConstantDecl);
             Debug.Assert(c.SemanticParentCurosr != null);
             Debug.Assert(c.SemanticParentCurosr.Kind == CursorKind.EnumDecl);
-            _parent = table.FindEnum(c.SemanticParentCurosr.Usr);
+            _parent = table.FindEnumDeclaration(c.SemanticParentCurosr.Usr);
             Debug.Assert(_parent != null);
         }
 

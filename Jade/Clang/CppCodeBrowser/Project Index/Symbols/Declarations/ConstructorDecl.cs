@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Diagnostics;
 using System.Collections.Generic;
 using LibClang;
@@ -11,9 +12,9 @@ namespace CppCodeBrowser.Symbols
 
         public ConstructorDecl(Cursor c, ISymbolTable table)
             : base(c, table)
-        {
+        {            
             Debug.Assert(c.Kind == CursorKind.Constructor);
-            _class = table.FindClass(c.SemanticParentCurosr.Usr);
+            _class = table.FindClassDeclaration(c.SemanticParentCurosr.Usr);
             //could be classtemplate 
             //Debug.Assert(_class != null);
         }

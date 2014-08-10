@@ -59,7 +59,6 @@ namespace CppCodeBrowser
 
             lock (_lock)
             {
-                
                 LibClang.TranslationUnit tu = new LibClang.TranslationUnit(_index.LibClangIndex, path.Str);
 
                 //pass in unsaved files
@@ -76,6 +75,7 @@ namespace CppCodeBrowser
                         {
                             _index.UpdateSourceFile(path, tu);
                             IndexTranslationUnit(tu);
+                            _index.RaiseItemUpdatedEvent(path);
                         }
                     }, CancellationToken.None, TaskCreationOptions.None, _callbackScheduler);
                 
@@ -95,8 +95,7 @@ namespace CppCodeBrowser
         static bool done = false;
 
         private void IndexTranslationUnit(TranslationUnit tu)        
-        {
-            
+        {            
             FilePath p = FilePath.Make(tu.File.Name);
             if (p.FileName == "main.cpp" && done)
             {
@@ -133,36 +132,37 @@ namespace CppCodeBrowser
 
         private void IndexDefinitionCursor(Cursor c)
         {
-            if (c.Kind == CursorKind.CXXMethod)
-                System.Diagnostics.Debug.WriteLine("Indexing Cursor " + c.Spelling + " " + c.ToString());
             _index.Symbols.UpdateDefinition(c);
         }
 
         private void IndexReferenceCursor(Cursor c)
         {
-            
+            _index.Symbols.UpdateReference(c);
+        }
+
+        private bool FilterCursor(Cursor c)
+        {
+            if (IsIndexCursorKind(c.Kind) == false) return false;
+            if (c.Location == null || c.Location.File == null) return false;
+
+           // FilePath path = FilePath.Make(c.Location.File.Name);
+            ///if (_fileFilter(path) == false) return false;
+
+            return true;
         }
 
         private void IndexCursor(Cursor c)
         {
-            if (IsIndexCursorKind(c.Kind) == false) return;
-            if (c.Location == null || c.Location.File == null) return;
-
-            FilePath path = FilePath.Make(c.Location.File.Name);
-            if (_fileFilter(path) == false) return;
-
-            if (c.Spelling == "staticInt")
-            {
-                int j = 0;
-            }
-
+            if (FilterCursor(c) == false) return;
+            
             if (CursorKinds.IsDefinition(c.Kind))
             {
                 IndexDefinitionCursor(c);
             }
             else if (c.CursorReferenced != null)
             {
-                IndexReferenceCursor(c);
+                if (FilterCursor(c.CursorReferenced))
+                    IndexReferenceCursor(c);
             } 
 
             foreach (Cursor child in c.Children)

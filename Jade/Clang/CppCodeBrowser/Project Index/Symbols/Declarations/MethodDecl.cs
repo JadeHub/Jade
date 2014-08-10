@@ -10,14 +10,12 @@ namespace CppCodeBrowser.Symbols
     public class MethodDecl : FunctionDeclBase
     {
         private ClassDecl _class;
-
-        //is const
-        
+                
         public MethodDecl(Cursor declaration, ISymbolTable table)
             : base(declaration, table)
         {
             Debug.Assert(CursorKinds.IsClassStructEtc(declaration.SemanticParentCurosr.Kind));
-            _class = table.FindClass(declaration.SemanticParentCurosr.Usr);
+            _class = table.FindClassDeclaration(declaration.SemanticParentCurosr.Usr);
             Debug.Assert(_class != null);
             //_class.AddMethodDecl(this);
         }

@@ -120,6 +120,9 @@ namespace LibClang
 
             Library.UnsavedFile[] unsaved = BuildUnsavedFileArray(unsavedFiles);
 
+        //    cmdLineParams = new string[1];
+        //    cmdLineParams[0] = @"-std=c++11";
+
             Handle = Library.clang_parseTranslationUnit(_index.Handle, Filename,
                                                     cmdLineParams, cmdLineParams != null ? cmdLineParams.Length : 0,
                                                     unsaved.Length > 0 ? unsaved : null,

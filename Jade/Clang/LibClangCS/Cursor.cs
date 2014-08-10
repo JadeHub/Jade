@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -236,7 +237,42 @@ namespace LibClang
         /// </summary>
         public string Usr
         {
-            get { return _usr ?? (_usr = Library.clang_getCursorUSR(Handle).ManagedString);}        
+            get { return _usr ?? (_usr = BuildUsr()); }        
+        }
+
+        private string BuildUsr()
+        {
+            //LibClang does not distinguish between lval and rval reference parameters when building
+            //Usr strings for Constructors, Methods or Functions type Cursors.
+            //Here we look for such Cursors and append a '&' to the end of their usr for each rvalue reference parameter
+
+            if ((Kind == CursorKind.Constructor ||
+                Kind == CursorKind.CXXMethod ||
+                Kind == CursorKind.FunctionDecl) && 
+                Library.clang_Cursor_getNumArguments(Handle) > 0)
+            {
+                int rvalRefArgCount = 0;
+                                
+                foreach (var arg in ArgumentCursors)
+                {
+                    if (arg.Type.Kind == TypeKind.RValueReference)
+                        rvalRefArgCount++;
+                }
+                if (rvalRefArgCount > 0 || Type.ResultType.Kind == TypeKind.RValueReference)
+                {
+                    StringBuilder sb = new StringBuilder(Library.clang_getCursorUSR(Handle).ManagedString);
+
+                    if (Type.ResultType.Kind == TypeKind.RValueReference)
+                        sb.Append("R&&");
+                    for (int i = 0; i < rvalRefArgCount; i++)
+                    {
+                        sb.Append((i+1).ToString());
+                        sb.Append("&&");
+                    }
+                    return sb.ToString();
+                }
+            }
+            return Library.clang_getCursorUSR(Handle).ManagedString;
         }
 
         /// <summary>
@@ -294,7 +330,7 @@ namespace LibClang
             get
             {
                 Library.CXCursor cur = Library.clang_getCursorReferenced(Handle);
-                return (cur.IsNull || cur == Handle) ? null : _itemFactory.CreateCursor(cur);
+                return (!cur.IsValid || cur.IsNull || cur == Handle) ? null : _itemFactory.CreateCursor(cur);
             }
         }
 

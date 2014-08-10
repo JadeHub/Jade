@@ -13,7 +13,7 @@ namespace CppCodeBrowser.Symbols
             Debug.Assert(c.Kind == CursorKind.FunctionDecl);
             if (c.SemanticParentCurosr.Kind == CursorKind.Namespace)
             {
-                _parent = table.FindNamespace(c.SemanticParentCurosr.Usr);
+                _parent = table.FindNamespaceDeclaration(c.SemanticParentCurosr.Usr);
                 Debug.Assert(_parent != null);
             }
             else if (c.SemanticParentCurosr.Kind == CursorKind.TranslationUnit)
@@ -22,7 +22,7 @@ namespace CppCodeBrowser.Symbols
             }
             else
             {
-                int p = 0;
+                Debug.Assert(false);
             }
         }
 

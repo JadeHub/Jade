@@ -20,7 +20,8 @@ namespace CppCodeBrowser
         IEnumerable<ISourceFile> SourceFiles { get; }
         LibClang.Index LibClangIndex { get; }
 
-        Symbols.ISymbolTable Symbols { get; }        
+        Symbols.ISymbolTable Symbols { get; }
+        Symbols.FileMapping.IProjectFileMaps FileSymbolMaps { get; }
     }
 
     public class ProjectIndex : IProjectIndex
@@ -106,7 +107,7 @@ namespace CppCodeBrowser
                 }
                 AddSourceFile(path, tu);               
             }
-            RaiseItemUpdatedEvent(path);
+            //RaiseItemUpdatedEvent(path);
             if(tuToDispose != null)
                 tuToDispose.Dispose();
             /*
@@ -167,6 +168,7 @@ namespace CppCodeBrowser
 
         public LibClang.Index LibClangIndex { get { return _libClangIndex; } }
 
+        public Symbols.FileMapping.IProjectFileMaps FileSymbolMaps { get { return _fileSymbolMappings; } }
         public Symbols.ISymbolTable Symbols { get { return _symbols; } }
 
         public IEnumerable<ISourceFile> SourceFiles 

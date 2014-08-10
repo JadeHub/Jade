@@ -24,6 +24,7 @@ enum AnEnum
 
 class Blah
 {
+public:
 	void Undefined();
 };
 
@@ -36,6 +37,11 @@ public:
 	~SomeClass();
 
 	SomeClass& operator=(const SomeClass& other);
+
+	void TakesABlah(Blah& b)
+	{
+		b.Undefined();
+	}
 
 	const AStruct * PrtToAStruct;
 

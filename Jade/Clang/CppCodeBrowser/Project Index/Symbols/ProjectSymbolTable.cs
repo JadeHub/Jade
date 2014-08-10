@@ -1,13 +1,41 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
 using LibClang;
 using JadeUtils.IO;
 
 namespace CppCodeBrowser.Symbols
 {
+    public interface IReference : ISymbol
+    {
+        IDeclaration Declaration { get; }
+    }
+
+    public class Reference : IReference
+    {
+        private Cursor _cursor;
+        private ICodeLocation _location;
+
+        private ISymbolTable _table;
+        public IDeclaration _decl;
+
+        public Reference(Cursor c, IDeclaration decl, ISymbolTable table)
+        {
+            _cursor = c;
+            _decl = decl;
+            _table = table;
+            _location = new CodeLocation(c.Location); //todo - replace for doc tracking
+        }
+
+        public string Name { get { return _cursor.Spelling; } }
+        public string Spelling { get { return Cursor.Spelling; } }
+        public ICodeLocation Location { get { return _location; } }
+        public int SpellingLength { get { return _cursor.Extent.Length; } }
+        public Cursor Cursor { get { return _cursor; } }
+
+        public IDeclaration Declaration { get { return _decl; } }
+    }
+
     public class ProjectSymbolTable : ISymbolTable
     {
         private SymbolSet<NamespaceDecl> _namespaces;
@@ -53,24 +81,139 @@ namespace CppCodeBrowser.Symbols
         public ISymbolSet<TypedefDecl> Typedefs { get { return _typedefs; } }
         public ISymbolSet<VariableDecl> Variables { get { return _variables; } }
 
-        public NamespaceDecl FindNamespace(string usr)
+        public NamespaceDecl FindNamespaceDeclaration(string usr)
         {
             return _namespaces.Find(usr);
         }
 
-        public ClassDecl FindClass(string usr)
+        public ClassDecl FindClassDeclaration(string usr)
         {
             return _classes.Find(usr);
         }
 
-        public MethodDecl FindMethod(string usr)
+        public MethodDecl FindMethodDeclaration(string usr)
         {
             return _methods.Find(usr);
         }
 
-        public EnumDecl FindEnum(string usr)
+        public EnumDecl FindEnumDeclaration(string usr)
         {
             return _enums.Find(usr);
+        }
+
+        public EnumConstantDecl FindEnumConstantDeclaration(string usr)
+        {
+            return _enumConstants.Find(usr);
+        }
+
+        public ConstructorDecl FindConstructorDeclaration(string usr)
+        {
+            return _constructors.Find(usr);
+        }
+
+        public DestructorDecl FindDestructorDeclaration(string usr)
+        {
+            return _destructors.Find(usr);
+        }
+
+        public FieldDecl FindFieldDeclaration(string usr)
+        {
+            return _fields.Find(usr);
+        }
+
+        public FunctionDecl FindFunctionDeclaration(string usr)
+        {
+            return _functions.Find(usr);
+        }
+
+        public TypedefDecl FindTypedefDeclaration(string usr)
+        {
+            return _typedefs.Find(usr);
+        }
+
+        public VariableDecl FindVariableDeclaration(string usr)
+        {
+            return _variables.Find(usr);
+        }
+
+        private IDeclaration FindDeclaration(Cursor c)
+        {
+            if (c.Kind == CursorKind.Namespace)
+            {
+                return FindNamespaceDeclaration(c.Usr);
+            }
+            else if (CursorKinds.IsClassStructEtc(c.Kind))
+            {
+                return FindClassDeclaration(c.Usr);
+            }
+            else if (c.Kind == CursorKind.CXXMethod)
+            {
+                return FindMethodDeclaration(c.Usr);
+            }
+            else if (c.Kind == CursorKind.EnumConstantDecl)
+            {
+                return FindEnumConstantDeclaration(c.Usr);
+            }
+            else if (c.Kind == CursorKind.EnumDecl)
+            {
+                return FindEnumDeclaration(c.Usr);
+            }
+            else if (c.Kind == LibClang.CursorKind.Constructor)
+            {
+                return FindConstructorDeclaration(c.Usr);
+            }
+            else if (c.Kind == LibClang.CursorKind.Destructor)
+            {
+                return FindDestructorDeclaration(c.Usr);
+            }
+            else if (c.Kind == LibClang.CursorKind.FieldDecl)
+            {
+                return FindFieldDeclaration(c.Usr);
+            }
+            else if (c.Kind == LibClang.CursorKind.FunctionDecl)
+            {
+                return FindFunctionDeclaration(c.Usr);
+            }
+            else if (c.Kind == LibClang.CursorKind.VarDecl)
+            {
+                return FindVariableDeclaration(c.Usr);
+            }
+            return null;
+        }
+
+        private Dictionary<ICodeLocation, IReference> _refs = new Dictionary<ICodeLocation, IReference>();
+
+        public void UpdateReference(Cursor c)
+        {
+            Debug.Assert(c.CursorReferenced != null);
+            IDeclaration decl = FindDeclaration(c.CursorReferenced);
+
+            if(decl == null)
+            {
+                UpdateDefinition(c.CursorReferenced);
+                decl = FindDeclaration(c.CursorReferenced);
+            }
+            Debug.Assert(decl != null);
+            UpdateReference(c, decl);
+        }
+
+        private void UpdateReference(Cursor c, IDeclaration decl)
+        {
+            IReference existing = null;
+            ICodeLocation loc = new CodeLocation(c.Location);
+
+            if(_refs.TryGetValue(loc, out existing))
+            {
+                //Debug.Assert(existing.Declaration == decl);
+                return;
+            }
+            Reference refer = new Reference(c, decl, this);
+            if (refer.Location.Offset == 1257)
+            {
+                int i = 0;
+            }
+            _refs.Add(refer.Location, refer);
+            UpdateSymbolMapping(refer);
         }
 
         public void UpdateDefinition(Cursor c)
@@ -96,10 +239,6 @@ namespace CppCodeBrowser.Symbols
             {
                 UpdateEnumDecl(c);
             }
-            else if (c.Kind == CursorKind.EnumConstantDecl)
-            {
-                UpdateEnumConstantDecl(c);
-            }
             else if (c.Kind == LibClang.CursorKind.Constructor)
             {
                 UpdateConstrctorDecl(c);
@@ -123,17 +262,25 @@ namespace CppCodeBrowser.Symbols
             }
         }
 
-        private void UpdateDeclarationSymbolMapping(IDeclaration decl)
+        private void UpdateSymbolMapping(ISymbol decl)
         {
             _fileSymbolMaps.UpdateDeclarationMapping(decl.Location.Path,  decl.Location.Offset, decl.Location.Offset + decl.SpellingLength, decl);
+        }
+
+        private void UpdateSymbolMapping(ICodeLocation startLoc, int length,  ISymbol decl)
+        {
+            _fileSymbolMaps.UpdateDeclarationMapping(startLoc.Path, startLoc.Offset, startLoc.Offset + length, decl);
         }
 
         private void UpdateNamespaceDecl(Cursor c)
         {
             var result = _namespaces.FindOrAdd(c);
-            if (result.Item1)
+
+            UpdateSymbolMapping(new CodeLocation(c.Location), c.Spelling.Length, result.Item2);
+
+           // if (result.Item1)
             {
-                UpdateDeclarationSymbolMapping(result.Item2);
+                //UpdateSymbolMapping(result.Item2);
             }
         }
 
@@ -142,7 +289,7 @@ namespace CppCodeBrowser.Symbols
             var result = _classes.FindOrAdd(c);
             if (result.Item1)
             {
-                UpdateDeclarationSymbolMapping(result.Item2);
+                UpdateSymbolMapping(result.Item2);
             }
         }
 
@@ -151,7 +298,7 @@ namespace CppCodeBrowser.Symbols
             var result = _methods.FindOrAdd(c);
             if (result.Item1)
             {
-                UpdateDeclarationSymbolMapping(result.Item2);
+                UpdateSymbolMapping(result.Item2);
             }
             if(c.IsDefinition)
             {
@@ -168,7 +315,7 @@ namespace CppCodeBrowser.Symbols
             var result = _enums.FindOrAdd(c);
             if (result.Item1)
             {
-                UpdateDeclarationSymbolMapping(result.Item2);
+                UpdateSymbolMapping(result.Item2);
             }
         }
 
@@ -177,7 +324,7 @@ namespace CppCodeBrowser.Symbols
             var result = _enumConstants.FindOrAdd(c);
             if (result.Item1)
             {
-                UpdateDeclarationSymbolMapping(result.Item2);
+                UpdateSymbolMapping(result.Item2);
             }
         }
 
@@ -186,7 +333,7 @@ namespace CppCodeBrowser.Symbols
             var result = _constructors.FindOrAdd(c);
             if (result.Item1)
             {
-                UpdateDeclarationSymbolMapping(result.Item2);
+                UpdateSymbolMapping(result.Item2);
             }
             if (c.IsDefinition)
             {
@@ -203,7 +350,7 @@ namespace CppCodeBrowser.Symbols
             var result = _destructors.FindOrAdd(c);
             if (result.Item1)
             {
-                UpdateDeclarationSymbolMapping(result.Item2);
+                UpdateSymbolMapping(result.Item2);
             }
             if (c.IsDefinition)
             {
@@ -220,7 +367,7 @@ namespace CppCodeBrowser.Symbols
             var result = _fields.FindOrAdd(c);
             if (result.Item1)
             {
-                UpdateDeclarationSymbolMapping(result.Item2);
+                UpdateSymbolMapping(result.Item2);
             }
         }
 
@@ -229,7 +376,7 @@ namespace CppCodeBrowser.Symbols
             var result = _functions.FindOrAdd(c);
             if (result.Item1)
             {
-                UpdateDeclarationSymbolMapping(result.Item2);
+                UpdateSymbolMapping(result.Item2);
             }
             if (c.IsDefinition)
             {
@@ -246,7 +393,7 @@ namespace CppCodeBrowser.Symbols
             var result = _variables.FindOrAdd(c);
             if (result.Item1)
             {
-                UpdateDeclarationSymbolMapping(result.Item2);
+                UpdateSymbolMapping(result.Item2);
             }
             if(c.IsDefinition)
             {

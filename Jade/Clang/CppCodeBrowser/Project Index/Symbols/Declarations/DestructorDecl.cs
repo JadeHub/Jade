@@ -13,7 +13,7 @@ namespace CppCodeBrowser.Symbols
             : base(c, table)
         {
             Debug.Assert(c.Kind == CursorKind.Destructor);
-            _class = table.FindClass(c.SemanticParentCurosr.Usr);
+            _class = table.FindClassDeclaration(c.SemanticParentCurosr.Usr);
         }
 
         public override string Name { get { return Cursor.Spelling; } }

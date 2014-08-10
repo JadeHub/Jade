@@ -17,8 +17,6 @@ namespace JadeCore.Project
         private Collections.Observable.List<IFileItem> _allSourceFiles;
         private CppCodeBrowser.ProjectIndexBuilder _indexBuilder;
 
-        private Symbols.ProjectTable _symbolTable;
-
         #endregion
 
         #region Constructor
@@ -32,8 +30,6 @@ namespace JadeCore.Project
             _allSourceFiles = new Collections.Observable.List<IFileItem>();
             _indexBuilder = new CppCodeBrowser.ProjectIndexBuilder(delegate(FilePath p) {return FindFileItem(p) != null;},
                 JadeCore.Services.Provider.GuiScheduler, JadeCore.Services.Provider.EditorController);
-
-            _symbolTable = new Symbols.ProjectTable(this);
         }
 
         #endregion

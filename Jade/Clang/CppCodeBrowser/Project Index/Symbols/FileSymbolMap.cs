@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CppCodeBrowser.Symbols
-{
+{/*
     public class FileSymbolMap : IFileSymbolMap
     {
         private SortedList<Tuple<int, int>, ISymbol> _list;
@@ -35,5 +35,5 @@ namespace CppCodeBrowser.Symbols
         {
 
         }
-    }
+    }*/
 }

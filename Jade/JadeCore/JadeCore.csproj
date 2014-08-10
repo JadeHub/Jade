@@ -109,12 +109,6 @@
     <Compile Include="Search\ISearchResult.cs" />
     <Compile Include="Search\SearchBase.cs" />
     <Compile Include="Search\SearchController.cs" />
-    <Compile Include="Symbols\ProjectTableFile.cs" />
-    <Compile Include="Symbols\SymbolDeclaration.cs" />
-    <Compile Include="Symbols\ISymbol.cs" />
-    <Compile Include="Symbols\ProjectTable.cs" />
-    <Compile Include="Symbols\SymbolReference.cs" />
-    <Compile Include="Symbols\TableBuilder.cs" />
     <Compile Include="TextDocument\ITextDocument.cs" />
     <Compile Include="TextDocument\ITextDocumentCache.cs" />
     <Compile Include="TextDocument\TextDocument.cs" />

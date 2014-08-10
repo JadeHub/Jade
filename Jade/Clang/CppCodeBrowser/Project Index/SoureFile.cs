@@ -21,11 +21,13 @@ namespace CppCodeBrowser
     {
         private LibClang.TranslationUnit _tu;
         private HashSet<IHeaderFile> _headerFiles;
+        private Symbols.FileMapping.IFileMap _fileSymbolMap;
 
         internal SourceFile(FilePath path, LibClang.TranslationUnit tu)
         {
             Path = path;
             _tu = tu;
+            _fileSymbolMap = new Symbols.FileMapping.FileMap(path);
             _headerFiles = new HashSet<IHeaderFile>();
         }
 
@@ -85,6 +87,6 @@ namespace CppCodeBrowser
             _headerFiles.Add(headerFile);
         }
 
-        public Symbols.IFileSymbolMap FileSymbolMap { get { return null; } }
+        public Symbols.FileMapping.IFileMap FileSymbolMap { get { return null; } }
     }
 }

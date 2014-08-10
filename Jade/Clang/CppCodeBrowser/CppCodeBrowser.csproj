@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Browsing\JumpToBrowser.cs" />
+    <Compile Include="Project Index\Symbols\SymbolSet.cs" />
     <Compile Include="Project Index\Symbols\Declarations\ClassDecl.cs" />
     <Compile Include="Project Index\Symbols\Declarations\ConstructorDecl.cs" />
     <Compile Include="Project Index\Symbols\Declarations\DestructorDecl.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Project Index\Symbols\ISymbol.cs" />
     <Compile Include="Project Index\Symbols\Declarations\MethodDecl.cs" />
     <Compile Include="Project Index\Symbols\Declarations\NamespaceDecl.cs" />
+    <Compile Include="Project Index\Symbols\ISymbolTable.cs" />
     <Compile Include="Project Index\Symbols\ProjectSymbolTable.cs" />
     <Compile Include="Project Index\Symbols\Declarations\TypedefDecl.cs" />
     <Compile Include="Project Index\Symbols\Declarations\VariableDecl.cs" />

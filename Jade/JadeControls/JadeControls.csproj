@@ -114,6 +114,7 @@
     <Compile Include="EditorControl\ViewModel\Highlighters\DiagnosticHighlighter.cs" />
     <Compile Include="EditorControl\ViewModel\Documents\DocumentViewModel.cs" />
     <Compile Include="EditorControl\ViewModel\EditorTabControl\EditorControlViewModel.cs" />
+    <Compile Include="EditorControl\ViewModel\Highlighters\IndexHighlighter.cs" />
     <Compile Include="EditorControl\ViewModel\Highlighters\SearchHighlighter.cs" />
     <Compile Include="EditorControl\ViewModel\Documents\SourceDocumentViewModel.cs" />
     <Compile Include="Output Control\OutputControl.xaml.cs">
