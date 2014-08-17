@@ -50,6 +50,33 @@ namespace JadeCore.Project
         {
             return FindFileItem(this, path);
         }
+        
+        private void UpdateFileSet(IFolder folder, IList<FilePath> files)
+        {
+            foreach (IItem item in folder.Items)
+            {
+                if (item is FileItem)
+                {
+                    files.Add((item as FileItem).Path);
+                }
+            }
+
+            foreach(IFolder child in folder.Folders)
+            {
+                UpdateFileSet(child, files);
+            }
+        }
+
+        public IList<FilePath> Files
+        { 
+            get
+            {
+                List<FilePath> files = new List<FilePath>();
+
+                UpdateFileSet(this, files);
+                return files;
+            }
+        }
 
         private IFileItem FindFileItem(JadeCore.Project.IFolder folder, FilePath path)
         {

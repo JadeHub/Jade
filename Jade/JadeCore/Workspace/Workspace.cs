@@ -115,6 +115,45 @@ namespace JadeCore.Workspace
             return _rootFolder.FindProjectForFile(path);
         }
 
+
+        private HashSet<FilePath> _files;
+
+        private void UpdateFileSet(IFolder folder, ISet<FilePath> set)
+        {
+            foreach(IItem item in folder.Items)
+            {
+                if(item is ProjectItem)
+                {
+                    ProjectItem p = item as ProjectItem;
+                    foreach (FilePath path in p.Files)
+                        set.Add(path);
+                }
+            }
+
+            foreach(IFolder f in folder.Folders)
+            {
+                UpdateFileSet(f, set);
+            }
+        }
+
+        public ISet<FilePath> Files 
+        {
+            get 
+            {
+                if(_files == null)
+                {
+                    _files = new HashSet<FilePath>();
+                    UpdateFileSet(_rootFolder, _files);
+                }
+                return _files;
+            }
+        }
+
+        public bool ContainsFile(FilePath path)
+        {
+            return FindProjectForFile(path) != null;
+        }
+
         #region IFolder Implementation
 
         public string Name { get { return _name; } }

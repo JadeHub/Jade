@@ -789,7 +789,9 @@ namespace LibClang
 
         public override int GetHashCode()
         {
-            return hash == 0 ? (hash = Handle.GetHashCode()) : hash;
+            if (hash == 0)
+                hash = Handle.GetHashCode();
+            return hash;
         }
 
         #endregion

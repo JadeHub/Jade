@@ -115,7 +115,10 @@ namespace CppCodeBrowser
         
         private bool IsIndexCursorKind(CursorKind k)
         {
-            return  CursorKinds.IsClassStructEtc(k) ||
+          //  return k != CursorKind.MacroDefinition && k!= CursorKind.MacroExpansion && k != CursorKind.MacroInstantiation && k != CursorKind.UnexposedDecl;
+            return 
+                (
+                    CursorKinds.IsClassStructEtc(k) ||
                     k == LibClang.CursorKind.CXXMethod ||
                     k == LibClang.CursorKind.Constructor ||
                     k == LibClang.CursorKind.Destructor ||
@@ -127,7 +130,10 @@ namespace CppCodeBrowser
                     k == LibClang.CursorKind.EnumDecl ||
                     k == LibClang.CursorKind.EnumConstantDecl ||
                     k == CursorKind.ConversionFunction ||
-                    CursorKinds.IsReference(k);
+                    CursorKinds.IsReference(k) ||
+                    CursorKinds.IsStatement(k)/* ||
+                    CursorKinds.IsExpression(k)*/
+                );
         }
 
         private void IndexDefinitionCursor(Cursor c)
@@ -145,8 +151,8 @@ namespace CppCodeBrowser
             if (IsIndexCursorKind(c.Kind) == false) return false;
             if (c.Location == null || c.Location.File == null) return false;
 
-           // FilePath path = FilePath.Make(c.Location.File.Name);
-            ///if (_fileFilter(path) == false) return false;
+          //  FilePath path = FilePath.Make(c.Location.File.Name);
+       //     if (_fileFilter(path) == false) return false;
 
             return true;
         }

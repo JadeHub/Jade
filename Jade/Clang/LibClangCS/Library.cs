@@ -138,14 +138,17 @@ namespace LibClang
 
             public bool IsNull { get { return this == NullRange; } }
 
-            readonly IntPtr data0;
-            readonly IntPtr data1;
-            readonly uint beginIntData;
-            readonly uint endIntData;
+            readonly IntPtr data0; //SourceManager object pointer
+            readonly IntPtr data1; //LangOptions object pointer
+            readonly uint beginIntData; //Raw 32bit encoding of start location
+            readonly uint endIntData; //Raw 32bit encoding of end location
 
             public static bool operator ==(CXSourceRange left, CXSourceRange right)
             {
-                return Library.clang_equalRanges(left, right) != 0;
+                return left.beginIntData == right.beginIntData &&
+                    left.endIntData == right.endIntData &&
+                    left.data1 == right.data1 &&
+                    left.data0 == right.data0;
             }
 
             public static bool operator !=(CXSourceRange left, CXSourceRange right)
@@ -164,7 +167,7 @@ namespace LibClang
 
             public override int GetHashCode()
             {
-                return (int)((beginIntData << 16) | (endIntData & 0xff));
+                return (int)((beginIntData << 16) | (endIntData & 0xffff));
             }
         }
 
@@ -199,13 +202,15 @@ namespace LibClang
 
             public bool IsNull { get { return this == NullLocation; } }
 
-            readonly IntPtr data0;
-            readonly IntPtr data1;
-            readonly uint data2;
+            readonly IntPtr data0; //Pointer to the SourceManager object
+            readonly IntPtr data1; //Pointer to the LangOptions object
+            readonly uint data2; //Raw 32bit encoding of the location
 
             public static bool operator ==(CXSourceLocation left, CXSourceLocation right)
             {
-                return Library.clang_equalLocations(left, right) != 0;
+                return left.data2 == right.data2 &&
+                    left.data1 == right.data1 &&
+                    left.data0 == right.data0;
             }
 
             public static bool operator !=(CXSourceLocation left, CXSourceLocation right)
@@ -223,8 +228,8 @@ namespace LibClang
             }
 
             public override int GetHashCode()
-            {
-                return data0.ToInt32();
+            {                
+                return (int)data2;
             }
         }
 
@@ -440,7 +445,7 @@ namespace LibClang
                 }
                 return false;
             }
-
+                        
             public override int GetHashCode()
             {
                 return (int)Library.clang_hashCursor(this);

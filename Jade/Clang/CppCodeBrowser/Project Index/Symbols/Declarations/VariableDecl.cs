@@ -24,7 +24,12 @@ namespace CppCodeBrowser.Symbols
                 _parent = table.FindClassDeclaration(c.SemanticParentCurosr.Usr);
                 Debug.Assert(_parent != null);
             }
-            else if (c.SemanticParentCurosr.Kind == CursorKind.TranslationUnit)
+            else if(CursorKinds.IsFunctionEtc(c.SemanticParentCurosr.Kind))
+            {
+                _parent = table.FindFunctionDeclaration(c.SemanticParentCurosr.Usr);
+            }
+            else if (c.SemanticParentCurosr.Kind == CursorKind.TranslationUnit ||
+                c.SemanticParentCurosr.Kind == CursorKind.UnexposedDecl)
             {
                 _parent = null;
             }

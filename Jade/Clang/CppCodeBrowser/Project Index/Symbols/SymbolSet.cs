@@ -52,6 +52,11 @@ namespace CppCodeBrowser.Symbols
             return result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns>Tuple<bool, T> first is true if new item added</returns>
         public Tuple<bool, T> FindOrAdd(Cursor c)
         {
             T result = Find(c.Usr);

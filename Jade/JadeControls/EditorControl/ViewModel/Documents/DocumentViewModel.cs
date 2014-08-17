@@ -96,6 +96,7 @@ namespace JadeControls.EditorControl.ViewModel
         private CaretLocation _caretLocation;
 
         private bool _wantInitialFocus;
+        private int _initialLine;
                 
         #endregion
 
@@ -111,6 +112,7 @@ namespace JadeControls.EditorControl.ViewModel
             _caretLocation = new CaretLocation(_model.TextDocument);
             CaretOffset = 0;
             _wantInitialFocus = true;
+            _initialLine = 0;
         }
 
         #endregion
@@ -142,6 +144,12 @@ namespace JadeControls.EditorControl.ViewModel
         {
             if (_wantInitialFocus)
                 Keyboard.Focus(_view.TextArea);
+            if(_initialLine > 0)
+            {
+                double visualTop = _view.TextArea.TextView.GetVisualTopByDocumentLine(_initialLine) - _view.ViewportHeight / 2;
+                _view.ScrollToVerticalOffset(visualTop);
+                
+            }
         }
         
         protected virtual void OnSetView(CodeEditor view)
@@ -226,20 +234,22 @@ namespace JadeControls.EditorControl.ViewModel
         public void DisplayLocation(int offset, bool setFocus, bool scroll)
         {
             CaretOffset = offset;
+            int line = TextDocument.GetLineNumForOffset(offset);
             if (_view != null)
             {
                 if (setFocus)
                     _view.TextArea.Focus();
                 if(scroll)
                 {
-                    int line = TextDocument.GetLineNumForOffset(offset);
-                    double visualTop = _view.TextArea.TextView.GetVisualTopByDocumentLine(line);
+                    double visualTop = _view.TextArea.TextView.GetVisualTopByDocumentLine(line) - _view.ViewportHeight / 2;
                     _view.ScrollToVerticalOffset(visualTop);
                 }
             }
             else
             {
                 _wantInitialFocus = setFocus;
+                if (scroll)
+                    _initialLine = line;
             }
         }
 

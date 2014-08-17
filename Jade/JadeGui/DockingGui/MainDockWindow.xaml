@@ -154,7 +154,7 @@
                                 <avalonDock:LayoutDocumentPane/>
                                 <avalonDock:LayoutAnchorablePane Name="LowerToolPanel" DockHeight="150"/>                                
                             </avalonDock:LayoutPanel>          
-                            <avalonDock:LayoutAnchorablePane Name="RightToolPanel" DockWidth="200" />                            
+                            <avalonDock:LayoutAnchorablePane Name="RightToolPanel" DockWidth="350" />                            
                         </avalonDock:LayoutPanel>                        
                 </avalonDock:LayoutRoot>     
                             

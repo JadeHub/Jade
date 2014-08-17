@@ -193,8 +193,8 @@ namespace CppCodeBrowser.Symbols
                 UpdateDefinition(c.CursorReferenced);
                 decl = FindDeclaration(c.CursorReferenced);
             }
-            Debug.Assert(decl != null);
-            UpdateReference(c, decl);
+            if(decl != null)
+                UpdateReference(c, decl);
         }
 
         private void UpdateReference(Cursor c, IDeclaration decl)
@@ -216,8 +216,14 @@ namespace CppCodeBrowser.Symbols
             UpdateSymbolMapping(refer);
         }
 
+        HashSet<string> _defs = new HashSet<string>();
+
         public void UpdateDefinition(Cursor c)
         {
+         /*   if (_defs.Contains(c.Usr))
+                return;
+            _defs.Add(c.Usr);*/
+
             if (c.Kind == CursorKind.Namespace)
             {
                 UpdateNamespaceDecl(c);

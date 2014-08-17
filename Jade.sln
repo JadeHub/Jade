@@ -37,6 +37,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CppCodeBrowserTest", "Jade\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibClangTest", "Jade\Clang\LibClangCS\LibClangTest\LibClangTest.csproj", "{CD4C82F8-9CD0-4A2F-8E8E-648ECBD92460}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C3B7CAAF-304F-43CE-B93E-9544E8DE51DE}"
+	ProjectSection(SolutionItems) = preProject
+		Performance1.psess = Performance1.psess
+		Performance2.psess = Performance2.psess
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -168,5 +174,8 @@ Global
 		{4713D6FA-4B9D-4057-8F34-7F79D51258EA} = {584CC272-70D5-46F3-A950-972150643790}
 		{8CCFB00A-43A8-490B-AEF4-BAC620B9F0AE} = {584CC272-70D5-46F3-A950-972150643790}
 		{CD4C82F8-9CD0-4A2F-8E8E-648ECBD92460} = {584CC272-70D5-46F3-A950-972150643790}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

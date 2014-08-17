@@ -23,6 +23,8 @@ namespace JadeCore.Project
         /// </summary>        
         Collections.Observable.List<IFileItem> SourceFiles { get; }
 
+        IList<FilePath> Files { get; }
+
         /// <summary>
         /// Index builder for this project
         /// </summary>

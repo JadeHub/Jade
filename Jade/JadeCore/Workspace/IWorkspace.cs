@@ -23,5 +23,7 @@ namespace JadeCore.Workspace
         string Directory { get; }
 
         Collections.Observable.List<Project.IProject> AllProjects { get; }
+
+        ISet<FilePath> Files { get; }
     }
 }

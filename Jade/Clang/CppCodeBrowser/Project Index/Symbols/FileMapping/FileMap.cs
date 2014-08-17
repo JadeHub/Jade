@@ -45,7 +45,7 @@ namespace CppCodeBrowser.Symbols.FileMapping
             if (Get(startOffset) != referenced)
             {
                 _list.Add(new Tuple<int, int>(startOffset, endOffset), referenced);
-                Debug.WriteLine(string.Format("Mapping {0}:{1}:{2} to {3}", _path.FileName, startOffset, endOffset, referenced));
+                //Debug.WriteLine(string.Format("Mapping {0}:{1}:{2} to {3}", _path.FileName, startOffset, endOffset, referenced));
             }
         }
 

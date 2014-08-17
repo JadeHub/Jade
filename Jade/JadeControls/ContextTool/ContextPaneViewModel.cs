@@ -54,7 +54,7 @@ namespace JadeControls.ContextTool
 
           //  if(_editorController.ActiveDocument.File.Path == path)
             {
-                UpdateTree();
+               UpdateTree();
             }
         }
 
@@ -162,64 +162,91 @@ namespace JadeControls.ContextTool
             DeclarationViewModel enumNode = FindOrAddEnumNode(c.Parent);
             return enumNode.FindOrAddChildDecl(c);
         }
+
+        private bool FilterDeclaration(IDeclaration decl, ISet<FilePath> projectFiles)
+        {
+            return true;
+            //if (JadeCore.Services.Provider.WorkspaceController.CurrentWorkspace != null)
+               // return JadeCore.Services.Provider.WorkspaceController.CurrentWorkspace.ContainsFile(decl.Location.Path);
+            //return false;
+            return projectFiles.Contains(decl.Location.Path);
+        }
                 
         private void UpdateTree()
         {
             ISymbolTable symbols = _currentIndex.Symbols;
+            ISet<FilePath> files = JadeCore.Services.Provider.WorkspaceController.CurrentWorkspace.Files;
 
             foreach(NamespaceDecl ns in symbols.Namespaces)
             {
-                FindOrAddNamespaceNode(ns);
+                if (FilterDeclaration(ns, files))
+                    FindOrAddNamespaceNode(ns);
             }
 
             foreach(ClassDecl c in symbols.Classes)
             {
-                FindOrAddClassNode(c);
+                if (FilterDeclaration(c, files))
+                    FindOrAddClassNode(c);
             }
 
             foreach(MethodDecl m in symbols.Methods)
             {
-                DeclarationViewModel parentClass = FindOrAddClassNode(m.Class);
-                parentClass.FindOrAddChildDecl(m);
+                if (FilterDeclaration(m, files))
+                {
+                    DeclarationViewModel parentClass = FindOrAddClassNode(m.Class);
+                    parentClass.FindOrAddChildDecl(m);
+                }
             }
 
             foreach(FieldDecl f in symbols.Fields)
             {
-                DeclarationViewModel parentClass = FindOrAddClassNode(f.Class);
-                parentClass.FindOrAddChildDecl(f);
+                if (FilterDeclaration(f, files))
+                {
+                    DeclarationViewModel parentClass = FindOrAddClassNode(f.Class);
+                    parentClass.FindOrAddChildDecl(f);
+                }
             }
 
             foreach(ConstructorDecl c in symbols.Constructors)
             {
-                if (c.Class != null)
+                if (FilterDeclaration(c, files))
                 {
-                    DeclarationViewModel parentClass = FindOrAddClassNode(c.Class);
-                    parentClass.FindOrAddChildDecl(c);
+                    if (c.Class != null)
+                    {
+                        DeclarationViewModel parentClass = FindOrAddClassNode(c.Class);
+                        parentClass.FindOrAddChildDecl(c);
+                    }
                 }
             }
 
             foreach (DestructorDecl d in symbols.Destructors)
             {
-                if (d.Class != null)
+                if (FilterDeclaration(d, files))
                 {
-                    DeclarationViewModel parentClass = FindOrAddClassNode(d.Class);
-                    parentClass.FindOrAddChildDecl(d);
+                    if (d.Class != null)
+                    {
+                        DeclarationViewModel parentClass = FindOrAddClassNode(d.Class);
+                        parentClass.FindOrAddChildDecl(d);
+                    }
                 }
             }
 
             foreach(EnumDecl e in symbols.Enums)
             {
-                FindOrAddEnumNode(e);
+                if (FilterDeclaration(e, files))
+                    FindOrAddEnumNode(e);
             }
 
             foreach (EnumConstantDecl c in symbols.EnumConstants)
             {
-                FindOrAddEnumConstantNode(c);
+                if (FilterDeclaration(c, files))
+                    FindOrAddEnumConstantNode(c);
             }
 
             foreach(FunctionDecl f in symbols.Functions)
             {
-                FindOrAddFunctionNode(f);
+                if (FilterDeclaration(f, files))
+                    FindOrAddFunctionNode(f);
             }
             OnPropertyChanged("RootItems");
         }
