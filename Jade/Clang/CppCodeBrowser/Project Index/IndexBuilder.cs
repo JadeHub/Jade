@@ -130,6 +130,8 @@ namespace CppCodeBrowser
                     k == LibClang.CursorKind.EnumDecl ||
                     k == LibClang.CursorKind.EnumConstantDecl ||
                     k == CursorKind.ConversionFunction ||
+                    k == CursorKind.ParmDecl ||
+                    k == CursorKind.TemplateTypeParameter ||
                     CursorKinds.IsReference(k) ||
                     CursorKinds.IsStatement(k)/* ||
                     CursorKinds.IsExpression(k)*/

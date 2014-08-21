@@ -56,6 +56,20 @@ void SomeClass::t() const
 
 void SomeClass::t1() const {}
 
+template<typename T, typename T2>
+class Template2
+{
+public:
+	Template2(const T& t) : mT(t) {}
+
+	operator const T&()  {return mT;}
+	
+	const T& Get() const {return mT;}
+
+private:
+	T mT;
+};
+
 class Overloads
 {
 public:

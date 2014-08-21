@@ -292,6 +292,10 @@ namespace CppCodeBrowser.Symbols
 
         private void UpdateClassDecl(Cursor c)
         {
+            if (c.Spelling == "Template2")
+            {
+                int i = 0;
+            }
             var result = _classes.FindOrAdd(c);
             if (result.Item1)
             {
@@ -336,6 +340,11 @@ namespace CppCodeBrowser.Symbols
 
         private void UpdateConstrctorDecl(Cursor c)
         {
+            if(c.Spelling == "Template2<T>")
+            {
+                int i = 0;
+            }
+
             var result = _constructors.FindOrAdd(c);
             if (result.Item1)
             {

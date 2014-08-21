@@ -3,18 +3,31 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:local="clr-namespace:JadeControls.ContextTool"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <TreeView ItemsSource="{Binding RootItems}" MouseDoubleClick="TreeView_MouseDoubleClick">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <local:AutoCompleteWatermark x:Name="acwm" Grid.Row="0"/>        
+        <xctk:WatermarkTextBox  Grid.Row="1" 
+                                    MinWidth="175"
+                                    Watermark="Search" 
+                                    VerticalAlignment="Center" Margin="5" ToolTip="Filters the properties within the PropertyGrid." />
+        
+        <TreeView Grid.Row="2" ItemsSource="{Binding RootItems}" MouseDoubleClick="TreeView_MouseDoubleClick">
             <TreeView.Resources>
                 <ResourceDictionary>
                     <ResourceDictionary.MergedDictionaries>
                         <ResourceDictionary Source="JadeTreeViewStyle.xaml" />                
                     </ResourceDictionary.MergedDictionaries>
                     <local:BoldifySpellingConverter x:Key="BoldifySpellingConverter" />
-                    <BitmapImage x:Key="DeleteIconSource" UriSource="pack://application:,,,/Images/red_c.ico" />
+                  
                     <HierarchicalDataTemplate DataType="{x:Type local:DeclarationViewModel}" ItemsSource="{Binding Children}">
                         <StackPanel Orientation="Horizontal" >
                             <TextBlock Text="{Binding KindString}" Foreground="Blue" />

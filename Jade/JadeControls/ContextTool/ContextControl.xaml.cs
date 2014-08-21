@@ -23,6 +23,7 @@ namespace JadeControls.ContextTool
         public ContextControl()
         {
             InitializeComponent();
+            acwm.WatermarkText = "File";
         }
 
         private void TreeView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -30,5 +31,24 @@ namespace JadeControls.ContextTool
             ContextPaneViewModel vm = DataContext as ContextPaneViewModel;
             vm.BrowseToSelectedSymbol();
         }
+
+        private void ToolBar_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ToolBar toolBar = sender as ToolBar;
+            var overflowGrid = toolBar.Template.FindName("OverflowGrid", toolBar) as FrameworkElement;
+            if (overflowGrid != null)
+            {
+                overflowGrid.Visibility = toolBar.HasOverflowItems ? Visibility.Visible : Visibility.Collapsed;
+            }
+
+            var mainPanelBorder = toolBar.Template.FindName("MainPanelBorder", toolBar) as FrameworkElement;
+            if (mainPanelBorder != null)
+            {
+                var defaultMargin = new Thickness(0, 0, 11, 0);
+                mainPanelBorder.Margin = toolBar.HasOverflowItems ? defaultMargin : new Thickness(0);
+            }
+        }
+
+        
     }
 }

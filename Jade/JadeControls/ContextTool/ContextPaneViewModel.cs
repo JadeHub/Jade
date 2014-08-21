@@ -15,6 +15,7 @@ namespace JadeControls.ContextTool
         private JadeCore.IEditorController _editorController;
         private CppCodeBrowser.IProjectIndex _currentIndex;
         private ObservableCollection<DeclarationViewModel> _root;
+        private HashSet<FilePath> _files;
         
         public ContextPaneViewModel(JadeCore.IEditorController editCtrl)
         {
@@ -22,7 +23,8 @@ namespace JadeControls.ContextTool
             ContentId = "ContextToolPane";
             _editorController = editCtrl;
             _editorController.ActiveDocumentChanged += EditorControllerActiveDocumentChanged;
-            _root = new ObservableCollection<DeclarationViewModel>();            
+            _root = new ObservableCollection<DeclarationViewModel>();
+            _files = new HashSet<FilePath>();
         }
 
         private void EditorControllerActiveDocumentChanged(JadeCore.IEditorDoc newValue, JadeCore.IEditorDoc oldValue)
@@ -165,11 +167,13 @@ namespace JadeControls.ContextTool
 
         private bool FilterDeclaration(IDeclaration decl, ISet<FilePath> projectFiles)
         {
+            _files.Add(decl.Location.Path);
+
             return true;
             //if (JadeCore.Services.Provider.WorkspaceController.CurrentWorkspace != null)
                // return JadeCore.Services.Provider.WorkspaceController.CurrentWorkspace.ContainsFile(decl.Location.Path);
             //return false;
-            return projectFiles.Contains(decl.Location.Path);
+            //return projectFiles.Contains(decl.Location.Path);
         }
                 
         private void UpdateTree()
@@ -249,6 +253,7 @@ namespace JadeControls.ContextTool
                     FindOrAddFunctionNode(f);
             }
             OnPropertyChanged("RootItems");
+            OnPropertyChanged("FileNames");
         }
 
         public ObservableCollection<DeclarationViewModel> RootItems { get { return _root; } }
@@ -271,6 +276,14 @@ namespace JadeControls.ContextTool
                     return selected;
             }
             return null;
+        }
+                
+        public IEnumerable<string> FileNames
+        {
+            get
+            {
+                return from FilePath path in _files select path.FileName;
+            }
         }
 
         //public FileViewModel CurrentFile { get; private set; }
