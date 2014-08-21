@@ -2,43 +2,23 @@
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
-using JadeCore.CppSymbols2;
+using CppCodeBrowser.Symbols;
 
 namespace JadeControls.SymbolInspector
 {
     public class ConstructorViewModel : SymbolViewModelBase
     {
-        public ConstructorViewModel(ConstructorDeclarationSymbol symbol)
-            : base(symbol)
-        {
+        ConstructorDecl _declaration;
 
-        }
-
-        private JadeCore.CppSymbols2.ConstructorDeclarationSymbol CtorSymbol
+        public ConstructorViewModel(ConstructorDecl decl)
+            : base(decl.Cursor)
         {
-            get
-            {
-                Debug.Assert(SymbolCursor is ConstructorDeclarationSymbol);
-                return SymbolCursor as ConstructorDeclarationSymbol;
-            }
+            _declaration = decl;
         }
 
         private string BuildParamText()
         {
-            StringBuilder sb = new StringBuilder();
-            //LibClang.Cursor c = SymbolCursor.Cursor;
-
-            sb.Append("(");
-
-            foreach (JadeCore.CppSymbols2.MethodArgumentSymbol arg in CtorSymbol.Arguments)
-            {
-                sb.Append(arg.ToString());
-                if (arg != CtorSymbol.Arguments.Last())
-                    sb.Append(", ");
-            }
-            sb.Append(")");
-                        
-            return sb.ToString();
+            return _declaration.BuildParamText();
         }
 
         public override string DisplayText

@@ -17,7 +17,6 @@ namespace JadeCore
         JadeCore.Search.ISearchController SearchController { get; set; }
         System.Windows.Window MainWindow { get; set; }
         TaskScheduler GuiScheduler { get; set; }
-        CppSymbols2.ISymbolCursorFactory SymbolCursorFactory { get; set; }
     }
 
     public class Services
@@ -43,6 +42,5 @@ namespace JadeCore
         public JadeCore.Search.ISearchController SearchController { get; set; }
         public System.Windows.Window MainWindow { get; set; }
         public TaskScheduler GuiScheduler { get; set; }
-        public CppSymbols2.ISymbolCursorFactory SymbolCursorFactory { get; set; }
     }
 }

@@ -108,8 +108,8 @@ namespace CppCodeBrowser
                 AddSourceFile(path, tu);               
             }
             //RaiseItemUpdatedEvent(path);
-            if(tuToDispose != null)
-                tuToDispose.Dispose();
+            //if(tuToDispose != null)
+              //  tuToDispose.Dispose();
             /*
             if(path.FileName == "blah.cc")
                 IndexTranslationUnit(tu);

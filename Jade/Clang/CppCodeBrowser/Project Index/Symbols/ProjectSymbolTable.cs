@@ -305,6 +305,11 @@ namespace CppCodeBrowser.Symbols
 
         private void UpdateMethodDecl(Cursor c)
         {
+            if(c.Spelling == "Fn2")
+            {
+                int i = 0;
+            }
+
             var result = _methods.FindOrAdd(c);
             if (result.Item1)
             {

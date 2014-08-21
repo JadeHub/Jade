@@ -67,14 +67,14 @@ namespace CppCodeBrowser
                     tu.Dispose();
                     return false;
                 }
-                  
+
                 //Perform on gui thread
                 Task.Factory.StartNew(() => 
                     {
                         lock (_lock)
                         {
                             _index.UpdateSourceFile(path, tu);
-                            IndexTranslationUnit(tu);
+                            IndexTranslationUnit(tu);            
                             _index.RaiseItemUpdatedEvent(path);
                         }
                     }, CancellationToken.None, TaskCreationOptions.None, _callbackScheduler);

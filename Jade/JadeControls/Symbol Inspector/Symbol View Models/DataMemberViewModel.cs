@@ -1,32 +1,25 @@
 ﻿using System;
 using System.Text;
 using System.Diagnostics;
-using JadeCore.CppSymbols2;
+using CppCodeBrowser.Symbols;
 
 namespace JadeControls.SymbolInspector
 {
     public class DataMemberViewModel : SymbolViewModelBase
     {
-        public DataMemberViewModel(DataMemberDeclarationSymbol symbol)
-            : base(symbol)
-        {
+        private VariableDecl _declaration;
 
-        }
-
-        private JadeCore.CppSymbols2.DataMemberDeclarationSymbol CtorSymbol
+        public DataMemberViewModel(VariableDecl decl)
+            : base(decl.Cursor)
         {
-            get
-            {
-                Debug.Assert(SymbolCursor is DataMemberDeclarationSymbol);
-                return SymbolCursor as DataMemberDeclarationSymbol;
-            }
+            _declaration = decl;
         }
 
         private string GetTypeString(LibClang.Type type)        
         {
             string result;
 
-            string name = SymbolCursor.Spelling;
+            string name = _declaration.Spelling;
 
             if (type.PointeeType != null)
                 result = GetTypeString(type.PointeeType);
@@ -61,7 +54,7 @@ namespace JadeControls.SymbolInspector
 
         public string TypeText
         {
-            get { return GetTypeString(SymbolCursor.Cursor.Type); }
+            get { return GetTypeString(Cursor.Type); }
         }
     }
 }

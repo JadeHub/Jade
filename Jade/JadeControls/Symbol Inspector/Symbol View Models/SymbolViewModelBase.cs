@@ -8,32 +8,23 @@ using System.Windows.Controls;
 namespace JadeControls.SymbolInspector
 {
     public abstract class SymbolViewModelBase : NotifyPropertyChanged
-    {
-        
-        public SymbolViewModelBase(JadeCore.CppSymbols2.ISymbolCursor symbol)
+    {        
+        public SymbolViewModelBase(LibClang.Cursor c)
         {
-            SymbolCursor = symbol;
+            Cursor = c;
         }
 
-        public JadeCore.CppSymbols2.ISymbolCursor SymbolCursor
+        public LibClang.Cursor Cursor
         {
             get;
             private set;
         }
-
-        public string SourceText
-        {
-            get 
-            { 
-                return SymbolCursor != null ? SymbolCursor.SourceText : ""; 
-            }
-        }
-
+        
         public string Spelling
         {
             get 
             {
-                return SymbolCursor != null ? SymbolCursor.Spelling : "";
+                return Cursor != null ? Cursor.Spelling : "";
             }
         }
 

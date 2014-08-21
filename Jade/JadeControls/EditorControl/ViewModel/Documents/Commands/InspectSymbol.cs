@@ -68,11 +68,21 @@ namespace JadeControls.EditorControl.ViewModel.Commands
 
         protected override void Execute()
         {
+            CppCodeBrowser.Symbols.FileMapping.IFileMap map = _index.FileSymbolMaps.GetMap(_path);
+            if (map == null) return;
+
+            CppCodeBrowser.Symbols.ISymbol symbol = map.Get(ViewModel.CaretOffset);
+            if (symbol == null) return;
+
+            if(symbol is CppCodeBrowser.Symbols.IDeclaration)
+                JadeCore.Services.Provider.CommandHandler.OnDisplaySymbolInspector(symbol as CppCodeBrowser.Symbols.IDeclaration);
+
+            /*
             LibClang.Cursor c = CppCodeBrowser.BrowsingUtils.GetDefinitionOfCursorAt(new CppCodeBrowser.CodeLocation(_path.Str, ViewModel.CaretOffset), _index);
             if(c != null && JadeCore.Services.Provider.SymbolCursorFactory.CanCreateKind(c.Kind))
             {
                 JadeCore.Services.Provider.CommandHandler.OnDisplaySymbolInspector(JadeCore.Services.Provider.SymbolCursorFactory.Create(c));
-            }
+            }*/
         }
         /*
         private LibClang.Cursor GetCursorAt(CppCodeBrowser.ICodeLocation loc)

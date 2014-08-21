@@ -52,9 +52,23 @@ namespace CppCodeBrowser.Symbols
         public abstract string Name { get ;}
         public abstract EntityKind Kind { get; }
 
+        protected ISymbolTable Table { get { return _table; } }
+
         public override string ToString()
         {
             return string.Format("Definition of {0} {1} at {2}", Kind, Name, Location);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is IDeclaration)
+                return Usr == (obj as IDeclaration).Usr;
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Usr.GetHashCode();
         }
     }
 }

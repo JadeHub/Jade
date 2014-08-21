@@ -69,5 +69,43 @@ namespace CppCodeBrowser.Symbols
 
         public IDeclaration Parent { get { return _parent; } }
         public bool IsStruct { get { return Cursor.Kind == CursorKind.StructDecl; } }
+        
+        public IEnumerable<MethodDecl> Methods
+        {
+            get 
+            {
+                return from m in Table.Methods where m.Class == this select m;
+            }
+        }
+
+        public IEnumerable<ConstructorDecl> Constructors
+        {
+            get
+            {
+                return from c in Table.Constructors where c.Class == this select c;
+                /*
+                foreach(ConstructorDecl c in Table.Constructors)
+                {
+                    if (c.Class == this)
+                        yield return c;
+                }*/
+            }
+        }
+
+        public IEnumerable<ClassDecl> BaseClasses
+        {
+            get 
+            {
+                return new List<ClassDecl>();
+            }
+        }
+
+        public IEnumerable<VariableDecl> DataMembers
+        {
+            get
+            {
+                return from v in Table.Variables where v.Parent != null && v.Parent == this select v;
+            }
+        }
     }
 }

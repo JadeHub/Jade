@@ -7,7 +7,6 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Controls;
-using JadeCore.CppSymbols2;
 using CppCodeBrowser.Symbols;
 
 namespace JadeControls.ContextTool  

@@ -8,42 +8,44 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Controls;
 using JadeCore;
+using CppCodeBrowser.Symbols;
 
 namespace JadeControls.SymbolInspector
 { 
     public class ClassDeclarationViewModel : SymbolViewModelBase
     {
-        private JadeCore.CppSymbols2.ClassDeclarationSymbol _symbol;
         private SymbolGroupViewModel _constructorGroup;
         private SymbolGroupViewModel _methodGroup;
         private SymbolGroupViewModel _memberGroup;
         private SymbolGroupViewModel _baseClassGroup;
+        private ClassDecl _declaration;
 
-        public ClassDeclarationViewModel(JadeCore.CppSymbols2.ClassDeclarationSymbol symbol)
-            :base(symbol)
+        public ClassDeclarationViewModel(ClassDecl decl)
+            :base(decl.Cursor)
         {
-            _symbol = symbol;
+            _declaration = decl;
+                        
             _constructorGroup = new SymbolGroupViewModel("Constructors");
             _methodGroup = new SymbolGroupViewModel("Methods");
             _memberGroup = new SymbolGroupViewModel("Data Members");
             _baseClassGroup = new SymbolGroupViewModel("Base Classes");
 
-            foreach (JadeCore.CppSymbols2.ConstructorDeclarationSymbol ctor in symbol.Constructors)
+            foreach (var ctor in _declaration.Constructors)
             {
                 _constructorGroup.AddSymbol(new ConstructorViewModel(ctor));
             }
 
-            foreach (JadeCore.CppSymbols2.MethodDeclarationSymbol method in from method in symbol.Methods orderby method.Spelling select method)
+            foreach (var method in from method in _declaration.Methods orderby method.Spelling select method)
             {
                 _methodGroup.AddSymbol(new MethodDeclarationViewModel(method));
             }
 
-            foreach(JadeCore.CppSymbols2.ClassDeclarationSymbol b in symbol.BaseClasses)
+            foreach (var b in _declaration.BaseClasses)
             {
                 _baseClassGroup.AddSymbol(new ClassDeclarationViewModel(b));
             }
 
-            foreach (JadeCore.CppSymbols2.DataMemberDeclarationSymbol data in from member in symbol.DataMembers orderby member.Spelling select member)
+            foreach (var data in from member in _declaration.DataMembers orderby member.Spelling select member)
             {
                 _memberGroup.AddSymbol(new DataMemberViewModel(data));
             }
@@ -53,7 +55,8 @@ namespace JadeControls.SymbolInspector
         {
             get 
             {
-                return SymbolCursor.Cursor.Kind == LibClang.CursorKind.StructDecl ? "Struct" : "Class";
+                return _declaration.IsStruct ? "Struct" : "Class";
+                //return SymbolCursor.Cursor.Kind == LibClang.CursorKind.StructDecl ? "Struct" : "Class";
             }
         }
 
@@ -76,10 +79,10 @@ namespace JadeControls.SymbolInspector
         {
             get { return _baseClassGroup; }
         }
-
+        
         public override string DisplayText
         {
-            get { return SourceText; }
+            get { return Spelling; }
         }
     }    
 }

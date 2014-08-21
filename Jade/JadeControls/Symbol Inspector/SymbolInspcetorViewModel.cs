@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using JadeCore;
+using CppCodeBrowser.Symbols;
 
 namespace JadeControls.SymbolInspector
 {
@@ -14,6 +15,8 @@ namespace JadeControls.SymbolInspector
         private SymbolViewModelBase _symbol;
         private static NullSymbolViewModel _nullSymbolViewModel = new NullSymbolViewModel();
 
+        private IDeclaration _declaration;
+
         public SymbolInspectorPaneViewModel(IEditorController editorController)
         {
             Title = "Symbol Inspector";
@@ -22,7 +25,24 @@ namespace JadeControls.SymbolInspector
             IsTrackingCursor = false;
             _symbol = _nullSymbolViewModel;
         }
-
+        
+        public CppCodeBrowser.Symbols.IDeclaration Declaration
+        {
+            set
+            {
+                if(value is ClassDecl)
+                {
+                    _symbol = new ClassDeclarationViewModel(value as CppCodeBrowser.Symbols.ClassDecl);
+                    _declaration = value;
+                }
+                else
+                {
+                    _symbol = _nullSymbolViewModel;
+                }
+                OnPropertyChanged("Symbol");
+            }
+        }
+        /*
         public JadeCore.CppSymbols2.ISymbolCursor SymbolCursor
         {
             set
@@ -38,7 +58,7 @@ namespace JadeControls.SymbolInspector
                 }
             }
         }
-        
+        */
 
         public bool IsTrackingCursor
         {

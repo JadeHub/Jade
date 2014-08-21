@@ -83,7 +83,7 @@ namespace JadeControls.SymbolInspector
         public void OnDoubleClick()
         {
             if (SelectedSymbol == null) return;
-            CppCodeBrowser.ICodeLocation loc = new CppCodeBrowser.CodeLocation(SelectedSymbol.SymbolCursor.Cursor.Location);
+            CppCodeBrowser.ICodeLocation loc = new CppCodeBrowser.CodeLocation(SelectedSymbol.Cursor.Location);
             if (loc == null) return;
             JadeCore.Services.Provider.CommandHandler.OnDisplayCodeLocation(new JadeCore.DisplayCodeLocationCommandParams(loc, true, true));
         }

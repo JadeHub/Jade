@@ -16,8 +16,7 @@ namespace CppCodeBrowser.Symbols
         {
             Debug.Assert(CursorKinds.IsClassStructEtc(declaration.SemanticParentCurosr.Kind));
             _class = table.FindClassDeclaration(declaration.SemanticParentCurosr.Usr);
-            Debug.Assert(_class != null);
-            //_class.AddMethodDecl(this);
+            Debug.Assert(_class != null);            
         }
 
         public ClassDecl Class { get { return _class; } }

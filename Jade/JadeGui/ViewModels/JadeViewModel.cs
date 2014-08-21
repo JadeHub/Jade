@@ -581,9 +581,9 @@ namespace JadeGui.ViewModels
             return _searchController.Current != null && _searchController.Current.Results.Count > 1;
         }
 
-        public void OnDisplaySymbolInspector(JadeCore.CppSymbols2.ISymbolCursor symbol)
+        public void OnDisplaySymbolInspector(CppCodeBrowser.Symbols.IDeclaration declaration)
         {
-            _symbolInspectorViewModel.SymbolCursor = symbol;
+            _symbolInspectorViewModel.Declaration = declaration;
             _symbolInspectorViewModel.IsSelected = true;
             _symbolInspectorViewModel.IsVisible = true;
         }
