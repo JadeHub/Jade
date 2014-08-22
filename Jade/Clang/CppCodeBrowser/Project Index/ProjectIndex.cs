@@ -31,15 +31,13 @@ namespace CppCodeBrowser
 
         private object _lock;
         private readonly LibClang.Index _libClangIndex;
-        private Func<FilePath, bool> _fileFilter;
 
         private Symbols.ProjectSymbolTable _symbols;
         private Symbols.FileMapping.IProjectFileMaps _fileSymbolMappings;
                         
-        public ProjectIndex(Func<FilePath, bool> fileFilter)
+        public ProjectIndex()
         {
             _lock = new object();
-            _fileFilter = fileFilter;
             _libClangIndex = new LibClang.Index(false, true);
             _headers = new Dictionary<FilePath, IHeaderFile>();
             _sources = new Dictionary<FilePath, ISourceFile>();

@@ -18,13 +18,21 @@ namespace JadeCore
             _loaded = false;
             _avDoc = new ICSharpCode.AvalonEdit.Document.TextDocument();
             _avDoc.TextChanged += OnAvDocTextChanged;
+            _avDoc.Changed += OnAvDocChanged;
             _modified = false;
             _version = 0;
         }
 
-        public event TextChangedEvent TextChanged;
+        private void OnAvDocChanged(object sender, DocumentChangeEventArgs e)
+        {
+            EventHandler<DocumentChangeEventArgs> handler = Changed;
+            if (handler != null)
+                handler(sender, e);
+        }
 
+        public event TextChangedEvent TextChanged;
         public event EventHandler ModifiedChanged;
+        public event EventHandler<DocumentChangeEventArgs> Changed;
 
         private void RaiseModifiedChangedEvent()
         {

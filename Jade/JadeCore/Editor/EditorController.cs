@@ -240,6 +240,19 @@ namespace JadeCore.Editor
             }
         }
 
+        public IEnumerable<CppCodeBrowser.ParseFile> UnsavedFiles 
+        { 
+            get
+            {
+                List<CppCodeBrowser.ParseFile> files = new List<CppCodeBrowser.ParseFile>();
+                foreach (TextDocumentSnapshot doc in GetSnapshots())
+                {
+                    files.Add(new CppCodeBrowser.ParseFile(doc.Document.File.Path, doc.Version, doc.Text));
+                }
+                return files;
+            }
+        }
+
         public IList<Tuple<string, string>> GetUnsavedFiles()
         {
             List<Tuple<string, string>> result = new List<Tuple<string, string>>();

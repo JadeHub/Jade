@@ -1,12 +1,74 @@
 ﻿using JadeUtils.IO;
 using LibClang;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace CppCodeBrowser
-{   
+{
+    public class ParseFile
+    {
+        public ParseFile(FilePath path, object data, string content)
+        {
+            Path = path;
+            Data = data;
+            Content = content;
+        }
+
+        public FilePath Path { get; private set; }
+        public object Data { get; private set; }
+        public string Content { get; private set; }
+    }
+
+    public class ParseResult : IDisposable
+    {
+        private FilePath _path;
+        private LibClang.TranslationUnit _translationUnit;
+        private List<ParseFile> _files;
+
+        public ParseResult(FilePath path, IUnsavedFileProvider unsavedFiles, LibClang.TranslationUnit tu)
+        {
+            _path = path;
+            _translationUnit = tu;
+            _files = new List<ParseFile>(unsavedFiles.UnsavedFiles);
+        }
+
+        public void Dispose()
+        {
+            if (_translationUnit != null)
+            {
+                _translationUnit.Dispose();
+                _translationUnit = null;
+            }
+        }
+
+        public LibClang.TranslationUnit TranslationUnit { get { return _translationUnit; } }
+        public IEnumerable<ParseFile> Files { get { return _files; } }
+    }
+
+    public static class Parser
+    {
+        public static ParseResult Parse(ProjectIndex index, FilePath path, string[] compilerArgs, IUnsavedFileProvider unsavedFiles)
+        {
+            TranslationUnit tu = new TranslationUnit(index.LibClangIndex, path.Str);
+                                    
+            List<Tuple<string, string>> unsavedList = new List<Tuple<string, string>>();
+            foreach(var i in unsavedFiles.UnsavedFiles)
+            {
+                unsavedList.Add(new Tuple<string, string>(i.Path.Str, i.Content));
+            }
+            if (tu.Parse(compilerArgs, unsavedList) == false)
+            {
+                tu.Dispose();
+                return null;
+            }
+
+            return new ParseResult(path, unsavedFiles, tu);;
+        }
+    }
+    
     public interface IUnsavedFileProvider
     {
        /// <summary>
@@ -14,8 +76,9 @@ namespace CppCodeBrowser
        /// </summary>
        /// <returns></returns>
         IList<Tuple<string, string>> GetUnsavedFiles();
+        IEnumerable<ParseFile> UnsavedFiles { get; }
     }
-
+    
     public class ProjectIndexBuilder : IIndexBuilder
     {
         private bool _disposed = false;
@@ -27,14 +90,12 @@ namespace CppCodeBrowser
         private TaskScheduler _callbackScheduler;
         private IUnsavedFileProvider _unsavedFilesProvider;
         private object _lock = new object();
-        private Func<FilePath, bool> _fileFilter;
-        
-        public ProjectIndexBuilder(Func<FilePath, bool> fileFilter, TaskScheduler callbackSCheduler, IUnsavedFileProvider unsavedFiles)
+                
+        public ProjectIndexBuilder(TaskScheduler callbackSCheduler, IUnsavedFileProvider unsavedFiles)
         {
             _callbackScheduler = callbackSCheduler;
             _unsavedFilesProvider = unsavedFiles;
-            _fileFilter = fileFilter;
-            _index = new ProjectIndex(fileFilter);
+            _index = new ProjectIndex();
             _allTus = new HashSet<TranslationUnit>();
         }
 
@@ -54,31 +115,38 @@ namespace CppCodeBrowser
         }
 
         public bool ParseFile(FilePath path, string[] compilerArgs)
-        {
+        {            
+            if (path.FileName == "main.cpp" && done)
+            {
+
+                return true; ;
+            }
+            if (path.FileName == "main.cpp")
+                done = true;
+
+
             if (_disposed) return false;
 
-            lock (_lock)
+            //lock (_lock)
             {
-                LibClang.TranslationUnit tu = new LibClang.TranslationUnit(_index.LibClangIndex, path.Str);
+                System.Diagnostics.Debug.WriteLine("**Parsing " + path.FileName);
 
-                //pass in unsaved files
-                if (tu.Parse(compilerArgs, _unsavedFilesProvider.GetUnsavedFiles()) == false)
+                ParseResult result = Parser.Parse(_index, path, compilerArgs, _unsavedFilesProvider);
+                if (result != null)
                 {
-                    tu.Dispose();
-                    return false;
-                }
+                    _index.UpdateSourceFile(path, result.TranslationUnit);
 
-                //Perform on gui thread
-                Task.Factory.StartNew(() => 
-                    {
-                        lock (_lock)
+                    //Perform on gui thread
+                    Task.Factory.StartNew(() =>
                         {
-                            _index.UpdateSourceFile(path, tu);
-                            IndexTranslationUnit(tu);            
-                            _index.RaiseItemUpdatedEvent(path);
-                        }
-                    }, CancellationToken.None, TaskCreationOptions.None, _callbackScheduler);
-                
+                           // lock (_lock)
+                            {
+                                System.Diagnostics.Debug.WriteLine("**Indexing " + path.FileName);
+                                IndexTranslationUnit(result.TranslationUnit);
+                                _index.RaiseItemUpdatedEvent(path);
+                            }
+                        }, CancellationToken.None, TaskCreationOptions.None, _callbackScheduler);
+                }
             }
             return true;
         }
@@ -95,18 +163,8 @@ namespace CppCodeBrowser
         static bool done = false;
 
         private void IndexTranslationUnit(TranslationUnit tu)        
-        {            
-            FilePath p = FilePath.Make(tu.File.Name);
-            if (p.FileName == "main.cpp" && done)
-            {
-                
-                return;
-            }
-            if(p.FileName == "main.cpp")
-               done = true;
-
-            System.Diagnostics.Debug.WriteLine("**Indexing " + p.FileName);
-
+        {           
+            
             foreach (Cursor c in tu.Cursor.Children)
             {
                 IndexCursor(c);
@@ -152,9 +210,6 @@ namespace CppCodeBrowser
         {
             if (IsIndexCursorKind(c.Kind) == false) return false;
             if (c.Location == null || c.Location.File == null) return false;
-
-          //  FilePath path = FilePath.Make(c.Location.File.Name);
-       //     if (_fileFilter(path) == false) return false;
 
             return true;
         }

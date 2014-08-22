@@ -3,15 +3,16 @@ using System;
 using System.Threading;
 using System.IO;
 	
-	
 namespace JadeCore.Editor
 {
+    
+        
 	public interface ISourceDocument : JadeCore.IEditorDoc
 	{
 //	    event EventHandler OnIndexUpdated;
 	//    CppCodeBrowser.IProjectIndex ProjectIndex { get; }
 	}
-	        
+                
 	public class SourceDocument : ISourceDocument
 	{
 	    #region Data

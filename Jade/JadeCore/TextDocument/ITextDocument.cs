@@ -16,6 +16,7 @@ namespace JadeCore
 
         event TextChangedEvent TextChanged; // pass version number
         event EventHandler ModifiedChanged;
+        event EventHandler<DocumentChangeEventArgs> Changed;
 
         #endregion
 
