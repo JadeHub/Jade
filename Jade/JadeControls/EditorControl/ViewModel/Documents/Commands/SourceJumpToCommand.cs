@@ -97,31 +97,27 @@ namespace JadeControls.EditorControl.ViewModel.Commands
             {
                 return (symbol as CppCodeBrowser.Symbols.IReference).Declaration.Location;
             }
-            else
+            else if(symbol is IDeclaration)
             {
                 if (symbol is IHasDefinition)
                 {
+                    IDeclaration decl = symbol as IDeclaration;
                     IHasDefinition s = symbol as IHasDefinition;
-                    if (s.HasDefinitionCursor)
-                        return new CppCodeBrowser.CodeLocation(s.DefinitionCursor.Location);
+
+                    if(decl.Location.Path == _path && offset >= decl.Location.Offset && offset <= decl.Location.Offset + decl.SpellingLength)
+                    {
+                        //we are on the declaration, go to the definition
+                        if (s.HasDefinitionCursor)
+                            return new CppCodeBrowser.CodeLocation(s.DefinitionCursor.Location);
+                    }
+                    else
+                    {
+                        //we are on the definition, go to the declaration
+                        return decl.Location;
+                    }                    
                 }
             }
             return null;
-            /*
-
-       //     if (_indexItem == null) return null;            
-            IList<LibClang.Cursor> cursors = GetSourceCursors(offset);
-            if (cursors.Count == 0) return null;
-
-            HashSet<CppCodeBrowser.ICodeLocation> results = new HashSet<CppCodeBrowser.ICodeLocation>();
-            _jumpToBrowser.BrowseFrom(cursors,
-                delegate(CppCodeBrowser.ICodeLocation result)
-                {
-                    results.Add(result);
-                    return true;
-                });
-
-            return results.Count() > 0 ? results.First() : null;*/
         }
 
         private static bool CanJumpTo(LibClang.Cursor cursor, int offset)

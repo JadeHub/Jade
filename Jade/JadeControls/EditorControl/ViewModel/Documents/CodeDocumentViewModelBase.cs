@@ -33,7 +33,6 @@ namespace JadeControls.EditorControl.ViewModel
     public abstract class CodeDocumentViewModelBase : DocumentViewModel
     {
         private Commands.InspectSymbolCommand _inspectSymbolCommand;
-        private Commands.DebugCursorCommand _debugCursorCommand;
         private Commands.InspectCursorCommand _inspectCursorCommand;
         private Commands.SourceFileJumpToCommand _jumpToCommand;        
         private Commands.FindAllReferences _findAllRefsCommand;
@@ -56,7 +55,6 @@ namespace JadeControls.EditorControl.ViewModel
 
                 _inspectSymbolCommand = new Commands.InspectSymbolCommand(this, doc.File.Path, doc.Project.Index);
                 _inspectCursorCommand = new Commands.InspectCursorCommand(this, doc.File.Path, doc.Project.Index);
-                _debugCursorCommand = new Commands.DebugCursorCommand(this, doc.File.Path, doc.Project.Index);
                 _jumpToCommand = new Commands.SourceFileJumpToCommand(this, doc.File.Path, doc.Project.Index);
                 _findAllRefsCommand = new Commands.FindAllReferences(this, doc.File.Path, doc.Project.Index);
 
@@ -86,9 +84,7 @@ namespace JadeControls.EditorControl.ViewModel
             }
 
             CppCodeBrowser.IProjectFile fileIndex = Index.FindProjectItem(Document.File.Path);
-            if (fileIndex != null && fileIndex is CppCodeBrowser.ISourceFile)
-                Debug.Assert((fileIndex as CppCodeBrowser.ISourceFile).TranslationUnit.Valid);
-                   
+                           
             //highlight diagnostics
             List<LibClang.Diagnostic> diags = new List<Diagnostic>(fileIndex.Diagnostics);
             DiagnosticOutputWriter.UpdateOutput(diags);
@@ -148,11 +144,6 @@ namespace JadeControls.EditorControl.ViewModel
         public ICommand InspectSymbolCommand
         {
             get { return _inspectSymbolCommand; }
-        }
-
-        public ICommand DebugCursorCommand
-        {
-            get { return _debugCursorCommand; }
         }
 
         public ICommand InspectCursorCommand

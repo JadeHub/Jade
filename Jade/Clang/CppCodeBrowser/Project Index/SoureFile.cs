@@ -11,16 +11,15 @@ namespace CppCodeBrowser
     {
         LibClang.TranslationUnit TranslationUnit { get; }
 
-        IEnumerable<IHeaderFile> Headers { get; }
+       // IEnumerable<IHeaderFile> Headers { get; }
 
         LibClang.Cursor GetCursorAt(FilePath path, int offset);
-        LibClang.Cursor GetCursorAt(ICodeLocation loc);
     }
 
     public class SourceFile : ISourceFile
     {
         private LibClang.TranslationUnit _tu;
-        private HashSet<IHeaderFile> _headerFiles;
+    //    private HashSet<IHeaderFile> _headerFiles;
         private Symbols.FileMapping.IFileMap _fileSymbolMap;
 
         internal SourceFile(FilePath path, LibClang.TranslationUnit tu)
@@ -28,7 +27,7 @@ namespace CppCodeBrowser
             Path = path;
             _tu = tu;
             _fileSymbolMap = new Symbols.FileMapping.FileMap(path);
-            _headerFiles = new HashSet<IHeaderFile>();
+          //  _headerFiles = new HashSet<IHeaderFile>();
         }
 
         public override string ToString()
@@ -38,10 +37,10 @@ namespace CppCodeBrowser
 
         #region Properties
 
-        public ProjectItemType Type
+       /* public ProjectItemType Type
         {
             get { return ProjectItemType.SourceFile; }
-        }
+        }*/
 
         /// <summary>
         /// File path.
@@ -54,16 +53,11 @@ namespace CppCodeBrowser
 
         public LibClang.Cursor GetCursorAt(FilePath path, int offset)
         {
-            return TranslationUnit.GetCursorAt(path.Str, offset);
+            return _tu.GetCursorAt(path.Str, offset);
         }
-
-        public LibClang.Cursor GetCursorAt(ICodeLocation loc)
-        {
-            return GetCursorAt(loc.Path, loc.Offset);
-        }
-
+                
         public LibClang.TranslationUnit TranslationUnit { get {return _tu;} }
-        public IEnumerable<IHeaderFile> Headers { get { return _headerFiles; } }
+      //  public IEnumerable<IHeaderFile> Headers { get { return _headerFiles; } }
                 
         /// <summary>
         /// Diagnostic objects located in this file.
@@ -81,11 +75,11 @@ namespace CppCodeBrowser
         }
 
         #endregion
-
+        /*
         public void AddIncludedHeader(IHeaderFile headerFile)
         {
             _headerFiles.Add(headerFile);
-        }
+        }*/
 
         public Symbols.FileMapping.IFileMap FileSymbolMap { get { return null; } }
     }

@@ -3,42 +3,6 @@ using JadeUtils.IO;
 
 namespace JadeControls.EditorControl.ViewModel.Commands
 {
-    public class DebugCursorCommand : EditorCommand
-    {
-        private FilePath _path;
-        private CppCodeBrowser.IProjectIndex _index;
-
-        public DebugCursorCommand(DocumentViewModel vm, FilePath path, CppCodeBrowser.IProjectIndex index)
-            : base(vm)
-        {
-            ViewModel.CaretOffsetChanged += ViewModelCaretOffsetChanged;
-            _path = path;
-            _index = index;
-            RaiseCanExecuteChangedEvent();
-        }
-        private void ViewModelCaretOffsetChanged(object sender, EventArgs e)
-        {
-            RaiseCanExecuteChangedEvent();
-        }
-
-        protected override bool CanExecute()
-        {
-            return true;
-        }
-
-        protected override void Execute()
-        {
-            CppCodeBrowser.ISourceFile source = _index.FindSourceFile(_path);
-            if (source == null) return;
-
-            LibClang.Cursor c = source.TranslationUnit.GetCursorAt(_path.Str, ViewModel.CaretOffset);
-            foreach(var t in c.ArgumentCursors)
-            {
-                System.Diagnostics.Debug.WriteLine(t);
-            }
-        }
-    }
-
     public class InspectSymbolCommand : EditorCommand
     {
         private FilePath _path;

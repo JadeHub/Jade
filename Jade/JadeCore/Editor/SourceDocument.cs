@@ -31,7 +31,8 @@ namespace JadeCore.Editor
 	        _controller = controller;
 	        _document = document;
             _project = proj;
-            _changeTracker = new DocChangeTracker(this, _project.IndexBuilder);
+            if(_project != null)
+                _changeTracker = new DocChangeTracker(this, _project.IndexBuilder);
 	    }
 	
 	    #endregion

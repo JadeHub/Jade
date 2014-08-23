@@ -65,12 +65,10 @@
     <Compile Include="Collections\ObservableCollectionTransform.cs" />
     <Compile Include="Collections\Observable.cs" />
     <Compile Include="Commands.cs" />
-    <Compile Include="Editor\ActiveDocParseThread.cs" />
     <Compile Include="Editor\DocChangeTracker.cs" />
     <Compile Include="Editor\EditorController.cs" />
     <Compile Include="Editor\IEditorDoc.cs" />
     <Compile Include="Editor\SourceDocument.cs" />
-    <Compile Include="Editor\SourceDocumentParseThread.cs" />
     <Compile Include="GuiUtils.cs" />
     <Compile Include="Editor\IEditorController.cs" />
     <Compile Include="IServiceProvider.cs" />

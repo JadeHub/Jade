@@ -26,11 +26,11 @@ namespace CppCodeBrowser
         }
 
         #region Properties
-
+        /*
         public ProjectItemType Type
         {
             get { return ProjectItemType.HeaderFile; }
-        }
+        }*/
 
         /// <summary>
         /// File path.

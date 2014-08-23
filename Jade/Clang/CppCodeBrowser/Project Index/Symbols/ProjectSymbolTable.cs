@@ -6,6 +6,11 @@ using JadeUtils.IO;
 
 namespace CppCodeBrowser.Symbols
 {
+    public class ReferenceTable
+    {
+
+    }
+
     public class ProjectSymbolTable : ISymbolTable
     {
         private SymbolSet<NamespaceDecl> _namespaces;
@@ -21,6 +26,9 @@ namespace CppCodeBrowser.Symbols
         private SymbolSet<VariableDecl> _variables;
 
         private FileMapping.IProjectFileMaps _fileSymbolMaps;
+
+        //private Dictionary<ICodeLocation, IReference> _refs = new Dictionary<ICodeLocation, IReference>();
+        private Dictionary<Tuple<ICodeLocation, int>, IReference> _refs = new Dictionary<Tuple<ICodeLocation, int>, IReference>();
 
         public ProjectSymbolTable(FileMapping.IProjectFileMaps fileSymbolMaps)
         {
@@ -144,17 +152,18 @@ namespace CppCodeBrowser.Symbols
             {
                 return FindFunctionDeclaration(c.Usr);
             }
-            else if (c.Kind == LibClang.CursorKind.VarDecl)
+            else if (c.Kind == LibClang.CursorKind.VarDecl || c.Kind == LibClang.CursorKind.ParamDecl)
+
             {
                 return FindVariableDeclaration(c.Usr);
             }
             return null;
         }
-
-        private Dictionary<ICodeLocation, IReference> _refs = new Dictionary<ICodeLocation, IReference>();
-
+                
         public void UpdateReference(Cursor c)
         {
+            if (c.Kind == CursorKind.CXXBaseSpecifier) return;
+
             Debug.Assert(c.CursorReferenced != null);
             IDeclaration decl = FindDeclaration(c.CursorReferenced);
 
@@ -163,22 +172,27 @@ namespace CppCodeBrowser.Symbols
                 UpdateDefinition(c.CursorReferenced);
                 decl = FindDeclaration(c.CursorReferenced);
             }
-            if(decl != null)
+            if (decl != null)
+            {                
                 UpdateReference(c, decl);
+                //UpdateSymbolMapping()
+            }
         }
 
         private void UpdateReference(Cursor c, IDeclaration decl)
         {
-            IReference existing = null;
-            ICodeLocation loc = new CodeLocation(c.Location);
+            //if()
+            //1716
 
-            if(_refs.TryGetValue(loc, out existing))
+            //IReference existing = null;
+            
+         /*   if(_refs.TryGetValue(extent, out existing))
             {
                 //Debug.Assert(existing.Declaration == decl);
                 return;
-            }
+            }*/
             Reference refer = new Reference(c, decl, this);
-            _refs.Add(refer.Location, refer);
+          //  _refs.Add(extent, refer);
             UpdateSymbolMapping(refer);
         }
 
@@ -189,6 +203,18 @@ namespace CppCodeBrowser.Symbols
          /*   if (_defs.Contains(c.Usr))
                 return;
             _defs.Add(c.Usr);*/
+
+            if (c.SemanticParentCurosr != null)
+            {
+                if (CursorKinds.IsClassStructEtc(c.SemanticParentCurosr.Kind))
+                {
+                    UpdateDefinition(c.SemanticParentCurosr);
+                }
+                else if (c.SemanticParentCurosr.Kind == CursorKind.EnumDecl)
+                {
+                    UpdateDefinition(c.SemanticParentCurosr);
+                }
+            }
 
             if (c.Kind == CursorKind.Namespace)
             {
@@ -234,7 +260,8 @@ namespace CppCodeBrowser.Symbols
             }
             else if (c.Kind == LibClang.CursorKind.ParamDecl)
             {
-             //   UpdateVariableDecl(c);
+                if(c.Usr.Length > 0)
+                    UpdateVariableDecl(c);
             }
         }
 
@@ -243,7 +270,7 @@ namespace CppCodeBrowser.Symbols
             _fileSymbolMaps.UpdateDeclarationMapping(symbol.Location.Path,  symbol.Location.Offset, symbol.Location.Offset + symbol.SpellingLength, symbol);
         }
 
-        private void UpdateSymbolMapping(ICodeLocation startLoc, int length,  ISymbol decl)
+        private void UpdateSymbolMapping(ICodeLocation startLoc, int length, ISymbol decl)
         {
             _fileSymbolMaps.UpdateDeclarationMapping(startLoc.Path, startLoc.Offset, startLoc.Offset + length, decl);
         }
@@ -262,6 +289,11 @@ namespace CppCodeBrowser.Symbols
 
         private void UpdateClassDecl(Cursor c)
         {
+            if (CursorKinds.IsClassStructEtc(c.SemanticParentCurosr.Kind))
+            {
+                UpdateClassDecl(c.SemanticParentCurosr);
+            }
+
             var result = _classes.FindOrAdd(c);
             if (result.Item1)
             {
@@ -271,20 +303,17 @@ namespace CppCodeBrowser.Symbols
 
         private void UpdateMethodDecl(Cursor c)
         {
-            if(CursorKinds.IsClassStructEtc(c.SemanticParentCurosr.Kind))
-            {
-                UpdateClassDecl(c.SemanticParentCurosr);
-            }
-
             var result = _methods.FindOrAdd(c);
             if (result.Item1)
             {
                 UpdateSymbolMapping(result.Item2);
+
+                
             }
             if(c.IsDefinition)
             {
-                result.Item2.UpdateDefinition(c);
-                UpdateReference(c, result.Item2);                
+                result.Item2.UpdateDefinition(c);                
+                UpdateSymbolMapping(new CodeLocation(c.Location), c.Spelling.Length, result.Item2);
             }
         }
 
@@ -298,7 +327,7 @@ namespace CppCodeBrowser.Symbols
         }
 
         private void UpdateEnumConstantDecl(Cursor c)
-        {
+        {            
             var result = _enumConstants.FindOrAdd(c);
             if (result.Item1)
             {
@@ -316,7 +345,7 @@ namespace CppCodeBrowser.Symbols
             if (c.IsDefinition)
             {
                 result.Item2.UpdateDefinition(c);
-                UpdateReference(c, result.Item2);
+                UpdateSymbolMapping(new CodeLocation(c.Location), c.Spelling.Length, result.Item2);
             }
         }
 
@@ -330,7 +359,7 @@ namespace CppCodeBrowser.Symbols
             if (c.IsDefinition)
             {
                 result.Item2.UpdateDefinition(c);
-                UpdateReference(c, result.Item2);
+                UpdateSymbolMapping(new CodeLocation(c.Location), c.Spelling.Length, result.Item2);
             }
         }
 
@@ -353,12 +382,12 @@ namespace CppCodeBrowser.Symbols
             if (c.IsDefinition)
             {
                 result.Item2.UpdateDefinition(c);
-                UpdateReference(c, result.Item2);
+                UpdateSymbolMapping(new CodeLocation(c.Location), c.Spelling.Length, result.Item2);
             }
         }
 
         private void UpdateVariableDecl(Cursor c)
-        {
+        {         
             var result = _variables.FindOrAdd(c);
             if (result.Item1)
             {
@@ -367,7 +396,7 @@ namespace CppCodeBrowser.Symbols
             if(c.IsDefinition)
             {
                 result.Item2.UpdateDefinition(c);
-                UpdateReference(c, result.Item2);
+                UpdateSymbolMapping(new CodeLocation(c.Location), c.Spelling.Length, result.Item2);
             }
         }
     }

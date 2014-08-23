@@ -13,7 +13,7 @@ namespace CppCodeBrowser.Symbols
         public VariableDecl(Cursor c, ISymbolTable table)
             : base(c, table)
         {
-            Debug.Assert(c.Kind == CursorKind.VarDecl);
+           // Debug.Assert(c.Kind == CursorKind.VarDecl);
             if (c.SemanticParentCurosr.Kind == CursorKind.Namespace)
             {
                 _parent = table.FindNamespaceDeclaration(c.SemanticParentCurosr.Usr);
@@ -48,7 +48,7 @@ namespace CppCodeBrowser.Symbols
 
         public void UpdateDefinition(Cursor c)
         {
-            Debug.Assert(c.Kind == CursorKind.VarDecl);
+         //   Debug.Assert(c.Kind == CursorKind.VarDecl);
             Debug.Assert(c.IsDefinition);
             if (_definition == null)
                 _definition = c;

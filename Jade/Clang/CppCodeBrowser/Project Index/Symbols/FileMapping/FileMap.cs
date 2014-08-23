@@ -51,12 +51,23 @@ namespace CppCodeBrowser.Symbols.FileMapping
 
         public ISymbol Get(int offset)
         {
+            //symbol and its mapping's length
+            Tuple<ISymbol, int> result = new Tuple<ISymbol, int>(null, 0); ;
+
             foreach(var i in _list)
             {
                 if (i.Key.Item1 <= offset && offset <= i.Key.Item2)
-                    return i.Value;
+                {
+                    //if we have no result yet or if this match is 'tighter' we select it as the best so far
+                    if( result.Item1 == null || (i.Key.Item2 - i.Key.Item1) < result.Item2)
+                    {
+                        result = new Tuple<ISymbol, int>(i.Value, (i.Key.Item2 - i.Key.Item1));
+                    }
+                }
+                if(i.Key.Item1 > offset)
+                    break; //list is sorted so we wont find any further matches
             }
-            return null;
+            return result.Item1;
         }
 
         public IEnumerable<Tuple<int, int, ISymbol>> Symbols 

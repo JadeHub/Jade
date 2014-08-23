@@ -16,7 +16,9 @@ namespace CppCodeBrowser
         IProjectFile FindProjectItem(FilePath path);
         ISourceFile FindSourceFile(FilePath path);
         IHeaderFile FindHeaderFile(FilePath path);
+
         void UpdateSourceFile(FilePath path, LibClang.TranslationUnit tu);
+
         IEnumerable<ISourceFile> SourceFiles { get; }
         LibClang.Index LibClangIndex { get; }
 
@@ -95,12 +97,10 @@ namespace CppCodeBrowser
 
         public void UpdateSourceFile(FilePath path, LibClang.TranslationUnit tu)
         {
-            TranslationUnit tuToDispose = null;
             lock (_lock)
             {
                 if (_sources.ContainsKey(path))
                 {
-                    tuToDispose = _sources[path].TranslationUnit;
                     RemoveSourceFile(path);
                 }
                 AddSourceFile(path, tu);               
@@ -146,7 +146,7 @@ namespace CppCodeBrowser
                 IHeaderFile headerFile = FindOrCreateHeaderFile(headerInfo);
 
                 headerFile.SetReferencedBy(sourceFile);
-                sourceFile.AddIncludedHeader(headerFile);
+                //sourceFile.AddIncludedHeader(headerFile);
             }
         }
 

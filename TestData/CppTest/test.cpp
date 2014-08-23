@@ -16,7 +16,7 @@ SomeClass::SomeClass()
 
 }
 
-SomeClass::SomeClass(int i)
+SomeClass::SomeClass(int)
 : PrtToAStruct(nullptr), ii(1), mEnum(AnEnum_Item1), p(nullptr)
 {
 	int p = 0;

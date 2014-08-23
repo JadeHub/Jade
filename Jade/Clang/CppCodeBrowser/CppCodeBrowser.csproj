@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="Browsing\JumpToBrowser.cs" />
     <Compile Include="ParseFile.cs" />
+    <Compile Include="Parser.cs" />
     <Compile Include="ParseResult.cs" />
     <Compile Include="Project Index\Symbols\Declarations\MethodArgumentDecl.cs" />
     <Compile Include="Project Index\Symbols\Reference.cs" />

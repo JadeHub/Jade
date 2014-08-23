@@ -28,7 +28,8 @@ namespace JadeCore.Parsing
         public void Parse()
         {
             CppCodeBrowser.ParseResult result = _indexBuilder.ParseFile(_path, _compilerArgs);
-
+            if(result != null)
+                _indexBuilder.IndexTranslationUnit(result);
         }
 
         public FilePath Path { get { return _path; } }

@@ -30,6 +30,11 @@ public:
 
 class SomeClass : AStruct
 {
+	struct Inner
+	{
+		void InnerFn();
+	};
+
 public:
 	SomeClass();
 	SomeClass(int i);
@@ -91,7 +96,8 @@ public:
 	ClassA();
 };
 
-class ClassB : public AStruct, public ClassA
+class ClassB : public 
+AStruct, public ClassA
 {
 public:
 	ClassB(char& c) : mRef(c) {}

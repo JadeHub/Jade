@@ -17,7 +17,7 @@ namespace CppCodeBrowser
         /// <summary>
         /// Type of this item.
         /// </summary>
-        ProjectItemType Type { get; }
+      //  ProjectItemType Type { get; }
 
         /// <summary>
         /// File path.

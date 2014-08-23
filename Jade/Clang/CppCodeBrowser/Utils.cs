@@ -43,7 +43,8 @@ namespace CppCodeBrowser
             return k == CursorKind.CXXMethod ||
                     k == CursorKind.FunctionDecl ||
                     k == CursorKind.Constructor ||
-                    k == CursorKind.Destructor;
+                    k == CursorKind.Destructor ||
+                    k == CursorKind.ConversionFunction;
                     //conv func?
         }
     }

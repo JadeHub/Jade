@@ -31,6 +31,7 @@ namespace JadeCore.Parsing
         {
             if (op != Workspace.WorkspaceChangeOperation.Opened || Services.Provider.WorkspaceController.CurrentWorkspace == null) return;
 
+            /*
             foreach(JadeCore.Project.IProject proj in Services.Provider.WorkspaceController.CurrentWorkspace.AllProjects)
             {
                 foreach(FilePath path in proj.Files)
@@ -38,7 +39,7 @@ namespace JadeCore.Parsing
                     if (path.Extention.ToLower() == ".cpp" || path.Extention.ToLower() == ".c" || path.Extention.ToLower() == ".cc")
                         _parser.AddJob(ParsePriority.Background, new ParseJob(path, null, proj.IndexBuilder));
                 }
-            }
+            }*/
         }
 
         public void AddJob(ParsePriority priority, ParseJob newJob)

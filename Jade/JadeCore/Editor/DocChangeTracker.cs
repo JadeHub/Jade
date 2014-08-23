@@ -26,9 +26,12 @@ namespace JadeCore.Editor
 
         private void TextDocument_Changed(object sender, ICSharpCode.AvalonEdit.Document.DocumentChangeEventArgs e)
         {
-            //if change warrants reparsing
-            //initiate parse
-            JadeCore.Services.Provider.CppParser.AddJob(Parsing.ParsePriority.Editing, new Parsing.ParseJob(_doc.File.Path, null, _indexBuilder));
+            if (_doc.File.Path.Extention.ToLower() == ".c" || _doc.File.Path.Extention.ToLower() == ".cpp" || _doc.File.Path.Extention.ToLower() == ".cc")
+            {
+                //if change warrants reparsing
+                //initiate parse
+                JadeCore.Services.Provider.CppParser.AddJob(Parsing.ParsePriority.Editing, new Parsing.ParseJob(_doc.File.Path, null, _indexBuilder));
+            }
         }
 
         public UInt64 Version

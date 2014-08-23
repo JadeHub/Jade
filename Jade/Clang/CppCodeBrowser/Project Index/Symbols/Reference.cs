@@ -24,7 +24,7 @@ namespace CppCodeBrowser.Symbols
             _cursor = c;
             _decl = decl;
             _table = table;
-            _location = new CodeLocation(c.Location); //todo - replace for doc tracking
+            _location = new CodeLocation(c.Extent.Start); //todo - replace for doc tracking
         }
 
         public string Name { get { return _cursor.Spelling; } }
@@ -35,18 +35,22 @@ namespace CppCodeBrowser.Symbols
         { 
             get 
             {
+                return _cursor.Extent.Length;
+
+                //return _cursor.Extent.Length > 5 ? 5 :_cursor.Extent.Length;
+
              /*   if (Cursor.Kind == CursorKind.CallExpr)// && Cursor.Spelling == "Fn2")
                 {
                     return _cursor.Extent.Length;
                 }
                 */
-
+                /*
                 var tok = _cursor.Extent.GetTokenAtOffset(_location.Offset);
 
                 if (tok != null)
                     return tok.Spelling.Length;
 
-                return _cursor.DisplayName.Length; 
+                return _cursor.DisplayName.Length;*/
             }
         }
 

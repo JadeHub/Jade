@@ -38,7 +38,8 @@ namespace CppCodeBrowser.Symbols
                 _parent = table.FindNamespaceDeclaration(c.SemanticParentCurosr.Usr);
                 Debug.Assert(_parent != null);
             }
-            else if(c.SemanticParentCurosr.Kind == CursorKind.TranslationUnit)
+            else if (c.SemanticParentCurosr.Kind == CursorKind.TranslationUnit ||
+                c.SemanticParentCurosr.Kind == CursorKind.UnexposedDecl)
             {
                 _parent = null;
             }
@@ -83,12 +84,6 @@ namespace CppCodeBrowser.Symbols
             get
             {
                 return from c in Table.Constructors where c.Class == this select c;
-                /*
-                foreach(ConstructorDecl c in Table.Constructors)
-                {
-                    if (c.Class == this)
-                        yield return c;
-                }*/
             }
         }
 

@@ -1,4 +1,8 @@
+
 #include "../CppTest/test.h"
+#include <vector>
+#include <string>
+#include <unordered_map>
 #include "test2.h"
 #include "template.h"
 
@@ -35,11 +39,16 @@ void NewFunction(int i)
 
 int ClassB::GetAnInt() const
 {
+	NewFunction(7);
 	return 0;	
 }
 
 template<typename T> 
 void GlobalTemplFunc(T t)
+{
+}
+
+void SomeClass::Inner::InnerFn()
 {
 }
 
@@ -114,7 +123,7 @@ void SomeClass::Fn()
 	int i = 7;
 	this->TemplMethod2<int, int>(i, 8);
 	
-	Overloads o;
+	Overloads o12;
 			
 	int k = as.i;
 	
@@ -144,8 +153,7 @@ int main()
 	TestNS::SomeClass::staticInt = 8;
 
 	TestNS::SomeClass sc1;
-
-	sc1.Fn();
+ sc1.Fn();
 	return 0;
 }
 

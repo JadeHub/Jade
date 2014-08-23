@@ -7,30 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace CppCodeBrowser
-{
-    public static class Parser
-    {
-        public static ParseResult Parse(ProjectIndex index, FilePath path, string[] compilerArgs, IUnsavedFileProvider unsavedFiles)
-        {
-            TranslationUnit tu = new TranslationUnit(index.LibClangIndex, path.Str);
-                             
-            //Take a snapshot of the source
-            IEnumerable<ParseFile> files = unsavedFiles.UnsavedFiles;
-            List<Tuple<string, string>> unsavedList = new List<Tuple<string, string>>();
-            foreach(var i in files)
-            {
-                unsavedList.Add(new Tuple<string, string>(i.Path.Str, i.Content));
-            }
-            if (tu.Parse(compilerArgs, unsavedList) == false)
-            {
-                tu.Dispose();
-                return null;
-            }
-
-            return new ParseResult(path, files, tu);;
-        }
-    }
-    
+{   
     public interface IUnsavedFileProvider
     {
        /// <summary>
@@ -84,7 +61,8 @@ namespace CppCodeBrowser
             {
                 System.Diagnostics.Debug.WriteLine("**Parsing " + path.FileName);
 
-                ParseResult result = Parser.Parse(_index, path, compilerArgs, _unsavedFilesProvider);
+                return Parser.Parse(_index, path, compilerArgs, _unsavedFilesProvider);
+                /*
                 if (result != null)
                 {
                     _index.UpdateSourceFile(path, result.TranslationUnit);
@@ -100,9 +78,25 @@ namespace CppCodeBrowser
                             }
                         }, CancellationToken.None, TaskCreationOptions.None, _callbackScheduler);
                 }
-                return result;
+                return result;*/
             }
             
+        }
+
+        public void IndexTranslationUnit(ParseResult parseResult)
+        {
+            _index.UpdateSourceFile(parseResult.Path, parseResult.TranslationUnit);
+
+            //Perform on gui thread
+            Task.Factory.StartNew(() =>
+            {
+                //    lock (_lock)
+                {
+                    System.Diagnostics.Debug.WriteLine("**Indexing " + parseResult.Path.FileName + " version:" + parseResult.GetFileVersion(parseResult.Path));
+                    IndexTranslationUnit(parseResult.TranslationUnit);
+                    _index.RaiseItemUpdatedEvent(parseResult.Path);
+                }
+            }, CancellationToken.None, TaskCreationOptions.None, _callbackScheduler);
         }
 
         public IProjectIndex Index 
@@ -127,7 +121,6 @@ namespace CppCodeBrowser
         
         private bool IsIndexCursorKind(CursorKind k)
         {
-          //  return k != CursorKind.MacroDefinition && k!= CursorKind.MacroExpansion && k != CursorKind.MacroInstantiation && k != CursorKind.UnexposedDecl;
             return 
                 (
                     CursorKinds.IsClassStructEtc(k) ||
@@ -176,11 +169,16 @@ namespace CppCodeBrowser
         {
             if (FilterCursor(c) == false) return;
 
+            if (c.Spelling == "staticInt")
+            {
+                int i = 0;
+            }
+
             if (CursorKinds.IsDefinition(c.Kind))
             {
                 IndexDefinitionCursor(c);
             }
-            else if (c.CursorReferenced != null && c.Kind != CursorKind.CallExpr)
+            else if (c.CursorReferenced != null)// && c.Kind != CursorKind.CallExpr)
             {
                 if (FilterCursor(c.CursorReferenced))
                     IndexReferenceCursor(c);

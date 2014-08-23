@@ -11,13 +11,17 @@ namespace CppCodeBrowser
     {
         private FilePath _path;
         private LibClang.TranslationUnit _translationUnit;
-        private List<ParseFile> _files;
+        private Dictionary<FilePath, ParseFile> _files;
 
         public ParseResult(FilePath path, IEnumerable<ParseFile> files, LibClang.TranslationUnit tu)
         {
             _path = path;
             _translationUnit = tu;
-            _files = new List<ParseFile>(files);
+            _files = new Dictionary<FilePath, ParseFile>();
+            foreach(ParseFile pf in files)
+            {
+                _files.Add(pf.Path, pf);
+            }
         }
 
         public void Dispose()
@@ -31,6 +35,14 @@ namespace CppCodeBrowser
 
         public FilePath Path { get { return _path; } }
         public LibClang.TranslationUnit TranslationUnit { get { return _translationUnit; } }
-        public IEnumerable<ParseFile> Files { get { return _files; } }
+        public IEnumerable<ParseFile> Files { get { return _files.Values; } }
+
+        public UInt64 GetFileVersion(FilePath path)
+        {
+            ParseFile pf = null;
+            if (_files.TryGetValue(path, out pf))
+                return pf.Version;
+            return 0;
+        }
     }
 }
