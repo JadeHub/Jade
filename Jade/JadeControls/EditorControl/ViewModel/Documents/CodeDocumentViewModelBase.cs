@@ -75,6 +75,7 @@ namespace JadeControls.EditorControl.ViewModel
         {            
             if (path != Document.File.Path) return;
 
+            //highlight the symbol mappings
             if (_fileMap == null)
             {
                 _fileMap = Index.FileSymbolMaps.GetMap(Document.File.Path);
@@ -87,9 +88,8 @@ namespace JadeControls.EditorControl.ViewModel
             CppCodeBrowser.IProjectFile fileIndex = Index.FindProjectItem(Document.File.Path);
             if (fileIndex != null && fileIndex is CppCodeBrowser.ISourceFile)
                 Debug.Assert((fileIndex as CppCodeBrowser.ISourceFile).TranslationUnit.Valid);
-
-        //    DiagnosticHighlighter.ProjectItem = fileIndex;
-
+                   
+            //highlight diagnostics
             List<LibClang.Diagnostic> diags = new List<Diagnostic>(fileIndex.Diagnostics);
             DiagnosticOutputWriter.UpdateOutput(diags);
         }

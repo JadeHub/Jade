@@ -124,9 +124,9 @@ void SomeClass::Fn()
 //	int k = sam * 2;		
 }
 
-double SomeClass::Fn2(const int i, const char* s) const
+double SomeClass::Fn2(const int itt, const char* s) const
 {
-	return (double)i;
+	return (double)itt;
 }
 
 void SomeClass::VFunc(int i, int j)
@@ -143,9 +143,9 @@ int main()
 {
 	TestNS::SomeClass::staticInt = 8;
 
-	TestNS::SomeClass sc;
+	TestNS::SomeClass sc1;
 
-	sc.Fn();
+	sc1.Fn();
 	return 0;
 }
 

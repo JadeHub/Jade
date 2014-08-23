@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Windows.Input;
 using System.Diagnostics;
 using JadeUtils.IO;
+using CppCodeBrowser.Symbols;
 
 namespace JadeControls.EditorControl.ViewModel.Commands
 {
@@ -12,7 +13,7 @@ namespace JadeControls.EditorControl.ViewModel.Commands
         private FilePath _path;
         private CppCodeBrowser.JumpToBrowser _jumpToBrowser;
         private CppCodeBrowser.IProjectIndex _index;
-        private CppCodeBrowser.IProjectFile _indexItem;
+        //private CppCodeBrowser.IProjectFile _indexItem;
 
         public SourceFileJumpToCommand(DocumentViewModel vm, FilePath path, CppCodeBrowser.IProjectIndex index)
             : base(vm)
@@ -23,7 +24,7 @@ namespace JadeControls.EditorControl.ViewModel.Commands
             _index = index;
             _jumpToBrowser = new CppCodeBrowser.JumpToBrowser(_index);
             _index.ItemUpdated += OnIndexItemUpdated;
-            _indexItem = _index.FindProjectItem(_path);
+           // _indexItem = _index.FindProjectItem(_path);
             RaiseCanExecuteChangedEvent();
         }
 
@@ -34,16 +35,16 @@ namespace JadeControls.EditorControl.ViewModel.Commands
 
         private void OnIndexItemUpdated(JadeUtils.IO.FilePath path)
         {
-            _indexItem = _index.FindProjectItem(_path);
+          //  _indexItem = _index.FindProjectItem(_path);
         }
 
         protected override bool CanExecute()
         {
-            
-            _indexItem = _index.FindProjectItem(_path);
+            return true;
+          /*  _indexItem = _index.FindProjectItem(_path);
             bool b = JumpTo(ViewModel.CaretOffset) != null;
             Debug.WriteLine("CE " + b.ToString());
-            return b;
+            return b;*/
         }
 
         protected override void Execute()
@@ -60,6 +61,13 @@ namespace JadeControls.EditorControl.ViewModel.Commands
         {
             List<LibClang.Cursor> result = new List<LibClang.Cursor>();
 
+            CppCodeBrowser.Symbols.ISymbol symbol = _index.FileSymbolMaps.Lookup(_path, ViewModel.CaretOffset);
+            if (symbol != null)
+                result.Add(symbol.Cursor);
+            return result;
+
+            /*
+
             if(_indexItem is CppCodeBrowser.ISourceFile)
             {
                 LibClang.Cursor cur = (_indexItem as CppCodeBrowser.ISourceFile).GetCursorAt(_path, offset);
@@ -74,14 +82,34 @@ namespace JadeControls.EditorControl.ViewModel.Commands
                     if (cur != null && CanJumpTo(cur, offset))
                         result.Add(cur);
                 }
-            }
+            }*/
 
-            return result;
+          //  return result;
         }
 
         private CppCodeBrowser.ICodeLocation JumpTo(int offset)
         {
-            if (_indexItem == null) return null;            
+            CppCodeBrowser.Symbols.ISymbol symbol = _index.FileSymbolMaps.Lookup(_path, ViewModel.CaretOffset);
+            if (symbol == null)
+                return null;
+
+            if(symbol is CppCodeBrowser.Symbols.IReference)
+            {
+                return (symbol as CppCodeBrowser.Symbols.IReference).Declaration.Location;
+            }
+            else
+            {
+                if (symbol is IHasDefinition)
+                {
+                    IHasDefinition s = symbol as IHasDefinition;
+                    if (s.HasDefinitionCursor)
+                        return new CppCodeBrowser.CodeLocation(s.DefinitionCursor.Location);
+                }
+            }
+            return null;
+            /*
+
+       //     if (_indexItem == null) return null;            
             IList<LibClang.Cursor> cursors = GetSourceCursors(offset);
             if (cursors.Count == 0) return null;
 
@@ -93,7 +121,7 @@ namespace JadeControls.EditorControl.ViewModel.Commands
                     return true;
                 });
 
-            return results.Count() > 0 ? results.First() : null;
+            return results.Count() > 0 ? results.First() : null;*/
         }
 
         private static bool CanJumpTo(LibClang.Cursor cursor, int offset)

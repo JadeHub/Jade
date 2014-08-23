@@ -26,6 +26,7 @@ namespace JadeGui
             JadeCore.Services.Provider.OutputController = new JadeCore.Output.OutputController();
             JadeCore.Services.Provider.SearchController = new JadeCore.Search.SearchController();
             JadeCore.Services.Provider.GuiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            JadeCore.Services.Provider.CppParser = new JadeCore.Parsing.ParseController();
             
             _mainWindow = new DockingGui.MainWindow();
 
@@ -76,6 +77,7 @@ namespace JadeGui
         {
             JadeCore.Services.Provider.Settings.Save();
             _viewModel.Dispose();
+            JadeCore.Services.Provider.CppParser.Dispose();
             base.OnExit(e);
         }
 

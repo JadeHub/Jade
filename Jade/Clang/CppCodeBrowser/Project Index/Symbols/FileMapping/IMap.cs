@@ -11,6 +11,7 @@ namespace CppCodeBrowser.Symbols.FileMapping
     {
         void UpdateDeclarationMapping(FilePath path, int startOffset, int endOffset, ISymbol symbol);
         IFileMap GetMap(FilePath path);
+        ISymbol Lookup(FilePath path, int offset);
     }
 
     public class ProjectFileMaps : IProjectFileMaps
@@ -45,6 +46,12 @@ namespace CppCodeBrowser.Symbols.FileMapping
                 _fileMappings.Add(path, result);
             }
             return result;
+        }
+
+        public ISymbol Lookup(FilePath path, int offset)
+        {
+            IFileMap m = GetMap(path);
+            return m != null ? m.Get(offset) : null;
         }
     }
 }

@@ -39,20 +39,16 @@ namespace JadeControls.EditorControl.ViewModel.Commands
 
         private LibClang.Cursor GetCursorAt(CppCodeBrowser.ICodeLocation loc)
         {
-            CppCodeBrowser.IProjectFile fileIndex = _index.FindProjectItem(loc.Path);
-            if (fileIndex == null)
-                return null;
-            if (fileIndex is CppCodeBrowser.ISourceFile)
-                return (fileIndex as CppCodeBrowser.ISourceFile).GetCursorAt(loc);
-
-            CppCodeBrowser.IHeaderFile header = fileIndex as CppCodeBrowser.IHeaderFile;
-            foreach (CppCodeBrowser.ISourceFile sf in header.SourceFiles)
+            if (_index.FindProjectItem(_path) != null && _index.FindProjectItem(_path) is CppCodeBrowser.ISourceFile)
             {
-                LibClang.Cursor c = sf.GetCursorAt(loc);
-                if (c != null)
-                    return c;
+                var sf = _index.FindSourceFile(_path);
+                var c = sf.GetCursorAt(_path, ViewModel.CaretOffset);
+                return c;
             }
-            return null;
+            CppCodeBrowser.Symbols.ISymbol symbol = _index.FileSymbolMaps.Lookup(_path, ViewModel.CaretOffset);
+            if (symbol == null) return null;
+
+            return symbol.Cursor;
         }
     }
 }

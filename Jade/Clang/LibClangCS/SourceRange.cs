@@ -77,7 +77,10 @@ namespace LibClang
         {
             if (offset < Start.Offset || offset > End.Offset) return null;
 
-            foreach (Token t in Tokens)
+            TokenSet ts = Tokens;
+            if (ts == null) return null;
+
+            foreach (Token t in ts)
             {
                 if (t.Extent.Contains(offset))
                     return t;
@@ -94,7 +97,7 @@ namespace LibClang
 
         public bool Contains(int offset)
         {
-            return offset >= Start.Offset && offset <= End.Offset;
+            return offset >= Start.Offset && offset < End.Offset;
         }
     }
 }

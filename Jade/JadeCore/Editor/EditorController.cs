@@ -9,7 +9,7 @@ namespace JadeCore.Editor
     public class ProjectIndexBuilder : IDisposable
     {
         private Project.IProject _project;
-        private ProjectParseThreads _parserThreads;
+    //    private ProjectParseThreads _parserThreads;
         private EditorController _editorController;
 
         public ProjectIndexBuilder(Project.IProject project, EditorController editorController)
@@ -17,13 +17,13 @@ namespace JadeCore.Editor
             _project = project;
             _editorController = editorController;
 
-            _parserThreads = new ProjectParseThreads(_project, project.IndexBuilder, editorController, delegate(FilePath p) { OnParseComplete(p); });
-            _parserThreads.Run = true;
+           // _parserThreads = new ProjectParseThreads(_project, project.IndexBuilder, editorController, delegate(FilePath p) { OnParseComplete(p); });
+         //   _parserThreads.Run = true;
         }
 
         public void Dispose()
         {
-            _parserThreads.Dispose();
+         //   _parserThreads.Dispose();
 
         }
 
@@ -42,7 +42,7 @@ namespace JadeCore.Editor
         private IEditorDoc _activeDocument;
         private IDictionary<Project.IProject, ProjectIndexBuilder> _projectBuilders;
 
-        private ActiveDocParseThread _activeDocParseThread;
+      //  private ActiveDocParseThread _activeDocParseThread;
 
         private object _lockObject;
                 
@@ -55,8 +55,8 @@ namespace JadeCore.Editor
             _openDocuments = new Dictionary<FilePath, IEditorDoc>();
             _projectBuilders = new Dictionary<Project.IProject, ProjectIndexBuilder>();
             _lockObject = new object();
-            _activeDocParseThread = new ActiveDocParseThread(this);
-            _activeDocParseThread.Run = true;
+        //    _activeDocParseThread = new ActiveDocParseThread(this);
+         //   _activeDocParseThread.Run = true;
         }
 
         public void Dispose()
@@ -65,7 +65,7 @@ namespace JadeCore.Editor
             foreach (var projectBuilder in _projectBuilders.Values)
                 projectBuilder.Dispose();
             _projectBuilders.Clear();
-            _activeDocParseThread.Run = false;
+          //  _activeDocParseThread.Run = false;
         }
 
         #endregion
@@ -127,7 +127,10 @@ namespace JadeCore.Editor
         {
             get
             {
-                return _openDocuments.Where(doc => doc.Value.Modified).Select(doc => doc.Value);
+                lock (_lockObject)
+                {
+                    return _openDocuments.Where(doc => doc.Value.Modified).Select(doc => doc.Value);
+                }
             }
         }
 

@@ -6,36 +6,6 @@ using JadeUtils.IO;
 
 namespace CppCodeBrowser.Symbols
 {
-    public interface IReference : ISymbol
-    {
-        IDeclaration Declaration { get; }
-    }
-
-    public class Reference : IReference
-    {
-        private Cursor _cursor;
-        private ICodeLocation _location;
-
-        private ISymbolTable _table;
-        public IDeclaration _decl;
-
-        public Reference(Cursor c, IDeclaration decl, ISymbolTable table)
-        {
-            _cursor = c;
-            _decl = decl;
-            _table = table;
-            _location = new CodeLocation(c.Location); //todo - replace for doc tracking
-        }
-
-        public string Name { get { return _cursor.Spelling; } }
-        public string Spelling { get { return Cursor.Spelling; } }
-        public ICodeLocation Location { get { return _location; } }
-        public int SpellingLength { get { return _cursor.Extent.Length; } }
-        public Cursor Cursor { get { return _cursor; } }
-
-        public IDeclaration Declaration { get { return _decl; } }
-    }
-
     public class ProjectSymbolTable : ISymbolTable
     {
         private SymbolSet<NamespaceDecl> _namespaces;
@@ -208,10 +178,6 @@ namespace CppCodeBrowser.Symbols
                 return;
             }
             Reference refer = new Reference(c, decl, this);
-            if (refer.Location.Offset == 1257)
-            {
-                int i = 0;
-            }
             _refs.Add(refer.Location, refer);
             UpdateSymbolMapping(refer);
         }
@@ -266,11 +232,15 @@ namespace CppCodeBrowser.Symbols
             {
                 UpdateVariableDecl(c);
             }
+            else if (c.Kind == LibClang.CursorKind.ParamDecl)
+            {
+             //   UpdateVariableDecl(c);
+            }
         }
 
-        private void UpdateSymbolMapping(ISymbol decl)
+        private void UpdateSymbolMapping(ISymbol symbol)
         {
-            _fileSymbolMaps.UpdateDeclarationMapping(decl.Location.Path,  decl.Location.Offset, decl.Location.Offset + decl.SpellingLength, decl);
+            _fileSymbolMaps.UpdateDeclarationMapping(symbol.Location.Path,  symbol.Location.Offset, symbol.Location.Offset + symbol.SpellingLength, symbol);
         }
 
         private void UpdateSymbolMapping(ICodeLocation startLoc, int length,  ISymbol decl)
@@ -292,10 +262,6 @@ namespace CppCodeBrowser.Symbols
 
         private void UpdateClassDecl(Cursor c)
         {
-            if (c.Spelling == "Template2")
-            {
-                int i = 0;
-            }
             var result = _classes.FindOrAdd(c);
             if (result.Item1)
             {
@@ -305,9 +271,9 @@ namespace CppCodeBrowser.Symbols
 
         private void UpdateMethodDecl(Cursor c)
         {
-            if(c.Spelling == "Fn2")
+            if(CursorKinds.IsClassStructEtc(c.SemanticParentCurosr.Kind))
             {
-                int i = 0;
+                UpdateClassDecl(c.SemanticParentCurosr);
             }
 
             var result = _methods.FindOrAdd(c);
@@ -318,10 +284,7 @@ namespace CppCodeBrowser.Symbols
             if(c.IsDefinition)
             {
                 result.Item2.UpdateDefinition(c);
-                _fileSymbolMaps.UpdateDeclarationMapping(FilePath.Make(c.Location.File.Name),
-                                                     c.Location.Offset,
-                                                     c.Location.Offset + c.Spelling.Length,
-                                                     result.Item2);
+                UpdateReference(c, result.Item2);                
             }
         }
 
@@ -345,11 +308,6 @@ namespace CppCodeBrowser.Symbols
 
         private void UpdateConstrctorDecl(Cursor c)
         {
-            if(c.Spelling == "Template2<T>")
-            {
-                int i = 0;
-            }
-
             var result = _constructors.FindOrAdd(c);
             if (result.Item1)
             {
@@ -358,10 +316,7 @@ namespace CppCodeBrowser.Symbols
             if (c.IsDefinition)
             {
                 result.Item2.UpdateDefinition(c);
-                _fileSymbolMaps.UpdateDeclarationMapping(FilePath.Make(c.Location.File.Name),
-                                                     c.Location.Offset,
-                                                     c.Location.Offset + c.Spelling.Length,
-                                                     result.Item2);
+                UpdateReference(c, result.Item2);
             }
         }
 
@@ -375,10 +330,7 @@ namespace CppCodeBrowser.Symbols
             if (c.IsDefinition)
             {
                 result.Item2.UpdateDefinition(c);
-                _fileSymbolMaps.UpdateDeclarationMapping(FilePath.Make(c.Location.File.Name),
-                                                     c.Location.Offset,
-                                                     c.Location.Offset + c.Spelling.Length,
-                                                     result.Item2);
+                UpdateReference(c, result.Item2);
             }
         }
 
@@ -401,10 +353,7 @@ namespace CppCodeBrowser.Symbols
             if (c.IsDefinition)
             {
                 result.Item2.UpdateDefinition(c);
-                _fileSymbolMaps.UpdateDeclarationMapping(FilePath.Make(c.Location.File.Name),
-                                                     c.Location.Offset,
-                                                     c.Location.Offset + c.Spelling.Length,
-                                                     result.Item2);
+                UpdateReference(c, result.Item2);
             }
         }
 
@@ -418,10 +367,7 @@ namespace CppCodeBrowser.Symbols
             if(c.IsDefinition)
             {
                 result.Item2.UpdateDefinition(c);
-                _fileSymbolMaps.UpdateDeclarationMapping(FilePath.Make(c.Location.File.Name),
-                                                     c.Location.Offset,
-                                                     c.Location.Offset + c.Spelling.Length,
-                                                     result.Item2);
+                UpdateReference(c, result.Item2);
             }
         }
     }

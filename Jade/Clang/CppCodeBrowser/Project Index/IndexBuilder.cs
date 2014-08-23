@@ -8,54 +8,16 @@ using System.Threading.Tasks;
 
 namespace CppCodeBrowser
 {
-    public class ParseFile
-    {
-        public ParseFile(FilePath path, object data, string content)
-        {
-            Path = path;
-            Data = data;
-            Content = content;
-        }
-
-        public FilePath Path { get; private set; }
-        public object Data { get; private set; }
-        public string Content { get; private set; }
-    }
-
-    public class ParseResult : IDisposable
-    {
-        private FilePath _path;
-        private LibClang.TranslationUnit _translationUnit;
-        private List<ParseFile> _files;
-
-        public ParseResult(FilePath path, IUnsavedFileProvider unsavedFiles, LibClang.TranslationUnit tu)
-        {
-            _path = path;
-            _translationUnit = tu;
-            _files = new List<ParseFile>(unsavedFiles.UnsavedFiles);
-        }
-
-        public void Dispose()
-        {
-            if (_translationUnit != null)
-            {
-                _translationUnit.Dispose();
-                _translationUnit = null;
-            }
-        }
-
-        public LibClang.TranslationUnit TranslationUnit { get { return _translationUnit; } }
-        public IEnumerable<ParseFile> Files { get { return _files; } }
-    }
-
     public static class Parser
     {
         public static ParseResult Parse(ProjectIndex index, FilePath path, string[] compilerArgs, IUnsavedFileProvider unsavedFiles)
         {
             TranslationUnit tu = new TranslationUnit(index.LibClangIndex, path.Str);
-                                    
+                             
+            //Take a snapshot of the source
+            IEnumerable<ParseFile> files = unsavedFiles.UnsavedFiles;
             List<Tuple<string, string>> unsavedList = new List<Tuple<string, string>>();
-            foreach(var i in unsavedFiles.UnsavedFiles)
+            foreach(var i in files)
             {
                 unsavedList.Add(new Tuple<string, string>(i.Path.Str, i.Content));
             }
@@ -65,7 +27,7 @@ namespace CppCodeBrowser
                 return null;
             }
 
-            return new ParseResult(path, unsavedFiles, tu);;
+            return new ParseResult(path, files, tu);;
         }
     }
     
@@ -114,20 +76,11 @@ namespace CppCodeBrowser
             }
         }
 
-        public bool ParseFile(FilePath path, string[] compilerArgs)
-        {            
-            if (path.FileName == "main.cpp" && done)
-            {
+        public ParseResult ParseFile(FilePath path, string[] compilerArgs)
+        {   
+            if (_disposed) return null;
 
-                return true; ;
-            }
-            if (path.FileName == "main.cpp")
-                done = true;
-
-
-            if (_disposed) return false;
-
-            //lock (_lock)
+          //  lock (_lock)
             {
                 System.Diagnostics.Debug.WriteLine("**Parsing " + path.FileName);
 
@@ -139,7 +92,7 @@ namespace CppCodeBrowser
                     //Perform on gui thread
                     Task.Factory.StartNew(() =>
                         {
-                           // lock (_lock)
+                        //    lock (_lock)
                             {
                                 System.Diagnostics.Debug.WriteLine("**Indexing " + path.FileName);
                                 IndexTranslationUnit(result.TranslationUnit);
@@ -147,8 +100,9 @@ namespace CppCodeBrowser
                             }
                         }, CancellationToken.None, TaskCreationOptions.None, _callbackScheduler);
                 }
+                return result;
             }
-            return true;
+            
         }
 
         public IProjectIndex Index 
@@ -160,7 +114,7 @@ namespace CppCodeBrowser
             }
         }
 
-        static bool done = false;
+     //   static bool done = false;
 
         private void IndexTranslationUnit(TranslationUnit tu)        
         {           
@@ -187,12 +141,16 @@ namespace CppCodeBrowser
                     k == LibClang.CursorKind.VarDecl ||
                     k == LibClang.CursorKind.EnumDecl ||
                     k == LibClang.CursorKind.EnumConstantDecl ||
+                    k == LibClang.CursorKind.ParamDecl ||
                     k == CursorKind.ConversionFunction ||
-                    k == CursorKind.ParmDecl ||
+                    k == CursorKind.ParamDecl ||
                     k == CursorKind.TemplateTypeParameter ||
+                    k == CursorKind.CallExpr ||
+                    k == CursorKind.DeclRefExpr ||
+                    k == CursorKind.MemberRefExpr ||
                     CursorKinds.IsReference(k) ||
-                    CursorKinds.IsStatement(k)/* ||
-                    CursorKinds.IsExpression(k)*/
+                    CursorKinds.IsStatement(k) ||
+                    CursorKinds.IsExpression(k)
                 );
         }
 
@@ -217,12 +175,12 @@ namespace CppCodeBrowser
         private void IndexCursor(Cursor c)
         {
             if (FilterCursor(c) == false) return;
-            
+
             if (CursorKinds.IsDefinition(c.Kind))
             {
                 IndexDefinitionCursor(c);
             }
-            else if (c.CursorReferenced != null)
+            else if (c.CursorReferenced != null && c.Kind != CursorKind.CallExpr)
             {
                 if (FilterCursor(c.CursorReferenced))
                     IndexReferenceCursor(c);

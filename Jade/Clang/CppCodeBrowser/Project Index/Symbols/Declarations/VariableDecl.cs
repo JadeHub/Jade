@@ -5,7 +5,7 @@ using LibClang;
 
 namespace CppCodeBrowser.Symbols
 {
-    public class VariableDecl : DeclarationBase
+    public class VariableDecl : DeclarationBase, IHasDefinition
     {
         public IDeclaration _parent;
         private Cursor _definition;
@@ -44,6 +44,8 @@ namespace CppCodeBrowser.Symbols
 
         public IDeclaration Parent { get { return _parent; } }
 
+        #region IHasDefinition
+
         public void UpdateDefinition(Cursor c)
         {
             Debug.Assert(c.Kind == CursorKind.VarDecl);
@@ -51,5 +53,14 @@ namespace CppCodeBrowser.Symbols
             if (_definition == null)
                 _definition = c;
         }
+
+        public Cursor DefinitionCursor
+        {
+            get { return _definition; }
+        }
+
+        public bool HasDefinitionCursor { get { return _definition != null; } }
+
+        #endregion
     }
 }

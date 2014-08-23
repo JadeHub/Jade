@@ -85,7 +85,6 @@ namespace JadeCore.Editor
         private Project.IProject _project;
                 
         private ManualResetEvent _stopEvent;
-
         private ManualResetEvent _workerParseEvent;
         private Thread _workerThread;
 

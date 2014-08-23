@@ -43,7 +43,7 @@ public enum CursorKind
     VarDecl = 9,
 
     /// A function or method parameter. 
-    ParmDecl = 10,
+    ParamDecl = 10,
 
     /// An Objective-C \@interface. 
     ObjCInterfaceDecl = 11,

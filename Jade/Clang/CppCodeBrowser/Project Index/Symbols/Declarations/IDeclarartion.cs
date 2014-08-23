@@ -30,6 +30,13 @@ namespace CppCodeBrowser.Symbols
         string Usr { get; }        
     }
 
+    public interface IHasDefinition
+    {
+        void UpdateDefinition(Cursor c);
+        Cursor DefinitionCursor { get; }
+        bool HasDefinitionCursor { get; }
+    }
+
     public abstract class DeclarationBase : IDeclaration
     {
         private Cursor _cursor;
