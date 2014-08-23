@@ -14,7 +14,6 @@ namespace CppCodeBrowser.Symbols
 
     public interface ISymbol
     {
-        string Name { get; }
         string Spelling { get; }
         ICodeLocation Location { get; }
         int SpellingLength { get; }

@@ -21,7 +21,6 @@ namespace CppCodeBrowser.Symbols
             }
         }
 
-        public override string Name { get { return Cursor.Spelling; } }
         public override EntityKind Kind { get { return EntityKind.Namespace; } }
 
         public NamespaceDecl ParentNamespace { get { return _parent; } }

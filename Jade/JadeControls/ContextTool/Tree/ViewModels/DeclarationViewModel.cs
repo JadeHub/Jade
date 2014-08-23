@@ -61,7 +61,7 @@ namespace JadeControls.ContextTool
         {
             if(decl is FunctionDeclBase)
             {
-                return decl.Name + (decl as FunctionDeclBase).BuildParamText();
+                return decl.Spelling + (decl as FunctionDeclBase).BuildParamText();
             }
 
             if(decl is ClassDecl)
@@ -75,7 +75,7 @@ namespace JadeControls.ContextTool
                 }
             }
 
-            return decl.Name;
+            return decl.Spelling;
         }
 
         public DeclarationViewModel FindOrAddChildDecl(IDeclaration child)

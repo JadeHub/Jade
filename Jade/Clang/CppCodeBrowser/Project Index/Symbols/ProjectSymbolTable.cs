@@ -24,6 +24,7 @@ namespace CppCodeBrowser.Symbols
         private SymbolSet<FunctionDecl> _functions;
         private SymbolSet<TypedefDecl> _typedefs;
         private SymbolSet<VariableDecl> _variables;
+        private SymbolSet<IncludeDecl> _includes;
 
         private FileMapping.IProjectFileMaps _fileSymbolMaps;
 
@@ -45,6 +46,7 @@ namespace CppCodeBrowser.Symbols
             _functions = new SymbolSet<FunctionDecl>(delegate(Cursor c) { return new FunctionDecl(c, this); });
             _typedefs = new SymbolSet<TypedefDecl>(delegate(Cursor c) { return new TypedefDecl(c, this); });
             _variables = new SymbolSet<VariableDecl>(delegate(Cursor c) { return new VariableDecl(c, this); });
+            _includes = new SymbolSet<IncludeDecl>(delegate(Cursor c) { return new IncludeDecl(c, this); });
         }
 
         public ISymbolSet<ClassDecl> Classes { get { return _classes; } }
@@ -58,6 +60,7 @@ namespace CppCodeBrowser.Symbols
         public ISymbolSet<FunctionDecl> Functions { get { return _functions; } }
         public ISymbolSet<TypedefDecl> Typedefs { get { return _typedefs; } }
         public ISymbolSet<VariableDecl> Variables { get { return _variables; } }
+        public ISymbolSet<IncludeDecl> Includes { get { return _includes; } }
 
         public NamespaceDecl FindNamespaceDeclaration(string usr)
         {
@@ -114,6 +117,11 @@ namespace CppCodeBrowser.Symbols
             return _variables.Find(usr);
         }
 
+        public IncludeDecl FindIncludeDeclaration(string usr)
+        {
+            return _includes.Find(usr);
+        }
+
         private IDeclaration FindDeclaration(Cursor c)
         {
             if (c.Kind == CursorKind.Namespace)
@@ -153,9 +161,12 @@ namespace CppCodeBrowser.Symbols
                 return FindFunctionDeclaration(c.Usr);
             }
             else if (c.Kind == LibClang.CursorKind.VarDecl || c.Kind == LibClang.CursorKind.ParamDecl)
-
             {
                 return FindVariableDeclaration(c.Usr);
+            }
+            else if(c.Kind == CursorKind.InclusionDirective)
+            {
+                return FindIncludeDeclaration(c.Usr);
             }
             return null;
         }
@@ -262,6 +273,10 @@ namespace CppCodeBrowser.Symbols
             {
                 if(c.Usr.Length > 0)
                     UpdateVariableDecl(c);
+            }
+            else if(c.Kind == CursorKind.InclusionDirective)
+            {
+                UpdateIncludeDecl(c);
             }
         }
 
@@ -398,6 +413,19 @@ namespace CppCodeBrowser.Symbols
                 result.Item2.UpdateDefinition(c);
                 UpdateSymbolMapping(new CodeLocation(c.Location), c.Spelling.Length, result.Item2);
             }
+        }
+
+        private void UpdateIncludeDecl(Cursor c)
+        {
+            FilePath includedPath = FilePath.Make(c.IncludedFile.Name);
+            string usr = includedPath.Str;
+            IncludeDecl include = FindIncludeDeclaration(usr);
+            if(include == null)
+            {
+                include = new IncludeDecl(c, this);
+                _includes.Add(usr, include);
+            }
+            UpdateReference(c, include);
         }
     }
 }

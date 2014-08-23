@@ -13,7 +13,6 @@ namespace CppCodeBrowser.Symbols
             Debug.Assert(c.Kind == CursorKind.TypedefDecl);
         }
 
-        public override string Name { get { return Cursor.Spelling; } }
         public override EntityKind Kind { get { return EntityKind.Typedef; } }
     }
 }

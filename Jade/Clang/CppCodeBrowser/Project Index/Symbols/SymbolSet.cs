@@ -59,11 +59,17 @@ namespace CppCodeBrowser.Symbols
         /// <returns>Tuple<bool, T> first is true if new item added</returns>
         public Tuple<bool, T> FindOrAdd(Cursor c)
         {
+            Debug.Assert(c.Usr.Length > 0);
             T result = Find(c.Usr);
             if (result != null) return new Tuple<bool, T>(false, result);
             result = _creator(c);
             Update(result);
             return new Tuple<bool, T>(true, result);
+        }
+
+        public void Add(string usr, T symbol)
+        {
+            _symbols.Add(usr, symbol);
         }
     }
 }

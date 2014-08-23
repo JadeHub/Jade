@@ -14,7 +14,6 @@ namespace CppCodeBrowser.Symbols
         {
         }
 
-        public override string Name { get { return ToString(); } }
         public override EntityKind Kind { get { return EntityKind.FunctionArg; } }
 
         public bool IsConst

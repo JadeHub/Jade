@@ -141,6 +141,7 @@ namespace CppCodeBrowser
                     k == CursorKind.CallExpr ||
                     k == CursorKind.DeclRefExpr ||
                     k == CursorKind.MemberRefExpr ||
+                    k == CursorKind.InclusionDirective ||
                     CursorKinds.IsReference(k) ||
                     CursorKinds.IsStatement(k) ||
                     CursorKinds.IsExpression(k)
@@ -169,12 +170,12 @@ namespace CppCodeBrowser
         {
             if (FilterCursor(c) == false) return;
 
-            if (c.Spelling == "staticInt")
+            if (c.Kind == CursorKind.InclusionDirective)
             {
                 int i = 0;
             }
 
-            if (CursorKinds.IsDefinition(c.Kind))
+            if (CursorKinds.IsDefinition(c.Kind) || c.Kind == CursorKind.InclusionDirective)
             {
                 IndexDefinitionCursor(c);
             }

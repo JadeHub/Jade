@@ -21,7 +21,6 @@ namespace CppCodeBrowser.Symbols
 
         public ClassDecl Class { get { return _class; } }
 
-        public override string Name { get { return Cursor.Spelling; } }
         public override EntityKind Kind { get { return EntityKind.Method; } }
 
         public bool IsConst { get { return Cursor.IsConstMethod; } }

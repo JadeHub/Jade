@@ -54,8 +54,6 @@ namespace CppCodeBrowser.Symbols
             }
         }
         
-        public override string Name { get { return Cursor.Spelling; } }
-
         public override EntityKind Kind 
         { 
             get 

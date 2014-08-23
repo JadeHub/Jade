@@ -21,7 +21,8 @@ namespace CppCodeBrowser.Symbols
         Destructor,
         Method,
         Field,        
-        Typedef
+        Typedef,
+        Include
     };
 
     public interface IDeclaration : ISymbol
@@ -56,14 +57,13 @@ namespace CppCodeBrowser.Symbols
         public string Usr { get{ return _cursor.Usr;}}
         public string Spelling { get { return Cursor.Spelling; } }
 
-        public abstract string Name { get ;}
         public abstract EntityKind Kind { get; }
 
         protected ISymbolTable Table { get { return _table; } }
 
         public override string ToString()
         {
-            return string.Format("Definition of {0} {1} at {2}", Kind, Name, Location);
+            return string.Format("Definition of {0} {1} at {2}", Kind, Spelling, Location);
         }
 
         public override bool Equals(object obj)

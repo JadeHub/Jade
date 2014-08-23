@@ -19,7 +19,6 @@ namespace CppCodeBrowser.Symbols
             //Debug.Assert(_class != null);
         }
 
-        public override string Name { get { return Cursor.Spelling; } }
         public override EntityKind Kind { get { return EntityKind.Constructor; } }
 
         public ClassDecl Class { get { return _class; } }

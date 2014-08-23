@@ -16,7 +16,6 @@ namespace CppCodeBrowser.Symbols
             _class = table.FindClassDeclaration(c.SemanticParentCurosr.Usr);
         }
 
-        public override string Name { get { return Cursor.Spelling; } }
         public override EntityKind Kind { get { return EntityKind.Destructor; } }
 
         public ClassDecl Class { get { return _class; } }

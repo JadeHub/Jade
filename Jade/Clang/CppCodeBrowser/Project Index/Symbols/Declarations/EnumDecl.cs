@@ -29,7 +29,6 @@ namespace CppCodeBrowser.Symbols
             }
         }
 
-        public override string Name { get { return Cursor.Spelling; } }
         public override EntityKind Kind { get { return EntityKind.Enum; } }
 
         public IDeclaration Parent { get { return _parent; } }
