@@ -41,9 +41,6 @@ namespace JadeCore.Editor
         private Dictionary<FilePath, IEditorDoc> _openDocuments;
         private IEditorDoc _activeDocument;
         private IDictionary<Project.IProject, ProjectIndexBuilder> _projectBuilders;
-
-      //  private ActiveDocParseThread _activeDocParseThread;
-
         private object _lockObject;
                 
         #endregion
@@ -55,8 +52,6 @@ namespace JadeCore.Editor
             _openDocuments = new Dictionary<FilePath, IEditorDoc>();
             _projectBuilders = new Dictionary<Project.IProject, ProjectIndexBuilder>();
             _lockObject = new object();
-        //    _activeDocParseThread = new ActiveDocParseThread(this);
-         //   _activeDocParseThread.Run = true;
         }
 
         public void Dispose()
@@ -65,7 +60,6 @@ namespace JadeCore.Editor
             foreach (var projectBuilder in _projectBuilders.Values)
                 projectBuilder.Dispose();
             _projectBuilders.Clear();
-          //  _activeDocParseThread.Run = false;
         }
 
         #endregion
@@ -254,18 +248,6 @@ namespace JadeCore.Editor
                 }
                 return files;
             }
-        }
-
-        public IList<Tuple<string, string>> GetUnsavedFiles()
-        {
-            List<Tuple<string, string>> result = new List<Tuple<string, string>>();
-
-            foreach(TextDocumentSnapshot doc in GetSnapshots())
-            {
-                result.Add(new Tuple<string, string>(doc.Document.File.Path.Str, doc.Text));
-            }
-
-            return result;
         }
 
         #endregion

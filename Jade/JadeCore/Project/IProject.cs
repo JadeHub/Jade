@@ -25,11 +25,6 @@ namespace JadeCore.Project
 
         IList<FilePath> Files { get; }
 
-        /// <summary>
-        /// Index builder for this project
-        /// </summary>
-        CppCodeBrowser.ProjectIndexBuilder IndexBuilder { get; }
-
         CppCodeBrowser.IProjectIndex Index { get; }
 
         /// <summary>

@@ -23,7 +23,6 @@ namespace JadeControls.EditorControl.ViewModel.Commands
             _path = path;
             _index = index;
             _jumpToBrowser = new CppCodeBrowser.JumpToBrowser(_index);
-            _index.ItemUpdated += OnIndexItemUpdated;
            // _indexItem = _index.FindProjectItem(_path);
             RaiseCanExecuteChangedEvent();
         }
@@ -31,11 +30,6 @@ namespace JadeControls.EditorControl.ViewModel.Commands
         private void ViewModelCaretOffsetChanged(object sender, EventArgs e)
         {
             RaiseCanExecuteChangedEvent();
-        }
-
-        private void OnIndexItemUpdated(JadeUtils.IO.FilePath path)
-        {
-          //  _indexItem = _index.FindProjectItem(_path);
         }
 
         protected override bool CanExecute()

@@ -34,7 +34,7 @@ namespace JadeControls.EditorControl.ViewModel.Commands
 
             if(fileIndex is CppCodeBrowser.ISourceFile)
             {
-                LibClang.Cursor c = (fileIndex as CppCodeBrowser.ISourceFile).GetCursorAt(_path, ViewModel.CaretOffset);
+                LibClang.Cursor c = (fileIndex as CppCodeBrowser.ISourceFile).TranslationUnit.GetCursorAt(_path.Str, ViewModel.CaretOffset);
                 return c != null && c.Kind != CursorKind.NoDeclFound;
             }
 
@@ -43,7 +43,7 @@ namespace JadeControls.EditorControl.ViewModel.Commands
                 CppCodeBrowser.IHeaderFile header = fileIndex as CppCodeBrowser.IHeaderFile;
                 foreach(CppCodeBrowser.ISourceFile sf in header.SourceFiles)
                 {
-                    LibClang.Cursor c = sf.GetCursorAt(_path, ViewModel.CaretOffset);
+                    LibClang.Cursor c = sf.TranslationUnit.GetCursorAt(_path.Str, ViewModel.CaretOffset);
                     return c != null && c.Kind != CursorKind.NoDeclFound;
                 }
             }

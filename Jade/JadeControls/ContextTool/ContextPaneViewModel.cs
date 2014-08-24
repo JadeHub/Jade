@@ -13,7 +13,6 @@ namespace JadeControls.ContextTool
     public class ContextPaneViewModel : JadeControls.Docking.ToolPaneViewModel
     {
         private JadeCore.IEditorController _editorController;
-        private CppCodeBrowser.IProjectIndex _currentIndex;
         private ObservableCollection<DeclarationViewModel> _root;
         private HashSet<FilePath> _files;
         
@@ -22,42 +21,15 @@ namespace JadeControls.ContextTool
             Title = "Context Tool";
             ContentId = "ContextToolPane";
             _editorController = editCtrl;
-            _editorController.ActiveDocumentChanged += EditorControllerActiveDocumentChanged;
             _root = new ObservableCollection<DeclarationViewModel>();
             _files = new HashSet<FilePath>();
+
+            JadeCore.Services.Provider.CppParser.TranslationUnitIndexed += OnCppParserTranslationUnitIndexed;
         }
 
-        private void EditorControllerActiveDocumentChanged(JadeCore.IEditorDoc newValue, JadeCore.IEditorDoc oldValue)
+        private void OnCppParserTranslationUnitIndexed(CppCodeBrowser.ParseResult result)
         {
-            if (newValue == null)
-            {
-                if (_currentIndex != null)
-                {
-                    _currentIndex.ItemUpdated -= CurrentIndexItemUpdated;
-                    _currentIndex = null;
-                }
-                return;
-            }
-
-            JadeCore.Project.IProject proj = newValue.Project;
-            if (proj == null || proj.Index == null) return;
-
-            if(_currentIndex != null)
-            {
-                _currentIndex.ItemUpdated -= CurrentIndexItemUpdated;
-            }
-            _currentIndex = proj.Index;
-            _currentIndex.ItemUpdated += CurrentIndexItemUpdated;            
-        }
-
-        private void CurrentIndexItemUpdated(FilePath path)
-        {
-            if (_editorController.ActiveDocument == null) return;
-
-          //  if(_editorController.ActiveDocument.File.Path == path)
-            {
-               UpdateTree();
-            }
+            UpdateTree(result.Index);
         }
 
         private DeclarationViewModel FindRootLevelItem(string usr)
@@ -176,9 +148,9 @@ namespace JadeControls.ContextTool
             //return projectFiles.Contains(decl.Location.Path);
         }
                 
-        private void UpdateTree()
+        private void UpdateTree(CppCodeBrowser.IProjectIndex index)
         {
-            ISymbolTable symbols = _currentIndex.Symbols;
+            ISymbolTable symbols = index.Symbols;
             ISet<FilePath> files = JadeCore.Services.Provider.WorkspaceController.CurrentWorkspace.Files;
 
             foreach(NamespaceDecl ns in symbols.Namespaces)

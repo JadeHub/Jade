@@ -6,22 +6,25 @@ using System.Threading;
 
 namespace JadeCore.Parsing
 {
-    public class Parser : IParser
+    public class ParseThreads : IParser
     {
         private object _lock;
         private ManualResetEvent _stopEvent;
         private AutoResetEvent _workerParseEvent;
-        private Thread _workerThread;
+        private List<Thread> _workers;
         private List<ParseJob> _work;
                         
-        public Parser()
+        public ParseThreads()
         {
             _lock = new object();
             _stopEvent = new ManualResetEvent(false);
 
             _work = new List<ParseJob>();
             _workerParseEvent = new AutoResetEvent(false);
-            _workerThread = new Thread(WorkerThreadLoop);
+            _workers = new List<Thread>();
+
+            for (int i = 0; i < 5 ; i++)
+                _workers.Add(new Thread(WorkerThreadLoop));
         }
 
         public bool Run
@@ -31,12 +34,14 @@ namespace JadeCore.Parsing
                 if (value)
                 {
                     _stopEvent.Reset();
-                    _workerThread.Start();
+                    foreach(Thread w in _workers)
+                        w.Start();
                 }
                 else
                 {
                     _stopEvent.Set();
-                    _workerThread.Join();
+                    foreach (Thread w in _workers)
+                        w.Join();
                 }
             }
         }             

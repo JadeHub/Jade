@@ -87,7 +87,6 @@
     <Compile Include="Utils.cs" />
     <Compile Include="Project Index\CodeLocation.cs" />
     <Compile Include="Project Index\HeaderFile.cs" />
-    <Compile Include="Project Index\IIndexBuilder.cs" />
     <Compile Include="Project Index\IProjectFile.cs" />
     <Compile Include="Browsing\ICodeBrowser.cs" />
     <Compile Include="Project Index\IndexBuilder.cs" />

@@ -15,7 +15,7 @@ namespace JadeCore.Project
         private List<IFolder> _folders;
         //maintain a list of all source files in all folders
         private Collections.Observable.List<IFileItem> _allSourceFiles;
-        private CppCodeBrowser.ProjectIndexBuilder _indexBuilder;
+        private CppCodeBrowser.IProjectIndex _index;
 
         #endregion
 
@@ -28,7 +28,7 @@ namespace JadeCore.Project
             _items = new Dictionary<string, IItem>();
             _folders = new List<IFolder>();
             _allSourceFiles = new Collections.Observable.List<IFileItem>();
-            _indexBuilder = new CppCodeBrowser.ProjectIndexBuilder(JadeCore.Services.Provider.GuiScheduler, JadeCore.Services.Provider.EditorController);
+            _index = new CppCodeBrowser.ProjectIndex();
         }
 
         #endregion
@@ -40,8 +40,8 @@ namespace JadeCore.Project
         public IList<IFolder> Folders { get { return _folders; } }
         public IProject OwningProject { get { return this; } }
         public Collections.Observable.List<IFileItem> SourceFiles { get { return _allSourceFiles; } }
-        public CppCodeBrowser.ProjectIndexBuilder IndexBuilder { get { return _indexBuilder; } }
-        public CppCodeBrowser.IProjectIndex Index { get { return _indexBuilder.Index; } }
+        //public CppCodeBrowser.ProjectIndexBuilder IndexBuilder { get { return _indexBuilder; } }
+        public CppCodeBrowser.IProjectIndex Index { get { return _index; } }
         public FilePath Path { get { return _path; } }
         public string Directory { get { return _path.Directory; } }
 

@@ -42,7 +42,7 @@ namespace JadeControls.EditorControl.ViewModel.Commands
             if (_index.FindProjectItem(_path) != null && _index.FindProjectItem(_path) is CppCodeBrowser.ISourceFile)
             {
                 var sf = _index.FindSourceFile(_path);
-                var c = sf.GetCursorAt(_path, ViewModel.CaretOffset);
+                var c = sf.TranslationUnit.GetCursorAt(_path.Str, ViewModel.CaretOffset);
                 return c;
             }
             CppCodeBrowser.Symbols.ISymbol symbol = _index.FileSymbolMaps.Lookup(_path, ViewModel.CaretOffset);

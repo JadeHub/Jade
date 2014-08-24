@@ -8,7 +8,7 @@ namespace CppCodeBrowser
 {
     public static class Parser
     {
-        public static ParseResult Parse(ProjectIndex index, FilePath path, string[] compilerArgs, IUnsavedFileProvider unsavedFiles)
+        public static ParseResult Parse(IProjectIndex index, FilePath path, string[] compilerArgs, IUnsavedFileProvider unsavedFiles)
         {
             TranslationUnit tu = new TranslationUnit(index.LibClangIndex, path.Str);
 
@@ -24,7 +24,7 @@ namespace CppCodeBrowser
                 tu.Dispose();
                 return null;
             }
-            return new ParseResult(path, files, tu); ;
+            return new ParseResult(index, path, files, tu); ;
         }
     }
 }

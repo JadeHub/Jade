@@ -11,8 +11,6 @@ namespace CppCodeBrowser
 
     public interface IProjectIndex
     {
-        event ProjectItemEvent ItemUpdated;
-        
         IProjectFile FindProjectItem(FilePath path);
         ISourceFile FindSourceFile(FilePath path);
         IHeaderFile FindHeaderFile(FilePath path);
@@ -46,15 +44,6 @@ namespace CppCodeBrowser
 
             _fileSymbolMappings = new Symbols.FileMapping.ProjectFileMaps();
             _symbols = new Symbols.ProjectSymbolTable(_fileSymbolMappings);
-        }
-
-        public event ProjectItemEvent ItemUpdated;
-
-        public void RaiseItemUpdatedEvent(FilePath path)
-        {
-            ProjectItemEvent handler = ItemUpdated;
-            if (handler != null)
-                handler(path);
         }
 
         public bool IsProjectFile(FilePath path)
@@ -105,13 +94,6 @@ namespace CppCodeBrowser
                 }
                 AddSourceFile(path, tu);               
             }
-            //RaiseItemUpdatedEvent(path);
-            //if(tuToDispose != null)
-              //  tuToDispose.Dispose();
-            /*
-            if(path.FileName == "blah.cc")
-                IndexTranslationUnit(tu);
-            */
             return;
         }
 

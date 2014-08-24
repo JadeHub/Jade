@@ -40,7 +40,7 @@ namespace JadeCore.Search
             CppCodeBrowser.ISourceFile fileIndex = _projectIndex.FindSourceFile(_location.Path);
             if (fileIndex == null)
                 return null;
-            Cursor c = fileIndex.GetCursorAt(_location.Path, _location.Offset);
+            Cursor c = fileIndex.TranslationUnit.GetCursorAt(_location.Path.Str, _location.Offset);
 
             if (c != null && c.DefinitionCursor != null)
                 c = c.DefinitionCursor;

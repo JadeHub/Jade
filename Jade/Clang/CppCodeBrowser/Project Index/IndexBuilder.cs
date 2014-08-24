@@ -10,116 +10,27 @@ namespace CppCodeBrowser
 {   
     public interface IUnsavedFileProvider
     {
-       /// <summary>
-       /// Return a list of Tuples containing path, content
-       /// </summary>
-       /// <returns></returns>
-        IList<Tuple<string, string>> GetUnsavedFiles();
         IEnumerable<ParseFile> UnsavedFiles { get; }
     }
     
-    public class ProjectIndexBuilder : IIndexBuilder
+    public class ProjectIndexBuilder
     {
-        private bool _disposed = false;
-        private readonly ProjectIndex _index;
-
-        //Set of all parsed Tus for Disposal
-        private readonly HashSet<TranslationUnit> _allTus;
-
-        private TaskScheduler _callbackScheduler;
-        private IUnsavedFileProvider _unsavedFilesProvider;
-        private object _lock = new object();
-                
-        public ProjectIndexBuilder(TaskScheduler callbackSCheduler, IUnsavedFileProvider unsavedFiles)
+        static public void IndexTranslationUnit(ParseResult parseResult)
         {
-            _callbackScheduler = callbackSCheduler;
-            _unsavedFilesProvider = unsavedFiles;
-            _index = new ProjectIndex();
-            _allTus = new HashSet<TranslationUnit>();
+            parseResult.Index.UpdateSourceFile(parseResult.Path, parseResult.TranslationUnit);
+            System.Diagnostics.Debug.WriteLine("**Indexing " + parseResult.Path.FileName + " version:" + parseResult.GetFileVersion(parseResult.Path));
+            IndexTranslationUnit(parseResult.Index, parseResult.TranslationUnit);
         }
 
-        public void Dispose()
-        {
-            if(_disposed) return;
-
-            lock (_lock)
-            {
-                foreach (TranslationUnit tu in _allTus)
-                {
-                    tu.Dispose();
-                }
-                _allTus.Clear();
-                _disposed = true;
-            }
-        }
-
-        public ParseResult ParseFile(FilePath path, string[] compilerArgs)
-        {   
-            if (_disposed) return null;
-
-          //  lock (_lock)
-            {
-                System.Diagnostics.Debug.WriteLine("**Parsing " + path.FileName);
-
-                return Parser.Parse(_index, path, compilerArgs, _unsavedFilesProvider);
-                /*
-                if (result != null)
-                {
-                    _index.UpdateSourceFile(path, result.TranslationUnit);
-
-                    //Perform on gui thread
-                    Task.Factory.StartNew(() =>
-                        {
-                        //    lock (_lock)
-                            {
-                                System.Diagnostics.Debug.WriteLine("**Indexing " + path.FileName);
-                                IndexTranslationUnit(result.TranslationUnit);
-                                _index.RaiseItemUpdatedEvent(path);
-                            }
-                        }, CancellationToken.None, TaskCreationOptions.None, _callbackScheduler);
-                }
-                return result;*/
-            }
-            
-        }
-
-        public void IndexTranslationUnit(ParseResult parseResult)
-        {
-            _index.UpdateSourceFile(parseResult.Path, parseResult.TranslationUnit);
-
-            //Perform on gui thread
-            Task.Factory.StartNew(() =>
-            {
-                //    lock (_lock)
-                {
-                    System.Diagnostics.Debug.WriteLine("**Indexing " + parseResult.Path.FileName + " version:" + parseResult.GetFileVersion(parseResult.Path));
-                    IndexTranslationUnit(parseResult.TranslationUnit);
-                    _index.RaiseItemUpdatedEvent(parseResult.Path);
-                }
-            }, CancellationToken.None, TaskCreationOptions.None, _callbackScheduler);
-        }
-
-        public IProjectIndex Index 
-        { 
-            get
-            {
-                if (_disposed) return null;
-                return _index; 
-            }
-        }
-
-     //   static bool done = false;
-
-        private void IndexTranslationUnit(TranslationUnit tu)        
-        {           
-            
+        static private void IndexTranslationUnit(IProjectIndex index, TranslationUnit tu)        
+        {            
             foreach (Cursor c in tu.Cursor.Children)
             {
-                IndexCursor(c);
+                IndexCursor(index, c);
             }
         }
-        
-        private bool IsIndexCursorKind(CursorKind k)
+
+        static private bool IsIndexCursorKind(CursorKind k)
         {
             return 
                 (
@@ -148,17 +59,7 @@ namespace CppCodeBrowser
                 );
         }
 
-        private void IndexDefinitionCursor(Cursor c)
-        {
-            _index.Symbols.UpdateDefinition(c);
-        }
-
-        private void IndexReferenceCursor(Cursor c)
-        {
-            _index.Symbols.UpdateReference(c);
-        }
-
-        private bool FilterCursor(Cursor c)
+        static private bool FilterCursor(Cursor c)
         {
             if (IsIndexCursorKind(c.Kind) == false) return false;
             if (c.Location == null || c.Location.File == null) return false;
@@ -166,7 +67,7 @@ namespace CppCodeBrowser
             return true;
         }
 
-        private void IndexCursor(Cursor c)
+        static private void IndexCursor(IProjectIndex index, Cursor c)
         {
             if (FilterCursor(c) == false) return;
 
@@ -177,17 +78,17 @@ namespace CppCodeBrowser
 
             if (CursorKinds.IsDefinition(c.Kind) || c.Kind == CursorKind.InclusionDirective)
             {
-                IndexDefinitionCursor(c);
+                index.Symbols.UpdateDefinition(c);
             }
             else if (c.CursorReferenced != null)// && c.Kind != CursorKind.CallExpr)
             {
                 if (FilterCursor(c.CursorReferenced))
-                    IndexReferenceCursor(c);
+                    index.Symbols.UpdateReference(c);
             } 
 
             foreach (Cursor child in c.Children)
             {
-                IndexCursor(child);
+                IndexCursor(index, child);
             }
         }
     }

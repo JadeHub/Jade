@@ -72,9 +72,11 @@
     <Compile Include="GuiUtils.cs" />
     <Compile Include="Editor\IEditorController.cs" />
     <Compile Include="IServiceProvider.cs" />
+    <Compile Include="Parsing\IndexingService.cs" />
     <Compile Include="Parsing\ParseController.cs" />
     <Compile Include="Parsing\ParseJob.cs" />
     <Compile Include="Parsing\Parser.cs" />
+    <Compile Include="Parsing\ProjectParseContext.cs" />
     <Compile Include="Project\FileItem.cs" />
     <Compile Include="Project\Folder.cs" />
     <Compile Include="Project\IFileItem.cs" />

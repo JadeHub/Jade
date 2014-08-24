@@ -15,12 +15,12 @@ namespace JadeCore.Editor
     public class DocChangeTracker : IDocChangeTracker
     {
         private IEditorDoc _doc;
-        private CppCodeBrowser.ProjectIndexBuilder _indexBuilder;
+        private CppCodeBrowser.IProjectIndex _index;
         
-        public DocChangeTracker(IEditorDoc document, CppCodeBrowser.ProjectIndexBuilder indexBuilder)
+        public DocChangeTracker(IEditorDoc document, CppCodeBrowser.IProjectIndex index)
         {
             _doc = document;
-            _indexBuilder = indexBuilder;
+            _index = index;
             _doc.TextDocument.Changed += TextDocument_Changed;
         }
 
@@ -30,7 +30,7 @@ namespace JadeCore.Editor
             {
                 //if change warrants reparsing
                 //initiate parse
-                JadeCore.Services.Provider.CppParser.AddJob(Parsing.ParsePriority.Editing, new Parsing.ParseJob(_doc.File.Path, null, _indexBuilder));
+                JadeCore.Services.Provider.CppParser.AddJob(Parsing.ParsePriority.Editing, new Parsing.ParseJob(_doc.File.Path, null, _index));
             }
         }
 

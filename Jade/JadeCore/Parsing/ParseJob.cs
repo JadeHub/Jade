@@ -16,20 +16,25 @@ namespace JadeCore.Parsing
     {
         private FilePath _path;
         private string[] _compilerArgs;
-        private CppCodeBrowser.IIndexBuilder _indexBuilder;
+        private CppCodeBrowser.IProjectIndex _index;
 
-        public ParseJob(FilePath path, string[] compilerArgs, CppCodeBrowser.IIndexBuilder indexBuilder)
+        public ParseJob(FilePath path, string[] compilerArgs, CppCodeBrowser.IProjectIndex index)
         {
             _path = path;
             _compilerArgs = compilerArgs;
-            _indexBuilder = indexBuilder;
+            _index = index;
         }
 
         public void Parse()
         {
-            CppCodeBrowser.ParseResult result = _indexBuilder.ParseFile(_path, _compilerArgs);
+            CppCodeBrowser.ParseResult result = CppCodeBrowser.Parser.Parse(_index, _path,
+                                                                            _compilerArgs,
+                                                                            JadeCore.Services.Provider.EditorController);
             if(result != null)
-                _indexBuilder.IndexTranslationUnit(result);
+            {
+                JadeCore.Services.Provider.CppParser.OnParseComplete(result);
+            }
+                //_indexBuilder.IndexTranslationUnit(result);
         }
 
         public FilePath Path { get { return _path; } }

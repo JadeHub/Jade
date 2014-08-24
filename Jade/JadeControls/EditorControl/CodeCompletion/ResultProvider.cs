@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using JadeUtils.IO;
@@ -7,7 +8,6 @@ namespace JadeControls.EditorControl.CodeCompletion
 {
     public interface IResultProvider
     {
-        //IEnumerable<ICompletionData> GetResults(string file, int line, int column);
         ResultSet GetResults(string file, int line, int column, CompletionSelection selection);
     }
 
@@ -30,7 +30,15 @@ namespace JadeControls.EditorControl.CodeCompletion
             CppCodeBrowser.ISourceFile sf = _index.FindSourceFile(_sourceFile);
             if (sf == null) return null;
             
-            LibClang.CodeCompletion.Results results = sf.TranslationUnit.CodeCompleteAt(file, line, column, _unsavedFiles.GetUnsavedFiles());
+            //convert unsaved files
+            List<Tuple<string, string>> unsavedFiles = new List<Tuple<string, string>>();
+
+            foreach(var item in _unsavedFiles.UnsavedFiles)
+            {
+                unsavedFiles.Add(new Tuple<string, string>(item.Path.Str, item.Content));
+            }
+
+            LibClang.CodeCompletion.Results results = sf.TranslationUnit.CodeCompleteAt(file, line, column, unsavedFiles);
             if (results == null || results.Items.Count() == 0) return null;
 
             foreach (LibClang.CodeCompletion.Result r in results.Items.OrderBy(item => item.CompletionPriority))
