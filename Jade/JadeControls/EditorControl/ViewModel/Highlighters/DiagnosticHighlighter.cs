@@ -9,18 +9,19 @@ namespace JadeControls.EditorControl.ViewModel
     public class DiagnosticHighlighter
     {
         private Highlighting.Highlighter _highlighter;
-        private CppCodeBrowser.IProjectFile _projectItem;
+     //   private CppCodeBrowser.IProjectFile _projectItem;
+        private TranslationUnit _tu;
 
         public DiagnosticHighlighter(Highlighting.Highlighter highlighter)
         {
             _highlighter = highlighter;
         }
 
-        public CppCodeBrowser.IProjectFile ProjectItem
+        public TranslationUnit TranslationUnit
         {
             set
             {
-                _projectItem = value;
+                _tu = value;
                 HighlightDiagnostics();
             }
         }
@@ -34,10 +35,10 @@ namespace JadeControls.EditorControl.ViewModel
         {
             _highlighter.Clear();
 
-            if (_projectItem == null) return;
+          /*  if (_projectItem == null) return;
 
             foreach (Diagnostic d in _projectItem.Diagnostics)
-                HighlightDiagnostic(d);
+                HighlightDiagnostic(d);*/
         }
 
         private SourceRange GetHighlightRange(Diagnostic diagnostic)

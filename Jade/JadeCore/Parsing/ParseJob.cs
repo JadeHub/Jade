@@ -17,10 +17,12 @@ namespace JadeCore.Parsing
         private FilePath _path;
         private string[] _compilerArgs;
         private CppCodeBrowser.IProjectIndex _index;
+        private UInt64 _docVersion; //this is the version number at the time of job creation, when the job executes the version number may be greater
 
-        public ParseJob(FilePath path, string[] compilerArgs, CppCodeBrowser.IProjectIndex index)
+        public ParseJob(FilePath path, UInt64 version, string[] compilerArgs, CppCodeBrowser.IProjectIndex index)
         {
             _path = path;
+            _docVersion = version;
             _compilerArgs = compilerArgs;
             _index = index;
         }
@@ -34,9 +36,9 @@ namespace JadeCore.Parsing
             {
                 JadeCore.Services.Provider.CppParser.OnParseComplete(result);
             }
-                //_indexBuilder.IndexTranslationUnit(result);
         }
 
+        public UInt64 DocumentVersion { get { return _docVersion; } }
         public FilePath Path { get { return _path; } }
     }
 

@@ -8,7 +8,6 @@ namespace JadeCore.Editor
 {
     public interface IDocChangeTracker
     {
-    //    bool RequiresParse { get; }
         UInt64 Version { get; }
     }
 
@@ -30,7 +29,7 @@ namespace JadeCore.Editor
             {
                 //if change warrants reparsing
                 //initiate parse
-                JadeCore.Services.Provider.CppParser.AddJob(Parsing.ParsePriority.Editing, new Parsing.ParseJob(_doc.File.Path, null, _index));
+                JadeCore.Services.Provider.CppParser.AddJob(Parsing.ParsePriority.Editing, new Parsing.ParseJob(_doc.File.Path, Version, null, _index));
             }
         }
 

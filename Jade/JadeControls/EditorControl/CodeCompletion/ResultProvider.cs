@@ -27,8 +27,9 @@ namespace JadeControls.EditorControl.CodeCompletion
         public ResultSet GetResults(string file, int line, int column, CompletionSelection selection)
         {
             ResultSet resultSet = new ResultSet();
-            CppCodeBrowser.ISourceFile sf = _index.FindSourceFile(_sourceFile);
-            if (sf == null) return null;
+            LibClang.TranslationUnit tu = _index.FindTranslationUnit(_sourceFile);
+            if (tu == null)
+                return null;
             
             //convert unsaved files
             List<Tuple<string, string>> unsavedFiles = new List<Tuple<string, string>>();
@@ -38,7 +39,7 @@ namespace JadeControls.EditorControl.CodeCompletion
                 unsavedFiles.Add(new Tuple<string, string>(item.Path.Str, item.Content));
             }
 
-            LibClang.CodeCompletion.Results results = sf.TranslationUnit.CodeCompleteAt(file, line, column, unsavedFiles);
+            LibClang.CodeCompletion.Results results = tu.CodeCompleteAt(file, line, column, unsavedFiles);
             if (results == null || results.Items.Count() == 0) return null;
 
             foreach (LibClang.CodeCompletion.Result r in results.Items.OrderBy(item => item.CompletionPriority))

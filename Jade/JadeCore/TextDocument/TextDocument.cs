@@ -11,6 +11,7 @@ namespace JadeCore
         private bool _loaded;
         private bool _modified;
         private UInt64 _version;
+        private bool _loading; //used to supress text change events while document is loading
 
         public TextDocument(IFileHandle handle)
         {
@@ -25,6 +26,10 @@ namespace JadeCore
 
         private void OnAvDocChanged(object sender, DocumentChangeEventArgs e)
         {
+            if (_loading) return;
+
+            _version++;
+            Modified = true;
             EventHandler<DocumentChangeEventArgs> handler = Changed;
             if (handler != null)
                 handler(sender, e);
@@ -43,8 +48,8 @@ namespace JadeCore
 
         private void OnAvDocTextChanged(object sender, EventArgs e)
         {
-            _version++;
-            Modified = true;
+            if (_loading) return;
+         
             TextChangedEvent handler = TextChanged;
             if (handler != null)
                 handler(Version);
@@ -170,14 +175,23 @@ namespace JadeCore
 
         private void Load()
         {
-            using (FileStream fs = new FileStream(File.Path.Str, FileMode.Open, FileAccess.Read, FileShare.Read))
+            _loading = true;
+
+            try
             {
-                using (StreamReader reader = new StreamReader(fs, System.Text.Encoding.ASCII, false))
+                using (FileStream fs = new FileStream(File.Path.Str, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    _avDoc.Text = reader.ReadToEnd();
-                    _loaded = true;
-                    Modified = false;
+                    using (StreamReader reader = new StreamReader(fs, System.Text.Encoding.ASCII, false))
+                    {
+                        _avDoc.Text = reader.ReadToEnd();
+                        _loaded = true;
+                        Modified = false;
+                    }
                 }
+            }
+            finally
+            {
+                _loading = false;
             }
         }
                 

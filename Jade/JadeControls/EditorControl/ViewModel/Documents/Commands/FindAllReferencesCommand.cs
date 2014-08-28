@@ -28,7 +28,10 @@ namespace JadeControls.EditorControl.ViewModel.Commands
         }
 
         protected override bool CanExecute()
-        {   
+        {
+            CppCodeBrowser.Symbols.ISymbol symbol = _index.FileSymbolMaps.Lookup(_path, ViewModel.CaretOffset);
+            return symbol != null;
+            /*
             CppCodeBrowser.IProjectFile fileIndex = _index.FindProjectItem(_path);
             if (fileIndex == null) return false;
 
@@ -48,7 +51,7 @@ namespace JadeControls.EditorControl.ViewModel.Commands
                 }
             }
             Debug.Assert(false);
-            return true;
+            return true;*/
         }
 
         protected override void Execute()

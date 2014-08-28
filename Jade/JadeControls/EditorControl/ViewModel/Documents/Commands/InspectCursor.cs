@@ -39,12 +39,6 @@ namespace JadeControls.EditorControl.ViewModel.Commands
 
         private LibClang.Cursor GetCursorAt(CppCodeBrowser.ICodeLocation loc)
         {
-            if (_index.FindProjectItem(_path) != null && _index.FindProjectItem(_path) is CppCodeBrowser.ISourceFile)
-            {
-                var sf = _index.FindSourceFile(_path);
-                var c = sf.TranslationUnit.GetCursorAt(_path.Str, ViewModel.CaretOffset);
-                return c;
-            }
             CppCodeBrowser.Symbols.ISymbol symbol = _index.FileSymbolMaps.Lookup(_path, ViewModel.CaretOffset);
             if (symbol == null) return null;
 

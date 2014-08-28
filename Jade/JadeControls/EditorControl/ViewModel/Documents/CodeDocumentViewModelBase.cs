@@ -52,7 +52,7 @@ namespace JadeControls.EditorControl.ViewModel
             {
                 JadeCore.Services.Provider.CppParser.TranslationUnitIndexed += OnCppParserTranslationUnitIndexed;
 
-                DiagnosticHighlighter.ProjectItem = Document.Project.Index.FindProjectItem(Document.File.Path);
+                //DiagnosticHighlighter.ProjectItem = Document.Project.Index.FindProjectItem(Document.File.Path);
                
                 _inspectSymbolCommand = new Commands.InspectSymbolCommand(this, doc.File.Path, doc.Project.Index);
                 _inspectCursorCommand = new Commands.InspectCursorCommand(this, doc.File.Path, doc.Project.Index);
@@ -81,37 +81,16 @@ namespace JadeControls.EditorControl.ViewModel
                     _indexHighlighter.SetMap(_fileMap);
                 }
             }
+            /*
 
             CppCodeBrowser.IProjectFile fileIndex = result.Index.FindProjectItem(Document.File.Path);
 
             //highlight diagnostics
             List<LibClang.Diagnostic> diags = new List<Diagnostic>(fileIndex.Diagnostics);
             DiagnosticOutputWriter.UpdateOutput(diags);
+             * */
         }
 
-        /*
-
-        private void ProjectIndexItemUpdated(JadeUtils.IO.FilePath path)
-        {            
-            if (path != Document.File.Path) return;
-
-            //highlight the symbol mappings
-            if (_fileMap == null)
-            {
-                _fileMap = Index.FileSymbolMaps.GetMap(Document.File.Path);
-                if (_fileMap != null)
-                {
-                    _indexHighlighter.SetMap(_fileMap);
-                }
-            }
-
-            CppCodeBrowser.IProjectFile fileIndex = Index.FindProjectItem(Document.File.Path);
-                           
-            //highlight diagnostics
-            List<LibClang.Diagnostic> diags = new List<Diagnostic>(fileIndex.Diagnostics);
-            DiagnosticOutputWriter.UpdateOutput(diags);
-        }
-        */
         protected DiagnosticHighlighter DiagnosticHighlighter
         {
             get;
@@ -123,15 +102,6 @@ namespace JadeControls.EditorControl.ViewModel
             get;
             private set;
         }
-        /*
-        protected CppCodeBrowser.IProjectIndex Index
-        {
-            get
-            {
-                Debug.Assert(HasIndex);
-                return Document.Project.Index;
-            }
-        }*/
 
         protected bool HasIndex
         {

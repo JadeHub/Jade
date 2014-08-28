@@ -76,7 +76,6 @@
     <Compile Include="Parsing\ParseController.cs" />
     <Compile Include="Parsing\ParseJob.cs" />
     <Compile Include="Parsing\Parser.cs" />
-    <Compile Include="Parsing\ProjectParseContext.cs" />
     <Compile Include="Project\FileItem.cs" />
     <Compile Include="Project\Folder.cs" />
     <Compile Include="Project\IFileItem.cs" />

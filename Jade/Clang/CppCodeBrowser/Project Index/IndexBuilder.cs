@@ -17,7 +17,8 @@ namespace CppCodeBrowser
     {
         static public void IndexTranslationUnit(ParseResult parseResult)
         {
-            parseResult.Index.UpdateSourceFile(parseResult.Path, parseResult.TranslationUnit);
+            parseResult.Index.UpdateParseResult(parseResult);
+
             System.Diagnostics.Debug.WriteLine("**Indexing " + parseResult.Path.FileName + " version:" + parseResult.GetFileVersion(parseResult.Path));
             IndexTranslationUnit(parseResult.Index, parseResult.TranslationUnit);
         }

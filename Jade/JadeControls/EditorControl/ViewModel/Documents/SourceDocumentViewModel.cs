@@ -14,7 +14,7 @@ namespace JadeControls.EditorControl.ViewModel
     public class SourceDocumentViewModel : CodeDocumentViewModelBase
     {
         private Commands.CodeCompleteCommand _codeCompleteCommand;
-        private CodeCompletion.CompletionEngine _codeCompletion;
+        //private CodeCompletion.CompletionEngine _codeCompletion;
         
         public SourceDocumentViewModel(IEditorDoc doc) 
             : base(doc)
@@ -34,10 +34,10 @@ namespace JadeControls.EditorControl.ViewModel
         protected override void OnSetView(CodeEditor view)
         {
             base.OnSetView(view);
-            Debug.Assert(_codeCompletion == null);
+            //Debug.Assert(_codeCompletion == null);
 
-            _codeCompletion = new CodeCompletion.CompletionEngine(Document.TextDocument, view.TextArea, new CodeCompletion.ResultProvider(Document.File.Path, Document.Project.Index, JadeCore.Services.Provider.EditorController));
-            _codeCompleteCommand.CodeCompletion = _codeCompletion;
+//            _codeCompletion = new CodeCompletion.CompletionEngine(Document.TextDocument, view.TextArea, new CodeCompletion.ResultProvider(Document.File.Path, Document.Project.Index, JadeCore.Services.Provider.EditorController));
+  //          _codeCompleteCommand.CodeCompletion = _codeCompletion;
 
             view.InputBindings.Add(new InputBinding(CodeCompleteCommand, new KeyGesture(Key.Space, ModifierKeys.Control)));
             view.InputBindings.Add(new InputBinding(JumpToCommand, new KeyGesture(Key.F12)));

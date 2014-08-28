@@ -42,8 +42,8 @@ namespace JadeControls.EditorControl.ViewModel.Commands
             ViewModel.TextDocument.GetLineAndColumnForOffset(startOffset, out line, out col);
             string triggerWord = ViewModel.TextDocument.Text.Substring(startOffset, ViewModel.CaretOffset - startOffset);
             */
-            CppCodeBrowser.ISourceFile sf = _index.FindSourceFile(_path);
-            if (sf == null) return;
+         //   CppCodeBrowser.ISourceFile sf = _index.FindSourceFile(_path);
+          //  if (sf == null) return;
             /*
             int offset;
             string triggerWord = CodeCompletion.ExtractTriggerWord(ViewModel.CaretOffset, out offset);

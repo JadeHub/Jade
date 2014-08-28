@@ -11,23 +11,18 @@ namespace CppCodeBrowser
 
     public interface IProjectIndex
     {
-        IProjectFile FindProjectItem(FilePath path);
-        ISourceFile FindSourceFile(FilePath path);
-        IHeaderFile FindHeaderFile(FilePath path);
-
-        void UpdateSourceFile(FilePath path, LibClang.TranslationUnit tu);
-
-        IEnumerable<ISourceFile> SourceFiles { get; }
+        TranslationUnit FindTranslationUnit(FilePath path);        
         LibClang.Index LibClangIndex { get; }
+        void UpdateParseResult(ParseResult result);
 
+        IEnumerable<ParseResult> ParseResults { get;}
         Symbols.ISymbolTable Symbols { get; }
         Symbols.FileMapping.IProjectFileMaps FileSymbolMaps { get; }
     }
 
     public class ProjectIndex : IProjectIndex
     {
-        private readonly Dictionary<FilePath, IHeaderFile> _headers;
-        private readonly Dictionary<FilePath, ISourceFile> _sources;
+        private readonly Dictionary<FilePath, ParseResult> _parseResults;
 
         private object _lock;
         private readonly LibClang.Index _libClangIndex;
@@ -39,121 +34,41 @@ namespace CppCodeBrowser
         {
             _lock = new object();
             _libClangIndex = new LibClang.Index(false, true);
-            _headers = new Dictionary<FilePath, IHeaderFile>();
-            _sources = new Dictionary<FilePath, ISourceFile>();
-
+            _parseResults = new Dictionary<FilePath, ParseResult>();
             _fileSymbolMappings = new Symbols.FileMapping.ProjectFileMaps();
             _symbols = new Symbols.ProjectSymbolTable(_fileSymbolMappings);
         }
 
-        public bool IsProjectFile(FilePath path)
-        {
-            return _sources.ContainsKey(path) || _headers.ContainsKey(path);
-        }
-
-        public ISourceFile FindSourceFile(FilePath path)
+        public TranslationUnit FindTranslationUnit(FilePath path)
         {
             lock (_lock)
             {
-                if (_sources.ContainsKey(path))
-                    return _sources[path];
+                if (_parseResults.ContainsKey(path))
+                    return _parseResults[path].TranslationUnit;
             }
             return null;
         }
 
-        public IHeaderFile FindHeaderFile(FilePath path)
-        {
-            lock(_lock)
-            {
-                if (_headers.ContainsKey(path))
-                    return _headers[path];
-            }
-            return null;
-        }
-
-        public IProjectFile FindProjectItem(FilePath path)
+        public void UpdateParseResult(ParseResult result)
         {
             lock (_lock)
             {
-                if (_sources.ContainsKey(path))
-                    return _sources[path];
-
-                if (_headers.ContainsKey(path))
-                    return _headers[path];
-            }
-            return null;
-        }
-
-        public void UpdateSourceFile(FilePath path, LibClang.TranslationUnit tu)
-        {
-            lock (_lock)
-            {
-                if (_sources.ContainsKey(path))
+                if(_parseResults.ContainsKey(result.Path))
                 {
-                    RemoveSourceFile(path);
+                    _parseResults[result.Path] = result;
                 }
-                AddSourceFile(path, tu);               
+                else
+                {
+                    _parseResults.Add(result.Path, result);
+                }
             }
             return;
         }
-
-        private void RemoveSourceFile(FilePath path)
-        {
-            if (_sources.ContainsKey(path) == false)
-                return;
-
-            ISourceFile sf = _sources[path];
-
-            List<FilePath> unrefedHeaders = new List<FilePath>();
-            foreach(IHeaderFile header in _headers.Values)
-            {
-                header.RemoveReferingSource(sf);
-                if (header.IsReferenced() == false)
-                    unrefedHeaders.Add(header.Path);
-            }
-            foreach(FilePath p in unrefedHeaders)
-            {
-                _headers.Remove(p);
-            }
-            _sources.Remove(path);            
-        }
-
-        private void AddSourceFile(FilePath path, TranslationUnit tu)
-        {
-            SourceFile sourceFile = new SourceFile(path, tu);
-            _sources.Add(path, sourceFile);
-
-            foreach (TranslationUnit.HeaderInfo headerInfo in tu.HeaderFiles)
-            {
-                IHeaderFile headerFile = FindOrCreateHeaderFile(headerInfo);
-
-                headerFile.SetReferencedBy(sourceFile);
-                //sourceFile.AddIncludedHeader(headerFile);
-            }
-        }
-
-        private IHeaderFile FindOrCreateHeaderFile(TranslationUnit.HeaderInfo headerInfo)
-        {
-            IHeaderFile result;
-
-            FilePath path = FilePath.Make(System.IO.Path.GetFullPath(headerInfo.File.Name));
-
-            if (_headers.TryGetValue(path, out result) == false)
-            {
-                result = new HeaderFile(path);
-                _headers.Add(path, result);
-            }
-            return result;
-        }
-
+        
         public LibClang.Index LibClangIndex { get { return _libClangIndex; } }
 
         public Symbols.FileMapping.IProjectFileMaps FileSymbolMaps { get { return _fileSymbolMappings; } }
         public Symbols.ISymbolTable Symbols { get { return _symbols; } }
-
-        public IEnumerable<ISourceFile> SourceFiles 
-        {
-            get { return _sources.Values; }
-        }
+        public IEnumerable<ParseResult> ParseResults { get { return _parseResults.Values; } }
     }
 }

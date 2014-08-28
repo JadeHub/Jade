@@ -36,36 +36,6 @@
   </PostinstrumentEvent>
   <Binaries>
     <ProjBinary>
-      <Path>Jade\Clang\CppCodeBrowser\obj\Debug\CppCodeBrowser.dll</Path>
-      <ArgumentTimestamp>01/01/0001 00:00:00</ArgumentTimestamp>
-      <Instrument>true</Instrument>
-      <Sample>true</Sample>
-      <ExternalWebsite>false</ExternalWebsite>
-      <InteractionProfilingEnabled>false</InteractionProfilingEnabled>
-      <IsLocalJavascript>false</IsLocalJavascript>
-      <IsWindowsStoreApp>false</IsWindowsStoreApp>
-      <IsWWA>false</IsWWA>
-      <LaunchProject>true</LaunchProject>
-      <OverrideProjectSettings>false</OverrideProjectSettings>
-      <LaunchMethod>Executable</LaunchMethod>
-      <StartupDirectory>Jade\Clang\CppCodeBrowser\bin\Debug\</StartupDirectory>
-      <Arguments>
-      </Arguments>
-      <NetAppHost>IIS</NetAppHost>
-      <NetBrowser>InternetExplorer</NetBrowser>
-      <ExcludeSmallFuncs>true</ExcludeSmallFuncs>
-      <JScriptProfilingEnabled>false</JScriptProfilingEnabled>
-      <PreinstrumentEvent>
-        <InstrEventExclude>false</InstrEventExclude>
-      </PreinstrumentEvent>
-      <PostinstrumentEvent>
-        <InstrEventExclude>false</InstrEventExclude>
-      </PostinstrumentEvent>
-      <ProjRef>{4713D6FA-4B9D-4057-8F34-7F79D51258EA}|Jade\Clang\CppCodeBrowser\CppCodeBrowser.csproj</ProjRef>
-      <ProjPath>Jade\Clang\CppCodeBrowser\CppCodeBrowser.csproj</ProjPath>
-      <ProjName>CppCodeBrowser</ProjName>
-    </ProjBinary>
-    <ProjBinary>
       <Path>Jade\JadeGui\obj\Debug\JadeGui.exe</Path>
       <ArgumentTimestamp>01/01/0001 00:00:00</ArgumentTimestamp>
       <Instrument>true</Instrument>
@@ -126,100 +96,13 @@
       <ProjPath>Jade\JadeControls\JadeControls.csproj</ProjPath>
       <ProjName>JadeControls</ProjName>
     </ProjBinary>
-    <ProjBinary>
-      <Path>Jade\JadeCore\obj\Debug\JadeCore.dll</Path>
-      <ArgumentTimestamp>01/01/0001 00:00:00</ArgumentTimestamp>
-      <Instrument>true</Instrument>
-      <Sample>true</Sample>
-      <ExternalWebsite>false</ExternalWebsite>
-      <InteractionProfilingEnabled>false</InteractionProfilingEnabled>
-      <IsLocalJavascript>false</IsLocalJavascript>
-      <IsWindowsStoreApp>false</IsWindowsStoreApp>
-      <IsWWA>false</IsWWA>
-      <LaunchProject>true</LaunchProject>
-      <OverrideProjectSettings>false</OverrideProjectSettings>
-      <LaunchMethod>Executable</LaunchMethod>
-      <StartupDirectory>Jade\JadeCore\bin\Debug\</StartupDirectory>
-      <Arguments>
-      </Arguments>
-      <NetAppHost>IIS</NetAppHost>
-      <NetBrowser>InternetExplorer</NetBrowser>
-      <ExcludeSmallFuncs>true</ExcludeSmallFuncs>
-      <JScriptProfilingEnabled>false</JScriptProfilingEnabled>
-      <PreinstrumentEvent>
-        <InstrEventExclude>false</InstrEventExclude>
-      </PreinstrumentEvent>
-      <PostinstrumentEvent>
-        <InstrEventExclude>false</InstrEventExclude>
-      </PostinstrumentEvent>
-      <ProjRef>{59CAD747-608C-447A-B2AF-F8FD7ACE39B2}|Jade\JadeCore\JadeCore.csproj</ProjRef>
-      <ProjPath>Jade\JadeCore\JadeCore.csproj</ProjPath>
-      <ProjName>JadeCore</ProjName>
-    </ProjBinary>
-    <ProjBinary>
-      <Path>Jade\JadeUtils\JadeUtils\obj\Debug\JadeUtils.dll</Path>
-      <ArgumentTimestamp>01/01/0001 00:00:00</ArgumentTimestamp>
-      <Instrument>true</Instrument>
-      <Sample>true</Sample>
-      <ExternalWebsite>false</ExternalWebsite>
-      <InteractionProfilingEnabled>false</InteractionProfilingEnabled>
-      <IsLocalJavascript>false</IsLocalJavascript>
-      <IsWindowsStoreApp>false</IsWindowsStoreApp>
-      <IsWWA>false</IsWWA>
-      <LaunchProject>true</LaunchProject>
-      <OverrideProjectSettings>false</OverrideProjectSettings>
-      <LaunchMethod>Executable</LaunchMethod>
-      <StartupDirectory>Jade\JadeUtils\JadeUtils\bin\Debug\</StartupDirectory>
-      <Arguments>
-      </Arguments>
-      <NetAppHost>IIS</NetAppHost>
-      <NetBrowser>InternetExplorer</NetBrowser>
-      <ExcludeSmallFuncs>true</ExcludeSmallFuncs>
-      <JScriptProfilingEnabled>false</JScriptProfilingEnabled>
-      <PreinstrumentEvent>
-        <InstrEventExclude>false</InstrEventExclude>
-      </PreinstrumentEvent>
-      <PostinstrumentEvent>
-        <InstrEventExclude>false</InstrEventExclude>
-      </PostinstrumentEvent>
-      <ProjRef>{52652847-ED88-486A-A51D-CE4A15F16C1F}|Jade\JadeUtils\JadeUtils\JadeUtils.csproj</ProjRef>
-      <ProjPath>Jade\JadeUtils\JadeUtils\JadeUtils.csproj</ProjPath>
-      <ProjName>JadeUtils</ProjName>
-    </ProjBinary>
-    <ProjBinary>
-      <Path>Jade\Clang\LibClangCS\obj\Debug\LibClangcs.dll</Path>
-      <ArgumentTimestamp>01/01/0001 00:00:00</ArgumentTimestamp>
-      <Instrument>true</Instrument>
-      <Sample>true</Sample>
-      <ExternalWebsite>false</ExternalWebsite>
-      <InteractionProfilingEnabled>false</InteractionProfilingEnabled>
-      <IsLocalJavascript>false</IsLocalJavascript>
-      <IsWindowsStoreApp>false</IsWindowsStoreApp>
-      <IsWWA>false</IsWWA>
-      <LaunchProject>true</LaunchProject>
-      <OverrideProjectSettings>false</OverrideProjectSettings>
-      <LaunchMethod>Executable</LaunchMethod>
-      <StartupDirectory>Jade\Clang\LibClangCS\bin\Debug\</StartupDirectory>
-      <Arguments>
-      </Arguments>
-      <NetAppHost>IIS</NetAppHost>
-      <NetBrowser>InternetExplorer</NetBrowser>
-      <ExcludeSmallFuncs>true</ExcludeSmallFuncs>
-      <JScriptProfilingEnabled>false</JScriptProfilingEnabled>
-      <PreinstrumentEvent>
-        <InstrEventExclude>false</InstrEventExclude>
-      </PreinstrumentEvent>
-      <PostinstrumentEvent>
-        <InstrEventExclude>false</InstrEventExclude>
-      </PostinstrumentEvent>
-      <ProjRef>{D68FAB6F-29E2-4159-B398-70559930AEB8}|Jade\Clang\LibClangCS\LibClangCS.csproj</ProjRef>
-      <ProjPath>Jade\Clang\LibClangCS\LibClangCS.csproj</ProjPath>
-      <ProjName>LibClangCS</ProjName>
-    </ProjBinary>
   </Binaries>
   <Reports>
     <Report>
       <Path>Report140814(2).vsp</Path>
+    </Report>
+    <Report>
+      <Path>JadeGui140824.vsp</Path>
     </Report>
   </Reports>
   <Launches>

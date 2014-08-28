@@ -257,27 +257,5 @@ namespace JadeControls.ContextTool
                 return from FilePath path in _files select path.FileName;
             }
         }
-
-        //public FileViewModel CurrentFile { get; private set; }
-        /*
-        private void SelectPath(string path)
-        {
-            string [] parts = path.Split('/');
-
-            if (parts.Length == 0) return;
-
-            if (parts[0] != CurrentFile.Name) return;
-
-            ITreeItem item = CurrentFile;
-            for(int i = 1; i < parts.Length && item != null ; i++)
-            {
-                item.Expanded = true;
-                var child = item.FindChild(parts[i]);
-                if (child == null)
-                    break;
-                item = child;
-                item.Selected = true;                
-            }
-        */
     }
 }
